@@ -1,0 +1,82 @@
+img#trophy {
+  height: 80px;
+  position: relative;
+  top: 8px;
+}
+body {
+  text-align: center;
+}
+table {
+  border-collapse: collapse;
+  border: 3px solid black;
+  text-align: center;
+}
+td, th {
+  border: 1px solid black;
+  padding: 3px;
+  white-space: nowrap;
+}
+th {
+  text-align: center;
+}
+td {
+  text-align: left;
+}
+table#header {
+  border: 0px;
+  text-align: center;
+}
+table#header td, table#header th {
+  border: 0px;
+  text-align: center;
+  padding: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 20px;
+}
+table#header th {
+  font-size: 50px;
+}
+.info {
+  width: 430px;
+  text-align: left;
+}
+.header {
+  border-right-width: 3px;
+  font-weight: bold;
+  background-color: white;
+}
+.correct {
+  background-color: limegreen;
+}
+.incorrect {
+  background-color: red;
+}
+.unannounced {
+  background-color: silver;
+}
+th {
+  border-top-width: 3px;
+  border-bottom-width: 3px;
+  background-color: white;
+}
+#name {
+  font-size: 40px;
+  font-weight: bold;
+}
+.rank {
+  text-align: right;
+}
+td#rank {
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  background-color: silver;
+}
+div#rank {
+  font-size: 70px;
+}
+td#selection {
+  text-align: center;
+}
