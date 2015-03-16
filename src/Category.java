@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -108,5 +109,43 @@ public final class Category {
         plot.setRenderer(new GuessRenderer(inWinners.isEmpty() ? null : isWinner));
 
         ChartUtilities.saveChartAsPNG(new File("category/" + name + ".png"), chart, 500, 300);
+    }
+
+    public Element toCoreDOM() {
+        Element categoryDOM = new Element("category");
+        categoryDOM.addContent(new Element("name").addContent(name));
+        categoryDOM.addContent(new Element("tieBreaker").addContent(tieBreakerValue));
+        categoryDOM.addContent(new Element("value").addContent(value.toString()));
+        return categoryDOM;
+    }
+
+    public Element toDOM(Collection<Player> inPlayers) {
+        Element categoryDOM = toCoreDOM();
+        categoryDOM.addContent(toGuessesDOM());
+        categoryDOM.addContent(toPlayersDOM(inPlayers));
+        return categoryDOM;
+    }
+
+    private Element toGuessesDOM() {
+        Element guessesDOM = new Element("guesses");
+        List<String> guessList = new ArrayList<String>(guesses.keySet());
+        Collections.sort(guessList);
+        for (String guess : guessList) {
+            Element guessDOM = new Element("guess");
+            guessDOM.addContent(new Element("name").addContent(guess));
+            guessDOM.addContent(new Element("count").addContent(String.valueOf(guesses.get(guess))));
+            guessesDOM.addContent(guessDOM);
+        }
+        return guessesDOM;
+    }
+
+    private Element toPlayersDOM(Collection<Player> inPlayers) {
+        Element playersDOM = new Element("players");
+        for (Player player : inPlayers) {
+            Element playerDOM = player.toCoreDOM();
+            playerDOM.addContent(new Element("guess").addContent(player.picks.get(this)));
+            playersDOM.addContent(playerDOM);
+        }
+        return playersDOM;
     }
 }

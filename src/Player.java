@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.jdom2.Element;
+
 public class Player implements Cloneable {
     private static final String PSEUDO_TAG = "PSEUDO-";
 
@@ -221,5 +223,28 @@ public class Player implements Cloneable {
      */
     public double getTime(long inRunningTime) {
         return inRunningTime >= 0 && time > inRunningTime ? -1 : time;
+    }
+
+    public Element toCoreDOM() {
+        Element playerDOM = new Element("player");
+        playerDOM.addContent(new Element("firstName").addContent(firstName));
+        playerDOM.addContent(new Element("lastName").addContent(lastName));
+        return playerDOM;
+    }
+
+    public Element toDOM(Collection<Category> inCategories) {
+        Element playerDOM = toCoreDOM();
+        playerDOM.addContent(playerCategoriesDOM(inCategories));
+        return playerDOM;
+    }
+
+    private Element playerCategoriesDOM(Collection<Category> inCategories) {
+        Element categoriesDOM = new Element("categories");
+        for (Category category : inCategories) {
+            Element categoryDOM = category.toCoreDOM();
+            categoryDOM.addContent(new Element("guess").addContent(picks.get(category)));
+            categoriesDOM.addContent(categoryDOM);
+        }
+        return categoriesDOM;
     }
 }

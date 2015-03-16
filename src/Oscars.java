@@ -23,13 +23,13 @@ import org.jdom2.ProcessingInstruction;
 import org.jdom2.output.XMLOutputter;
 
 /**
- * This program will allow Oscars winners to be selected and a new result files will be generated.
- * The Oscars picks for each player are in a separate comma delimited file which won't change during
- * the contest. A separate file indicates the column names of that file and positionally represents
- * the nominees for each category. The column name can include a tie breaker number inside
- * parentheses like this: Director(1) to indicate that Director is the first tie breaker. The
- * contestants' names must be in the columns named "First" and "Last" and their time estimate must
- * be in the column named "Time" in the format "H:MM" or "H:MM:SS.D".
+ * This program will allow Oscars winners to be selected and a new results file will be generated.
+ * The Oscars picks for each player are in a comma delimited file which won't change during the
+ * contest. A separate file indicates the column names of that file and positionally represents the
+ * nominees for each category. The column name can include a tie breaker number inside parentheses
+ * like this: Director(1) to indicate that Director is the first tie breaker. The contestants' names
+ * must be in the columns named "First" and "Last" and their time estimate must be in the column
+ * named "Time" in the format "H:MM" or "H:MM:SS.D".
  * 
  * @author Scott McDonald
  * @version 4.0
@@ -63,15 +63,14 @@ public class Oscars implements Runnable {
      */
     public static void main(String[] inArgs) throws IOException, InterruptedException {
         Oscars oscars = new Oscars();
-
-        System.out.print("Writing web pages... ");
         oscars.writeCategoryPages();
         oscars.writePlayerPages();
-        System.out.println("DONE\n");
 
+        System.out.println();
         while (oscars.process())
             System.out.println();
-        System.out.print("Writing final results... ");
+
+        System.out.print("\nWriting final results... ");
         oscars.update();
         System.out.println("DONE");
     }
@@ -88,7 +87,7 @@ public class Oscars implements Runnable {
         results = new Results(categories);
         scoreFormat = "%." + tieBreakerCount(categories) + "f";
         updatersList = Collections.unmodifiableList(updatersList());
-        System.out.println("DONE\n");
+        System.out.println("DONE");
     }
 
     private static List<String[]> readValues(String inFileName) throws IOException {
@@ -245,9 +244,21 @@ public class Oscars implements Runnable {
     }
 
     private void writeResults() throws IOException {
+        writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
+    }
+
+    private Element resultsDOM() {
         Element resultsDOM = new Element("results");
         resultsDOM.addContent(new Element("title").addContent(results.title()));
+        resultsDOM.addContent(resultsCategoriesDOM());
+        resultsDOM.addContent(resultsPlayersDOM());
+        resultsDOM.addContent(resultsShowTimeDOM());
+        resultsDOM.addContent(new Element("updated").addContent(new SimpleDateFormat(
+                "MM/dd/yyyy h:mm:ss a - z").format(new Date())));
+        return resultsDOM;
+    }
 
+    private Element resultsCategoriesDOM() {
         Element categoriesDOM = new Element("categories");
         int announcedCount = 0;
         for (Category category : categories)
@@ -260,18 +271,14 @@ public class Oscars implements Runnable {
                 categoriesDOM.addContent(categoryDOM);
             }
         categoriesDOM.addContent(new Element("count").addContent(String.valueOf(announcedCount)));
-        resultsDOM.addContent(categoriesDOM);
+        return categoriesDOM;
+    }
 
+    private Element resultsPlayersDOM() {
         int realPlayerCount = 0;
         Element playersDOM = new Element("players");
         for (Player player : players) {
-            Element playerDOM = new Element("player");
-            if (player.isPseudo)
-                playerDOM.setAttribute("type", "pseudo");
-            else
-                realPlayerCount++;
-            playerDOM.addContent(new Element("firstName").addContent(player.firstName));
-            playerDOM.addContent(new Element("lastName").addContent(player.lastName));
+            Element playerDOM = player.toCoreDOM();
             playerDOM.addContent(new Element("rank").addContent(String.valueOf(player.getRank())));
             playerDOM.addContent(new Element("bpr").addContent(String.valueOf(player
                     .getBestPossibleRank())));
@@ -285,95 +292,62 @@ public class Oscars implements Runnable {
                             player.getTime(runningTime) < 0
                                     || player.getTime(runningTime) > elapsedTime ? "unannounced"
                                     : "correct").addContent(player.timeString));
+            if (player.isPseudo)
+                playerDOM.setAttribute("type", "pseudo");
+            else
+                realPlayerCount++;
             playersDOM.addContent(playerDOM);
         }
         playersDOM.addContent(new Element("count").addContent(String.valueOf(realPlayerCount)));
-        resultsDOM.addContent(playersDOM);
+        return playersDOM;
+    }
 
+    private Element resultsShowTimeDOM() {
         Element showTimeDOM = new Element("showTime");
         for (ShowTimeType showTimeType : ShowTimeType.values())
             showTimeDOM.addContent(new Element(showTimeType.name().toLowerCase())
                     .addContent(results.getShowTime(showTimeType)));
         showTimeDOM.addContent(new Element("length")
-                .addContent(runningTime >= 0 ? toTime(runningTime)
-                        : elapsedTime >= 0 ? toTime(elapsedTime) : "0:00"));
+                .addContent(runningTime >= 0 ? formatTime(runningTime)
+                        : elapsedTime >= 0 ? formatTime(elapsedTime) : "0:00"));
         showTimeDOM.addContent(new Element("header").addContent(runningTime >= 0 ? "T="
-                + toTime(runningTime) : elapsedTime >= 0 ? "T>" + toTime(elapsedTime) : "Time"));
-        resultsDOM.addContent(showTimeDOM);
-
-        resultsDOM.addContent(new Element("updated").addContent(new SimpleDateFormat(
-                "MM/dd/yyyy h:mm:ss a - z").format(new Date())));
-
-        writeDocument(resultsDOM, Results.RESULTS_FILE, null);
+                + formatTime(runningTime) : elapsedTime >= 0 ? "T>" + formatTime(elapsedTime)
+                : "Time"));
+        return showTimeDOM;
     }
 
-    private String toTime(long inTime) {
+    private String formatTime(long inTime) {
         return String.format("%d:%02d", TimeUnit.SECONDS.toHours(inTime),
                 TimeUnit.SECONDS.toMinutes(inTime) % 60);
     }
 
     private void writeCategoryPages() throws IOException {
+        System.out.print("Writing category web pages... ");
         for (Category category : categories) {
             category.writeChart(results.winners(category));
-
-            Element categoryDOM = new Element("category");
-            categoryDOM.addContent(new Element("name").addContent(category.name));
-            categoryDOM.addContent(new Element("tieBreaker").addContent(category.tieBreakerValue));
-            categoryDOM.addContent(new Element("value").addContent(category.value.toString()));
-
-            Element guessesDOM = new Element("guesses");
-            List<String> guesses = new ArrayList<String>(category.guesses.keySet());
-            Collections.sort(guesses);
-            for (String guess : guesses) {
-                Element guessDOM = new Element("guess");
-                guessDOM.addContent(new Element("name").addContent(guess));
-                guessDOM.addContent(new Element("count").addContent(String.valueOf(category.guesses
-                        .get(guess))));
-                guessesDOM.addContent(guessDOM);
-            }
-            categoryDOM.addContent(guessesDOM);
-
-            Element playersDOM = new Element("players");
-            for (Player player : players) {
-                Element playerDOM = new Element("player");
-                playerDOM.addContent(new Element("firstName").addContent(player.firstName));
-                playerDOM.addContent(new Element("lastName").addContent(player.lastName));
-                playerDOM.addContent(new Element("guess").addContent(player.picks.get(category)));
-                playersDOM.addContent(playerDOM);
-            }
-            categoryDOM.addContent(playersDOM);
-
-            writeDocument(categoryDOM, "category/" + category.name + ".xml", "../xsl/category.xsl");
+            writeDocument(category.toDOM(players), "category/" + category.name + ".xml",
+                    "../xsl/category.xsl");
         }
+        System.out.println("DONE");
     }
 
     private void writePlayerPages() throws IOException {
-        for (Player player : players) {
-            Element playerDOM = new Element("player");
-            playerDOM.addContent(new Element("firstName").addContent(player.firstName));
-            playerDOM.addContent(new Element("lastName").addContent(player.lastName));
-
-            Element categoriesDOM = new Element("categories");
-            for (Category category : categories) {
-                Element categoryDOM = new Element("category");
-                categoryDOM.addContent(new Element("name").addContent(category.name));
-                categoryDOM.addContent(new Element("guess").addContent(player.picks.get(category)));
-                categoryDOM.addContent(new Element("tieBreaker")
-                        .addContent(category.tieBreakerValue));
-                categoryDOM.addContent(new Element("value").addContent(category.value.toString()));
-                categoriesDOM.addContent(categoryDOM);
-            }
-
-            playerDOM.addContent(categoriesDOM);
-
-            writeDocument(playerDOM, "player/" + player.firstName
+        System.out.print("Writing player web pages... ");
+        for (Player player : players)
+            writeDocument(player.toDOM(categories), "player/" + player.firstName
                     + (player.firstName.isEmpty() || player.lastName.isEmpty() ? "" : " ")
                     + player.lastName + ".xml", "../xsl/player.xsl");
-        }
+        System.out.println("DONE");
     }
 
     private void writeDocument(Element inElement, String inXMLFile, String inXSLFile)
             throws IOException {
+        PrintWriter writer = new PrintWriter(inXMLFile);
+        new XMLOutputter().output(buildDocument(inElement, inXSLFile), writer);
+        writer.close();
+    }
+
+    private Document buildDocument(Element inElement, String inXSLFile) {
         Document document = new Document();
         if (inXSLFile != null) {
             Map<String, String> data = new HashMap<String, String>();
@@ -382,9 +356,6 @@ public class Oscars implements Runnable {
             document.addContent(new ProcessingInstruction("xml-stylesheet", data));
         }
         document.addContent(inElement);
-
-        PrintWriter writer = new PrintWriter(inXMLFile);
-        new XMLOutputter().output(document, writer);
-        writer.close();
+        return document;
     }
 }
