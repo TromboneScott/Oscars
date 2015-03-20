@@ -1,5 +1,4 @@
 /** Category information - Immutable */
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,8 +20,6 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public final class Category {
-    private static final Color BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
-
     private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)");
 
     public static final Category FIRST_NAME = new Category("First");
@@ -89,13 +86,16 @@ public final class Category {
 
     public void writeChart(final Collection<String> inWinners) throws IOException {
         final boolean[] isWinner = new boolean[guesses.size()];
+        int totalGuesses = 0;
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         List<String> guessList = new ArrayList<String>(guesses.keySet());
         Collections.sort(guessList);
         for (int guessNum = 0; guessNum < guessList.size(); guessNum++) {
             String guess = guessList.get(guessNum);
-            dataset.addValue(guesses.get(guess), "nominee", guess);
+            Integer nomineeGuesses = guesses.get(guess);
+            totalGuesses += nomineeGuesses;
+            dataset.addValue(nomineeGuesses, "nominee", guess);
             isWinner[guessNum] = inWinners.contains(guess);
         }
 
@@ -103,9 +103,10 @@ public final class Category {
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
-        plot.getRangeAxis().setUpperMargin(.15);// Room for counts on top
+        plot.getRangeAxis().setRange(0, totalGuesses * 1.15);// Room for counts on top
+        // plot.getRangeAxis().setUpperMargin(.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-        plot.setBackgroundPaint(BACKGROUND_COLOR);
+        plot.setBackgroundPaint(Oscars.BACKGROUND_COLOR);
         plot.setRenderer(new GuessRenderer(inWinners.isEmpty() ? null : isWinner));
 
         ChartUtilities.saveChartAsPNG(new File("category/" + name + ".png"), chart, 500, 300);

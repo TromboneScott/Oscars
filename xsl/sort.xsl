@@ -32,12 +32,15 @@
           <br />
           <div class="info">
             <u>Score</u>
-            - One point for each correct category, plus .1 for tie
-            breaker #1, .01 for #2, .001 for #3, etc.
+            - One point for each correct
+            <a href="../category/all.xml">category</a>
+            plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc.
             <br />
             <br />
             <u>BPR / WPR</u>
-            - Best Possible Rank / Worst Possible Rank: If guesses for all remaining categories
+            - Best Possible Rank / Worst Possible Rank: If guesses for
+            all remaining
+            <a href="../category/all.xml">categories</a>
             turn out to be correct / incorrect.
           </div>
           <br />

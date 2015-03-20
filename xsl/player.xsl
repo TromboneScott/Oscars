@@ -73,7 +73,9 @@
               <table>
                 <thead>
                   <tr>
-                    <th class="header">Category</th>
+                    <th class="header">
+                      <a href="../category/all.xml">Category</a>
+                    </th>
                     <th>Guess</th>
                     <th>Actual</th>
                     <th>Score</th>

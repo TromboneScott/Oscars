@@ -1,6 +1,9 @@
 /** Oscars - Calculate the standings in the Oscars competition */
 
+import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,6 +25,18 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.ProcessingInstruction;
 import org.jdom2.output.XMLOutputter;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartRenderingInfo;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.CategoryItemEntity;
+import org.jfree.chart.entity.CategoryLabelEntity;
+import org.jfree.chart.entity.StandardEntityCollection;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * This program will allow Oscars winners to be selected and a new results file will be generated.
@@ -40,6 +56,14 @@ public class Oscars implements Runnable {
     private static final String CATEGORIES_FILE = "categories.csv";
 
     private static final String VALUE_DELIMITER = ",";
+
+    public static final Color BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
+
+    public static final Color BAR_GRAY = Color.GRAY;
+
+    public static final Color BAR_GREEN = Color.getColor("", 0x28A428);
+
+    public static final Color BAR_RED = Color.getColor("", 0xCC0000);
 
     private final Collection<Player> players;
 
@@ -245,6 +269,7 @@ public class Oscars implements Runnable {
 
     private void writeResults() throws IOException {
         writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
+        writeCorrectChart();
     }
 
     private Element resultsDOM() {
@@ -323,12 +348,20 @@ public class Oscars implements Runnable {
 
     private void writeCategoryPages() throws IOException {
         System.out.print("Writing category web pages... ");
+        writeAllCategoryPage();
         for (Category category : categories) {
             category.writeChart(results.winners(category));
             writeDocument(category.toDOM(players), "category/" + category.name + ".xml",
                     "../xsl/category.xsl");
         }
         System.out.println("DONE");
+    }
+
+    private void writeAllCategoryPage() throws IOException {
+        Element categoriesDOM = new Element("categories");
+        for (Category category : categories)
+            categoriesDOM.addContent(category.toDOM(players));
+        writeDocument(categoriesDOM, "category/all.xml", "../xsl/categoryGraphs.xsl");
     }
 
     private void writePlayerPages() throws IOException {
@@ -357,5 +390,69 @@ public class Oscars implements Runnable {
         }
         document.addContent(inElement);
         return document;
+    }
+
+    private void writeCorrectChart() throws IOException {
+        ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+        ChartUtilities.saveChartAsPNG(new File("category/correct.png"), correctChart(), 500, 650,
+                info);
+        writeCorrectMap(addURLs(info));
+    }
+
+    private JFreeChart correctChart() {
+        JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null,
+                correctChartDataset());
+
+        CategoryPlot plot = chart.getCategoryPlot();
+        plot.getRangeAxis().setRange(0, players.size());
+        plot.setBackgroundPaint(BACKGROUND_COLOR);
+        plot.setOrientation(PlotOrientation.HORIZONTAL);
+
+        CategoryItemRenderer renderer = plot.getRenderer();
+        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        renderer.setBaseItemLabelsVisible(true);
+        renderer.setSeriesPaint(0, BAR_GREEN);
+        renderer.setSeriesPaint(1, BAR_RED);
+        return chart;
+    }
+
+    private DefaultCategoryDataset correctChartDataset() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (Category category : categories) {
+            int correctCount = 0;
+            int incorrectCount = 0;
+            Set<String> winners = results.winners(category);
+            if (!winners.isEmpty())
+                for (String nominee : category.guesses.keySet())
+                    if (winners.contains(nominee))
+                        correctCount += category.guesses.get(nominee);
+                    else
+                        incorrectCount += category.guesses.get(nominee);
+            dataset.addValue(correctCount, "Correct", category.name);
+            dataset.addValue(incorrectCount, "Incorrect", category.name);
+        }
+        return dataset;
+    }
+
+    private ChartRenderingInfo addURLs(ChartRenderingInfo inInfo) {
+        for (Object entity : inInfo.getEntityCollection().getEntities())
+            if (entity.getClass().equals(CategoryLabelEntity.class))
+                ((CategoryLabelEntity) entity).setURLText("#"
+                        + ((CategoryLabelEntity) entity).getKey());
+            else if (entity.getClass().equals(CategoryItemEntity.class))
+                ((CategoryItemEntity) entity).setURLText("#"
+                        + ((CategoryItemEntity) entity).getColumnKey());
+        return inInfo;
+    }
+
+    private void writeCorrectMap(ChartRenderingInfo inInfo) throws FileNotFoundException,
+            IOException {
+        PrintWriter writer = new PrintWriter("category/correct.xsl");
+        writer.println("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">");
+        writer.println("<xsl:template match=\"/categories\">");
+        ChartUtilities.writeImageMap(writer, "correct", inInfo, false);
+        writer.println("</xsl:template>");
+        writer.println("</xsl:stylesheet>");
+        writer.close();
     }
 }
