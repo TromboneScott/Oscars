@@ -107,6 +107,9 @@
             </tbody>
           </table>
           <br />
+          <a href="../category/all.xml" id="return">All Categories</a>
+          <br />
+          <br />
           <div id="date">
             Last updated:
             <xsl:value-of select="$results/updated" />

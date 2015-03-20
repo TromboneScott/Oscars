@@ -104,7 +104,6 @@ public final class Category {
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(0, totalGuesses * 1.15);// Room for counts on top
-        // plot.getRangeAxis().setUpperMargin(.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(Oscars.BACKGROUND_COLOR);
         plot.setRenderer(new GuessRenderer(inWinners.isEmpty() ? null : isWinner));
