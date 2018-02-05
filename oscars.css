@@ -67,6 +67,9 @@ th {
 .rank {
   text-align: right;
 }
+.time {
+  text-align: center;
+}
 td#rank {
   padding: 10px;
   padding-left: 20px;

@@ -30,90 +30,105 @@
           </table>
           <br />
           <br />
-          <div class="info">
-            <u>Score</u>
-            - One point for each correct
-            <a href="../category/all.xml">category</a>
-            plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc.
-            <br />
-            <br />
-            <u>BPR / WPR</u>
-            - Best Possible Rank / Worst Possible Rank: If guesses for
-            all remaining
-            <a href="../category/all.xml">categories</a>
-            turn out to be correct / incorrect.
-          </div>
+          <b>
+            <a href="../../history">Oscars History</a>
+          </b>
           <br />
           <br />
-          <table>
-            <thead>
-              <tr>
-                <th class="header">
-                  <A href="name.xml">Name</A>
-                </th>
-                <th>
-                  <A href="rank.xml">Rank</A>
-                </th>
-                <th>
-                  <A href="bpr.xml">BPR</A>
-                </th>
-                <th>
-                  <A href="wpr.xml">WPR</A>
-                </th>
-                <th>
-                  <A href="rank.xml">Score</A>
-                </th>
-                <th>
-                  <xsl:value-of select="$results/showTime/header" />
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <xsl:choose>
-                <xsl:when test=". = 'name'">
-                  <xsl:apply-templates select="$results/players/player">
-                    <xsl:sort select="lastName" />
-                    <xsl:sort select="firstName" />
-                  </xsl:apply-templates>
-                </xsl:when>
-                <xsl:when test=". = 'rank'">
-                  <xsl:apply-templates select="$results/players/player">
-                    <xsl:sort select="rank" data-type="number" />
-                    <xsl:sort select="score" data-type="number"
-                      order="descending" />
-                    <xsl:sort select="lastName" />
-                    <xsl:sort select="firstName" />
-                  </xsl:apply-templates>
-                </xsl:when>
-                <xsl:when test=". = 'bpr'">
-                  <xsl:apply-templates select="$results/players/player">
-                    <xsl:sort select="bpr" data-type="number" />
-                    <xsl:sort select="score" data-type="number"
-                      order="descending" />
-                    <xsl:sort select="lastName" />
-                    <xsl:sort select="firstName" />
-                  </xsl:apply-templates>
-                </xsl:when>
-                <xsl:when test=". = 'wpr'">
-                  <xsl:apply-templates select="$results/players/player">
-                    <xsl:sort select="wpr" data-type="number" />
-                    <xsl:sort select="score" data-type="number"
-                      order="descending" />
-                    <xsl:sort select="lastName" />
-                    <xsl:sort select="firstName" />
-                  </xsl:apply-templates>
-                </xsl:when>
-              </xsl:choose>
-            </tbody>
-          </table>
-          <br />
-          <a href="../category/all.xml" id="return">All Categories</a>
-          <br />
-          <br />
-          <div id="date">
-            Last updated:
-            <xsl:value-of select="$results/updated" />
-          </div>
+          <xsl:choose>
+            <xsl:when test="$results/players/count=0">
+              <br />
+              Results will be posted here live during the Oscars broadcast.
+            </xsl:when>
+            <xsl:otherwise>
+              <div class="info">
+                <u>Score</u>
+                - One point for each correct
+                <a href="../category/all.xml">category</a>
+                plus .1 for tie breaker #1, .01 for #2, .001 for #3,
+                etc.
+                <br />
+                <br />
+                <u>BPR / WPR</u>
+                - Best Possible Rank / Worst Possible Rank: If guesses
+                for
+                all remaining
+                <a href="../category/all.xml">categories</a>
+                turn out to be correct / incorrect.
+              </div>
+              <br />
+              <br />
+              <table>
+                <thead>
+                  <tr>
+                    <th class="header">
+                      <A href="name.xml">Name</A>
+                    </th>
+                    <th>
+                      <A href="rank.xml">Rank</A>
+                    </th>
+                    <th>
+                      <A href="bpr.xml">BPR</A>
+                    </th>
+                    <th>
+                      <A href="wpr.xml">WPR</A>
+                    </th>
+                    <th>
+                      <A href="rank.xml">Score</A>
+                    </th>
+                    <th>
+                      <xsl:value-of select="$results/showTime/header" />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <xsl:choose>
+                    <xsl:when test=". = 'name'">
+                      <xsl:apply-templates select="$results/players/player">
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                    <xsl:when test=". = 'rank'">
+                      <xsl:apply-templates select="$results/players/player">
+                        <xsl:sort select="rank" data-type="number" />
+                        <xsl:sort select="score" data-type="number"
+                          order="descending" />
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                    <xsl:when test=". = 'bpr'">
+                      <xsl:apply-templates select="$results/players/player">
+                        <xsl:sort select="bpr" data-type="number" />
+                        <xsl:sort select="score" data-type="number"
+                          order="descending" />
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                    <xsl:when test=". = 'wpr'">
+                      <xsl:apply-templates select="$results/players/player">
+                        <xsl:sort select="wpr" data-type="number" />
+                        <xsl:sort select="score" data-type="number"
+                          order="descending" />
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                  </xsl:choose>
+                </tbody>
+              </table>
+              <br />
+              <a href="../category/all.xml" id="return">All Categories</a>
+              <br />
+              <br />
+              <div id="date">
+                Last updated:
+                <xsl:value-of select="$results/updated" />
+              </div>
+            </xsl:otherwise>
+          </xsl:choose>
         </center>
       </body>
     </html>
@@ -176,7 +191,7 @@
       </td>
       <td>
         <xsl:attribute name="class">
-          <xsl:value-of select="time/@status" />
+          <xsl:value-of select="time/@status" /> time
         </xsl:attribute>
         <xsl:value-of select="time" />
       </td>

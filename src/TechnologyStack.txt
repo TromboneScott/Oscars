@@ -1,0 +1,24 @@
+LANGUAGES
+---------
+XML 1.0
+XSLT 1.0
+HTML
+CSS
+Java 6
+
+LIBRARIES
+---------
+JCommon 1.0.23
+JDOM 2.0.5
+JFreeChart 1.0.19
+
+PLATFORM
+--------
+DropBox
+Site44
+
+DATA COLLECTION
+---------------
+Google Forms
+Microsoft Excel
+CSV
