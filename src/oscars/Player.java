@@ -29,7 +29,7 @@ public class Player implements Cloneable {
 	public final long time;
 
 	/** Player's current score */
-	private BigDecimal score = BigDecimal.ZERO;
+	private BigDecimal score;
 
 	/** Player's current rank */
 	private int rank;

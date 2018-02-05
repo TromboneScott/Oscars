@@ -62,7 +62,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @version 4.1
  */
 public class Oscars implements Runnable {
-	// Scott McDonald
 	private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
 
 	private static final String PLAYERS_FILE = "players.csv";

@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -135,15 +134,14 @@ public class Results {
 			return false;
 		try {
 			int resultNum = Integer.parseInt(selectedResult);
-			if (resultNum < 1 || resultNum > inCategories.size() + ShowTimeType.values().length)
-				throw new NumberFormatException();
-			return resultNum > inCategories.size()
-					? promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1])
-					: promptWinner(inCategories.get(resultNum - 1));
+			if (resultNum > 0 && resultNum <= inCategories.size() + ShowTimeType.values().length)
+				return resultNum > inCategories.size()
+						? promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1])
+						: promptWinner(inCategories.get(resultNum - 1));
 		} catch (NumberFormatException e) {
-			System.out.println("Invalid selection");
-			return true;
 		}
+		System.out.println("Invalid selection");
+		return true;
 	}
 
 	private boolean promptWinner(Category inCategory) throws IOException {
@@ -179,21 +177,8 @@ public class Results {
 
 	private String categoryString(Category inCategory) {
 		return inCategory
-				+ (winners.containsKey(inCategory) ? " = " + join(winners.get(inCategory), WINNER_DELIMITER) : "");
-	}
-
-	/**
-	 * Join the Iterable elements into a String with the given delimiter (reverse of
-	 * String.split)
-	 */
-	private String join(Iterable<? extends Object> inIterable, String inDelimiter) {
-		StringBuffer result = new StringBuffer();
-		Iterator<? extends Object> iter = inIterable.iterator();
-		if (iter.hasNext())
-			result.append(iter.next());
-		while (iter.hasNext())
-			result.append(inDelimiter).append(iter.next());
-		return result.toString();
+				+ (winners.containsKey(inCategory) ? " = " + String.join(WINNER_DELIMITER, winners.get(inCategory))
+						: "");
 	}
 
 	public String getShowTime(ShowTimeType inShowTimeType) {
