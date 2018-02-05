@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jdom2.Element;
 
-public class Player implements Cloneable, Comparable<Player> {
+public class Player implements Cloneable {
 	private static final String PSEUDO_TAG = "PSEUDO-";
 
 	/** Player's first name */
@@ -247,11 +247,5 @@ public class Player implements Cloneable, Comparable<Player> {
 			categoriesDOM.addContent(categoryDOM);
 		}
 		return categoriesDOM;
-	}
-
-	@Override
-	public int compareTo(Player inPlayer) {
-		int lastNameDifference = lastName.compareTo(inPlayer.lastName);
-		return lastNameDifference == 0 ? firstName.compareTo(inPlayer.firstName) : lastNameDifference;
 	}
 }

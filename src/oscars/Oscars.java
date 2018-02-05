@@ -71,7 +71,7 @@ public class Oscars implements Runnable {
 
 	private static final String VALUE_DELIMITER = ",";
 
-	private final List<Player> players;
+	private final Collection<Player> players;
 
 	private final List<Category> categories;
 
@@ -117,7 +117,7 @@ public class Oscars implements Runnable {
 		Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, playerValues, categoryNominees);
 		Category[] categoryArray = buildCategories(categoryValues.get(0), categoryNominees, categoryMaps, playerValues);
 		players = Collections
-				.unmodifiableList(buildPlayers(playerValues, categoryArray, categoryValues.get(0), categoryMaps));
+				.unmodifiableCollection(buildPlayers(playerValues, categoryArray, categoryValues.get(0), categoryMaps));
 		categories = Collections.unmodifiableList(filterCategories(categoryArray));
 		results = new Results(categories);
 		scoreFormat = "%." + tieBreakerCount(categories) + "f";
@@ -235,9 +235,9 @@ public class Oscars implements Runnable {
 		return categoryArray;
 	}
 
-	private List<Player> buildPlayers(List<String[]> inPlayerValues, Category[] inCategoryArray,
+	private Collection<Player> buildPlayers(List<String[]> inPlayerValues, Category[] inCategoryArray,
 			String[] inCategoryNames, Map<String, Map<String, String>> inCategoryMaps) {
-		List<Player> result = new ArrayList<Player>(inPlayerValues.size());
+		Collection<Player> result = new ArrayList<Player>(inPlayerValues.size());
 		for (String[] aPlayerValues : inPlayerValues) {
 			HashMap<Category, String> pickMap = new HashMap<Category, String>(inCategoryArray.length);
 			for (int categoryNum = 0; categoryNum < inCategoryArray.length; categoryNum++)
@@ -246,7 +246,6 @@ public class Oscars implements Runnable {
 								: inCategoryMaps.get(inCategoryNames[categoryNum]).get(aPlayerValues[categoryNum]));
 			result.add(new Player(pickMap));
 		}
-		Collections.sort(result);
 		return result;
 	}
 
