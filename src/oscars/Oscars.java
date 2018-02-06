@@ -6,11 +6,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -124,14 +127,8 @@ public class Oscars implements Runnable {
 	}
 
 	private static List<String[]> readValues(String inFileName) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(inFileName));
-		try {
-			List<String[]> lines = new ArrayList<String[]>();
-			for (String line = reader.readLine(); line != null; line = reader.readLine())
-				lines.add(line.split(VALUE_DELIMITER, -1));
-			return lines;
-		} finally {
-			reader.close();
+		try (Stream<String> stream = Files.lines(Paths.get(inFileName))) {
+			return stream.map(s -> s.split(VALUE_DELIMITER, -1)).collect(Collectors.toList());
 		}
 	}
 
@@ -290,9 +287,9 @@ public class Oscars implements Runnable {
 				writeResults();
 			}
 		} catch (InterruptedException e) {
-			return;
+			// Ignore
 		} catch (IOException e) {
-			return;
+			e.printStackTrace(System.err);
 		}
 	}
 
