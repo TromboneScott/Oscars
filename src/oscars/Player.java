@@ -101,18 +101,25 @@ public class Player implements Cloneable {
 	}
 
 	/**
-	 * Set this Player's rank based on the scores of all the players which must
-	 * already be set
+	 * Set the Current, Best Possible and Worst Possible Rank based on the scores of
+	 * all players which must already be set
 	 * 
+	 * @param inResults
+	 *            The Results to base the status on
 	 * @param inPlayers
-	 *            The list of the Players (including this Player)
+	 *            The list of Players (including this one)
 	 * @param inRunningTime
 	 *            The running time of the show or -1 if not finished
 	 * @param inElapsedTime
 	 *            The elapsed time of the show so far
 	 */
-	public void setRank(Collection<Player> inPlayers, long inRunningTime, long inElapsedTime) {
+	public void setRanks(Results inResults, Collection<Player> inPlayers, long inRunningTime, long inElapsedTime) {
 		rank = calculateRank(inPlayers, inRunningTime, inElapsedTime, false);
+		bestPossibleRank = getUpdatedPlayer(this, inResults, true).calculateRank(
+				getUpdatedPlayers(inPlayers, inResults, true), inRunningTime,
+				time > inElapsedTime ? time : inElapsedTime, false);
+		worstPossibleRank = calculateRank(getUpdatedPlayers(inPlayers, inResults, false), inRunningTime, inElapsedTime,
+				inRunningTime < 0);
 	}
 
 	/**
@@ -125,26 +132,6 @@ public class Player implements Cloneable {
 	}
 
 	/**
-	 * Set the Best Possible Rank based on the scores of all players which must
-	 * already be set
-	 * 
-	 * @param inResults
-	 *            The Results to base the status on
-	 * @param inPlayers
-	 *            The list of Players (including this one)
-	 * @param inRunningTime
-	 *            The running time of the show or -1 if not finished
-	 * @param inElapsedTime
-	 *            The elapsed time of the show so far
-	 */
-	public void setBestPossibleRank(Results inResults, Collection<Player> inPlayers, long inRunningTime,
-			long inElapsedTime) {
-		bestPossibleRank = getUpdatedPlayer(this, inResults, true).calculateRank(
-				getUpdatedPlayers(inPlayers, inResults, true), inRunningTime,
-				time > inElapsedTime ? time : inElapsedTime, false);
-	}
-
-	/**
 	 * Determine this Player's best possible rank if all remaining guesses turn out
 	 * to be correct
 	 * 
@@ -152,25 +139,6 @@ public class Player implements Cloneable {
 	 */
 	public int getBestPossibleRank() {
 		return bestPossibleRank;
-	}
-
-	/**
-	 * Set the Worst Possible Rank based on the scores of all players which must
-	 * already be set
-	 * 
-	 * @param inResults
-	 *            The Results to base the status on
-	 * @param inPlayers
-	 *            The list of Players (including this one)
-	 * @param inRunningTime
-	 *            The running time of the show or -1 if not finished
-	 * @param inElapsedTime
-	 *            The elapsed time of the show so far
-	 */
-	public void setWorstPossibleRank(Results inResults, Collection<Player> inPlayers, long inRunningTime,
-			long inElapsedTime) {
-		worstPossibleRank = calculateRank(getUpdatedPlayers(inPlayers, inResults, false), inRunningTime, inElapsedTime,
-				inRunningTime < 0);
 	}
 
 	/**

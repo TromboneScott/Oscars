@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -81,8 +78,6 @@ public class Oscars implements Runnable {
 
 	private final String scoreFormat;
 
-	private final List<Collection<Callable<Object>>> updatersList;
-
 	private long runningTime;
 
 	private long elapsedTime;
@@ -123,12 +118,11 @@ public class Oscars implements Runnable {
 		categories = Collections.unmodifiableList(filterCategories(categoryArray));
 		results = new Results(categories);
 		scoreFormat = "%." + tieBreakerCount(categories) + "f";
-		updatersList = Collections.unmodifiableList(updatersList());
 	}
 
 	private static List<String[]> readValues(String inFileName) throws IOException {
 		try (Stream<String> stream = Files.lines(Paths.get(inFileName))) {
-			return stream.map(s -> s.split(VALUE_DELIMITER, -1)).collect(Collectors.toList());
+			return stream.map(line -> line.split(VALUE_DELIMITER, -1)).collect(Collectors.toList());
 		}
 	}
 
@@ -305,55 +299,12 @@ public class Oscars implements Runnable {
 				: -1;
 	}
 
-	private void writeResults() throws InterruptedException, IOException {
+	private void writeResults() throws IOException {
 		runningTime = results.runningTime();
 		elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
-		ExecutorService executor = Executors.newFixedThreadPool(4);
-		try {
-			for (Collection<Callable<Object>> updaters : updatersList)
-				executor.invokeAll(updaters);
-		} finally {
-			executor.shutdown();
-			executor.awaitTermination(1, TimeUnit.MINUTES);
-		}
+		players.parallelStream().forEach(player -> player.setScore(results));
+		players.parallelStream().forEach(player -> player.setRanks(results, players, runningTime, elapsedTime));
 		writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
-	}
-
-	private List<Collection<Callable<Object>>> updatersList() {
-		List<Collection<Callable<Object>>> updaters = new ArrayList<Collection<Callable<Object>>>(2);
-		updaters.add(playerUpdaters(true));
-		updaters.add(playerUpdaters(false));
-		return updaters;
-	}
-
-	private Collection<Callable<Object>> playerUpdaters(boolean inInitialize) {
-		Collection<Callable<Object>> tasks = new ArrayList<Callable<Object>>(players.size() * (inInitialize ? 1 : 3));
-		for (Player player : players)
-			if (inInitialize)
-				tasks.add(playerUpdater(player, 0));
-			else
-				for (int operationNum = 1; operationNum < 4; operationNum++)
-					tasks.add(playerUpdater(player, operationNum));
-		return Collections.unmodifiableCollection(tasks);
-	}
-
-	private Callable<Object> playerUpdater(final Player inPlayer, final int inOperationNum) {
-		return new Callable<Object>() {
-			@Override
-			public Object call() {
-				if (inOperationNum == 0)
-					inPlayer.setScore(results);
-				else if (inOperationNum == 1)
-					inPlayer.setRank(players, runningTime, elapsedTime);
-				else if (inOperationNum == 2)
-					inPlayer.setBestPossibleRank(results, players, runningTime, elapsedTime);
-				else if (inOperationNum == 3)
-					inPlayer.setWorstPossibleRank(results, players, runningTime, elapsedTime);
-				else
-					throw new UnsupportedOperationException();
-				return null;
-			}
-		};
 	}
 
 	private Element resultsDOM() {
