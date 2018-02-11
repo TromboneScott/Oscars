@@ -18,217 +18,212 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Results {
-	public static final String RESULTS_FILE = "results.xml";
+    public static final String RESULTS_FILE = "results.xml";
 
-	private static final String WINNER_DELIMITER = ",";
+    private static final String WINNER_DELIMITER = ",";
 
-	private static final String TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
+    private static final String TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
-	private static final Set<String> EMPTY_STRING_SET = Collections.emptySet();
+    private static final Set<String> EMPTY_STRING_SET = Collections.emptySet();
 
-	private final Map<Category, Set<String>> winners = new HashMap<Category, Set<String>>();
+    private final Map<Category, Set<String>> winners = new HashMap<Category, Set<String>>();
 
-	private final Map<ShowTimeType, Date> showTimes = new HashMap<ShowTimeType, Date>();
+    private final Map<ShowTimeType, Date> showTimes = new HashMap<ShowTimeType, Date>();
 
-	public Results(Collection<Category> inCategories) throws IOException {
-		File resultsFile = new File(RESULTS_FILE);
-		if (resultsFile.exists())
-			try {
-				Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
-				winners.putAll(winners(resultsDOM.getChild("categories"), toMap(inCategories)));
-				showTimes.putAll(showTimes(resultsDOM.getChild("showTime")));
-			} catch (JDOMException e) {
-				throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
-			}
-		else
-			System.out.println("\nStarting new results file: " + RESULTS_FILE);
+    public Results(Collection<Category> inCategories) throws IOException {
+        File resultsFile = new File(RESULTS_FILE);
+        if (resultsFile.exists())
+            try {
+                Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
+                Map<String, Category> categoryMap = inCategories.stream()
+                        .collect(Collectors.toMap(category -> category.name, category -> category));
+                winners.putAll(resultsDOM.getChild("categories").getChildren("category").stream()
+                        .collect(Collectors.toMap(
+                                categoryDOM -> categoryMap.get(categoryDOM.getChildText("name")),
+                                categoryDOM -> Collections
+                                        .unmodifiableSet(categoryDOM.getChildren("winner").stream()
+                                                .map(winnerDOM -> winnerDOM.getText())
+                                                .collect(Collectors.toSet())))));
+                showTimes.putAll(showTimes(resultsDOM.getChild("showTime")));
+            } catch (JDOMException e) {
+                throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
+            }
+        else
+            System.out.println("\nStarting new results file: " + RESULTS_FILE);
 
-		while (!showTimes.containsKey(ShowTimeType.START))
-			promptTime(ShowTimeType.START);
-	}
+        while (!showTimes.containsKey(ShowTimeType.START))
+            promptTime(ShowTimeType.START);
+    }
 
-	private Map<String, Category> toMap(Collection<Category> inCategories) {
-		Map<String, Category> categories = new HashMap<String, Category>(inCategories.size());
-		for (Category category : inCategories)
-			categories.put(category.name, category);
-		return categories;
-	}
+    private Map<ShowTimeType, Date> showTimes(Element inShowTimeDOM) {
+        Map<ShowTimeType, Date> showTimes = new HashMap<ShowTimeType, Date>();
+        for (ShowTimeType showTimeType : ShowTimeType.values()) {
+            String showTimeText = inShowTimeDOM.getChildText(showTimeType.name().toLowerCase());
+            if (showTimeText != null && !showTimeText.isEmpty())
+                try {
+                    showTimes.put(showTimeType,
+                            new SimpleDateFormat(TIME_FORMAT).parse(showTimeText));
+                } catch (ParseException e) {
+                    System.out.println("WARNING: Invalid " + showTimeType + " value");
+                }
+        }
+        return showTimes;
+    }
 
-	private Map<Category, Set<String>> winners(Element inCategoriesDOM, Map<String, Category> inCategories) {
-		Map<Category, Set<String>> winners = new HashMap<Category, Set<String>>();
-		for (Element categoryDOM : inCategoriesDOM.getChildren("category")) {
-			Set<String> winnerSet = new HashSet<String>();
-			for (Element winnerDOM : categoryDOM.getChildren("winner"))
-				winnerSet.add(winnerDOM.getText());
-			winners.put(inCategories.get(categoryDOM.getChildText("name")), Collections.unmodifiableSet(winnerSet));
-		}
-		return winners;
-	}
+    private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
+        System.out.println("\n" + showTimeString(inShowTimeType));
+        System.out.println(
+                "Enter * for system time, leave blank to remove, format: " + format(new Date()));
+        String enteredTime = new BufferedReader(new InputStreamReader(System.in)).readLine();
+        if (enteredTime.isEmpty())
+            if (inShowTimeType == ShowTimeType.START)
+                System.out.println(ShowTimeType.START + " is required");
+            else
+                showTimes.remove(inShowTimeType);
+        else if ("*".equals(enteredTime))
+            showTimes.put(inShowTimeType, new Date());
+        else
+            try {
+                showTimes.put(inShowTimeType, new SimpleDateFormat(TIME_FORMAT).parse(enteredTime));
+            } catch (ParseException e) {
+                System.out.println("Invalid time format");
+            }
+        return true;
+    }
 
-	private Map<ShowTimeType, Date> showTimes(Element inShowTimeDOM) {
-		Map<ShowTimeType, Date> showTimes = new HashMap<ShowTimeType, Date>();
-		for (ShowTimeType showTimeType : ShowTimeType.values()) {
-			String showTimeText = inShowTimeDOM.getChildText(showTimeType.name().toLowerCase());
-			if (showTimeText != null && !showTimeText.isEmpty())
-				try {
-					showTimes.put(showTimeType, new SimpleDateFormat(TIME_FORMAT).parse(showTimeText));
-				} catch (ParseException e) {
-					System.out.println("WARNING: Invalid " + showTimeType + " value");
-				}
-		}
-		return showTimes;
-	}
+    private String showTimeString(ShowTimeType inShowTimeType) {
+        return inShowTimeType + (showTimes.containsKey(inShowTimeType)
+                ? " = " + format(showTimes.get(inShowTimeType))
+                : "");
+    }
 
-	private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
-		System.out.println("\n" + showTimeString(inShowTimeType));
-		System.out.println("Enter * for system time, leave blank to remove, format: " + format(new Date()));
-		String enteredTime = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (enteredTime.isEmpty())
-			if (inShowTimeType == ShowTimeType.START)
-				System.out.println(ShowTimeType.START + " is required");
-			else
-				showTimes.remove(inShowTimeType);
-		else if ("*".equals(enteredTime))
-			showTimes.put(inShowTimeType, new Date());
-		else
-			try {
-				showTimes.put(inShowTimeType, new SimpleDateFormat(TIME_FORMAT).parse(enteredTime));
-			} catch (ParseException e) {
-				System.out.println("Invalid time format");
-			}
-		return true;
-	}
+    /**
+     * Prompt for results
+     * 
+     * @param inCategories
+     *            Categories to prompt for
+     * @param inPlayers
+     *            Players whose picks we can choose from
+     * @return true unless user wants to exit the program
+     */
+    public boolean prompt(List<Category> inCategories) throws IOException {
+        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Results");
+        IntStream.range(0, inCategories.size()).forEach(resultNum -> System.out
+                .println((resultNum + 1) + ": " + categoryString(inCategories.get(resultNum))));
+        IntStream.range(0, ShowTimeType.values().length)
+                .forEach(timeNum -> System.out.println((inCategories.size() + timeNum + 1) + ": "
+                        + showTimeString(ShowTimeType.values()[timeNum])));
 
-	private String showTimeString(ShowTimeType inShowTimeType) {
-		return inShowTimeType
-				+ (showTimes.containsKey(inShowTimeType) ? " = " + format(showTimes.get(inShowTimeType)) : "");
-	}
+        System.out.print("Enter results number to change (enter to quit): ");
+        String selectedResult = stdin.readLine();
+        if (selectedResult.isEmpty())
+            return false;
+        try {
+            int resultNum = Integer.parseInt(selectedResult);
+            if (resultNum > 0 && resultNum <= inCategories.size() + ShowTimeType.values().length)
+                return resultNum > inCategories.size()
+                        ? promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1])
+                        : promptWinner(inCategories.get(resultNum - 1));
+        } catch (NumberFormatException e) {
+        }
+        System.out.println("Invalid selection");
+        return true;
+    }
 
-	/**
-	 * Prompt for results
-	 * 
-	 * @param inCategories
-	 *            Categories to prompt for
-	 * @param inPlayers
-	 *            Players whose picks we can choose from
-	 * @return true unless user wants to exit the program
-	 */
-	public boolean prompt(List<Category> inCategories) throws IOException {
-		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Results");
-		for (int resultNum = 0; resultNum < inCategories.size(); resultNum++)
-			System.out.println((resultNum + 1) + ": " + categoryString(inCategories.get(resultNum)));
-		for (int timeNum = 0; timeNum < ShowTimeType.values().length; timeNum++)
-			System.out.println(
-					(inCategories.size() + timeNum + 1) + ": " + showTimeString(ShowTimeType.values()[timeNum]));
+    private boolean promptWinner(Category inCategory) throws IOException {
+        System.out.println("\n" + categoryString(inCategory));
 
-		System.out.print("Enter results number to change (enter to quit): ");
-		String selectedResult = stdin.readLine();
-		if (selectedResult.isEmpty())
-			return false;
-		try {
-			int resultNum = Integer.parseInt(selectedResult);
-			if (resultNum > 0 && resultNum <= inCategories.size() + ShowTimeType.values().length)
-				return resultNum > inCategories.size()
-						? promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1])
-						: promptWinner(inCategories.get(resultNum - 1));
-		} catch (NumberFormatException e) {
-		}
-		System.out.println("Invalid selection");
-		return true;
-	}
+        Set<String> pickNamesSet = new TreeSet<String>(inCategory.guesses.keySet());
+        String[] pickNames = pickNamesSet.toArray(new String[pickNamesSet.size()]);
+        IntStream.range(0, pickNames.length)
+                .forEach(x -> System.out.println((x + 1) + ": " + pickNames[x]));
 
-	private boolean promptWinner(Category inCategory) throws IOException {
-		System.out.println("\n" + categoryString(inCategory));
+        System.out.print("Select winner number(s) (use " + WINNER_DELIMITER
+                + " to separate ties or leave blank to remove winner): ");
+        String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
+        if (input.isEmpty())
+            winners.remove(inCategory);
+        else {
+            Set<String> winnerSet = new HashSet<String>();
+            for (String selectedWinner : input.split(WINNER_DELIMITER))
+                try {
+                    int selectedWinnerNum = Integer.parseInt(selectedWinner);
+                    if (selectedWinnerNum > pickNames.length || selectedWinnerNum < 1)
+                        throw new NumberFormatException();
+                    winnerSet.add(pickNames[selectedWinnerNum - 1]);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid selection");
+                    return true;
+                }
+            winners.put(inCategory, Collections.unmodifiableSet(winnerSet));
+        }
+        inCategory.writeChart(winners(inCategory));
+        return true;
+    }
 
-		Set<String> pickNamesSet = new TreeSet<String>(inCategory.guesses.keySet());
-		String[] pickNames = pickNamesSet.toArray(new String[pickNamesSet.size()]);
-		for (int x = 0; x < pickNames.length; x++)
-			System.out.println(x + 1 + ": " + pickNames[x]);
+    private String categoryString(Category inCategory) {
+        return inCategory + (winners.containsKey(inCategory)
+                ? " = " + String.join(WINNER_DELIMITER, winners.get(inCategory))
+                : "");
+    }
 
-		System.out.print("Select winner number(s) (use " + WINNER_DELIMITER
-				+ " to separate ties or leave blank to remove winner): ");
-		String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (input.isEmpty())
-			winners.remove(inCategory);
-		else {
-			Set<String> winnerSet = new HashSet<String>();
-			for (String selectedWinner : input.split(WINNER_DELIMITER))
-				try {
-					int selectedWinnerNum = Integer.parseInt(selectedWinner);
-					if (selectedWinnerNum > pickNames.length || selectedWinnerNum < 1)
-						throw new NumberFormatException();
-					winnerSet.add(pickNames[selectedWinnerNum - 1]);
-				} catch (NumberFormatException e) {
-					System.out.println("Invalid selection");
-					return true;
-				}
-			winners.put(inCategory, Collections.unmodifiableSet(winnerSet));
-		}
-		inCategory.writeChart(winners(inCategory));
-		return true;
-	}
+    public String getShowTime(ShowTimeType inShowTimeType) {
+        return showTimes.containsKey(inShowTimeType) ? format(showTimes.get(inShowTimeType)) : "";
+    }
 
-	private String categoryString(Category inCategory) {
-		return inCategory
-				+ (winners.containsKey(inCategory) ? " = " + String.join(WINNER_DELIMITER, winners.get(inCategory))
-						: "");
-	}
+    /**
+     * The actual running time of the broadcast in seconds if it's ended
+     * 
+     * @return The running time in seconds or -1 if it's not ended yet
+     */
+    public long runningTime() {
+        return showTimes.containsKey(ShowTimeType.END)
+                ? TimeUnit.MILLISECONDS.toSeconds(showTimes.get(ShowTimeType.END).getTime()
+                        - showTimes.get(ShowTimeType.START).getTime())
+                : -1;
+    }
 
-	public String getShowTime(ShowTimeType inShowTimeType) {
-		return showTimes.containsKey(inShowTimeType) ? format(showTimes.get(inShowTimeType)) : "";
-	}
+    /**
+     * The elapsed time in milliseconds since the start of the broadcast in seconds
+     * 
+     * @return The elapsed time, negative if the show hasn't started
+     */
+    public long elapsedTimeMillis() {
+        return System.currentTimeMillis() - showTimes.get(ShowTimeType.START).getTime();
+    }
 
-	/**
-	 * The actual running time of the broadcast in seconds if it's ended
-	 * 
-	 * @return The running time in seconds or -1 if it's not ended yet
-	 */
-	public long runningTime() {
-		return showTimes.containsKey(ShowTimeType.END)
-				? TimeUnit.MILLISECONDS.toSeconds(
-						showTimes.get(ShowTimeType.END).getTime() - showTimes.get(ShowTimeType.START).getTime())
-				: -1;
-	}
+    private String format(Date inTime) {
+        return new SimpleDateFormat(TIME_FORMAT).format(inTime);
+    }
 
-	/**
-	 * The elapsed time in milliseconds since the start of the broadcast in seconds
-	 * 
-	 * @return The elapsed time, negative if the show hasn't started
-	 */
-	public long elapsedTimeMillis() {
-		return System.currentTimeMillis() - showTimes.get(ShowTimeType.START).getTime();
-	}
+    /**
+     * Get the winner(s) of the given category
+     * 
+     * @param inCategory
+     *            The category to get the winner(s) for
+     * @return All the winners that have been entered for this category
+     */
+    public Set<String> winners(Category inCategory) {
+        return winners.containsKey(inCategory) ? winners.get(inCategory) : EMPTY_STRING_SET;
+    }
 
-	private String format(Date inTime) {
-		return new SimpleDateFormat(TIME_FORMAT).format(inTime);
-	}
-
-	/**
-	 * Get the winner(s) of the given category
-	 * 
-	 * @param inCategory
-	 *            The category to get the winner(s) for
-	 * @return All the winners that have been entered for this category
-	 */
-	public Set<String> winners(Category inCategory) {
-		return winners.containsKey(inCategory) ? winners.get(inCategory) : EMPTY_STRING_SET;
-	}
-
-	/**
-	 * The title text to use for the results
-	 * 
-	 * @return The title text to use for the results
-	 */
-	public String title() {
-		Calendar calStartTime = Calendar.getInstance();
-		calStartTime.setTime(showTimes.get(ShowTimeType.START));
-		return calStartTime.get(Calendar.YEAR) + " OSCARS";
-	}
+    /**
+     * The title text to use for the results
+     * 
+     * @return The title text to use for the results
+     */
+    public String title() {
+        Calendar calStartTime = Calendar.getInstance();
+        calStartTime.setTime(showTimes.get(ShowTimeType.START));
+        return calStartTime.get(Calendar.YEAR) + " OSCARS";
+    }
 }

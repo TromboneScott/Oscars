@@ -1,4 +1,5 @@
 package oscars;
+
 import java.awt.Color;
 import java.awt.Paint;
 
