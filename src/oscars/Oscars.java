@@ -309,16 +309,15 @@ public class Oscars implements Runnable {
         List<Category> announcedCategories = categories.stream()
                 .filter(category -> !results.winners(category).isEmpty())
                 .collect(Collectors.toList());
-        Element categoriesDOM = announcedCategories.stream()
+        return announcedCategories.stream()
                 .map(category -> results.winners(category).stream()
-                        .map(winner -> new Element("winner").addContent(winner))
-                        .reduce(new Element("category")
-                                .addContent(new Element("name").addContent(category.name)),
+                        .map(winner -> new Element("winner").addContent(winner)).reduce(
+                                new Element("category")
+                                        .addContent(new Element("name").addContent(category.name))
+                                        .addContent(new Element("count").addContent(
+                                                String.valueOf(announcedCategories.size()))),
                                 Element::addContent))
                 .reduce(new Element("categories"), Element::addContent);
-        categoriesDOM.addContent(
-                new Element("count").addContent(String.valueOf(announcedCategories.size())));
-        return categoriesDOM;
     }
 
     private Element resultsPlayersDOM() {
@@ -354,15 +353,14 @@ public class Oscars implements Runnable {
     private Element resultsShowTimeDOM() {
         String timeString = formatTime(
                 runningTime >= 0 ? runningTime : elapsedTime >= 0 ? elapsedTime : 0);
-
-        Element showTimeDOM = Arrays.stream(ShowTimeType.values())
+        return Arrays.stream(ShowTimeType.values())
                 .map(showTimeType -> new Element(showTimeType.name().toLowerCase())
                         .addContent(results.getShowTime(showTimeType)))
-                .reduce(new Element("showTime"), Element::addContent);
-        showTimeDOM.addContent(new Element("length").addContent(timeString));
-        showTimeDOM.addContent(new Element("header")
-                .addContent("Time" + (runningTime >= 0 ? "=" : ">") + timeString));
-        return showTimeDOM;
+                .reduce(new Element("showTime")
+                        .addContent(new Element("length").addContent(timeString))
+                        .addContent(new Element("header")
+                                .addContent("Time" + (runningTime >= 0 ? "=" : ">") + timeString)),
+                        Element::addContent);
     }
 
     private String formatTime(long inTime) {
@@ -417,8 +415,7 @@ public class Oscars implements Runnable {
             data.put("href", inXSLFile);
             document.addContent(new ProcessingInstruction("xml-stylesheet", data));
         }
-        document.addContent(inElement);
-        return document;
+        return document.addContent(inElement);
     }
 
     private void writeCorrectChart() throws IOException {
@@ -477,13 +474,13 @@ public class Oscars implements Runnable {
 
     private void writeCorrectImageMap(ChartRenderingInfo inInfo)
             throws FileNotFoundException, IOException {
-        PrintWriter writer = new PrintWriter("category/correct.xsl");
-        writer.println(
-                "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">");
-        writer.println("<xsl:template match=\"/categories\">");
-        ChartUtilities.writeImageMap(writer, "correct", inInfo, false);
-        writer.println("</xsl:template>");
-        writer.println("</xsl:stylesheet>");
-        writer.close();
+        try (PrintWriter writer = new PrintWriter("category/correct.xsl")) {
+            writer.println(
+                    "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">");
+            writer.println("<xsl:template match=\"/categories\">");
+            ChartUtilities.writeImageMap(writer, "correct", inInfo, false);
+            writer.println("</xsl:template>");
+            writer.println("</xsl:stylesheet>");
+        }
     }
 }
