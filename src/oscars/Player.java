@@ -179,7 +179,7 @@ public class Player implements Cloneable {
      * @param inRunningTime
      *            Actual running time of broadcast in seconds
      */
-    public double getTime(long inRunningTime) {
+    public long getTime(long inRunningTime) {
         return inRunningTime >= 0 && time > inRunningTime ? -1 : time;
     }
 

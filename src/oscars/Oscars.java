@@ -132,7 +132,8 @@ public class Oscars implements Runnable {
     private Map<String, Map<String, String>> categoryMaps(List<String[]> inCategoryValues,
             List<String[]> inPlayerValues, ArrayList<ArrayList<String>> inCategoryNominees)
             throws IOException {
-        Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
+        Map<String, Map<String, String>> categoryMaps = new HashMap<String, Map<String, String>>(
+                readCategoryMaps());
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         for (int categoryNum = 0; categoryNum < inCategoryValues.get(0).length; categoryNum++) {
             String categoryName = inCategoryValues.get(0)[categoryNum];
@@ -273,16 +274,14 @@ public class Oscars implements Runnable {
     }
 
     private long waitTimeMillis() {
-        double nextTime = elapsedTime < 0 ? 0
+        final long nextTime = elapsedTime < 0 ? 0
                 : TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(elapsedTime) + 1);
-        for (Player player : players) {
-            double playerTime = player.getTime(runningTime);
-            if (playerTime > elapsedTime && playerTime >= 0 && playerTime < nextTime)
-                nextTime = playerTime;
-        }
-        return runningTime < 0 ? Math.max(
-                TimeUnit.SECONDS.toMillis((long) Math.ceil(nextTime)) - results.elapsedTimeMillis(),
-                0) : -1;
+        return runningTime < 0 ? Math.max(TimeUnit.SECONDS.toMillis(players.stream()
+                .map(player -> player.getTime(runningTime))
+                .filter(playerTime -> playerTime > elapsedTime && playerTime >= 0
+                        && playerTime < nextTime)
+                .mapToLong(Long::valueOf).min().orElse(nextTime)) - results.elapsedTimeMillis(), 0)
+                : -1;
     }
 
     private void writeResults() throws IOException {
