@@ -58,7 +58,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * player can be entered by putting PSEUDO- in front of their first name.
  * 
  * @author Scott McDonald
- * @version 4.1
+ * @version 4.2
  */
 public class Oscars implements Runnable {
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
