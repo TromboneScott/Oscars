@@ -88,19 +88,7 @@ public class Oscars implements Runnable {
      * @throws InterruptedException
      */
     public static void main(String[] inArgs) throws IOException, InterruptedException {
-        Oscars oscars = new Oscars();
-        oscars.writeCategoryPages();
-        oscars.writePlayerPages();
-
-        System.out.println();
-        while (oscars.process())
-            System.out.println();
-
-        // In case it was interrupted
-        System.out.print("\nWriting final results... ");
-        oscars.writeCorrectChart();
-        oscars.writeResults();
-        System.out.println("DONE");
+        new Oscars().process();
     }
 
     private Oscars() throws IOException {
@@ -242,7 +230,22 @@ public class Oscars implements Runnable {
                 .collect(Collectors.toList());
     }
 
-    private boolean process() throws IOException, InterruptedException {
+    private void process() throws IOException, InterruptedException {
+        writeCategoryPages();
+        writePlayerPages();
+
+        System.out.println();
+        while (prompt())
+            System.out.println();
+
+        // In case it was interrupted
+        System.out.print("\nWriting final results... ");
+        writeCorrectChart();
+        writeResults();
+        System.out.println("DONE");
+    }
+
+    private boolean prompt() throws IOException, InterruptedException {
         Thread thread = new Thread(this);
         try {
             thread.start();
@@ -370,20 +373,16 @@ public class Oscars implements Runnable {
 
     private void writeCategoryPages() throws IOException {
         System.out.print("Writing category web pages... ");
-        writeAllCategoryPage();
+        writeDocument(
+                categories.stream().map(category -> category.toDOM(players))
+                        .reduce(new Element("categories"), Element::addContent),
+                "category/all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results.winners(category));
             writeDocument(category.toDOM(players), "category/" + category.name + ".xml",
                     "../xsl/category.xsl");
         }
         System.out.println("DONE");
-    }
-
-    private void writeAllCategoryPage() throws IOException {
-        writeDocument(
-                categories.stream().map(category -> category.toDOM(players))
-                        .reduce(new Element("categories"), Element::addContent),
-                "category/all.xml", "../xsl/categoryGraphs.xsl");
     }
 
     private void writePlayerPages() throws IOException {
