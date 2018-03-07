@@ -313,13 +313,13 @@ public class Oscars implements Runnable {
                 .collect(Collectors.toList());
         return announcedCategories.stream()
                 .map(category -> results.winners(category).stream()
-                        .map(winner -> new Element("winner").addContent(winner)).reduce(
-                                new Element("category")
-                                        .addContent(new Element("name").addContent(category.name))
-                                        .addContent(new Element("count").addContent(
-                                                String.valueOf(announcedCategories.size()))),
+                        .map(winner -> new Element("winner").addContent(winner))
+                        .reduce(new Element("category")
+                                .addContent(new Element("name").addContent(category.name)),
                                 Element::addContent))
-                .reduce(new Element("categories"), Element::addContent);
+                .reduce(new Element("categories"), Element::addContent)
+                .addContent(new Element("count")
+                        .addContent(String.valueOf(announcedCategories.size())));
     }
 
     private Element resultsPlayersDOM() {
