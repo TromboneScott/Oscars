@@ -4,11 +4,11 @@
   <xsl:template match="/categories">
     <html>
       <xsl:variable name="results"
-        select="document('../results.xml')/results" />
+        select="document('../results.xml')/results"/>
       <head>
-        <link rel="stylesheet" type="text/css" href="../oscars.css" />
+        <link rel="stylesheet" type="text/css" href="../../oscars.css"/>
         <title>
-          <xsl:value-of select="$results/title" />
+          <xsl:value-of select="$results/title"/>
         </title>
       </head>
       <body>
@@ -16,13 +16,13 @@
           <table id="header">
             <tr>
               <td rowspan="2">
-                <img src="../trophy.png" id="trophy" />
+                <img src="../../trophy.png" id="trophy"/>
               </td>
               <th>
-                <xsl:value-of select="$results/title" />
+                <xsl:value-of select="$results/title"/>
               </th>
               <td rowspan="2">
-                <img src="../trophy.png" id="trophy" />
+                <img src="../../trophy.png" id="trophy"/>
               </td>
             </tr>
             <tr>

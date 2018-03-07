@@ -193,6 +193,46 @@
             </xsl:if>
           </xsl:for-each>
           <br />
+          <br />
+                <!-- 
+              <table>
+                <thead>
+                  <tr>
+                    <th class="header">
+                      <A href="name.xml">Name</A>
+                    </th>
+                    <th>
+                      <A href="rank.xml">Rank</A>
+                    </th>
+                    <th>
+                      <A href="bpr.xml">BPR</A>
+                    </th>
+                    <th>
+                      <A href="wpr.xml">WPR</A>
+                    </th>
+                    <th>
+                      <A href="rank.xml">Score</A>
+                    </th>
+                    <th>
+                      <xsl:value-of select="$results/showTime/header" />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                       -->
+                <!-- 
+                <tr><td>hello</td></tr>
+                      <xsl:apply-templates select="$results/players/player">
+                        <xsl:sort select="rank" data-type="number" />
+                        <xsl:sort select="score" data-type="number"
+                          order="descending" />
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
+                      </xsl:apply-templates>
+                </tbody>
+              </table>
+                       -->
+          <br />
           <a href="../category/all.xml" id="return">All Categories</a>
           <br />
           <br />
@@ -236,4 +276,70 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!--
+  <xsl:template match="player">
+    <tr>
+      <xsl:attribute name="class">
+        <xsl:if test="@type = 'pseudo'">
+          unannounced
+        </xsl:if>
+      </xsl:attribute>
+      <xsl:variable name="playerName">
+        <xsl:value-of select="firstName" />
+        <xsl:if test="firstName != '' and lastName != ''">
+          <xsl:value-of select="' '" />
+        </xsl:if>
+        <xsl:value-of select="lastName" />
+      </xsl:variable>
+      <xsl:variable name="playerFile"
+        select="concat('../player/', $playerName, '.xml')" />
+      <td>
+        <xsl:attribute name="class">
+          <xsl:choose>
+            <xsl:when test="@type = 'pseudo'">
+              header unannounced
+            </xsl:when>
+            <xsl:otherwise>
+              header
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="$playerFile" />
+          </xsl:attribute>
+          <xsl:value-of select="lastName" />
+          <xsl:if test="firstName != '' and lastName != ''">
+            <xsl:value-of select="', '" />
+          </xsl:if>
+          <xsl:value-of select="firstName" />
+        </a>
+      </td>
+      <td class="rank">
+        <xsl:if test="not(@type = 'pseudo')">
+          <xsl:value-of select="rank" />
+        </xsl:if>
+      </td>
+      <td class="rank">
+        <xsl:if test="not(@type = 'pseudo')">
+          <xsl:value-of select="bpr" />
+        </xsl:if>
+      </td>
+      <td class="rank">
+        <xsl:if test="not(@type = 'pseudo')">
+          <xsl:value-of select="wpr" />
+        </xsl:if>
+      </td>
+      <td class="rank">
+        <xsl:value-of select="score" />
+      </td>
+      <td>
+        <xsl:attribute name="class">
+          <xsl:value-of select="time/@status" /> time
+        </xsl:attribute>
+        <xsl:value-of select="time" />
+      </td>
+    </tr>
+  </xsl:template>
+  -->
 </xsl:stylesheet>
