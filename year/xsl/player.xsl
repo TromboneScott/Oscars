@@ -41,36 +41,24 @@
                 <xsl:value-of select="$playerName" />
               </div>
               <br />
-              <xsl:choose>
-                <xsl:when test="@type = 'pseudo'">
-                  <u>NOT A COMPETITOR</u>
-                  <br />
-                  <br />
-                  Guesses entered from this source for comparison
-                  purposes only.
-                  <br />
-                </xsl:when>
-                <xsl:otherwise>
-                  <table>
-                    <tr>
-                      <td id="rank">
-                        Rank
-                        <div id="rank">
-                          <xsl:value-of select="rank" />
-                        </div>
-                        Out of
-                        <xsl:value-of select="$results/players/count" />
-                      </td>
-                    </tr>
-                  </table>
-                  <br />
-                  Best Possible Rank:
-                  <xsl:value-of select="bpr" />
-                  <br />
-                  Worst Possible Rank:
-                  <xsl:value-of select="wpr" />
-                </xsl:otherwise>
-              </xsl:choose>
+              <table>
+                <tr>
+                  <td id="rank">
+                    Rank
+                    <div id="rank">
+                      <xsl:value-of select="rank" />
+                    </div>
+                    Out of
+                    <xsl:value-of select="$results/players/count" />
+                  </td>
+                </tr>
+              </table>
+              <br />
+              Best Possible Rank:
+              <xsl:value-of select="bpr" />
+              <br />
+              Worst Possible Rank:
+              <xsl:value-of select="wpr" />
               <br />
               <br />
               <h3>Guesses</h3>

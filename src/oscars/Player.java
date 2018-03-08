@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 import org.jdom2.Element;
 
 public class Player implements Cloneable {
-    private static final String PSEUDO_TAG = "PSEUDO-";
-
     /** ID representing position of Player in list */
     private final Integer id;
 
@@ -25,8 +23,6 @@ public class Player implements Cloneable {
 
     /** Player's picks - immutable */
     public final Map<Category, String> picks;
-
-    public final boolean isPseudo;
 
     /** Player's guessed time in seconds, -1 if invalid */
     public final long time;
@@ -53,9 +49,6 @@ public class Player implements Cloneable {
         id = inId;
         String tempFirstName = inEntries.get(Category.FIRST_NAME);
         String tempLastName = inEntries.get(Category.LAST_NAME);
-        isPseudo = tempFirstName.startsWith(PSEUDO_TAG);
-        if (isPseudo)
-            tempFirstName = tempFirstName.substring(PSEUDO_TAG.length());
         if (tempLastName.isEmpty()) {
             tempLastName = tempFirstName;
             tempFirstName = "";
@@ -159,10 +152,10 @@ public class Player implements Cloneable {
             double inElapsedTime, boolean inWorst) {
         double runningTime = inRunningTime < 0 ? inElapsedTime : inRunningTime;
         return inPlayers.stream()
-                .filter(opponent -> !opponent.isPseudo && (opponent.score.compareTo(score) > 0
+                .filter(opponent -> opponent.score.compareTo(score) > 0
                         || opponent.score.equals(score) && time != opponent.time
                                 && opponent.time >= 0 && (inWorst || opponent.time <= runningTime)
-                                && (time < opponent.time || time > runningTime)))
+                                && (time < opponent.time || time > runningTime))
                 .map(opponent -> opponent.id).collect(Collectors.toSet());
     }
 

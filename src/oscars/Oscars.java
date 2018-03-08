@@ -54,8 +54,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * category the way they should be displayed on the web site. The column name can include a tie
  * breaker number inside parentheses like this: Director(1) to indicate that Director is the first
  * tie breaker. The contestants' names must be in the columns named "First" and "Last" and their
- * time estimate must be in the column named "Time" in the format "H:MM" or "H:MM:SS.D". A pseudo
- * player can be entered by putting PSEUDO- in front of their first name.
+ * time estimate must be in the column named "Time" in the format "H:MM" or "H:MM:SS.D".
  * 
  * @author Scott McDonald
  * @version 4.3
@@ -324,7 +323,6 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsPlayersDOM() {
-        int realPlayerCount = 0;
         Element playersDOM = new Element("players");
         for (Player player : players) {
             Element playerDOM = player.toCoreDOM();
@@ -349,13 +347,9 @@ public class Oscars implements Runnable {
                                     : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
                     .reduce(new Element("opponents"), Element::addContent));
 
-            if (player.isPseudo)
-                playerDOM.setAttribute("type", "pseudo");
-            else
-                realPlayerCount++;
             playersDOM.addContent(playerDOM);
         }
-        playersDOM.addContent(new Element("count").addContent(String.valueOf(realPlayerCount)));
+        playersDOM.addContent(new Element("count").addContent(String.valueOf(players.size())));
         return playersDOM;
     }
 

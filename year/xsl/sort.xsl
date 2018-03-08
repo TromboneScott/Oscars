@@ -3,11 +3,11 @@
   <xsl:template match="/sort">
     <html>
       <xsl:variable name="results"
-        select="document('../results.xml')/results"/>
+        select="document('../results.xml')/results" />
       <head>
-        <link rel="stylesheet" type="text/css" href="../../oscars.css"/>
+        <link rel="stylesheet" type="text/css" href="../../oscars.css" />
         <title>
-          <xsl:value-of select="$results/title"/>
+          <xsl:value-of select="$results/title" />
         </title>
       </head>
       <body>
@@ -15,13 +15,13 @@
           <table id="header">
             <tr>
               <td rowspan="2">
-                <img src="../../trophy.png" id="trophy"/>
+                <img src="../../trophy.png" id="trophy" />
               </td>
               <th>
-                <xsl:value-of select="$results/title"/>
+                <xsl:value-of select="$results/title" />
               </th>
               <td rowspan="2">
-                <img src="../../trophy.png" id="trophy"/>
+                <img src="../../trophy.png" id="trophy" />
               </td>
             </tr>
             <tr>
@@ -141,11 +141,6 @@
     <xsl:param name="inPlayer" />
     <xsl:variable name="id" select="@id" />
     <tr>
-      <xsl:attribute name="class">
-        <xsl:if test="@type = 'pseudo'">
-          unannounced
-        </xsl:if>
-      </xsl:attribute>
       <xsl:variable name="playerName">
         <xsl:value-of select="firstName" />
         <xsl:if test="firstName != '' and lastName != ''">
@@ -160,7 +155,7 @@
           header
           <xsl:if test="$inPlayer">
             <xsl:choose>
-              <xsl:when test="@type = 'pseudo' or @id = $inPlayer/@id">
+              <xsl:when test="@id = $inPlayer/@id">
                 unannounced
               </xsl:when>
               <xsl:when
@@ -182,19 +177,13 @@
         </a>
       </td>
       <td class="rank">
-        <xsl:if test="not(@type = 'pseudo')">
-          <xsl:value-of select="rank" />
-        </xsl:if>
+        <xsl:value-of select="rank" />
       </td>
       <td class="rank">
-        <xsl:if test="not(@type = 'pseudo')">
-          <xsl:value-of select="bpr" />
-        </xsl:if>
+        <xsl:value-of select="bpr" />
       </td>
       <td class="rank">
-        <xsl:if test="not(@type = 'pseudo')">
-          <xsl:value-of select="wpr" />
-        </xsl:if>
+        <xsl:value-of select="wpr" />
       </td>
       <td class="rank">
         <xsl:value-of select="score" />

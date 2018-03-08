@@ -22,8 +22,6 @@ Download the survey results as an Excel file.
 Remove any columns not in categories.csv
 Verify columns are in same order as categories.csv
 Update any names where they didn't capitalize properly
-Add PSEUDO- at the front of the first name of anyone that isn't an actual player
-Remove time guess for any PSEUDO players that didn't have a guess
 Remove the header row so all you have is the survey data
 IMPORTANT: Use search and replace to remove any commas
 Save in CSV (DOS) format as players.csv
