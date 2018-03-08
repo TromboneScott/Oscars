@@ -14,6 +14,7 @@ import org.jdom2.Element;
 public class Player implements Cloneable {
     private static final String PSEUDO_TAG = "PSEUDO-";
 
+    /** ID representing position of Player in list */
     private final Integer id;
 
     /** Player's first name */
@@ -146,12 +147,12 @@ public class Player implements Cloneable {
         return worstPossibleRankPlayers.size() + 1;
     }
 
-    public boolean isBetterPlayer(Player inPlayer) {
-        return bestPossibleRankPlayers.contains(inPlayer.id);
+    public boolean isBetterThan(Player inPlayer) {
+        return !worstPossibleRankPlayers.contains(inPlayer.id);
     }
 
-    public boolean isWorsePlayer(Player inPlayer) {
-        return !worstPossibleRankPlayers.contains(inPlayer.id);
+    public boolean isWorseThan(Player inPlayer) {
+        return bestPossibleRankPlayers.contains(inPlayer.id);
     }
 
     private Set<Integer> filter(Collection<Player> inPlayers, long inRunningTime,

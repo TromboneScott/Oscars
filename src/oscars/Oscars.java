@@ -58,7 +58,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * player can be entered by putting PSEUDO- in front of their first name.
  * 
  * @author Scott McDonald
- * @version 4.2
+ * @version 4.3
  */
 public class Oscars implements Runnable {
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
@@ -345,8 +345,8 @@ public class Oscars implements Runnable {
                             .addContent(formatTime(player.time)));
             playerDOM.addContent(players.stream()
                     .map(opponent -> opponent.toElement()
-                            .addContent(player.isBetterPlayer(opponent) ? "BETTER"
-                                    : player.isWorsePlayer(opponent) ? "WORSE" : "TBD"))
+                            .addContent(player.isWorseThan(opponent) ? "BETTER"
+                                    : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
                     .reduce(new Element("opponents"), Element::addContent));
 
             if (player.isPseudo)
