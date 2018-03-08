@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,8 @@ import org.jdom2.Element;
 
 public class Player implements Cloneable {
     private static final String PSEUDO_TAG = "PSEUDO-";
+
+    private final Integer id;
 
     /** Player's first name */
     public final String firstName;
@@ -33,11 +36,11 @@ public class Player implements Cloneable {
     /** Player's current rank */
     private long rank;
 
-    /** Player's current best possible rank */
-    private long bestPossibleRank;
+    /** Players that this player will lose to */
+    private Set<Integer> bestPossibleRankPlayers;
 
-    /** Player's current worst possible rank */
-    private long worstPossibleRank;
+    /** Players that will lose to this player */
+    private Set<Integer> worstPossibleRankPlayers;
 
     /**
      * Constructs a new Player with specified picks
@@ -45,7 +48,8 @@ public class Player implements Cloneable {
      * @param inEntries
      *            All the entries for this Player
      */
-    public Player(Map<Category, String> inEntries) {
+    public Player(Integer inId, Map<Category, String> inEntries) {
+        id = inId;
         String tempFirstName = inEntries.get(Category.FIRST_NAME);
         String tempLastName = inEntries.get(Category.LAST_NAME);
         isPseudo = tempFirstName.startsWith(PSEUDO_TAG);
@@ -107,11 +111,11 @@ public class Player implements Cloneable {
      */
     public void setRanks(Results inResults, Collection<Player> inPlayers, long inRunningTime,
             long inElapsedTime) {
-        rank = calculateRank(inPlayers, inRunningTime, inElapsedTime, false);
-        bestPossibleRank = getUpdatedPlayer(this, inResults, true).calculateRank(
+        rank = filter(inPlayers, inRunningTime, inElapsedTime, false).size() + 1;
+        bestPossibleRankPlayers = getUpdatedPlayer(this, inResults, true).filter(
                 getUpdatedPlayers(inPlayers, inResults, true), inRunningTime,
                 time > inElapsedTime ? time : inElapsedTime, false);
-        worstPossibleRank = calculateRank(getUpdatedPlayers(inPlayers, inResults, false),
+        worstPossibleRankPlayers = filter(getUpdatedPlayers(inPlayers, inResults, false),
                 inRunningTime, inElapsedTime, inRunningTime < 0);
     }
 
@@ -130,7 +134,7 @@ public class Player implements Cloneable {
      * @return This Player's best possible rank
      */
     public long getBestPossibleRank() {
-        return bestPossibleRank;
+        return bestPossibleRankPlayers.size() + 1;
     }
 
     /**
@@ -139,10 +143,18 @@ public class Player implements Cloneable {
      * @return This Player's worst possible rank
      */
     public long getWorstPossibleRank() {
-        return worstPossibleRank;
+        return worstPossibleRankPlayers.size() + 1;
     }
 
-    private long calculateRank(Collection<Player> inPlayers, long inRunningTime,
+    public boolean isBetterPlayer(Player inPlayer) {
+        return bestPossibleRankPlayers.contains(inPlayer.id);
+    }
+
+    public boolean isWorsePlayer(Player inPlayer) {
+        return !worstPossibleRankPlayers.contains(inPlayer.id);
+    }
+
+    private Set<Integer> filter(Collection<Player> inPlayers, long inRunningTime,
             double inElapsedTime, boolean inWorst) {
         double runningTime = inRunningTime < 0 ? inElapsedTime : inRunningTime;
         return inPlayers.stream()
@@ -150,7 +162,7 @@ public class Player implements Cloneable {
                         || opponent.score.equals(score) && time != opponent.time
                                 && opponent.time >= 0 && (inWorst || opponent.time <= runningTime)
                                 && (time < opponent.time || time > runningTime)))
-                .count() + 1;
+                .map(opponent -> opponent.id).collect(Collectors.toSet());
     }
 
     private Collection<Player> getUpdatedPlayers(Collection<Player> inPlayers, Results inResults,
@@ -183,11 +195,13 @@ public class Player implements Cloneable {
         return inRunningTime >= 0 && time > inRunningTime ? -1 : time;
     }
 
+    public Element toElement() {
+        return new Element("player").setAttribute("id", String.valueOf(id));
+    }
+
     public Element toCoreDOM() {
-        Element playerElement = new Element("player");
-        playerElement.addContent(new Element("firstName").addContent(firstName));
-        playerElement.addContent(new Element("lastName").addContent(lastName));
-        return playerElement;
+        return toElement().addContent(new Element("firstName").addContent(firstName))
+                .addContent(new Element("lastName").addContent(lastName));
     }
 
     public Element toDOM(Collection<Category> inCategories) {

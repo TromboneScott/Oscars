@@ -220,13 +220,14 @@ public class Oscars implements Runnable {
     private Collection<Player> buildPlayers(List<String[]> inPlayerValues,
             Category[] inCategoryArray, String[] inCategoryNames,
             Map<String, Map<String, String>> inCategoryMaps) {
-        return inPlayerValues.stream().map(aPlayerValues -> new Player(IntStream
-                .range(0, inCategoryArray.length).boxed()
-                .collect(Collectors.toMap(categoryNum -> inCategoryArray[categoryNum],
+        return IntStream.range(0, inPlayerValues.size()).boxed().map(playerNum -> new Player(
+                playerNum + 1,
+                IntStream.range(0, inCategoryArray.length).boxed().collect(Collectors.toMap(
+                        categoryNum -> inCategoryArray[categoryNum],
                         categoryNum -> inCategoryMaps.get(inCategoryNames[categoryNum]).isEmpty()
-                                ? aPlayerValues[categoryNum]
+                                ? inPlayerValues.get(playerNum)[categoryNum]
                                 : inCategoryMaps.get(inCategoryNames[categoryNum])
-                                        .get(aPlayerValues[categoryNum])))))
+                                        .get(inPlayerValues.get(playerNum)[categoryNum])))))
                 .collect(Collectors.toList());
     }
 
@@ -342,6 +343,12 @@ public class Oscars implements Runnable {
                                                     ? "unannounced"
                                                     : "correct")
                             .addContent(formatTime(player.time)));
+            playerDOM.addContent(players.stream()
+                    .map(opponent -> opponent.toElement()
+                            .addContent(player.isBetterPlayer(opponent) ? "BETTER"
+                                    : player.isWorsePlayer(opponent) ? "WORSE" : "TBD"))
+                    .reduce(new Element("opponents"), Element::addContent));
+
             if (player.isPseudo)
                 playerDOM.setAttribute("type", "pseudo");
             else

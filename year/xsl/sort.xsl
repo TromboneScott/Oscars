@@ -138,6 +138,8 @@
     </html>
   </xsl:template>
   <xsl:template match="player">
+    <xsl:param name="inPlayer" />
+    <xsl:variable name="id" select="@id" />
     <tr>
       <xsl:attribute name="class">
         <xsl:if test="@type = 'pseudo'">
@@ -155,14 +157,18 @@
         select="concat('../player/', $playerName, '.xml')" />
       <td>
         <xsl:attribute name="class">
-          <xsl:choose>
-            <xsl:when test="@type = 'pseudo'">
-              header unannounced
-            </xsl:when>
-            <xsl:otherwise>
-              header
-            </xsl:otherwise>
-          </xsl:choose>
+          header
+          <xsl:if test="$inPlayer">
+            <xsl:choose>
+              <xsl:when test="@type = 'pseudo' or @id = $inPlayer/@id">
+                unannounced
+              </xsl:when>
+              <xsl:when
+          test="$inPlayer/opponents/player[number($id)] = 'BETTER' or $inPlayer/opponents/player[number($id)] = 'WORSE'">
+                correct
+              </xsl:when>
+            </xsl:choose>
+          </xsl:if>
         </xsl:attribute>
         <a>
           <xsl:attribute name="href">

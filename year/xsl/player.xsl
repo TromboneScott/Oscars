@@ -1,13 +1,14 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:include href="sort.xsl" />
   <xsl:template match="/player">
     <html>
       <xsl:variable name="results"
-        select="document('../results.xml')/results"/>
+        select="document('../results.xml')/results" />
       <head>
-        <link rel="stylesheet" type="text/css" href="../../oscars.css"/>
+        <link rel="stylesheet" type="text/css" href="../../oscars.css" />
         <title>
-          <xsl:value-of select="$results/title"/>
+          <xsl:value-of select="$results/title" />
         </title>
       </head>
       <body>
@@ -15,13 +16,13 @@
           <table id="header">
             <tr>
               <td rowspan="2">
-                <img src="../../trophy.png" id="trophy"/>
+                <img src="../../trophy.png" id="trophy" />
               </td>
               <th>
-                <xsl:value-of select="$results/title"/>
+                <xsl:value-of select="$results/title" />
               </th>
               <td rowspan="2">
-                <img src="../../trophy.png" id="trophy"/>
+                <img src="../../trophy.png" id="trophy" />
               </td>
             </tr>
             <tr>
@@ -34,8 +35,10 @@
           <xsl:for-each select="$results/players/player">
             <xsl:if
               test="firstName = $player/firstName and lastName = $player/lastName">
+              <xsl:variable name="playerName"
+                select="concat(firstName, ' ', lastName)" />
               <div id="name">
-                <xsl:value-of select="concat(firstName, ' ', lastName)" />
+                <xsl:value-of select="$playerName" />
               </div>
               <br />
               <xsl:choose>
@@ -70,6 +73,7 @@
               </xsl:choose>
               <br />
               <br />
+              <h3>Guesses</h3>
               <table>
                 <thead>
                   <tr>
@@ -189,6 +193,36 @@
                     </th>
                   </tr>
                 </tfoot>
+              </table>
+              <br />
+              <br />
+              <h3>Rankings</h3>
+              Names in green can no longer pass or be passed by
+              <xsl:value-of select="$playerName" />
+              <br />
+              <br />
+              <table>
+                <thead>
+                  <tr>
+                    <th class="header">Name</th>
+                    <th>Rank</th>
+                    <th>BPR</th>
+                    <th>WPR</th>
+                    <th>Score</th>
+                    <th>
+                      <xsl:value-of select="$results/showTime/header" />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <xsl:apply-templates select="$results/players/player">
+                    <xsl:sort select="rank" data-type="number" />
+                    <xsl:sort select="lastName" />
+                    <xsl:sort select="firstName" />
+                    <xsl:with-param name="inPlayer"
+                      select="." />
+                  </xsl:apply-templates>
+                </tbody>
               </table>
             </xsl:if>
           </xsl:for-each>
