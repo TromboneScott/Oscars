@@ -1,6 +1,6 @@
 To start a new year:
 
-Copy folder to a new year.
+Copy year folder to oscars site and rename to current year.
 
 Edit categories.csv as a spreadsheet
 1. Update the categories as a few change each year
@@ -9,10 +9,11 @@ Edit categories.csv as a spreadsheet
 4. Add all the nominees under each category in the order you want them (usually alphabetical)
 5. Save in CSV (DOS) format as categories.csv
 
-Delete categoryMaps.xml
-Delete category\*.*
-Delete player\*.*
-Delete results.xml
+Delete these if they exists:
+File: categoryMaps.xml
+Folder: category
+Folder: player
+File: results.xml
 
 Run oscars.bat or ./oscars.sh
 

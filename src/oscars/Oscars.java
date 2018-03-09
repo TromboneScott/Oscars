@@ -372,8 +372,15 @@ public class Oscars implements Runnable {
                         TimeUnit.SECONDS.toMinutes(inTime) % 60, inTime % 60);
     }
 
+    private void mkdir(String inDirectory) {
+        File directory = new File(inDirectory);
+        if (!directory.exists())
+            directory.mkdir();
+    }
+
     private void writeCategoryPages() throws IOException {
         System.out.print("Writing category web pages... ");
+        mkdir("category");
         writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
                         .reduce(new Element("categories"), Element::addContent),
@@ -388,6 +395,7 @@ public class Oscars implements Runnable {
 
     private void writePlayerPages() throws IOException {
         System.out.print("Writing player web pages... ");
+        mkdir("player");
         for (Player player : players)
             writeDocument(player.toDOM(categories),
                     "player/" + player.firstName
