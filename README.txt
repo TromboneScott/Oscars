@@ -15,7 +15,7 @@ Folder: category
 Folder: player
 File: results.xml
 
-Run oscars.bat or ./oscars.sh
+From the new year folder run oscars.bat or ./oscars.sh
 
 Update the link in ../index.html to point to current year.
 
