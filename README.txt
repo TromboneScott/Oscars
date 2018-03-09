@@ -19,6 +19,9 @@ Run oscars.bat or ./oscars.sh
 
 Update the link in ../index.html to point to current year.
 
+
+--- After contest deadline for entering guesses
+
 Download the survey results as an Excel file.
 Remove any columns not in categories.csv
 Verify columns are in same order as categories.csv
