@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
 import org.jdom2.Element;
 
 public class Player implements Cloneable {
-    /** ID representing position of Player in list */
-    private final Integer id;
-
     /** Player's first name */
     public final String firstName;
 
@@ -34,10 +31,10 @@ public class Player implements Cloneable {
     private long rank;
 
     /** Players that this player will lose to */
-    private Set<Integer> bestPossibleRankPlayers;
+    private Set<Player> bestPossibleRankPlayers;
 
     /** Players that will lose to this player */
-    private Set<Integer> worstPossibleRankPlayers;
+    private Set<Player> worstPossibleRankPlayers;
 
     /**
      * Constructs a new Player with specified picks
@@ -45,8 +42,7 @@ public class Player implements Cloneable {
      * @param inEntries
      *            All the entries for this Player
      */
-    public Player(Integer inId, Map<Category, String> inEntries) {
-        id = inId;
+    public Player(Map<Category, String> inEntries) {
         String tempFirstName = inEntries.get(Category.FIRST_NAME);
         String tempLastName = inEntries.get(Category.LAST_NAME);
         if (tempLastName.isEmpty()) {
@@ -141,14 +137,14 @@ public class Player implements Cloneable {
     }
 
     public boolean isBetterThan(Player inPlayer) {
-        return !worstPossibleRankPlayers.contains(inPlayer.id);
+        return !worstPossibleRankPlayers.contains(inPlayer);
     }
 
     public boolean isWorseThan(Player inPlayer) {
-        return bestPossibleRankPlayers.contains(inPlayer.id);
+        return bestPossibleRankPlayers.contains(inPlayer);
     }
 
-    private Set<Integer> filter(Collection<Player> inPlayers, long inRunningTime,
+    private Set<Player> filter(Collection<Player> inPlayers, long inRunningTime,
             double inElapsedTime, boolean inWorst) {
         double runningTime = inRunningTime < 0 ? inElapsedTime : inRunningTime;
         return inPlayers.stream()
@@ -156,7 +152,7 @@ public class Player implements Cloneable {
                         || opponent.score.equals(score) && time != opponent.time
                                 && opponent.time >= 0 && (inWorst || opponent.time <= runningTime)
                                 && (time < opponent.time || time > runningTime))
-                .map(opponent -> opponent.id).collect(Collectors.toSet());
+                .collect(Collectors.toSet());
     }
 
     private Collection<Player> getUpdatedPlayers(Collection<Player> inPlayers, Results inResults,
@@ -189,12 +185,8 @@ public class Player implements Cloneable {
         return inRunningTime >= 0 && time > inRunningTime ? -1 : time;
     }
 
-    public Element toElement() {
-        return new Element("player").setAttribute("id", String.valueOf(id));
-    }
-
     public Element toCoreDOM() {
-        return toElement().addContent(new Element("firstName").addContent(firstName))
+        return new Element("player").addContent(new Element("firstName").addContent(firstName))
                 .addContent(new Element("lastName").addContent(lastName));
     }
 
@@ -203,5 +195,16 @@ public class Player implements Cloneable {
                 .map(category -> category.toCoreDOM()
                         .addContent(new Element("guess").addContent(picks.get(category))))
                 .reduce(new Element("categories"), Element::addContent));
+    }
+
+    @Override
+    public int hashCode() {
+        return (lastName + ", " + firstName).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object inPlayer) {
+        return firstName.equals(((Player) inPlayer).firstName)
+                && lastName.equals(((Player) inPlayer).lastName);
     }
 }

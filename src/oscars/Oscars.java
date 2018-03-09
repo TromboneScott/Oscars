@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,7 +67,7 @@ public class Oscars implements Runnable {
 
     private static final String VALUE_DELIMITER = ",";
 
-    private final Collection<Player> players;
+    private final List<Player> players;
 
     private final List<Category> categories;
 
@@ -101,7 +100,7 @@ public class Oscars implements Runnable {
                 categoryNominees);
         Category[] categoryArray = buildCategories(categoryValues.get(0), categoryNominees,
                 categoryMaps, playerValues);
-        players = Collections.unmodifiableCollection(
+        players = Collections.unmodifiableList(
                 buildPlayers(playerValues, categoryArray, categoryValues.get(0), categoryMaps));
         categories = Collections.unmodifiableList(Arrays.stream(categoryArray)
                 .filter(category -> !category.guesses.isEmpty()).collect(Collectors.toList()));
@@ -216,17 +215,15 @@ public class Oscars implements Runnable {
         return categoryArray;
     }
 
-    private Collection<Player> buildPlayers(List<String[]> inPlayerValues,
-            Category[] inCategoryArray, String[] inCategoryNames,
-            Map<String, Map<String, String>> inCategoryMaps) {
-        return IntStream.range(0, inPlayerValues.size()).boxed().map(playerNum -> new Player(
-                playerNum + 1,
-                IntStream.range(0, inCategoryArray.length).boxed().collect(Collectors.toMap(
-                        categoryNum -> inCategoryArray[categoryNum],
+    private List<Player> buildPlayers(List<String[]> inPlayerValues, Category[] inCategoryArray,
+            String[] inCategoryNames, Map<String, Map<String, String>> inCategoryMaps) {
+        return inPlayerValues.stream().map(playerValues -> new Player(IntStream
+                .range(0, inCategoryArray.length).boxed()
+                .collect(Collectors.toMap(categoryNum -> inCategoryArray[categoryNum],
                         categoryNum -> inCategoryMaps.get(inCategoryNames[categoryNum]).isEmpty()
-                                ? inPlayerValues.get(playerNum)[categoryNum]
+                                ? playerValues[categoryNum]
                                 : inCategoryMaps.get(inCategoryNames[categoryNum])
-                                        .get(inPlayerValues.get(playerNum)[categoryNum])))))
+                                        .get(playerValues[categoryNum])))))
                 .collect(Collectors.toList());
     }
 
@@ -323,34 +320,37 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsPlayersDOM() {
-        Element playersDOM = new Element("players");
-        for (Player player : players) {
-            Element playerDOM = player.toCoreDOM();
-            playerDOM.addContent(new Element("rank").addContent(String.valueOf(player.getRank())));
-            playerDOM.addContent(
-                    new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())));
-            playerDOM.addContent(
-                    new Element("wpr").addContent(String.valueOf(player.getWorstPossibleRank())));
-            playerDOM.addContent(
-                    new Element("score").addContent(String.format(scoreFormat, player.getScore())));
-            playerDOM
-                    .addContent(new Element("time")
-                            .setAttribute("status",
-                                    player.getTime(runningTime) < 0
-                                            || player.getTime(runningTime) > elapsedTime
-                                                    ? "unannounced"
-                                                    : "correct")
-                            .addContent(formatTime(player.time)));
-            playerDOM.addContent(players.stream()
-                    .map(opponent -> opponent.toElement()
-                            .addContent(player.isWorseThan(opponent) ? "BETTER"
-                                    : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
-                    .reduce(new Element("opponents"), Element::addContent));
+        return IntStream.range(0, players.size()).boxed()
+                .map(playerNum -> resultsPlayerDOM(playerNum))
+                .reduce(new Element("players"), Element::addContent)
+                .addContent(new Element("count").addContent(String.valueOf(players.size())));
+    }
 
-            playersDOM.addContent(playerDOM);
-        }
-        playersDOM.addContent(new Element("count").addContent(String.valueOf(players.size())));
-        return playersDOM;
+    private Element resultsPlayerDOM(int playerNum) {
+        Player player = players.get(playerNum);
+        Element playerDOM = player.toCoreDOM();
+        playerDOM.addContent(new Element("rank").addContent(String.valueOf(player.getRank())));
+        playerDOM.addContent(
+                new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())));
+        playerDOM.addContent(
+                new Element("wpr").addContent(String.valueOf(player.getWorstPossibleRank())));
+        playerDOM.addContent(
+                new Element("score").addContent(String.format(scoreFormat, player.getScore())));
+        playerDOM
+                .addContent(
+                        new Element("time")
+                                .setAttribute("status",
+                                        player.getTime(runningTime) < 0
+                                                || player.getTime(runningTime) > elapsedTime
+                                                        ? "unannounced"
+                                                        : "correct")
+                                .addContent(formatTime(player.time)));
+        playerDOM.addContent(players.stream().map(
+                opponent -> new Element("player").addContent(player.isWorseThan(opponent) ? "BETTER"
+                        : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
+                .reduce(new Element("opponents"), Element::addContent));
+        playerDOM.setAttribute("id", String.valueOf(playerNum + 1));
+        return playerDOM;
     }
 
     private Element resultsShowTimeDOM() {
