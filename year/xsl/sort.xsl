@@ -62,67 +62,10 @@
               </div>
               <br />
               <br />
-              <table>
-                <thead>
-                  <tr>
-                    <th class="header">
-                      <A href="name.xml">Name</A>
-                    </th>
-                    <th>
-                      <A href="rank.xml">Rank</A>
-                    </th>
-                    <th>
-                      <A href="bpr.xml">BPR</A>
-                    </th>
-                    <th>
-                      <A href="wpr.xml">WPR</A>
-                    </th>
-                    <th>
-                      <A href="rank.xml">Score</A>
-                    </th>
-                    <th>
-                      <xsl:value-of select="$results/showTime/header" />
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <xsl:choose>
-                    <xsl:when test=". = 'name'">
-                      <xsl:apply-templates select="$results/players/player">
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
-                      </xsl:apply-templates>
-                    </xsl:when>
-                    <xsl:when test=". = 'rank'">
-                      <xsl:apply-templates select="$results/players/player">
-                        <xsl:sort select="rank" data-type="number" />
-                        <xsl:sort select="score" data-type="number"
-                          order="descending" />
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
-                      </xsl:apply-templates>
-                    </xsl:when>
-                    <xsl:when test=". = 'bpr'">
-                      <xsl:apply-templates select="$results/players/player">
-                        <xsl:sort select="bpr" data-type="number" />
-                        <xsl:sort select="score" data-type="number"
-                          order="descending" />
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
-                      </xsl:apply-templates>
-                    </xsl:when>
-                    <xsl:when test=". = 'wpr'">
-                      <xsl:apply-templates select="$results/players/player">
-                        <xsl:sort select="wpr" data-type="number" />
-                        <xsl:sort select="score" data-type="number"
-                          order="descending" />
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
-                      </xsl:apply-templates>
-                    </xsl:when>
-                  </xsl:choose>
-                </tbody>
-              </table>
+              <xsl:call-template name="player-table">
+                <xsl:with-param name="results" select="$results" />
+                <xsl:with-param name="sort" select="." />
+              </xsl:call-template>
               <br />
               <a href="../category/all.xml" id="return">All Categories</a>
               <br />
@@ -136,6 +79,110 @@
         </center>
       </body>
     </html>
+  </xsl:template>
+  <xsl:template name="player-table">
+    <xsl:param name="results" />
+    <xsl:param name="sort" />
+    <xsl:param name="inPlayer" />
+    <table>
+      <thead>
+        <tr>
+          <th class="header">
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'Name'" />
+              <xsl:with-param name="link" select="'name.xml'" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
+          </th>
+          <th>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'Rank'" />
+              <xsl:with-param name="link" select="'rank.xml'" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
+          </th>
+          <th>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'BPR'" />
+              <xsl:with-param name="link" select="'bpr.xml'" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
+          </th>
+          <th>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'WPR'" />
+              <xsl:with-param name="link" select="'wpr.xml'" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
+          </th>
+          <th>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'Score'" />
+              <xsl:with-param name="link" select="'rank.xml'" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
+          </th>
+          <th>
+            <xsl:value-of select="$results/showTime/header" />
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <xsl:choose>
+          <xsl:when test="$sort = 'name'">
+            <xsl:apply-templates select="$results/players/player">
+              <xsl:sort select="lastName" />
+              <xsl:sort select="firstName" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:when test="$sort = 'rank'">
+            <xsl:apply-templates select="$results/players/player">
+              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="lastName" />
+              <xsl:sort select="firstName" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:when test="$sort = 'bpr'">
+            <xsl:apply-templates select="$results/players/player">
+              <xsl:sort select="bpr" data-type="number" />
+              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="lastName" />
+              <xsl:sort select="firstName" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:when test="$sort = 'wpr'">
+            <xsl:apply-templates select="$results/players/player">
+              <xsl:sort select="wpr" data-type="number" />
+              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="lastName" />
+              <xsl:sort select="firstName" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:apply-templates>
+          </xsl:when>
+        </xsl:choose>
+      </tbody>
+    </table>
+  </xsl:template>
+  <xsl:template name="player-table-column-header">
+    <xsl:param name="text" />
+    <xsl:param name="link" />
+    <xsl:param name="inPlayer" />
+    <xsl:choose>
+      <xsl:when test="$inPlayer">
+        <xsl:value-of select="$text" />
+      </xsl:when>
+      <xsl:otherwise>
+        <A>
+          <xsl:attribute name="href">
+            <xsl:value-of select="$link" />
+          </xsl:attribute>
+          <xsl:value-of select="$text" />
+        </A>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="player">
     <xsl:param name="inPlayer" />

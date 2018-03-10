@@ -189,29 +189,11 @@
               <xsl:value-of select="$playerName" />
               <br />
               <br />
-              <table>
-                <thead>
-                  <tr>
-                    <th class="header">Name</th>
-                    <th>Rank</th>
-                    <th>BPR</th>
-                    <th>WPR</th>
-                    <th>Score</th>
-                    <th>
-                      <xsl:value-of select="$results/showTime/header" />
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <xsl:apply-templates select="$results/players/player">
-                    <xsl:sort select="rank" data-type="number" />
-                    <xsl:sort select="lastName" />
-                    <xsl:sort select="firstName" />
-                    <xsl:with-param name="inPlayer"
-                      select="." />
-                  </xsl:apply-templates>
-                </tbody>
-              </table>
+              <xsl:call-template name="player-table">
+                <xsl:with-param name="results" select="$results" />
+                <xsl:with-param name="sort" select="'rank'" />
+                <xsl:with-param name="inPlayer" select="." />
+              </xsl:call-template>
             </xsl:if>
           </xsl:for-each>
           <br />
