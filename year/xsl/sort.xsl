@@ -1,35 +1,18 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:include href="header.xsl" />
   <xsl:template match="/sort">
     <html>
       <xsl:variable name="results"
         select="document('../results.xml')/results" />
-      <head>
-        <link rel="stylesheet" type="text/css" href="../../oscars.css" />
-        <title>
-          <xsl:value-of select="$results/title" />
-        </title>
-      </head>
+      <xsl:call-template name="init">
+        <xsl:with-param name="results" select="$results" />
+      </xsl:call-template>
       <body>
         <center>
-          <table id="header">
-            <tr>
-              <td rowspan="2">
-                <img src="../../trophy.png" id="trophy" />
-              </td>
-              <th>
-                <xsl:value-of select="$results/title" />
-              </th>
-              <td rowspan="2">
-                <img src="../../trophy.png" id="trophy" />
-              </td>
-            </tr>
-            <tr>
-              <td>(Unofficial Results)</td>
-            </tr>
-          </table>
-          <br />
-          <br />
+          <xsl:call-template name="header">
+            <xsl:with-param name="results" select="$results" />
+          </xsl:call-template>
           <b>
             <a href="../../history">Oscars History</a>
           </b>
