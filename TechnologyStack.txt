@@ -4,7 +4,7 @@ XML 1.0
 XSLT 1.0
 HTML
 CSS
-Java 6
+Java 8
 
 LIBRARIES
 ---------
