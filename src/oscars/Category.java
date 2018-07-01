@@ -49,7 +49,7 @@ public final class Category {
     public final BigDecimal value;
 
     /** Players' guesses in this category */
-    public final Map<String, Integer> guesses;
+    public final Map<String, Long> guesses;
 
     private Category(String inName) {
         name = inName;
@@ -58,11 +58,11 @@ public final class Category {
         guesses = null;
     }
 
-    public Category(String inName, Map<String, Integer> inGuesses) {
+    public Category(String inName, Map<String, Long> inGuesses) {
         name = baseName(inName);
         tieBreakerValue = tieBreakerValue(inName);
         value = value(tieBreakerValue);
-        guesses = Collections.unmodifiableMap(new HashMap<String, Integer>(inGuesses));
+        guesses = Collections.unmodifiableMap(new HashMap<String, Long>(inGuesses));
     }
 
     private static String baseName(String inName) {
@@ -104,7 +104,7 @@ public final class Category {
         Collections.sort(guessList);
         for (int guessNum = 0; guessNum < guessList.size(); guessNum++) {
             String guess = guessList.get(guessNum);
-            Integer nomineeGuesses = guesses.get(guess);
+            Long nomineeGuesses = guesses.get(guess);
             totalGuesses += nomineeGuesses;
             dataset.addValue(nomineeGuesses, "nominee", guess);
             guessColor[guessNum] = inWinners.isEmpty() ? BAR_GRAY

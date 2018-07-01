@@ -13,15 +13,16 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -95,7 +96,7 @@ public class Oscars implements Runnable {
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
-        ArrayList<ArrayList<String>> categoryNominees = categoryNominees(categoryValues);
+        List<? extends List<String>> categoryNominees = categoryNominees(categoryValues);
         Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, playerValues,
                 categoryNominees);
         Category[] categoryArray = buildCategories(categoryValues.get(0), categoryNominees,
@@ -116,49 +117,38 @@ public class Oscars implements Runnable {
     }
 
     private Map<String, Map<String, String>> categoryMaps(List<String[]> inCategoryValues,
-            List<String[]> inPlayerValues, ArrayList<ArrayList<String>> inCategoryNominees)
+            List<String[]> inPlayerValues, List<? extends List<String>> inCategoryNominees)
             throws IOException {
         Map<String, Map<String, String>> categoryMaps = new HashMap<String, Map<String, String>>(
                 readCategoryMaps());
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         for (int categoryNum = 0; categoryNum < inCategoryValues.get(0).length; categoryNum++) {
             String categoryName = inCategoryValues.get(0)[categoryNum];
-            Map<String, String> categoryMap = categoryMaps.get(categoryName);
-            if (categoryMap == null) {
-                categoryMap = new HashMap<String, String>();
-                categoryMaps.put(categoryName, categoryMap);
-            }
-            if (!inCategoryNominees.get(categoryNum).isEmpty()) {
+            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryName,
+                    k -> new HashMap<String, String>());
+            List<String> nominees = inCategoryNominees.get(categoryNum);
+            if (!nominees.isEmpty())
                 for (String[] guesses : inPlayerValues)
                     if (!categoryMap.containsKey(guesses[categoryNum])) {
                         System.out.println("\nCATEGORY: " + categoryName);
-                        for (int nomineeNum = 0; nomineeNum < inCategoryNominees.get(categoryNum)
-                                .size(); nomineeNum++)
-                            System.out.println((nomineeNum + 1) + ": "
-                                    + inCategoryNominees.get(categoryNum).get(nomineeNum));
+                        IntStream.range(0, nominees.size()).forEach(nomineeNum -> System.out
+                                .println((nomineeNum + 1) + ": " + nominees.get(nomineeNum)));
                         System.out.print(guesses[categoryNum] + " = ");
                         String guessNum = stdin.readLine();
-                        categoryMap.put(guesses[categoryNum], inCategoryNominees.get(categoryNum)
-                                .get(Integer.parseInt(guessNum) - 1));
+                        categoryMap.put(guesses[categoryNum],
+                                nominees.get(Integer.parseInt(guessNum) - 1));
                     }
-            }
         }
         writeCategoryMaps(categoryMaps);
         return categoryMaps;
     }
 
-    private ArrayList<ArrayList<String>> categoryNominees(List<String[]> inCategoryValues) {
-        int categoryCount = inCategoryValues.get(0).length;
-        ArrayList<ArrayList<String>> categoryNominees = new ArrayList<ArrayList<String>>(
-                categoryCount);
-        for (int categoryNum = 0; categoryNum < categoryCount; categoryNum++) {
-            ArrayList<String> guesses = new ArrayList<String>(inCategoryValues.size());
-            for (int guessNum = 1; guessNum < inCategoryValues.size(); guessNum++)
-                if (!inCategoryValues.get(guessNum)[categoryNum].isEmpty())
-                    guesses.add(inCategoryValues.get(guessNum)[categoryNum]);
-            categoryNominees.add(guesses);
-        }
-        return categoryNominees;
+    private List<? extends List<String>> categoryNominees(List<String[]> inCategoryValues) {
+        return IntStream.range(0, inCategoryValues.get(0).length)
+                .mapToObj(categoryNum -> inCategoryValues.stream().skip(1)
+                        .map(guesses -> guesses[categoryNum]).filter(guess -> !guess.isEmpty())
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
     }
 
     private Map<String, Map<String, String>> readCategoryMaps() throws IOException {
@@ -195,24 +185,18 @@ public class Oscars implements Runnable {
     }
 
     private Category[] buildCategories(String[] inCategoryNames,
-            ArrayList<ArrayList<String>> inCategoryNominees,
+            List<? extends List<String>> inCategoryNominees,
             Map<String, Map<String, String>> inCategoryMaps, List<String[]> inPlayerValues)
             throws IOException {
-        Category[] categoryArray = new Category[inCategoryNames.length];
-        for (int categoryNum = 0; categoryNum < categoryArray.length; categoryNum++) {
-            Map<String, Integer> guesses = new HashMap<String, Integer>();
-            ArrayList<String> allNominees = inCategoryNominees.get(categoryNum);
-            if (!allNominees.isEmpty()) {
-                allNominees.stream().forEach(nominee -> guesses.put(nominee, 0));
-                for (String[] aPlayerValues : inPlayerValues) {
-                    String guess = inCategoryMaps.get(inCategoryNames[categoryNum])
-                            .get(aPlayerValues[categoryNum]);
-                    guesses.put(guess, guesses.get(guess) + 1);
-                }
-            }
-            categoryArray[categoryNum] = new Category(inCategoryNames[categoryNum], guesses);
-        }
-        return categoryArray;
+        return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> new Category(
+                inCategoryNames[categoryNum],
+                inCategoryNominees.get(categoryNum).stream().collect(Collectors.toMap(
+                        Function.identity(),
+                        nominee -> inPlayerValues.stream()
+                                .map(guesses -> inCategoryMaps.get(inCategoryNames[categoryNum])
+                                        .get(guesses[categoryNum]))
+                                .filter(guess -> nominee.equals(guess)).count()))))
+                .toArray(Category[]::new);
     }
 
     private List<Player> buildPlayers(List<String[]> inPlayerValues, Category[] inCategoryArray,
@@ -415,14 +399,13 @@ public class Oscars implements Runnable {
     }
 
     private Document buildDocument(Element inElement, String inXSLFile) {
-        Document document = new Document();
-        if (inXSLFile != null) {
-            Map<String, String> data = new HashMap<String, String>();
-            data.put("type", "text/xsl");
-            data.put("href", inXSLFile);
-            document.addContent(new ProcessingInstruction("xml-stylesheet", data));
-        }
-        return document.addContent(inElement);
+        return Optional.ofNullable(inXSLFile)
+                .map(xslFile -> new Document().addContent(new ProcessingInstruction(
+                        "xml-stylesheet",
+                        Stream.of(new String[][] { { "type", "text/xsl" }, { "href", xslFile } })
+                                .collect(Collectors.toMap(element -> element[0],
+                                        element -> element[1])))))
+                .orElseGet(Document::new).addContent(inElement);
     }
 
     private void writeCorrectChart() throws IOException {
@@ -453,8 +436,8 @@ public class Oscars implements Runnable {
     private DefaultCategoryDataset correctChartDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Category category : categories) {
-            int correctCount = 0;
-            int incorrectCount = 0;
+            long correctCount = 0;
+            long incorrectCount = 0;
             Set<String> winners = results.winners(category);
             if (!winners.isEmpty())
                 for (String nominee : category.guesses.keySet())

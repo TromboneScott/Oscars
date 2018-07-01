@@ -51,9 +51,10 @@ public class Player implements Cloneable {
         }
         firstName = tempFirstName.trim();
         lastName = tempLastName.trim();
-        picks = Collections.unmodifiableMap(inEntries.keySet().stream()
-                .filter(category -> !category.guesses.isEmpty()).collect(Collectors
-                        .toMap(category -> category, category -> inEntries.get(category))));
+        picks = Collections.unmodifiableMap(
+                inEntries.entrySet().stream().filter(entry -> !entry.getKey().guesses.isEmpty())
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
         time = time(inEntries.get(Category.TIME));
     }
 
@@ -72,9 +73,9 @@ public class Player implements Cloneable {
      *            Results to base the score on
      */
     public void setScore(Results inResults) {
-        score = picks.keySet().stream()
-                .filter(category -> inResults.winners(category).contains(picks.get(category)))
-                .map(category -> category.value).reduce(BigDecimal.ZERO, BigDecimal::add);
+        score = picks.entrySet().stream()
+                .filter(entry -> inResults.winners(entry.getKey()).contains(entry.getValue()))
+                .map(entry -> entry.getKey().value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
@@ -164,10 +165,10 @@ public class Player implements Cloneable {
     private Player getUpdatedPlayer(Player inPlayer, Results inResults, boolean inBest) {
         try {
             Player clonedPlayer = (Player) inPlayer.clone();
-            clonedPlayer.score = picks.keySet().stream().filter(category -> inResults
-                    .winners(category).isEmpty()
-                    && inBest == clonedPlayer.picks.get(category).equals(picks.get(category)))
-                    .map(category -> category.value).reduce(clonedPlayer.score, BigDecimal::add);
+            clonedPlayer.score = picks.entrySet().stream().filter(entry -> inResults
+                    .winners(entry.getKey()).isEmpty()
+                    && inBest == clonedPlayer.picks.get(entry.getKey()).equals(entry.getValue()))
+                    .map(entry -> entry.getKey().value).reduce(clonedPlayer.score, BigDecimal::add);
             return clonedPlayer;
         } catch (CloneNotSupportedException e) {
             throw new UnsupportedOperationException(getClass() + " needs to implement Cloneable",
