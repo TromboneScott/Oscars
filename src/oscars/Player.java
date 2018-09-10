@@ -54,7 +54,6 @@ public class Player implements Cloneable {
         picks = Collections.unmodifiableMap(
                 inEntries.entrySet().stream().filter(entry -> !entry.getKey().guesses.isEmpty())
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-
         time = time(inEntries.get(Category.TIME));
     }
 

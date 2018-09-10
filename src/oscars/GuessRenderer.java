@@ -2,23 +2,26 @@ package oscars;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.BarRenderer;
 
 @SuppressWarnings("serial")
 public class GuessRenderer extends BarRenderer {
-    private final Color[] guessColor;
+    private final List<Color> guessColor;
 
-    public GuessRenderer(Color[] inGuessColor) {
+    public GuessRenderer(List<Color> inGuessColor) {
         super();
-        guessColor = inGuessColor;
+        guessColor = Collections.unmodifiableList(new ArrayList<Color>(inGuessColor));
         setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         setBaseItemLabelsVisible(true);
     }
 
     @Override
     public Paint getItemPaint(final int inRow, final int inColumn) {
-        return guessColor[inColumn];
+        return guessColor.get(inColumn);
     }
 }

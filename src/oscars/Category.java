@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
@@ -97,24 +97,17 @@ public final class Category {
     }
 
     public void writeChart(final Collection<String> inWinners) throws IOException {
-        final Color[] guessColor = new Color[guesses.size()];
-        int totalGuesses = 0;
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        List<String> guessList = new ArrayList<String>(guesses.keySet());
-        Collections.sort(guessList);
-        for (int guessNum = 0; guessNum < guessList.size(); guessNum++) {
-            String guess = guessList.get(guessNum);
-            Long nomineeGuesses = guesses.get(guess);
-            totalGuesses += nomineeGuesses;
-            dataset.addValue(nomineeGuesses, "nominee", guess);
-            guessColor[guessNum] = inWinners.isEmpty() ? BAR_GRAY
-                    : inWinners.contains(guess) ? BAR_GREEN : BAR_RED;
-        }
+        List<Color> guessColor = guesses.keySet().stream().sorted().map(guess -> {
+            dataset.addValue(guesses.get(guess), "nominee", guess);
+            return inWinners.isEmpty() ? BAR_GRAY : inWinners.contains(guess) ? BAR_GREEN : BAR_RED;
+        }).collect(Collectors.toList());
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
+        long totalGuesses = guesses.values().stream().mapToLong(Long::longValue).sum();
         if (totalGuesses > 0)
             plot.getRangeAxis().setRange(0, totalGuesses * 1.15);// Room for counts on top
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
