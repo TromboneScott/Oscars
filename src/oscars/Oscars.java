@@ -119,8 +119,7 @@ public class Oscars implements Runnable {
     private Map<String, Map<String, String>> categoryMaps(List<String[]> inCategoryValues,
             List<String[]> inPlayerValues, List<? extends List<String>> inCategoryNominees)
             throws IOException {
-        Map<String, Map<String, String>> categoryMaps = new HashMap<String, Map<String, String>>(
-                readCategoryMaps());
+        Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         for (int categoryNum = 0; categoryNum < inCategoryValues.get(0).length; categoryNum++) {
             String categoryName = inCategoryValues.get(0)[categoryNum];
@@ -167,7 +166,7 @@ public class Oscars implements Runnable {
                         "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
             }
         System.out.println("\nStarting new category maps file: " + CATEGORY_MAPS_FILE);
-        return Collections.emptyMap();
+        return new HashMap<String, Map<String, String>>();
     }
 
     private void writeCategoryMaps(Map<String, Map<String, String>> inCategoryMaps)
