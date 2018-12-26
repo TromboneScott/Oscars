@@ -15,7 +15,7 @@ public class GuessRenderer extends BarRenderer {
 
     public GuessRenderer(List<Color> inGuessColor) {
         super();
-        guessColor = Collections.unmodifiableList(new ArrayList<Color>(inGuessColor));
+        guessColor = Collections.unmodifiableList(new ArrayList<>(inGuessColor));
         setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         setBaseItemLabelsVisible(true);
     }

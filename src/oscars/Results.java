@@ -34,9 +34,9 @@ public class Results {
 
     private static final Set<String> EMPTY_STRING_SET = Collections.emptySet();
 
-    private final Map<Category, Set<String>> winners = new HashMap<Category, Set<String>>();
+    private final Map<Category, Set<String>> winners = new HashMap<>();
 
-    private final Map<ShowTimeType, Date> showTimes = new HashMap<ShowTimeType, Date>();
+    private final Map<ShowTimeType, Date> showTimes = new HashMap<>();
 
     public Results(Collection<Category> inCategories) throws IOException {
         File resultsFile = new File(RESULTS_FILE);
@@ -64,7 +64,7 @@ public class Results {
     }
 
     private Map<ShowTimeType, Date> showTimes(Element inShowTimeDOM) {
-        Map<ShowTimeType, Date> showTimes = new HashMap<ShowTimeType, Date>();
+        Map<ShowTimeType, Date> showTimes = new HashMap<>();
         for (ShowTimeType showTimeType : ShowTimeType.values()) {
             String showTimeText = inShowTimeDOM.getChildText(showTimeType.name().toLowerCase());
             if (showTimeText != null && !showTimeText.isEmpty())
@@ -142,7 +142,7 @@ public class Results {
     private boolean promptWinner(Category inCategory) throws IOException {
         System.out.println("\n" + categoryString(inCategory));
 
-        Set<String> pickNamesSet = new TreeSet<String>(inCategory.guesses.keySet());
+        Set<String> pickNamesSet = new TreeSet<>(inCategory.guesses.keySet());
         String[] pickNames = pickNamesSet.toArray(new String[pickNamesSet.size()]);
         IntStream.range(0, pickNames.length)
                 .forEach(x -> System.out.println((x + 1) + ": " + pickNames[x]));
@@ -153,7 +153,7 @@ public class Results {
         if (input.isEmpty())
             winners.remove(inCategory);
         else {
-            Set<String> winnerSet = new HashSet<String>();
+            Set<String> winnerSet = new HashSet<>();
             for (String selectedWinner : input.split(WINNER_DELIMITER))
                 try {
                     int selectedWinnerNum = Integer.parseInt(selectedWinner);

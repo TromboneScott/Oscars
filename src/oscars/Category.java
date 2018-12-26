@@ -62,7 +62,7 @@ public final class Category {
         name = baseName(inName);
         tieBreakerValue = tieBreakerValue(inName);
         value = value(tieBreakerValue);
-        guesses = Collections.unmodifiableMap(new HashMap<String, Long>(inGuesses));
+        guesses = Collections.unmodifiableMap(new HashMap<>(inGuesses));
     }
 
     private static String baseName(String inName) {

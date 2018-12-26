@@ -124,7 +124,7 @@ public class Oscars implements Runnable {
         for (int categoryNum = 0; categoryNum < inCategoryValues.get(0).length; categoryNum++) {
             String categoryName = inCategoryValues.get(0)[categoryNum];
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryName,
-                    k -> new HashMap<String, String>());
+                    k -> new HashMap<>());
             List<String> nominees = inCategoryNominees.get(categoryNum);
             if (!nominees.isEmpty())
                 for (String[] guesses : inPlayerValues)
@@ -166,7 +166,7 @@ public class Oscars implements Runnable {
                         "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
             }
         System.out.println("\nStarting new category maps file: " + CATEGORY_MAPS_FILE);
-        return new HashMap<String, Map<String, String>>();
+        return new HashMap<>();
     }
 
     private void writeCategoryMaps(Map<String, Map<String, String>> inCategoryMaps)
