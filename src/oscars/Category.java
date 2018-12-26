@@ -98,10 +98,11 @@ public final class Category {
 
     public void writeChart(final Collection<String> inWinners) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        List<Color> guessColor = guesses.keySet().stream().sorted().map(guess -> {
-            dataset.addValue(guesses.get(guess), "nominee", guess);
-            return inWinners.isEmpty() ? BAR_GRAY : inWinners.contains(guess) ? BAR_GREEN : BAR_RED;
-        }).collect(Collectors.toList());
+        List<Color> guessColor = guesses.keySet().stream().sorted()
+                .peek(guess -> dataset.addValue(guesses.get(guess), "nominee", guess))
+                .map(guess -> inWinners.isEmpty() ? BAR_GRAY
+                        : inWinners.contains(guess) ? BAR_GREEN : BAR_RED)
+                .collect(Collectors.toList());
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
