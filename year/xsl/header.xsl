@@ -4,6 +4,9 @@
     <xsl:param name="results" />
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
+      <meta http-equiv="cache-control" content="no-cache" />
+      <meta http-equiv="expires" content="0" />
+      <meta http-equiv="pragma" content="no-cache" />
       <title>
         <xsl:value-of select="$results/title" />
       </title>

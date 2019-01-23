@@ -9,7 +9,7 @@ Edit categories.csv as a spreadsheet
 4. Add all the nominees under each category in the order you want them (usually alphabetical)
 5. Save in CSV (DOS) format as categories.csv
 
-Delete these if they exists:
+Delete these if they exist:
 File: categoryMaps.xml
 Folder: category
 Folder: player
