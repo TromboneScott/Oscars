@@ -31,6 +31,9 @@
       </tr>
     </table>
     <br />
+    <i>Tip: Use ctrl-alt-shift when clicking reload to force page to refresh.</i>
+    <br />
+    <br />
     <br />
   </xsl:template>
 </xsl:stylesheet>
