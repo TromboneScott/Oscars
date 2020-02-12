@@ -178,13 +178,13 @@
           </th>
           <th class="header">
             <xsl:choose>
-              <xsl:when test="$sort = 'rank'">
+              <xsl:when test="$sort = 'score'">
                 <xsl:call-template
                   name="player-table-column-header">
                   <xsl:with-param name="text"
                     select="'Score'" />
                   <xsl:with-param name="link"
-                    select="'rankReverse.xml'" />
+                    select="'scoreReverse.xml'" />
                   <xsl:with-param name="inPlayer"
                     select="$inPlayer" />
                 </xsl:call-template>
@@ -195,7 +195,7 @@
                   <xsl:with-param name="text"
                     select="'Score'" />
                   <xsl:with-param name="link"
-                    select="'rank.xml'" />
+                    select="'score.xml'" />
                   <xsl:with-param name="inPlayer"
                     select="$inPlayer" />
                 </xsl:call-template>
@@ -227,7 +227,7 @@
                 select="$inPlayer" />
             </xsl:apply-templates>
           </xsl:when>
-          <xsl:when test="$sort = 'rank'">
+          <xsl:when test="$sort = 'rank' or $sort = 'score'">
             <xsl:apply-templates
               select="$results/players/player">
               <xsl:sort select="rank" data-type="number" />
@@ -237,7 +237,7 @@
                 select="$inPlayer" />
             </xsl:apply-templates>
           </xsl:when>
-          <xsl:when test="$sort = 'rankReverse'">
+          <xsl:when test="$sort = 'rankReverse' or $sort = 'scoreReverse'">
             <xsl:apply-templates
               select="$results/players/player">
               <xsl:sort select="rank" data-type="number"
