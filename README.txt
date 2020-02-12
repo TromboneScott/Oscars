@@ -26,6 +26,7 @@ Download the survey results as an Excel file.
 Remove any columns not in categories.csv
 Verify columns are in same order as categories.csv
 Update any names where they didn't capitalize properly
+Remove any duplicated names so we use the last entry for each person
 Remove the header row so all you have is the survey data
 IMPORTANT: Use search and replace to remove any commas
 Save in CSV (DOS) format as players.csv
@@ -33,3 +34,5 @@ Save in CSV (DOS) format as players.csv
 You will be prompted on how to map survey answers to nominees for each category.
 This will be saved so you only have to do this for new survey answers.
 If any mistakes are made you must edit (or delete) categoryMaps.xml and start oscars.bat or oscars.sh over again.
+
+Go to site44.com and click on the refresh button after each category is updated so that it will update the website.

@@ -1,0 +1,17 @@
+1. Replace category summary graph with table titled: Correctly Guessed
+
+Category  Players  Percent
+<#Link>   40/60      66.67
+
+Players and Percent cells are grey and turn green when winner is entered
+
+
+2. Change filename of category graphs based on the winner(s)
+   a. Update XSL to default to the original image if the new one isn't uploaded yet:
+if (no winners)
+  use existing <img> tag
+else
+  <img src="category+winner(s).png" onError="this.onerror=null;this.src='category.gif';" />
+
+
+3. Add reload icon to hint
