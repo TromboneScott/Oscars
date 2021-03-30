@@ -1,5 +1,12 @@
 To start a new year:
 
+Update any code and files as needed
+1. git add <file> (for each <file>)
+2. git commit
+3. git push
+4. git tag -f <year> (for current year)
+5. git push -f --tags
+
 Copy year folder to oscars site and rename to current year.
 
 Edit categories.csv as a spreadsheet
