@@ -68,6 +68,8 @@ public class Oscars implements Runnable {
 
     private static final String VALUE_DELIMITER = ",";
 
+    private static final String COMMA_REPLACEMENT = "`";
+
     private final List<Player> players;
 
     private final List<Category> categories;
@@ -112,7 +114,9 @@ public class Oscars implements Runnable {
 
     private static List<String[]> readValues(String inFileName) throws IOException {
         try (Stream<String> stream = Files.lines(Paths.get(inFileName))) {
-            return stream.map(line -> line.split(VALUE_DELIMITER, -1)).collect(Collectors.toList());
+            return stream.map(line -> Stream.of(line.split(VALUE_DELIMITER, -1))
+                    .map(value -> value.replace(COMMA_REPLACEMENT, VALUE_DELIMITER))
+                    .toArray(String[]::new)).collect(Collectors.toList());
         }
     }
 

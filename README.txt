@@ -7,7 +7,8 @@ Edit categories.csv as a spreadsheet
 2. Make sure the categories are in the same order as the export file
 3. Edit the titles so the tie-breakers in parenthesis are correct
 4. Add all the nominees under each category in the order you want them (usually alphabetical)
-5. Save in CSV (DOS) format as categories.csv
+5. Replace any commas (,) with back-quotes (`)
+6. Save in CSV (DOS) format as categories.csv
 
 Delete these if they exist:
 File: categoryMaps.xml
@@ -26,6 +27,7 @@ Download the survey results as an Excel file.
 Remove any columns not in categories.csv
 Verify columns are in same order as categories.csv
 Update any names where they didn't capitalize properly
+Replace any necessary commas (,) with back-quotes (`) in names
 Remove any duplicated names so we use the last entry for each person
 Remove the header row so all you have is the survey data
 IMPORTANT: Use search and replace to remove any commas
