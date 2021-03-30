@@ -57,7 +57,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * time estimate must be in the column named "Time" in the format "H:MM" or "H:MM:SS.D".
  * 
  * @author Scott McDonald
- * @version 4.3
+ * @version 4.4
  */
 public class Oscars implements Runnable {
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
