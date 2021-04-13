@@ -19,7 +19,11 @@
           </div>
           <br />
           <br />
-          <img src="correct.png" usemap="#correct" />
+          <img usemap="#correct" >
+            <xsl:attribute name="src">
+              <xsl:value-of select="concat('correct_', $results/updates, '.png')" />
+            </xsl:attribute>
+          </img>
           <xsl:apply-imports />
           <br />
           <br />
@@ -42,9 +46,14 @@
               </xsl:if>
               <br />
               <br />
+              <xsl:variable name="thisName" select="name" />
               <img>
                 <xsl:attribute name="src">
-                  <xsl:value-of select="concat(name, '.png')" />
+                  <xsl:for-each select="$results/categories/category">
+                    <xsl:if test="name = $thisName">
+                      <xsl:value-of select="chart" />
+                    </xsl:if>
+                  </xsl:for-each>
                 </xsl:attribute>
               </img>
             </a>

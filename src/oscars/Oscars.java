@@ -283,6 +283,8 @@ public class Oscars implements Runnable {
     private Element resultsDOM() {
         Element resultsDOM = new Element("results");
         resultsDOM.addContent(new Element("title").addContent(results.title()));
+        resultsDOM.addContent(
+                new Element("updates").addContent(String.valueOf(results.getUpdates())));
         resultsDOM.addContent(resultsCategoriesDOM());
         resultsDOM.addContent(resultsPlayersDOM());
         resultsDOM.addContent(resultsShowTimeDOM());
@@ -292,18 +294,18 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsCategoriesDOM() {
-        List<Category> announcedCategories = categories.stream()
-                .filter(category -> !results.winners(category).isEmpty())
-                .collect(Collectors.toList());
-        return announcedCategories.stream()
-                .map(category -> results.winners(category).stream()
-                        .map(winner -> new Element("winner").addContent(winner))
-                        .reduce(new Element("category")
-                                .addContent(new Element("name").addContent(category.name)),
-                                Element::addContent))
+        return categories.stream().map(category -> resultsCategoryDOM(category))
                 .reduce(new Element("categories"), Element::addContent)
-                .addContent(new Element("count")
-                        .addContent(String.valueOf(announcedCategories.size())));
+                .addContent(new Element("count").addContent(String.valueOf(categories.stream()
+                        .filter(category -> !results.winners(category).isEmpty()).count())));
+    }
+
+    private Element resultsCategoryDOM(Category inCategory) {
+        return results.winners(inCategory).stream()
+                .map(winner -> new Element("winner").addContent(winner))
+                .reduce(new Element("category").addContent(
+                        new Element("name").addContent(inCategory.name)), Element::addContent)
+                .addContent(new Element("chart").addContent(inCategory.chartName(results)));
     }
 
     private Element resultsPlayersDOM() {
@@ -373,7 +375,7 @@ public class Oscars implements Runnable {
                         .reduce(new Element("categories"), Element::addContent),
                 "category/all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
-            category.writeChart(results.winners(category));
+            category.writeChart(results);
             writeDocument(category.toDOM(players), "category/" + category.name + ".xml",
                     "../xsl/category.xsl");
         }
@@ -413,8 +415,8 @@ public class Oscars implements Runnable {
 
     private void writeCorrectChart() throws IOException {
         ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-        ChartUtilities.saveChartAsPNG(new File("category/correct.png"), correctChart(), 500, 650,
-                info);
+        ChartUtilities.saveChartAsPNG(new File("category/correct_" + results.getUpdates() + ".png"),
+                correctChart(), 500, 650, info);
         writeCorrectImageMap(addURLs(info));
     }
 

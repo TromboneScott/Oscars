@@ -29,7 +29,11 @@
           <br />
           <img>
             <xsl:attribute name="src">
-              <xsl:value-of select="concat(name, '.png')" />
+              <xsl:for-each select="$results/categories/category">
+                <xsl:if test="name = $category/name">
+                  <xsl:value-of select="chart" />
+                </xsl:if>
+              </xsl:for-each>
             </xsl:attribute>
           </img>
           <br />

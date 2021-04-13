@@ -96,12 +96,21 @@ public final class Category {
                 && name.equals(((Category) inOther).name);
     }
 
-    public void writeChart(final Collection<String> inWinners) throws IOException {
+    public String chartName(Results inResults) {
+        return name + "_"
+                + guesses.keySet().stream().sorted()
+                        .map(guess -> inResults.winners(this).contains(guess) ? "1" : "0")
+                        .collect(Collectors.joining())
+                + ".png";
+    }
+
+    public void writeChart(Results inResults) throws IOException {
+        Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         List<Color> guessColor = guesses.keySet().stream().sorted()
                 .peek(guess -> dataset.addValue(guesses.get(guess), "nominee", guess))
-                .map(guess -> inWinners.isEmpty() ? BAR_GRAY
-                        : inWinners.contains(guess) ? BAR_GREEN : BAR_RED)
+                .map(guess -> winners.isEmpty() ? BAR_GRAY
+                        : winners.contains(guess) ? BAR_GREEN : BAR_RED)
                 .collect(Collectors.toList());
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
@@ -115,7 +124,8 @@ public final class Category {
         plot.setBackgroundPaint(BACKGROUND_COLOR);
         plot.setRenderer(new GuessRenderer(guessColor));
 
-        ChartUtilities.saveChartAsPNG(new File("category/" + name + ".png"), chart, 500, 300);
+        ChartUtilities.saveChartAsPNG(new File("category/" + chartName(inResults)), chart, 500,
+                300);
     }
 
     public Element toCoreDOM() {
