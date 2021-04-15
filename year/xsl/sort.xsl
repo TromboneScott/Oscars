@@ -19,30 +19,55 @@
           </b>
           <br />
           <br />
-          <div class="info">
-            <u>Score</u>
-            - One point for each correct
-            <a href="../category/all.xml">category</a>
-            plus .1 for tie breaker #1, .01 for #2, .001 for #3,
-            etc.
-            <br />
-            <br />
-            <u>BPR / WPR</u>
-            - Best Possible Rank / Worst Possible Rank: If guesses
-            for
-            all remaining
-            <a href="../category/all.xml">categories</a>
-            turn out to be correct / incorrect.
-          </div>
-          <br />
-          <br />
-          <xsl:call-template name="player-table">
-            <xsl:with-param name="results"
-              select="$results" />
-            <xsl:with-param name="sort" select="." />
-          </xsl:call-template>
-          <br />
-          <a href="../category/all.xml" id="return">All Categories</a>
+          <xsl:choose>
+            <xsl:when test="$results/players/count=0">
+              <table>
+                <tr>
+                  <td id="rank">
+                    <br />
+                    <br />
+                    <b>BALLOTS ARE BEING COLLECTED</b>
+                    <br />
+                    <br />
+                    <br />
+                    Data will be added after all ballots are in.
+                    <br />
+                    <br />
+                    Check here for live results during the Oscars broadcast.
+                    <br />
+                    <br />
+                    <br />
+                  </td>
+                </tr>
+              </table>
+            </xsl:when>
+            <xsl:otherwise>
+              <div class="info">
+                <u>Score</u>
+                - One point for each correct
+                <a href="../category/all.xml">category</a>
+                plus .1 for tie breaker #1, .01 for #2, .001 for #3,
+                etc.
+                <br />
+                <br />
+                <u>BPR / WPR</u>
+                - Best Possible Rank / Worst Possible Rank: If guesses
+                for
+                all remaining
+                <a href="../category/all.xml">categories</a>
+                turn out to be correct / incorrect.
+              </div>
+              <br />
+              <br />
+              <xsl:call-template name="player-table">
+                <xsl:with-param name="results"
+                  select="$results" />
+                <xsl:with-param name="sort" select="." />
+              </xsl:call-template>
+              <br />
+              <a href="../category/all.xml" id="return">All Categories</a>
+            </xsl:otherwise>
+          </xsl:choose>
           <br />
           <br />
           <div id="date">
@@ -220,25 +245,6 @@
       </thead>
       <tbody>
         <xsl:choose>
-          <xsl:when test="$results/players/count=0">
-            <tr>
-              <td colspan="6" class="unannounced time">
-                <br />
-                <br />
-                <b>BALLOTS ARE BEING COLLECTED</b>
-                <br />
-                <br />
-                <br />
-                Data will be added after all ballots are in.
-                <br />
-                <br />
-                Check here for live results during the Oscars broadcast.
-                <br />
-                <br />
-                <br />
-              </td>
-            </tr>
-          </xsl:when>
           <xsl:when test="$sort = 'name'">
             <xsl:apply-templates
               select="$results/players/player">
