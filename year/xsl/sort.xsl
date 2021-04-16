@@ -252,6 +252,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'nameReverse'">
@@ -261,6 +262,7 @@
               <xsl:sort select="firstName" order="descending" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'rank' or $sort = 'score'">
@@ -271,6 +273,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when
@@ -283,6 +286,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bpr'">
@@ -294,6 +298,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bprReverse'">
@@ -306,6 +311,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wpr'">
@@ -317,6 +323,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wprReverse'">
@@ -329,6 +336,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'time'">
@@ -339,6 +347,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'timeReverse'">
@@ -349,6 +358,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
+              <xsl:with-param name="points" select="$results/categories/points" />
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
@@ -375,6 +385,7 @@
   </xsl:template>
   <xsl:template match="player">
     <xsl:param name="inPlayer" />
+    <xsl:param name="points" />
     <xsl:variable name="id" select="@id" />
     <tr>
       <xsl:variable name="playerName">
@@ -424,21 +435,34 @@
       <td class="rank">
         <xsl:value-of select="score" />
         --
-        <xsl:variable name="tieBreakers">
+        <xsl:variable name="pointsTieBreakers">
+          <xsl:call-template name="tieBreakers">
+            <xsl:with-param name="score" select="$points"/>
+            <xsl:with-param name="value" select="8"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="pointsWidth" select="round($points) * 16 + $pointsTieBreakers" />
+        <xsl:variable name="scoreTieBreakers">
           <xsl:call-template name="tieBreakers">
             <xsl:with-param name="score" select="score"/>
             <xsl:with-param name="value" select="8"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:variable name="width" select="round(score) * 16 + $tieBreakers" />
+        <xsl:variable name="scoreWidth" select="round(score) * 16 + $scoreTieBreakers" />
         <img src="../../bar_green.bmp" height="15" >
           <xsl:attribute name="width">
-            <xsl:value-of select="$width" />
+            <xsl:value-of select="$scoreWidth" />
           </xsl:attribute>
+
         </img>
         <img src="../../bar_grey.bmp" height="15" >
           <xsl:attribute name="width">
-            <xsl:value-of select="16 * 19 - 1 - $width" />
+            <xsl:value-of select="16 * 19 - 1 - $pointsWidth" />
+          </xsl:attribute>
+        </img>
+        <img src="../../bar_red.bmp" height="15" >
+          <xsl:attribute name="width">
+            <xsl:value-of select="$pointsWidth - $scoreWidth" />
           </xsl:attribute>
         </img>
       </td>
