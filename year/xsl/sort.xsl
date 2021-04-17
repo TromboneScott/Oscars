@@ -435,13 +435,6 @@
       <td class="rank">
         <xsl:value-of select="score" />
         --
-        <xsl:variable name="pointsTieBreakers">
-          <xsl:call-template name="tieBreakers">
-            <xsl:with-param name="score" select="$points"/>
-            <xsl:with-param name="value" select="8"/>
-          </xsl:call-template>
-        </xsl:variable>
-        <xsl:variable name="pointsWidth" select="round($points) * 16 + $pointsTieBreakers" />
         <xsl:variable name="scoreTieBreakers">
           <xsl:call-template name="tieBreakers">
             <xsl:with-param name="score" select="score"/>
@@ -457,12 +450,7 @@
         </img>
         <img src="../../bar_grey.bmp" height="15" >
           <xsl:attribute name="width">
-            <xsl:value-of select="16 * 19 - 1 - $pointsWidth" />
-          </xsl:attribute>
-        </img>
-        <img src="../../bar_red.bmp" height="15" >
-          <xsl:attribute name="width">
-            <xsl:value-of select="$pointsWidth - $scoreWidth" />
+            <xsl:value-of select="16 * 19 - 1 - $scoreWidth" />
           </xsl:attribute>
         </img>
       </td>
