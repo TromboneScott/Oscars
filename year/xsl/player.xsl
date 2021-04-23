@@ -40,6 +40,13 @@
                         Out of
                         <xsl:value-of select="$results/players/count" />
                       </td>
+                      <td>
+                        <img>
+                          <xsl:attribute name="src">
+                            <xsl:value-of select="concat('../rank/rank_', rank, '.png')" />
+                          </xsl:attribute>
+                        </img>
+                      </td>
                     </tr>
                   </table>
                   <br />

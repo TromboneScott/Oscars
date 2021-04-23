@@ -19,6 +19,7 @@ Edit categories.csv as a spreadsheet
 
 Delete these if they exist:
 File: categoryMaps.xml
+Folder: rank
 Folder: category
 Folder: player
 File: results.xml
@@ -31,11 +32,12 @@ Update the link in ../index.html to point to current year.
 --- After contest deadline for entering guesses
 
 Download the survey results as an Excel file.
-Remove any columns not in categories.csv
-Verify columns are in same order as categories.csv
 Update any names where they didn't capitalize properly
 Replace any necessary commas (,) with back-quotes (`) in names
 Remove any duplicated names so we use the last entry for each person
+ - Sort by: Last Name, First Name, Timestamp to find duplicates
+Remove any columns not in categories.csv
+Verify columns are in same order as categories.csv
 Remove the header row so all you have is the survey data
 IMPORTANT: Use search and replace to remove any commas
 Save in CSV (DOS) format as players.csv

@@ -216,6 +216,7 @@ public class Oscars implements Runnable {
     }
 
     private void process() throws IOException, InterruptedException {
+        writeRankCharts();
         writeCategoryPages();
         writePlayerPages();
 
@@ -368,6 +369,28 @@ public class Oscars implements Runnable {
         File directory = new File(inDirectory);
         if (!directory.exists())
             directory.mkdir();
+    }
+
+    private void writeRankCharts() throws IOException {
+        System.out.print("Writing rank images... ");
+        mkdir("rank");
+        for (int rank = 1; rank <= players.size(); rank++) {
+            DefaultCategoryDataset data = new DefaultCategoryDataset();
+            data.addValue(rank, "A", "");
+            data.addValue(players.size(), "B", "");
+
+            JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
+            chart.removeLegend();
+
+            CategoryPlot plot = chart.getCategoryPlot();
+            plot.getRangeAxis().setRange(1, players.size());
+            plot.getRangeAxis().setInverted(true);
+            plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
+            plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
+
+            ChartUtilities.saveChartAsPNG(new File("rank/rank_" + rank + ".png"), chart, 80, 180);
+        }
+        System.out.println("DONE");
     }
 
     private void writeCategoryPages() throws IOException {
