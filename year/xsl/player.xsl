@@ -49,12 +49,14 @@
                       </td>
                     </tr>
                   </table>
-                  <br />
-                  Best Possible Rank:
-                  <xsl:value-of select="bpr" />
-                  <br />
-                  Worst Possible Rank:
-                  <xsl:value-of select="wpr" />
+                  <xsl:if test="not(string($results/showTime/end))">
+                    <br />
+                    Best Possible Rank:
+                    <xsl:value-of select="bpr" />
+                    <br />
+                    Worst Possible Rank:
+                    <xsl:value-of select="wpr" />
+                  </xsl:if>
                   <br />
                   <br />
                   <h3>Guesses</h3>

@@ -48,14 +48,16 @@
                 <a href="../category/all.xml">category</a>
                 plus .1 for tie breaker #1, .01 for #2, .001 for #3,
                 etc.
-                <br />
-                <br />
-                <u>BPR / WPR</u>
-                - Best Possible Rank / Worst Possible Rank: If guesses
-                for
-                all remaining
-                <a href="../category/all.xml">categories</a>
-                turn out to be correct / incorrect.
+                <xsl:if test="not(string($results/showTime/end))">
+                  <br />
+                  <br />
+                  <u>BPR / WPR</u>
+                  - Best Possible Rank / Worst Possible Rank: If guesses
+                  for
+                  all remaining
+                  <a href="../category/all.xml">categories</a>
+                  turn out to be correct / incorrect.
+                </xsl:if>
               </div>
               <br />
               <br />
@@ -82,6 +84,7 @@
     <xsl:param name="results" />
     <xsl:param name="sort" />
     <xsl:param name="inPlayer" />
+    <xsl:variable name="inProgress" select="not(string($results/showTime/end))" />
     <table>
       <thead>
         <tr>
@@ -137,58 +140,60 @@
               </xsl:otherwise>
             </xsl:choose>
           </th>
-          <th class="header">
-            <xsl:choose>
-              <xsl:when test="$sort = 'bpr'">
-                <xsl:call-template
-                  name="player-table-column-header">
-                  <xsl:with-param name="text"
-                    select="'BPR'" />
-                  <xsl:with-param name="link"
-                    select="'bprReverse.xml'" />
-                  <xsl:with-param name="inPlayer"
-                    select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:call-template
-                  name="player-table-column-header">
-                  <xsl:with-param name="text"
-                    select="'BPR'" />
-                  <xsl:with-param name="link"
-                    select="'bpr.xml'" />
-                  <xsl:with-param name="inPlayer"
-                    select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
-          </th>
-          <th class="header">
-            <xsl:choose>
-              <xsl:when test="$sort = 'wpr'">
-                <xsl:call-template
-                  name="player-table-column-header">
-                  <xsl:with-param name="text"
-                    select="'WPR'" />
-                  <xsl:with-param name="link"
-                    select="'wprReverse.xml'" />
-                  <xsl:with-param name="inPlayer"
-                    select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:call-template
-                  name="player-table-column-header">
-                  <xsl:with-param name="text"
-                    select="'WPR'" />
-                  <xsl:with-param name="link"
-                    select="'wpr.xml'" />
-                  <xsl:with-param name="inPlayer"
-                    select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
-          </th>
+          <xsl:if test="$inProgress">
+            <th class="header">
+              <xsl:choose>
+                <xsl:when test="$sort = 'bpr'">
+                  <xsl:call-template
+                    name="player-table-column-header">
+                    <xsl:with-param name="text"
+                      select="'BPR'" />
+                    <xsl:with-param name="link"
+                      select="'bprReverse.xml'" />
+                    <xsl:with-param name="inPlayer"
+                      select="$inPlayer" />
+                  </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:call-template
+                    name="player-table-column-header">
+                    <xsl:with-param name="text"
+                      select="'BPR'" />
+                    <xsl:with-param name="link"
+                      select="'bpr.xml'" />
+                    <xsl:with-param name="inPlayer"
+                      select="$inPlayer" />
+                  </xsl:call-template>
+                </xsl:otherwise>
+              </xsl:choose>
+            </th>
+            <th class="header">
+              <xsl:choose>
+                <xsl:when test="$sort = 'wpr'">
+                  <xsl:call-template
+                    name="player-table-column-header">
+                    <xsl:with-param name="text"
+                      select="'WPR'" />
+                    <xsl:with-param name="link"
+                      select="'wprReverse.xml'" />
+                    <xsl:with-param name="inPlayer"
+                      select="$inPlayer" />
+                  </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:call-template
+                    name="player-table-column-header">
+                    <xsl:with-param name="text"
+                      select="'WPR'" />
+                    <xsl:with-param name="link"
+                      select="'wpr.xml'" />
+                    <xsl:with-param name="inPlayer"
+                      select="$inPlayer" />
+                  </xsl:call-template>
+                </xsl:otherwise>
+              </xsl:choose>
+            </th>
+          </xsl:if>
           <th class="header">
             <xsl:choose>
               <xsl:when test="$sort = 'score'">
@@ -253,6 +258,7 @@
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
               <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'nameReverse'">
@@ -262,7 +268,7 @@
               <xsl:sort select="firstName" order="descending" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'rank' or $sort = 'score'">
@@ -273,7 +279,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when
@@ -286,7 +292,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bpr'">
@@ -298,7 +304,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bprReverse'">
@@ -311,7 +317,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wpr'">
@@ -323,7 +329,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wprReverse'">
@@ -336,7 +342,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'time'">
@@ -347,7 +353,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'timeReverse'">
@@ -358,7 +364,7 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
+              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
@@ -385,7 +391,7 @@
   </xsl:template>
   <xsl:template match="player">
     <xsl:param name="inPlayer" />
-    <xsl:param name="points" />
+    <xsl:param name="inProgress" />
     <xsl:variable name="id" select="@id" />
     <tr>
       <xsl:variable name="playerName">
@@ -426,12 +432,14 @@
       <td class="rank">
         <xsl:value-of select="rank" />
       </td>
-      <td class="rank">
-        <xsl:value-of select="bpr" />
-      </td>
-      <td class="rank">
-        <xsl:value-of select="wpr" />
-      </td>
+      <xsl:if test="$inProgress" >
+        <td class="rank">
+          <xsl:value-of select="bpr" />
+        </td>
+        <td class="rank">
+          <xsl:value-of select="wpr" />
+        </td>
+      </xsl:if>
       <td class="rank">
         <xsl:value-of select="score" />
         --
@@ -446,7 +454,6 @@
           <xsl:attribute name="width">
             <xsl:value-of select="$scoreWidth" />
           </xsl:attribute>
-
         </img>
         <img src="../../bar_grey.bmp" height="15" >
           <xsl:attribute name="width">
