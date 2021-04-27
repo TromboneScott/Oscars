@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,7 +51,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * time estimate must be in the column named "Time" in the format "H:MM" or "H:MM:SS.D".
  * 
  * @author Scott McDonald
- * @version 4.4
+ * @version 4.5
  */
 public class Oscars implements Runnable {
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
@@ -218,6 +220,7 @@ public class Oscars implements Runnable {
         // In case it was interrupted
         System.out.print("\nWriting final results... ");
         writeResults();
+        cleanUpCategoryCharts();
         System.out.println("DONE");
     }
 
@@ -429,5 +432,16 @@ public class Oscars implements Runnable {
                                 .collect(Collectors.toMap(element -> element[0],
                                         element -> element[1])))))
                 .orElseGet(Document::new).addContent(inElement);
+    }
+
+    private void cleanUpCategoryCharts() throws IOException {
+        Set<Path> pngFiles = Files.list(Paths.get("category"))
+                .filter(file -> file.toString().endsWith(".png")).collect(Collectors.toSet());
+        for (Category category : categories) {
+            pngFiles.remove(Paths.get("category", category.chartName(results)));
+            for (Path file : pngFiles)
+                if (file.getFileName().toString().startsWith(category.name))
+                    file.toFile().delete();
+        }
     }
 }
