@@ -1,7 +1,6 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:import href="header.xsl" />
-  <xsl:import href="../category/correct.xsl" />
   <xsl:template match="/categories">
     <html>
       <xsl:variable name="results"
@@ -15,16 +14,81 @@
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
           <div id="name">
-            Category Guesses
+            Category Results
           </div>
           <br />
-          <br />
-          <img usemap="#correct" >
-            <xsl:attribute name="src">
-              <xsl:value-of select="concat('correct_', $results/updates, '.png')" />
-            </xsl:attribute>
-          </img>
-          <xsl:apply-imports />
+          <xsl:variable name="playerCount" select="$results/players/count" />
+          <xsl:variable name="graphWidth" select="250" />
+          <table>
+            <thead>
+              <tr>
+                <th class="header">
+                  Category
+                </th>
+                <th class="header">
+                  Correct
+                </th>
+                <th class="header">
+                  Wrong
+                </th>
+                <th class="header">
+                  Graph
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <xsl:for-each select="$results/categories/category">
+                <tr>
+                  <td>
+                      <a>
+                        <xsl:attribute name="href">
+                          <xsl:value-of select="concat('#', name)" />
+                        </xsl:attribute>
+                        <xsl:value-of select="name" />
+                      </a>
+                  </td>
+                  <xsl:choose>
+                    <xsl:when test="string(correct)">
+                      <td class="correct">
+                        <center>
+                          <xsl:value-of select="correct" />
+                        </center>
+                      </td>
+                      <td class="incorrect">
+                        <center>
+                          <xsl:value-of select="$playerCount - correct" />
+                        </center>
+                      </td>
+                      <td>
+                        <xsl:variable name="greenWidth" select="$graphWidth * correct div $playerCount" />
+                        <img src="../../bar_green.bmp" height="15" >
+                          <xsl:attribute name="width">
+                            <xsl:value-of select="$greenWidth" />
+                          </xsl:attribute>
+                        </img>
+                        <img src="../../bar_red.bmp" height="15" >
+                          <xsl:attribute name="width">
+                            <xsl:value-of select="$graphWidth - $greenWidth" />
+                          </xsl:attribute>
+                        </img>
+                      </td>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <td class="unannounced"/>
+                      <td class="unannounced"/>
+                      <td>
+                        <img src="../../bar_grey.bmp" height="15" >
+                          <xsl:attribute name="width">
+                            <xsl:value-of select="$graphWidth" />
+                          </xsl:attribute>
+                        </img>
+                      </td>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </tr>
+              </xsl:for-each>
+            </tbody>
+          </table>
           <br />
           <br />
           <xsl:for-each select="category">

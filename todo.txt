@@ -1,17 +1,5 @@
-1. Replace category summary graph with table titled: Correctly Guessed
+1. Add ability to check hypothetical winners
 
-Category  Players  Percent
-<#Link>   40/60      66.67
+It may be possible to add check boxes for all categories so people can select hypothetical winners.  Then send that to an HTML file with JQuery and use JavaScript to predict the possible scores and rankings.
 
-Players and Percent cells are grey and turn green when winner is entered
-
-
-2. Change filename of category graphs based on the winner(s)
-   a. Update XSL to default to the original image if the new one isn't uploaded yet:
-if (no winners)
-  use existing <img> tag
-else
-  <img src="category+winner(s).png" onError="this.onerror=null;this.src='category.gif';" />
-
-
-3. Add reload icon to hint
+https://stackoverflow.com/questions/22423011/pass-parameter-from-a-url-to-a-xsl-stylesheet

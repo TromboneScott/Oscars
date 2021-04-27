@@ -4,7 +4,6 @@ package oscars;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,16 +34,9 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.entity.CategoryItemEntity;
-import org.jfree.chart.entity.CategoryLabelEntity;
-import org.jfree.chart.entity.StandardEntityCollection;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -226,7 +217,6 @@ public class Oscars implements Runnable {
 
         // In case it was interrupted
         System.out.print("\nWriting final results... ");
-        writeCorrectChart();
         writeResults();
         System.out.println("DONE");
     }
@@ -250,7 +240,6 @@ public class Oscars implements Runnable {
     @Override
     public void run() {
         try {
-            writeCorrectChart();
             for (long waitTimeMillis = 0; waitTimeMillis >= 0; waitTimeMillis = waitTimeMillis()) {
                 Thread.sleep(waitTimeMillis);
                 writeResults();
@@ -285,8 +274,6 @@ public class Oscars implements Runnable {
     private Element resultsDOM() {
         Element resultsDOM = new Element("results");
         resultsDOM.addContent(new Element("title").addContent(results.title()));
-        resultsDOM.addContent(
-                new Element("updates").addContent(String.valueOf(results.getUpdates())));
         resultsDOM.addContent(resultsCategoriesDOM());
         resultsDOM.addContent(resultsPlayersDOM());
         resultsDOM.addContent(resultsShowTimeDOM());
@@ -309,7 +296,12 @@ public class Oscars implements Runnable {
                 .map(winner -> new Element("winner").addContent(winner))
                 .reduce(new Element("category").addContent(
                         new Element("name").addContent(inCategory.name)), Element::addContent)
-                .addContent(new Element("chart").addContent(inCategory.chartName(results)));
+                .addContent(new Element("chart").addContent(inCategory.chartName(results)))
+                .addContent(new Element("correct").addContent(Optional
+                        .of(results.winners(inCategory)).filter(winners -> !winners.isEmpty())
+                        .map(winners -> String.valueOf(winners.stream()
+                                .mapToLong(winner -> inCategory.guesses.get(winner)).sum()))
+                        .orElse(null)));
     }
 
     private Element resultsPlayersDOM() {
@@ -437,71 +429,5 @@ public class Oscars implements Runnable {
                                 .collect(Collectors.toMap(element -> element[0],
                                         element -> element[1])))))
                 .orElseGet(Document::new).addContent(inElement);
-    }
-
-    private void writeCorrectChart() throws IOException {
-        ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-        ChartUtilities.saveChartAsPNG(new File("category/correct_" + results.getUpdates() + ".png"),
-                correctChart(), 500, 650, info);
-        writeCorrectImageMap(addURLs(info));
-    }
-
-    private JFreeChart correctChart() {
-        JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null,
-                correctChartDataset());
-
-        CategoryPlot plot = chart.getCategoryPlot();
-        if (!players.isEmpty())
-            plot.getRangeAxis().setRange(0, players.size());
-        plot.setBackgroundPaint(Category.BACKGROUND_COLOR);
-        plot.setOrientation(PlotOrientation.HORIZONTAL);
-
-        CategoryItemRenderer renderer = plot.getRenderer();
-        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        renderer.setBaseItemLabelsVisible(true);
-        renderer.setSeriesPaint(0, Category.BAR_GREEN);
-        renderer.setSeriesPaint(1, Category.BAR_RED);
-        return chart;
-    }
-
-    private DefaultCategoryDataset correctChartDataset() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (Category category : categories) {
-            long correctCount = 0;
-            long incorrectCount = 0;
-            Set<String> winners = results.winners(category);
-            if (!winners.isEmpty())
-                for (String nominee : category.guesses.keySet())
-                    if (winners.contains(nominee))
-                        correctCount += category.guesses.get(nominee);
-                    else
-                        incorrectCount += category.guesses.get(nominee);
-            dataset.addValue(correctCount, "Correct", category.name);
-            dataset.addValue(incorrectCount, "Incorrect", category.name);
-        }
-        return dataset;
-    }
-
-    private ChartRenderingInfo addURLs(ChartRenderingInfo inInfo) {
-        for (Object entity : inInfo.getEntityCollection().getEntities())
-            if (entity.getClass().equals(CategoryLabelEntity.class))
-                ((CategoryLabelEntity) entity)
-                        .setURLText("#" + ((CategoryLabelEntity) entity).getKey());
-            else if (entity.getClass().equals(CategoryItemEntity.class))
-                ((CategoryItemEntity) entity)
-                        .setURLText("#" + ((CategoryItemEntity) entity).getColumnKey());
-        return inInfo;
-    }
-
-    private void writeCorrectImageMap(ChartRenderingInfo inInfo)
-            throws FileNotFoundException, IOException {
-        try (PrintWriter writer = new PrintWriter("category/correct.xsl")) {
-            writer.println(
-                    "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">");
-            writer.println("<xsl:template match=\"/categories\">");
-            ChartUtilities.writeImageMap(writer, "correct", inInfo, false);
-            writer.println("</xsl:template>");
-            writer.println("</xsl:stylesheet>");
-        }
     }
 }

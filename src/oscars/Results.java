@@ -38,14 +38,11 @@ public class Results {
 
     private final Map<ShowTimeType, Date> showTimes = new HashMap<>();
 
-    private long updates = 0;
-
     public Results(Collection<Category> inCategories) throws IOException {
         File resultsFile = new File(RESULTS_FILE);
         if (resultsFile.exists())
             try {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
-                updates = Long.parseLong(resultsDOM.getChildText("updates"));
                 Map<String, Category> categoryMap = inCategories.stream()
                         .collect(Collectors.toMap(category -> category.name, category -> category));
                 winners.putAll(resultsDOM.getChild("categories").getChildren("category").stream()
@@ -64,10 +61,6 @@ public class Results {
 
         while (!showTimes.containsKey(ShowTimeType.START))
             promptTime(ShowTimeType.START);
-    }
-
-    public long getUpdates() {
-        return updates;
     }
 
     private Map<ShowTimeType, Date> showTimes(Element inShowTimeDOM) {
@@ -174,7 +167,6 @@ public class Results {
             winners.put(inCategory, Collections.unmodifiableSet(winnerSet));
         }
         inCategory.writeChart(this);
-        updates++;
         return true;
     }
 
