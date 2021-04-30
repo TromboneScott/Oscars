@@ -220,7 +220,8 @@ public class Oscars implements Runnable {
         // In case it was interrupted
         System.out.print("\nWriting final results... ");
         writeResults();
-        cleanUpCategoryCharts();
+        cleanUpCharts("category", categories.stream().map(category -> category.chartName(results)));
+        cleanUpCharts("rank", players.stream().map(player -> "rank_" + player.getRank() + ".png"));
         System.out.println("DONE");
     }
 
@@ -434,14 +435,12 @@ public class Oscars implements Runnable {
                 .orElseGet(Document::new).addContent(inElement);
     }
 
-    private void cleanUpCategoryCharts() throws IOException {
-        Set<Path> pngFiles = Files.list(Paths.get("category"))
-                .filter(file -> file.toString().endsWith(".png")).collect(Collectors.toSet());
-        for (Category category : categories) {
-            pngFiles.remove(Paths.get("category", category.chartName(results)));
-            for (Path file : pngFiles)
-                if (file.getFileName().toString().startsWith(category.name))
-                    file.toFile().delete();
-        }
+    private void cleanUpCharts(String inDirectory, Stream<String> inExpectedFiles)
+            throws IOException {
+        Set<String> expectedFiles = inExpectedFiles.collect(Collectors.toSet());
+        Files.list(Paths.get(inDirectory))
+                .filter(file -> file.toString().endsWith(".png")
+                        && !expectedFiles.contains(file.getFileName().toString()))
+                .map(Path::toFile).forEach(File::delete);
     }
 }
