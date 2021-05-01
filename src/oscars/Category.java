@@ -139,9 +139,7 @@ public final class Category {
     public Element toDOM(Collection<Player> inPlayers) {
         Element categoryDOM = toCoreDOM();
         categoryDOM.addContent(guesses.keySet().stream().sorted()
-                .map(guess -> new Element("guess").addContent(new Element("name").addContent(guess))
-                        .addContent(new Element("count")
-                                .addContent(String.valueOf(guesses.get(guess)))))
+                .map(guess -> new Element("guess").addContent(guess))
                 .reduce(new Element("guesses"), Element::addContent));
         categoryDOM.addContent(inPlayers.stream()
                 .map(player -> player.toCoreDOM()

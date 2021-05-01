@@ -60,7 +60,7 @@
                           unannounced
                         </xsl:when>
                         <xsl:when
-                      test="contains($winners, concat('|', name, '|'))">
+                      test="contains($winners, concat('|', ., '|'))">
                           correct
                         </xsl:when>
                         <xsl:otherwise>
@@ -68,7 +68,7 @@
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:attribute>
-                    <xsl:value-of select="name" />
+                    <xsl:value-of select="." />
                   </th>
                 </xsl:for-each>
               </tr>
@@ -120,7 +120,7 @@
                   <xsl:variable name="guess" select="guess" />
                   <xsl:for-each select="$guesses/guess">
                     <td id="selection">
-                      <xsl:if test="$guess = name">
+                      <xsl:if test="$guess = .">
                         X
                       </xsl:if>
                     </td>
@@ -138,8 +138,7 @@
                         <xsl:when test="$winners = ''">
                           unannounced
                         </xsl:when>
-                        <xsl:when
-                      test="contains($winners, concat('|', name, '|'))">
+                        <xsl:when test="contains($winners, concat('|', ., '|'))">
                           correct
                         </xsl:when>
                         <xsl:otherwise>
@@ -147,7 +146,8 @@
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:attribute>
-                    <xsl:value-of select="count" />
+                    <xsl:variable name="name" select="." />
+                    <xsl:value-of select="count(/category/players/player[guess=$name])" />
                   </th>
                 </xsl:for-each>
               </tr>
