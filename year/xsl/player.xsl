@@ -38,7 +38,7 @@
                           <xsl:value-of select="rank" />
                         </div>
                         Out of
-                        <xsl:value-of select="$results/players/count" />
+                        <xsl:value-of select="count($results/players/player)" />
                       </td>
                       <td>
                         <img>

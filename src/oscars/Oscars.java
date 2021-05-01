@@ -311,8 +311,7 @@ public class Oscars implements Runnable {
     private Element resultsPlayersDOM() {
         return IntStream.range(0, players.size()).boxed()
                 .map(playerNum -> resultsPlayerDOM(playerNum))
-                .reduce(new Element("players"), Element::addContent)
-                .addContent(new Element("count").addContent(String.valueOf(players.size())));
+                .reduce(new Element("players"), Element::addContent);
     }
 
     private Element resultsPlayerDOM(int playerNum) {
