@@ -393,7 +393,7 @@ public class Oscars implements Runnable {
         System.out.print("Writing category web pages... ");
         mkdir("category");
         writeDocument(
-                categories.stream().map(category -> category.toDOM(players))
+                categories.stream().map(category -> category.toCoreDOM())
                         .reduce(new Element("categories"), Element::addContent),
                 "category/all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
