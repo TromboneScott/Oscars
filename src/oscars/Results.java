@@ -48,10 +48,9 @@ public class Results {
                 winners.putAll(resultsDOM.getChild("categories").getChildren("category").stream()
                         .collect(Collectors.toMap(
                                 categoryDOM -> categoryMap.get(categoryDOM.getChildText("name")),
-                                categoryDOM -> Collections
-                                        .unmodifiableSet(categoryDOM.getChildren("winner").stream()
-                                                .map(winnerDOM -> winnerDOM.getText())
-                                                .collect(Collectors.toSet())))));
+                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
+                                        .getChildren("winner").stream().map(Element::getText)
+                                        .collect(Collectors.toSet())))));
                 showTimes.putAll(showTimes(resultsDOM.getChild("showTime")));
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);

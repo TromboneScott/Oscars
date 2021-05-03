@@ -191,7 +191,7 @@ public class Oscars implements Runnable {
                         nominee -> inPlayerValues.stream()
                                 .map(guesses -> inCategoryMaps.get(inCategoryNames[categoryNum])
                                         .get(guesses[categoryNum]))
-                                .filter(guess -> nominee.equals(guess)).count()))))
+                                .filter(nominee::equals).count()))))
                 .toArray(Category[]::new);
     }
 
@@ -286,8 +286,8 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsCategoriesDOM() {
-        return categories.stream().map(category -> resultsCategoryDOM(category))
-                .reduce(new Element("categories"), Element::addContent);
+        return categories.stream().map(this::resultsCategoryDOM).reduce(new Element("categories"),
+                Element::addContent);
     }
 
     private Element resultsCategoryDOM(Category inCategory) {
@@ -304,8 +304,7 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsPlayersDOM() {
-        return IntStream.range(0, players.size()).boxed()
-                .map(playerNum -> resultsPlayerDOM(playerNum))
+        return IntStream.range(0, players.size()).boxed().map(this::resultsPlayerDOM)
                 .reduce(new Element("players"), Element::addContent);
     }
 
