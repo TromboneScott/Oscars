@@ -17,7 +17,7 @@
             Category Results
           </div>
           <br />
-          <xsl:variable name="playerCount" select="$results/players/count" />
+          <xsl:variable name="playerCount" select="count($results/players/player)" />
           <xsl:variable name="graphWidth" select="250" />
           <table>
             <thead>
