@@ -172,7 +172,7 @@
                           <xsl:value-of select="floor(score)" />
                         </th>
                         <th>
-                          <xsl:value-of select="round($results/categories/points)" />
+                          <xsl:value-of select="count($results/categories/category/winner[1])" />
                         </th>
                         <th>
                           <xsl:value-of select="score" />

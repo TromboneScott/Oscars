@@ -257,7 +257,6 @@
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer"
                 select="$inPlayer" />
-              <xsl:with-param name="points" select="$results/categories/points" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
@@ -411,8 +410,7 @@
               <xsl:when test="@id = $inPlayer/@id">
                 unannounced
               </xsl:when>
-              <xsl:when
-          test="$inPlayer/opponents/player[number($id)] = 'BETTER' or $inPlayer/opponents/player[number($id)] = 'WORSE'">
+              <xsl:when test="$inPlayer/opponents/player[number($id)] = 'BETTER' or $inPlayer/opponents/player[number($id)] = 'WORSE'">
                 correct
               </xsl:when>
             </xsl:choose>

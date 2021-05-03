@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -288,11 +287,7 @@ public class Oscars implements Runnable {
 
     private Element resultsCategoriesDOM() {
         return categories.stream().map(category -> resultsCategoryDOM(category))
-                .reduce(new Element("categories"), Element::addContent)
-                .addContent(new Element("points").addContent(
-                        categories.stream().filter(category -> !results.winners(category).isEmpty())
-                                .map(category -> category.value)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add).toString()));
+                .reduce(new Element("categories"), Element::addContent);
     }
 
     private Element resultsCategoryDOM(Category inCategory) {
