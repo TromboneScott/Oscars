@@ -295,12 +295,7 @@ public class Oscars implements Runnable {
                 .map(winner -> new Element("winner").addContent(winner))
                 .reduce(new Element("category").addContent(
                         new Element("name").addContent(inCategory.name)), Element::addContent)
-                .addContent(new Element("chart").addContent(inCategory.chartName(results)))
-                .addContent(new Element("correct").addContent(Optional
-                        .of(results.winners(inCategory)).filter(winners -> !winners.isEmpty())
-                        .map(winners -> String.valueOf(winners.stream()
-                                .mapToLong(winner -> inCategory.guesses.get(winner)).sum()))
-                        .orElse(null)));
+                .addContent(new Element("chart").addContent(inCategory.chartName(results)));
     }
 
     private Element resultsPlayersDOM() {
@@ -385,11 +380,14 @@ public class Oscars implements Runnable {
     private void writeCategoryPages() throws IOException {
         System.out.print("Writing category web pages... ");
         mkdir("category");
-        writeDocument(new Element("all"), "category/all.xml", "../xsl/categoryGraphs.xsl");
+        writeDocument(
+                categories.stream().map(category -> category.toDOM(players))
+                        .reduce(new Element("categories"), Element::addContent),
+                "category/all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results);
-            writeDocument(category.toDOM(players), "category/" + category.name + ".xml",
-                    "../xsl/category.xsl");
+            writeDocument(new Element("category").addContent(category.name),
+                    "category/" + category.name + ".xml", "../xsl/category.xsl");
         }
         System.out.println("DONE");
     }

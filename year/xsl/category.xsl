@@ -1,9 +1,11 @@
-<xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="header.xsl" />
   <xsl:template match="/category">
     <html>
+      <xsl:variable name="categoryName" select="." />
+      <xsl:variable name="categoryData" select="document('../category/all.xml')/categories/category[name = $categoryName]" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
+      <xsl:variable name="categoryResults" select="$results/categories/category[name = $categoryName]" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
       </xsl:call-template>
@@ -12,21 +14,19 @@
           <xsl:call-template name="header">
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
-          <xsl:variable name="category" select="." />
           <div id="name">
-            <xsl:value-of select="name" />
+            <xsl:value-of select="$categoryName" />
           </div>
           Tie Breaker:
-          <xsl:value-of select="tieBreaker" />
-          <xsl:if test="tieBreaker = ''">
+          <xsl:value-of select="$categoryData/tieBreaker" />
+          <xsl:if test="$categoryData/tieBreaker = ''">
             NO
           </xsl:if>
           <br />
           Point Value:
-          <xsl:value-of select="value" />
+          <xsl:value-of select="$categoryData/value" />
           <br />
           <br />
-          <xsl:variable name="categoryResults" select="$results/categories/category[name = $category/name]" />
           <img>
             <xsl:attribute name="src">
               <xsl:value-of select="$categoryResults/chart" />
@@ -44,7 +44,7 @@
             <thead>
               <tr>
                 <th class="header">Name</th>
-                <xsl:for-each select="guesses/guess">
+                <xsl:for-each select="$categoryData/guesses/guess">
                   <th>
                     <xsl:attribute name="class">
                       <xsl:choose>
@@ -65,8 +65,8 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:variable name="guesses" select="guesses" />
-              <xsl:for-each select="players/player">
+              <xsl:variable name="guesses" select="$categoryData/guesses" />
+              <xsl:for-each select="$categoryData/players/player">
                 <xsl:sort select="lastName" />
                 <xsl:sort select="firstName" />
                 <xsl:variable name="playerName">
@@ -120,7 +120,7 @@
             <tfoot>
               <tr>
                 <th class="header">Total</th>
-                <xsl:for-each select="guesses/guess">
+                <xsl:for-each select="$categoryData/guesses/guess">
                   <th>
                     <xsl:attribute name="class">
                       <xsl:choose>
@@ -136,7 +136,7 @@
                       </xsl:choose>
                     </xsl:attribute>
                     <xsl:variable name="name" select="." />
-                    <xsl:value-of select="count(/category/players/player[guess=$name])" />
+                    <xsl:value-of select="count($categoryData/players/player[guess=$name])" />
                   </th>
                 </xsl:for-each>
               </tr>

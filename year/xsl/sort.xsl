@@ -366,8 +366,8 @@
         --
         <xsl:variable name="scoreTieBreakers">
           <xsl:call-template name="tieBreakers">
-            <xsl:with-param name="score" select="score"/>
-            <xsl:with-param name="value" select="8"/>
+            <xsl:with-param name="score" select="score" />
+            <xsl:with-param name="value" select="8" />
           </xsl:call-template>
         </xsl:variable>
         <xsl:variable name="scoreWidth" select="round(score) * 16 + $scoreTieBreakers" />
@@ -391,8 +391,8 @@
     </tr>
   </xsl:template>
   <xsl:template name="tieBreakers">
-    <xsl:param name="score"/>
-    <xsl:param name="value"/>
+    <xsl:param name="score" />
+    <xsl:param name="value" />
     <xsl:choose>
       <xsl:when test="$value &lt; 1">
         0
@@ -400,11 +400,11 @@
       <xsl:otherwise>
         <xsl:variable name="tieBreakers">
           <xsl:call-template name="tieBreakers">
-            <xsl:with-param name="score" select="$score * 10"/>
-            <xsl:with-param name="value" select="$value div 2"/>
+            <xsl:with-param name="score" select="$score * 10" />
+            <xsl:with-param name="value" select="$value div 2" />
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="round($score * 10) mod 2 * $value + $tieBreakers"/> 
+        <xsl:value-of select="round($score * 10) mod 2 * $value + $tieBreakers" /> 
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
