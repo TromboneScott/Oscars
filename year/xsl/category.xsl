@@ -3,8 +3,7 @@
   <xsl:include href="header.xsl" />
   <xsl:template match="/category">
     <html>
-      <xsl:variable name="results"
-        select="document('../results.xml')/results" />
+      <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
       </xsl:call-template>
@@ -27,13 +26,10 @@
           <xsl:value-of select="value" />
           <br />
           <br />
+          <xsl:variable name="categoryResults" select="$results/categories/category[name = $category/name]" />
           <img>
             <xsl:attribute name="src">
-              <xsl:for-each select="$results/categories/category">
-                <xsl:if test="name = $category/name">
-                  <xsl:value-of select="chart" />
-                </xsl:if>
-              </xsl:for-each>
+              <xsl:value-of select="$categoryResults/chart" />
             </xsl:attribute>
           </img>
           <br />
@@ -41,12 +37,8 @@
           <br />
           <table>
             <xsl:variable name="winners">
-              <xsl:for-each select="$results/categories/category">
-                <xsl:if test="name = $category/name">
-                  <xsl:for-each select="winner">
-                    <xsl:value-of select="concat('|', ., '|')" />
-                  </xsl:for-each>
-                </xsl:if>
+              <xsl:for-each select="$categoryResults/winner">
+                <xsl:value-of select="concat('|', ., '|')" />
               </xsl:for-each>
             </xsl:variable>
             <thead>
@@ -59,8 +51,7 @@
                         <xsl:when test="$winners = ''">
                           unannounced
                         </xsl:when>
-                        <xsl:when
-                      test="contains($winners, concat('|', ., '|'))">
+                        <xsl:when test="contains($winners, concat('|', ., '|'))">
                           correct
                         </xsl:when>
                         <xsl:otherwise>
@@ -85,8 +76,7 @@
                   </xsl:if>
                   <xsl:value-of select="lastName" />
                 </xsl:variable>
-                <xsl:variable name="playerFile"
-                  select="concat('../player/', $playerName, '.xml')" />
+                <xsl:variable name="playerFile" select="concat('../player/', $playerName, '.xml')" />
                 <xsl:variable name="playerDisplayName">
                   <xsl:value-of select="lastName" />
                   <xsl:if test="firstName != '' and lastName != ''">
@@ -100,8 +90,7 @@
                       <xsl:when test="$winners = ''">
                         unannounced
                       </xsl:when>
-                      <xsl:when
-                    test="contains($winners, concat('|', guess, '|'))">
+                      <xsl:when test="contains($winners, concat('|', guess, '|'))">
                         correct
                       </xsl:when>
                       <xsl:otherwise>

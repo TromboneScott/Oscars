@@ -310,7 +310,7 @@ public class Oscars implements Runnable {
 
     private Element resultsPlayerDOM(int playerNum) {
         Player player = players.get(playerNum);
-        Element playerDOM = player.toCoreDOM();
+        Element playerDOM = player.toDOM();
         playerDOM.addContent(new Element("rank").addContent(String.valueOf(player.getRank())));
         playerDOM.addContent(
                 new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())));
@@ -385,10 +385,7 @@ public class Oscars implements Runnable {
     private void writeCategoryPages() throws IOException {
         System.out.print("Writing category web pages... ");
         mkdir("category");
-        writeDocument(
-                categories.stream().map(category -> category.toCoreDOM())
-                        .reduce(new Element("categories"), Element::addContent),
-                "category/all.xml", "../xsl/categoryGraphs.xsl");
+        writeDocument(new Element("all"), "category/all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results);
             writeDocument(category.toDOM(players), "category/" + category.name + ".xml",
@@ -401,7 +398,7 @@ public class Oscars implements Runnable {
         System.out.print("Writing player web pages... ");
         mkdir("player");
         for (Player player : players)
-            writeDocument(player.toDOM(categories),
+            writeDocument(player.toDOM(),
                     "player/" + player.firstName
                             + (player.firstName.isEmpty() || player.lastName.isEmpty() ? "" : " ")
                             + player.lastName + ".xml",

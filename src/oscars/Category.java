@@ -128,21 +128,16 @@ public final class Category {
                 300);
     }
 
-    public Element toCoreDOM() {
+    public Element toDOM(Collection<Player> inPlayers) {
         Element categoryDOM = new Element("category");
         categoryDOM.addContent(new Element("name").addContent(name));
         categoryDOM.addContent(new Element("tieBreaker").addContent(tieBreakerValue));
         categoryDOM.addContent(new Element("value").addContent(value.toString()));
-        return categoryDOM;
-    }
-
-    public Element toDOM(Collection<Player> inPlayers) {
-        Element categoryDOM = toCoreDOM();
         categoryDOM.addContent(guesses.keySet().stream().sorted()
                 .map(guess -> new Element("guess").addContent(guess))
                 .reduce(new Element("guesses"), Element::addContent));
         categoryDOM.addContent(inPlayers.stream()
-                .map(player -> player.toCoreDOM()
+                .map(player -> player.toDOM()
                         .addContent(new Element("guess").addContent(player.picks.get(this))))
                 .reduce(new Element("players"), Element::addContent));
         return categoryDOM;

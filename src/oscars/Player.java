@@ -185,16 +185,9 @@ public class Player implements Cloneable {
         return inRunningTime >= 0 && time > inRunningTime ? -1 : time;
     }
 
-    public Element toCoreDOM() {
+    public Element toDOM() {
         return new Element("player").addContent(new Element("firstName").addContent(firstName))
                 .addContent(new Element("lastName").addContent(lastName));
-    }
-
-    public Element toDOM(Collection<Category> inCategories) {
-        return toCoreDOM().addContent(inCategories.stream()
-                .map(category -> category.toCoreDOM()
-                        .addContent(new Element("guess").addContent(picks.get(category))))
-                .reduce(new Element("categories"), Element::addContent));
     }
 
     @Override

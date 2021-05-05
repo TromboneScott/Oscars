@@ -1,10 +1,9 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:import href="header.xsl" />
-  <xsl:template match="/categories">
+  <xsl:template match="/all">
     <html>
-      <xsl:variable name="results"
-        select="document('../results.xml')/results" />
+      <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
       </xsl:call-template>
@@ -91,7 +90,7 @@
           </table>
           <br />
           <br />
-          <xsl:for-each select="category">
+          <xsl:for-each select="$results/categories/category">
             <br />
             <br />
             <a>
@@ -104,20 +103,18 @@
               <b>
                 <xsl:value-of select="name" />
               </b>
-              <xsl:if test="tieBreaker != ''">
-                <xsl:value-of
-                  select="concat(' (Tie Breaker: ', tieBreaker, ')')" />
+              <xsl:variable name="xmlFile">
+                <xsl:call-template name="category-xml-file"/>
+              </xsl:variable>
+              <xsl:variable name="tieBreaker" select="document($xmlFile)/category/tieBreaker" />
+              <xsl:if test="$tieBreaker != ''">
+                <xsl:value-of select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
               <br />
-              <xsl:variable name="thisName" select="name" />
               <img>
                 <xsl:attribute name="src">
-                  <xsl:for-each select="$results/categories/category">
-                    <xsl:if test="name = $thisName">
-                      <xsl:value-of select="chart" />
-                    </xsl:if>
-                  </xsl:for-each>
+                  <xsl:value-of select="chart" />
                 </xsl:attribute>
               </img>
             </a>
