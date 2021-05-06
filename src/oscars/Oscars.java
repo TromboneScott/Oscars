@@ -291,11 +291,15 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsCategoryDOM(Category inCategory) {
-        return results.winners(inCategory).stream()
-                .map(winner -> new Element("winner").addContent(winner))
-                .reduce(new Element("category").addContent(
-                        new Element("name").addContent(inCategory.name)), Element::addContent)
-                .addContent(new Element("chart").addContent(inCategory.chartName(results)));
+        Element categoryDOM = new Element("category");
+        categoryDOM.addContent(new Element("name").addContent(inCategory.name));
+        categoryDOM.addContent(inCategory.guesses.keySet().stream().sorted()
+                .map(guess -> new Element("nominee").addContent(guess).setAttribute("status",
+                        results.winners(inCategory).isEmpty() ? "unannounced"
+                                : results.winners(inCategory).contains(guess) ? "correct"
+                                        : "incorrect"))
+                .reduce(new Element("nominees"), Element::addContent));
+        return categoryDOM;
     }
 
     private Element resultsPlayersDOM() {

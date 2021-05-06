@@ -27,37 +27,20 @@
           <xsl:value-of select="$categoryData/value" />
           <br />
           <br />
-          <img>
-            <xsl:attribute name="src">
-              <xsl:value-of select="$categoryResults/chart" />
-            </xsl:attribute>
-          </img>
+          <xsl:call-template name="chart">
+            <xsl:with-param name="categoryResults" select="$categoryResults" />
+          </xsl:call-template>
           <br />
           <br />
           <br />
           <table>
-            <xsl:variable name="winners">
-              <xsl:for-each select="$categoryResults/winner">
-                <xsl:value-of select="concat('|', ., '|')" />
-              </xsl:for-each>
-            </xsl:variable>
             <thead>
               <tr>
                 <th class="header">Name</th>
-                <xsl:for-each select="$categoryData/guesses/guess">
+                <xsl:for-each select="$categoryResults/nominees/nominee">
                   <th>
                     <xsl:attribute name="class">
-                      <xsl:choose>
-                        <xsl:when test="$winners = ''">
-                          unannounced
-                        </xsl:when>
-                        <xsl:when test="contains($winners, concat('|', ., '|'))">
-                          correct
-                        </xsl:when>
-                        <xsl:otherwise>
-                          incorrect
-                        </xsl:otherwise>
-                      </xsl:choose>
+                      <xsl:value-of select="./@status" />
                     </xsl:attribute>
                     <xsl:value-of select="." />
                   </th>
@@ -65,10 +48,10 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:variable name="guesses" select="$categoryData/guesses" />
               <xsl:for-each select="$categoryData/players/player">
                 <xsl:sort select="lastName" />
                 <xsl:sort select="firstName" />
+                <xsl:variable name="guess" select="guess" />
                 <xsl:variable name="playerName">
                   <xsl:value-of select="firstName" />
                   <xsl:if test="firstName != '' and lastName != ''">
@@ -86,17 +69,7 @@
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
-                    <xsl:choose>
-                      <xsl:when test="$winners = ''">
-                        unannounced
-                      </xsl:when>
-                      <xsl:when test="contains($winners, concat('|', guess, '|'))">
-                        correct
-                      </xsl:when>
-                      <xsl:otherwise>
-                        incorrect
-                      </xsl:otherwise>
-                    </xsl:choose>
+                    <xsl:value-of select="$categoryResults/nominees/nominee[. = $guess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -106,10 +79,9 @@
                       <xsl:value-of select="$playerDisplayName" />
                     </a>
                   </td>
-                  <xsl:variable name="guess" select="guess" />
-                  <xsl:for-each select="$guesses/guess">
+                  <xsl:for-each select="$categoryResults/nominees/nominee">
                     <td id="selection">
-                      <xsl:if test="$guess = .">
+                      <xsl:if test=". = $guess">
                         X
                       </xsl:if>
                     </td>
@@ -120,20 +92,10 @@
             <tfoot>
               <tr>
                 <th class="header">Total</th>
-                <xsl:for-each select="$categoryData/guesses/guess">
+                <xsl:for-each select="$categoryResults/nominees/nominee">
                   <th>
                     <xsl:attribute name="class">
-                      <xsl:choose>
-                        <xsl:when test="$winners = ''">
-                          unannounced
-                        </xsl:when>
-                        <xsl:when test="contains($winners, concat('|', ., '|'))">
-                          correct
-                        </xsl:when>
-                        <xsl:otherwise>
-                          incorrect
-                        </xsl:otherwise>
-                      </xsl:choose>
+                      <xsl:value-of select="./@status" />
                     </xsl:attribute>
                     <xsl:variable name="name" select="." />
                     <xsl:value-of select="count($categoryData/players/player[guess=$name])" />

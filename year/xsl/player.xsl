@@ -66,23 +66,13 @@
                 <xsl:variable name="categoryData" select="$categories/category[name = $categoryName]" />
                 <xsl:variable name="playerGuess" select="$categoryData/players/player[firstName = $player/firstName and lastName = $player/lastName]/guess" />
                 <xsl:variable name="winners">
-                  <xsl:for-each select="winner">
+                  <xsl:for-each select="nominees/nominee[./@status = 'correct']">
                     <xsl:value-of select="concat('|', ., '|')" />
                   </xsl:for-each>
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
-                    <xsl:choose>
-                      <xsl:when test="$winners = ''">
-                        unannounced
-                      </xsl:when>
-                      <xsl:when test="contains($winners, concat('|', $playerGuess, '|'))">
-                        correct
-                      </xsl:when>
-                      <xsl:otherwise>
-                        incorrect
-                      </xsl:otherwise>
-                    </xsl:choose>
+                    <xsl:value-of select="nominees/nominee[. = $playerGuess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -100,13 +90,12 @@
                   </td>
                   <td>
                     <xsl:variable name="tempWinners">
-                      <xsl:call-template name="string-replace-all">
-                        <xsl:with-param name="text" select="$winners" />
-                        <xsl:with-param name="replace" select="'||'" />
-                        <xsl:with-param name="by" select="', '" />
-                      </xsl:call-template>
+                      <xsl:for-each select="nominees/nominee[./@status = 'correct']">
+                        <xsl:value-of select="', '" />
+                        <xsl:value-of select="." />
+                      </xsl:for-each>
                     </xsl:variable>
-                    <xsl:value-of select="translate($tempWinners, '|', '')" />
+                    <xsl:value-of select="substring-after($tempWinners, ', ')" />
                   </td>
                   <td>
                     <xsl:if test="$winners != ''">
@@ -149,7 +138,7 @@
                   <xsl:value-of select="floor($playerResults/score)" />
                 </th>
                 <th>
-                  <xsl:value-of select="count($results/categories/category/winner[1])" />
+                  <xsl:value-of select="count($results/categories/category/nominees[nominee/@status = 'correct'])" />
                 </th>
                 <th>
                   <xsl:value-of select="$playerResults/score" />
@@ -183,25 +172,6 @@
           </center>
       </body>
     </html>
-  </xsl:template>
-  <xsl:template name="string-replace-all">
-    <xsl:param name="text" />
-    <xsl:param name="replace" />
-    <xsl:param name="by" />
-    <xsl:choose>
-      <xsl:when test="contains($text, $replace)">
-        <xsl:value-of select="substring-before($text, $replace)" />
-        <xsl:value-of select="$by" />
-        <xsl:call-template name="string-replace-all">
-          <xsl:with-param name="text" select="substring-after($text, $replace)" />
-          <xsl:with-param name="replace" select="$replace" />
-          <xsl:with-param name="by" select="$by" />
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$text" />
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
   <xsl:template name="zeros">
     <xsl:param name="count" />

@@ -47,7 +47,7 @@
                       </a>
                   </td>
                   <xsl:variable name="winners">
-                    <xsl:for-each select="winner">
+                    <xsl:for-each select="nominees/nominee[./@status = 'correct']">
                       <xsl:value-of select="concat('|', ., '|')" />
                     </xsl:for-each>
                   </xsl:variable>
@@ -117,11 +117,9 @@
               </xsl:if>
               <br />
               <br />
-              <img>
-                <xsl:attribute name="src">
-                  <xsl:value-of select="chart" />
-                </xsl:attribute>
-              </img>
+              <xsl:call-template name="chart">
+                <xsl:with-param name="categoryResults" select="." />
+              </xsl:call-template>
             </a>
             <br />
           </xsl:for-each>

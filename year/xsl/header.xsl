@@ -35,4 +35,24 @@
     <br />
     <br />
   </xsl:template>
+  <xsl:template name="chart">
+    <xsl:param name="categoryResults" />
+    <img>
+      <xsl:attribute name="src">
+        <xsl:variable name="chartValues">
+          <xsl:for-each select="$categoryResults/nominees/nominee">
+            <xsl:choose>
+              <xsl:when test="./@status = 'correct'">
+                <xsl:value-of select="'1'" />
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="'0'" />
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:value-of select="concat($categoryResults/name, '_', $chartValues, '.png')" />
+      </xsl:attribute>
+    </img>
+  </xsl:template>
 </xsl:stylesheet>

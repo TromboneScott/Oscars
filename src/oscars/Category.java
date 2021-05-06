@@ -133,9 +133,6 @@ public final class Category {
         categoryDOM.addContent(new Element("name").addContent(name));
         categoryDOM.addContent(new Element("tieBreaker").addContent(tieBreakerValue));
         categoryDOM.addContent(new Element("value").addContent(value.toString()));
-        categoryDOM.addContent(guesses.keySet().stream().sorted()
-                .map(guess -> new Element("guess").addContent(guess))
-                .reduce(new Element("guesses"), Element::addContent));
         categoryDOM.addContent(inPlayers.stream()
                 .map(player -> player.toDOM()
                         .addContent(new Element("guess").addContent(player.picks.get(this))))
