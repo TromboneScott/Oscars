@@ -104,13 +104,7 @@
                           <xsl:value-of select="$categoryData/value" />
                         </xsl:when>
                         <xsl:otherwise>
-                          <xsl:value-of select="0" />
-                          <xsl:if test="$categoryData/tieBreaker > 0">
-                            <xsl:value-of select="'.'" />
-                            <xsl:call-template name="zeros">
-                              <xsl:with-param name="count" select="$categoryData/tieBreaker" />
-                            </xsl:call-template>
-                          </xsl:if>
+                          <xsl:value-of select="translate($categoryData/value, '1', '0')" />
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:if>
@@ -172,14 +166,5 @@
           </center>
       </body>
     </html>
-  </xsl:template>
-  <xsl:template name="zeros">
-    <xsl:param name="count" />
-    <xsl:if test="$count > 0">
-      <xsl:value-of select="0" />
-      <xsl:call-template name="zeros">
-        <xsl:with-param name="count" select="$count - 1" />
-      </xsl:call-template>
-    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
