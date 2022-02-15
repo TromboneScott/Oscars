@@ -371,7 +371,7 @@ public class Oscars implements Runnable {
             chart.removeLegend();
 
             CategoryPlot plot = chart.getCategoryPlot();
-            plot.getRangeAxis().setRange(1, players.size());
+            plot.getRangeAxis().setRange(1, Math.max(2, players.size()));
             plot.getRangeAxis().setInverted(true);
             plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
             plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
