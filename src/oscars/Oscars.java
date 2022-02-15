@@ -48,7 +48,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * breaker number inside parentheses like this: Director(1) to indicate that Director is the first
  * tie breaker. The contestants' names must be in the columns named "First" and "Last" and their
  * time estimate must be in the column named "Time" in the format "H:MM" or "H:MM:SS.D".
- * 
+ *
  * @author Scott McDonald
  * @version 4.5
  */
@@ -77,7 +77,7 @@ public class Oscars implements Runnable {
 
     /**
      * Prompt for Oscars results, store them and create output files
-     * 
+     *
      * @throws IOException
      * @throws InterruptedException
      */

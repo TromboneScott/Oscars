@@ -108,7 +108,7 @@ public class Results {
 
     /**
      * Prompt for results
-     * 
+     *
      * @param inCategories
      *            Categories to prompt for
      * @param inPlayers
@@ -183,7 +183,7 @@ public class Results {
 
     /**
      * The actual running time of the broadcast in seconds if it's ended
-     * 
+     *
      * @return The running time in seconds or -1 if it's not ended yet
      */
     public long runningTime() {
@@ -195,7 +195,7 @@ public class Results {
 
     /**
      * The elapsed time in milliseconds since the start of the broadcast in seconds
-     * 
+     *
      * @return The elapsed time, negative if the show hasn't started
      */
     public long elapsedTimeMillis() {
@@ -208,7 +208,7 @@ public class Results {
 
     /**
      * Get the winner(s) of the given category
-     * 
+     *
      * @param inCategory
      *            The category to get the winner(s) for
      * @return All the winners that have been entered for this category
@@ -219,7 +219,7 @@ public class Results {
 
     /**
      * The title text to use for the results
-     * 
+     *
      * @return The title text to use for the results
      */
     public String title() {

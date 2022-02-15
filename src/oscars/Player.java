@@ -38,7 +38,7 @@ public class Player implements Cloneable {
 
     /**
      * Constructs a new Player with specified picks
-     * 
+     *
      * @param inEntries
      *            All the entries for this Player
      */
@@ -67,7 +67,7 @@ public class Player implements Cloneable {
 
     /**
      * Set this Players's score based on the given Results
-     * 
+     *
      * @param inResults
      *            Results to base the score on
      */
@@ -79,7 +79,7 @@ public class Player implements Cloneable {
 
     /**
      * Get this Player's score
-     * 
+     *
      * @return This Player's score
      */
     public BigDecimal getScore() {
@@ -89,7 +89,7 @@ public class Player implements Cloneable {
     /**
      * Set the Current, Best Possible and Worst Possible Rank based on the scores of all players
      * which must already be set
-     * 
+     *
      * @param inResults
      *            The Results to base the status on
      * @param inPlayers
@@ -111,7 +111,7 @@ public class Player implements Cloneable {
 
     /**
      * Get the rank of this Player
-     * 
+     *
      * @return The rank of this Player
      */
     public long getRank() {
@@ -120,7 +120,7 @@ public class Player implements Cloneable {
 
     /**
      * Determine this Player's best possible rank if all remaining guesses turn out to be correct
-     * 
+     *
      * @return This Player's best possible rank
      */
     public long getBestPossibleRank() {
@@ -129,7 +129,7 @@ public class Player implements Cloneable {
 
     /**
      * Determine this Player's worst possible rank if all remaining guesses turn out to be incorrect
-     * 
+     *
      * @return This Player's worst possible rank
      */
     public long getWorstPossibleRank() {
@@ -177,7 +177,7 @@ public class Player implements Cloneable {
 
     /**
      * Player's guessed time in seconds, -1 if over the actual running time or invalid
-     * 
+     *
      * @param inRunningTime
      *            Actual running time of broadcast in seconds
      */
