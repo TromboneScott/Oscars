@@ -17,7 +17,7 @@
           <br />
           <br />
           <xsl:choose>
-            <xsl:when test="$results/players/count=0">
+            <xsl:when test="count($results/players/player)=0">
               <table>
                 <tr>
                   <td id="rank">
