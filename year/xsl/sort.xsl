@@ -100,7 +100,7 @@
               </xsl:otherwise>
             </xsl:choose>
           </th>
-          <th class="header">
+          <th>
             <xsl:choose>
               <xsl:when test="$sort = 'rank'">
                 <xsl:call-template name="player-table-column-header">
@@ -119,7 +119,7 @@
             </xsl:choose>
           </th>
           <xsl:if test="$inProgress">
-            <th class="header">
+            <th>
               <xsl:choose>
                 <xsl:when test="$sort = 'bpr'">
                   <xsl:call-template name="player-table-column-header">
@@ -137,7 +137,7 @@
                 </xsl:otherwise>
               </xsl:choose>
             </th>
-            <th class="header">
+            <th>
               <xsl:choose>
                 <xsl:when test="$sort = 'wpr'">
                   <xsl:call-template name="player-table-column-header">
@@ -156,7 +156,7 @@
               </xsl:choose>
             </th>
           </xsl:if>
-          <th class="header">
+          <th>
             <xsl:choose>
               <xsl:when test="$sort = 'score'">
                 <xsl:call-template name="player-table-column-header">
