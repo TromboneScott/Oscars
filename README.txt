@@ -40,6 +40,7 @@ Remove any columns not in categories.csv
 Verify columns are in same order as categories.csv
 Remove the header row so all you have is the survey data
 IMPORTANT: Use search and replace to remove any commas
+Use search and replace to remove any special characters like á and é
 Save in CSV (DOS) format as players.csv
 
 You will be prompted on how to map survey answers to nominees for each category.
