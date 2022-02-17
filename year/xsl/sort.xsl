@@ -26,6 +26,8 @@
                     <b>BALLOTS ARE BEING COLLECTED</b>
                     <br />
                     <br />
+                    &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
+                    <br />
                     <br />
                     Data will be added after all ballots are in.
                     <br />
