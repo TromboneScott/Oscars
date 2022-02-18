@@ -29,8 +29,13 @@
         <td>(Unofficial Results)</td>
       </tr>
     </table>
-    <br />
-    <i>Tip: Use ctrl-alt-shift when clicking reload to force page to refresh.</i>
+    <xsl:if test="not(string($results/showTime/end))">
+      <br />
+      <i>Refresh this page to get updated results as winners are announced.</i>
+      <br />
+      <br />
+      <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
+    </xsl:if>
     <br />
     <br />
     <br />
