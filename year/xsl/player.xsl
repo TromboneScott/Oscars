@@ -80,9 +80,9 @@
                         <xsl:value-of select="concat('../category/', $categoryName, '.xml')" />
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
-                      <xsl:if test="$categoryData/tieBreaker != ''">
-                        <xsl:value-of select="concat(' (', $categoryData/tieBreaker, ')')" />
-                      </xsl:if>
+                      <xsl:call-template name="tieBreaker">
+                        <xsl:with-param name="tieBreaker" select="$categoryData/tieBreaker" />
+                      </xsl:call-template>
                     </a>
                   </td>
                   <td>

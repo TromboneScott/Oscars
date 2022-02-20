@@ -44,6 +44,10 @@
                           <xsl:value-of select="concat('#', name)" />
                         </xsl:attribute>
                         <xsl:value-of select="name" />
+                        <xsl:variable name="name" select="name" />
+                        <xsl:call-template name="tieBreaker">
+                          <xsl:with-param name="tieBreaker" select="$categories/category[name = $name]/tieBreaker" />
+                        </xsl:call-template>
                       </a>
                   </td>
                   <xsl:variable name="winners">
