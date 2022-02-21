@@ -82,7 +82,7 @@
                   <xsl:for-each select="$categoryResults/nominees/nominee">
                     <td id="selection">
                       <xsl:if test=". = $guess">
-                        X
+                        &#10004;
                       </xsl:if>
                     </td>
                   </xsl:for-each>
