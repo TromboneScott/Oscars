@@ -111,19 +111,6 @@
                   </td>
                 </tr>
               </xsl:for-each>
-              <tr>
-                <xsl:attribute name="class">
-                  <xsl:value-of select="$playerResults/time/@status" />
-                </xsl:attribute>
-                <td class="header">Show Running Time</td>
-                <td>
-                  <xsl:value-of select="$playerResults/time" />
-                </td>
-                <td>
-                  <xsl:value-of select="$results/showTime/length" />
-                </td>
-                <td>N/A</td>
-              </tr>
             </tbody>
             <tfoot>
               <tr>
@@ -137,6 +124,33 @@
                 <th>
                   <xsl:value-of select="$playerResults/score" />
                 </th>
+              </tr>
+              <tr>
+                <xsl:attribute name="class">
+                  <xsl:value-of select="$playerResults/time/@status" />
+                </xsl:attribute>
+                <td class="header">
+                  <xsl:value-of select="'Show Running Time'" />
+                  <xsl:for-each select="$categories/category/tieBreaker"> 
+                    <xsl:sort select="." data-type="number"/>
+                    <xsl:if test="position()=last()">
+                      <xsl:call-template name="tieBreaker">
+                        <xsl:with-param name="tieBreaker" select=". + 1" />
+                      </xsl:call-template>
+                    </xsl:if>
+                  </xsl:for-each>
+                </td>
+                <td>
+                  <xsl:value-of select="$playerResults/time" />
+                </td>
+                <td>
+                  <xsl:value-of select="$results/showTime/length" />
+                </td>
+                <td>
+                  <center>
+                    --------
+                  </center>
+                </td>
               </tr>
             </tfoot>
           </table>
