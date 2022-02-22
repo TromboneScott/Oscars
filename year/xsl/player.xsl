@@ -80,10 +80,10 @@
                         <xsl:value-of select="concat('../category/', $categoryName, '.xml')" />
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
-                      <xsl:call-template name="tieBreaker">
-                        <xsl:with-param name="tieBreaker" select="$categoryData/tieBreaker" />
-                      </xsl:call-template>
                     </a>
+                    <xsl:call-template name="tieBreaker">
+                      <xsl:with-param name="tieBreaker" select="$categoryData/tieBreaker" />
+                    </xsl:call-template>
                   </td>
                   <td>
                     <xsl:value-of select="$playerGuess" />

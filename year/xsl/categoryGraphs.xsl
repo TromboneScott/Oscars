@@ -24,13 +24,13 @@
                 <th class="header">
                   Category
                 </th>
-                <th class="header">
+                <th>
                   Correct
                 </th>
-                <th class="header">
+                <th>
                   Wrong
                 </th>
-                <th class="header">
+                <th>
                   Graph
                 </th>
               </tr>
@@ -38,17 +38,17 @@
             <tbody>
               <xsl:for-each select="$results/categories/category">
                 <tr>
-                  <td>
-                      <a>
-                        <xsl:attribute name="href">
-                          <xsl:value-of select="concat('#', name)" />
-                        </xsl:attribute>
-                        <xsl:value-of select="name" />
-                        <xsl:variable name="name" select="name" />
-                        <xsl:call-template name="tieBreaker">
-                          <xsl:with-param name="tieBreaker" select="$categories/category[name = $name]/tieBreaker" />
-                        </xsl:call-template>
-                      </a>
+                  <td class="header">
+                    <a>
+                      <xsl:attribute name="href">
+                        <xsl:value-of select="concat('#', name)" />
+                      </xsl:attribute>
+                      <xsl:value-of select="name" />
+                    </a>
+                    <xsl:variable name="name" select="name" />
+                    <xsl:call-template name="tieBreaker">
+                      <xsl:with-param name="tieBreaker" select="$categories/category[name = $name]/tieBreaker" />
+                    </xsl:call-template>
                   </td>
                   <xsl:variable name="winners">
                     <xsl:for-each select="nominees/nominee[./@status = 'correct']">
