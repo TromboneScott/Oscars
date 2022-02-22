@@ -11,11 +11,6 @@
           <xsl:call-template name="header">
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
-          <b>
-            <a href="../../history">Oscars History</a>
-          </b>
-          <br />
-          <br />
           <xsl:choose>
             <xsl:when test="count($results/players/player)=0">
               <table>
@@ -29,7 +24,7 @@
                     &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
                     <br />
                     <br />
-                    Data will be added after all ballots are in.
+                    This site will be updated once all contest data is collected.
                     <br />
                     <br />
                     Check here for live results during the Oscars broadcast.
@@ -66,6 +61,9 @@
               <a href="../category/all.xml" id="return">All Categories</a>
             </xsl:otherwise>
           </xsl:choose>
+          <br />
+          <br />
+          <a href="../../history">Oscars History</a>
           <br />
           <br />
           <div id="date">
