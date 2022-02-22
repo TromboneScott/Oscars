@@ -141,14 +141,27 @@
                   </xsl:for-each>
                 </td>
                 <td>
-                  <xsl:value-of select="$playerResults/time" />
-                </td>
-                <td>
-                  <xsl:value-of select="$results/showTime/length" />
+                  <center>
+                    <xsl:value-of select="$playerResults/time" />
+                  </center>
                 </td>
                 <td>
                   <center>
-                    --------
+                    <xsl:value-of select="$results/showTime/length" />
+                  </center>
+                </td>
+                <td>
+                  <center>
+                    <i>
+                      <xsl:choose>
+                        <xsl:when test="$playerResults/time/@status='correct'">
+                          VALID
+                        </xsl:when>
+                        <xsl:otherwise>
+                          OVER
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </i>
                   </center>
                 </td>
               </tr>
