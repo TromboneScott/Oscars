@@ -34,11 +34,6 @@ import org.jdom2.ProcessingInstruction;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * This program will allow Oscars winners to be selected and a new results file will be generated.
@@ -220,7 +215,8 @@ public class Oscars implements Runnable {
         System.out.print("\nWriting final results... ");
         writeResults();
         cleanUpCharts("category", categories.stream().map(category -> category.chartName(results)));
-        cleanUpCharts("rank", players.stream().map(player -> "rank_" + player.getRank() + ".png"));
+        cleanUpCharts("rank", players.stream().mapToLong(Player::getRank).mapToObj(RankChart::new)
+                .map(RankChart::chartName));
         System.out.println("DONE");
     }
 
@@ -362,22 +358,8 @@ public class Oscars implements Runnable {
     private void writeRankCharts() throws IOException {
         System.out.print("Writing rank images... ");
         mkdir("rank");
-        for (int rank = 1; rank <= players.size(); rank++) {
-            DefaultCategoryDataset data = new DefaultCategoryDataset();
-            data.addValue(rank, "A", "");
-            data.addValue(players.size(), "B", "");
-
-            JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
-            chart.removeLegend();
-
-            CategoryPlot plot = chart.getCategoryPlot();
-            plot.getRangeAxis().setRange(1, Math.max(2, players.size()));
-            plot.getRangeAxis().setInverted(true);
-            plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
-            plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
-
-            ChartUtilities.saveChartAsPNG(new File("rank/rank_" + rank + ".png"), chart, 80, 180);
-        }
+        for (int rank = 1; rank <= players.size(); rank++)
+            new RankChart(rank).writeChart(players.size());
         System.out.println("DONE");
     }
 
