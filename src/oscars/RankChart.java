@@ -10,6 +10,8 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public final class RankChart {
+    public static final String DIRECTORY = "rank/";
+
     private final long rank;
 
     public RankChart(long inRank) {
@@ -17,7 +19,7 @@ public final class RankChart {
     }
 
     public String chartName() {
-        return "rank/rank_" + rank + ".png";
+        return "rank_" + rank + ".png";
     }
 
     public void writeChart(int playerCount) throws IOException {
@@ -34,6 +36,6 @@ public final class RankChart {
         plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
         plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
 
-        ChartUtilities.saveChartAsPNG(new File(chartName()), chart, 80, 180);
+        ChartUtilities.saveChartAsPNG(new File(DIRECTORY + chartName()), chart, 80, 180);
     }
 }

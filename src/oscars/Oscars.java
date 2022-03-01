@@ -214,9 +214,10 @@ public class Oscars implements Runnable {
         // In case it was interrupted
         System.out.print("\nWriting final results... ");
         writeResults();
-        cleanUpCharts("category", categories.stream().map(category -> category.chartName(results)));
-        cleanUpCharts("rank", players.stream().mapToLong(Player::getRank).mapToObj(RankChart::new)
-                .map(RankChart::chartName));
+        cleanUpCharts(Category.DIRECTORY,
+                categories.stream().map(category -> category.chartName(results)));
+        cleanUpCharts(RankChart.DIRECTORY, players.stream().mapToLong(Player::getRank)
+                .mapToObj(RankChart::new).map(RankChart::chartName));
         System.out.println("DONE");
     }
 
@@ -357,7 +358,7 @@ public class Oscars implements Runnable {
 
     private void writeRankCharts() throws IOException {
         System.out.print("Writing rank images... ");
-        mkdir("rank");
+        mkdir(RankChart.DIRECTORY);
         for (int rank = 1; rank <= players.size(); rank++)
             new RankChart(rank).writeChart(players.size());
         System.out.println("DONE");
@@ -365,7 +366,7 @@ public class Oscars implements Runnable {
 
     private void writeCategoryPages() throws IOException {
         System.out.print("Writing category web pages... ");
-        mkdir("category");
+        mkdir(Category.DIRECTORY);
         writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
                         .reduce(new Element("categories"), Element::addContent),

@@ -25,6 +25,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public final class Category {
     private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)");
 
+    public static final String DIRECTORY = "category/";
+
     public static final Category FIRST_NAME = new Category("First");
 
     public static final Category LAST_NAME = new Category("Last");
@@ -124,8 +126,7 @@ public final class Category {
         plot.setBackgroundPaint(BACKGROUND_COLOR);
         plot.setRenderer(new GuessRenderer(guessColor));
 
-        ChartUtilities.saveChartAsPNG(new File("category/" + chartName(inResults)), chart, 500,
-                300);
+        ChartUtilities.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
     }
 
     public Element toDOM(Collection<Player> inPlayers) {
