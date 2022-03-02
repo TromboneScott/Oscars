@@ -370,11 +370,11 @@ public class Oscars implements Runnable {
         writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
                         .reduce(new Element("categories"), Element::addContent),
-                "category/all.xml", "../xsl/categoryGraphs.xsl");
+                Category.DIRECTORY + "all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results);
             writeDocument(new Element("category").addContent(category.name),
-                    "category/" + category.name + ".xml", "../xsl/category.xsl");
+                    Category.DIRECTORY + category.name + ".xml", "../xsl/category.xsl");
         }
         System.out.println("DONE");
     }
@@ -410,12 +410,12 @@ public class Oscars implements Runnable {
                 .orElseGet(Document::new).addContent(inElement);
     }
 
-    private void cleanUpCharts(String inDirectory, Stream<String> inExpectedFiles)
+    private void cleanUpCharts(String inDirectory, Stream<String> inChartsToKeep)
             throws IOException {
-        Set<String> expectedFiles = inExpectedFiles.collect(Collectors.toSet());
+        Set<String> chartsToKeep = inChartsToKeep.collect(Collectors.toSet());
         Files.list(Paths.get(inDirectory))
                 .filter(file -> file.toString().endsWith(".png")
-                        && !expectedFiles.contains(file.getFileName().toString()))
+                        && !chartsToKeep.contains(file.getFileName().toString()))
                 .map(Path::toFile).forEach(File::delete);
     }
 }
