@@ -272,49 +272,37 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsDOM() {
-        Element resultsDOM = new Element("results");
-        resultsDOM.addContent(new Element("title").addContent(results.title()));
-        resultsDOM.addContent(resultsCategoriesDOM());
-        resultsDOM.addContent(resultsPlayersDOM());
-        resultsDOM.addContent(resultsShowTimeDOM());
-        resultsDOM.addContent(new Element("updated")
-                .addContent(new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(new Date())));
-        return resultsDOM;
-    }
-
-    private Element resultsCategoriesDOM() {
-        return categories.stream().map(this::resultsCategoryDOM).reduce(new Element("categories"),
-                Element::addContent);
+        return new Element("results").addContent(new Element("title").addContent(results.title()))
+                .addContent(categories.stream().map(this::resultsCategoryDOM)
+                        .reduce(new Element("categories"), Element::addContent))
+                .addContent(IntStream.range(0, players.size()).mapToObj(this::resultsPlayerDOM)
+                        .reduce(new Element("players"), Element::addContent))
+                .addContent(resultsShowTimeDOM()).addContent(new Element("updated").addContent(
+                        new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(new Date())));
     }
 
     private Element resultsCategoryDOM(Category inCategory) {
-        Element categoryDOM = new Element("category");
-        categoryDOM.addContent(new Element("name").addContent(inCategory.name));
-        categoryDOM.addContent(inCategory.guesses.keySet().stream().sorted()
-                .map(guess -> new Element("nominee").addContent(guess).setAttribute("status",
-                        results.winners(inCategory).isEmpty() ? "unannounced"
-                                : results.winners(inCategory).contains(guess) ? "correct"
-                                        : "incorrect"))
-                .reduce(new Element("nominees"), Element::addContent));
-        return categoryDOM;
-    }
-
-    private Element resultsPlayersDOM() {
-        return IntStream.range(0, players.size()).boxed().map(this::resultsPlayerDOM)
-                .reduce(new Element("players"), Element::addContent);
+        return new Element("category").addContent(new Element("name").addContent(inCategory.name))
+                .addContent(inCategory.guesses.keySet().stream().sorted()
+                        .map(guess -> new Element("nominee").addContent(guess).setAttribute(
+                                "status",
+                                results.winners(inCategory).isEmpty() ? "unannounced"
+                                        : results.winners(inCategory).contains(guess) ? "correct"
+                                                : "incorrect"))
+                        .reduce(new Element("nominees"), Element::addContent));
     }
 
     private Element resultsPlayerDOM(int playerNum) {
         Player player = players.get(playerNum);
-        Element playerDOM = player.toDOM();
-        playerDOM.addContent(new Element("rank").addContent(String.valueOf(player.getRank())));
-        playerDOM.addContent(
-                new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())));
-        playerDOM.addContent(
-                new Element("wpr").addContent(String.valueOf(player.getWorstPossibleRank())));
-        playerDOM.addContent(
-                new Element("score").addContent(String.format(scoreFormat, player.getScore())));
-        playerDOM
+        return player.toDOM()
+                .addContent(new Element("rank").addContent(String.valueOf(player.getRank())))
+                .addContent(
+                        new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())))
+                .addContent(new Element("wpr")
+                        .addContent(String.valueOf(player.getWorstPossibleRank())))
+                .addContent(
+                        new Element("score").addContent(
+                                String.format(scoreFormat, player.getScore())))
                 .addContent(
                         new Element("time")
                                 .setAttribute("status",
@@ -322,13 +310,13 @@ public class Oscars implements Runnable {
                                                 || player.getTime(runningTime) > elapsedTime
                                                         ? "unannounced"
                                                         : "correct")
-                                .addContent(formatTime(player.time)));
-        playerDOM.addContent(players.stream().map(
-                opponent -> new Element("player").addContent(player.isWorseThan(opponent) ? "BETTER"
-                        : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
-                .reduce(new Element("opponents"), Element::addContent));
-        playerDOM.setAttribute("id", String.valueOf(playerNum + 1));
-        return playerDOM;
+                                .addContent(formatTime(player.time)))
+                .addContent(players.stream()
+                        .map(opponent -> new Element("player")
+                                .addContent(player.isWorseThan(opponent) ? "BETTER"
+                                        : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
+                        .reduce(new Element("opponents"), Element::addContent))
+                .setAttribute("id", String.valueOf(playerNum + 1));
     }
 
     private Element resultsShowTimeDOM() {
