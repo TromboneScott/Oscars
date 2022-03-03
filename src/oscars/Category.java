@@ -61,25 +61,12 @@ public final class Category {
     }
 
     public Category(String inName, Map<String, Long> inGuesses) {
-        name = baseName(inName);
-        tieBreakerValue = tieBreakerValue(inName);
-        value = value(tieBreakerValue);
-        guesses = Collections.unmodifiableMap(new HashMap<>(inGuesses));
-    }
-
-    private static String baseName(String inName) {
-        return TIE_BREAKER_PATTERN.matcher(inName).replaceFirst("");
-    }
-
-    private static String tieBreakerValue(String inName) {
         Matcher tieBreakerMatcher = TIE_BREAKER_PATTERN.matcher(inName);
-        return tieBreakerMatcher.find() ? tieBreakerMatcher.group(1) : "";
-    }
-
-    private static BigDecimal value(String inTieBreakerValue) {
-        return inTieBreakerValue.isEmpty() ? BigDecimal.ONE
-                : BigDecimal.ONE
-                        .add(BigDecimal.ONE.movePointLeft(Integer.parseInt(inTieBreakerValue)));
+        name = tieBreakerMatcher.replaceFirst("");
+        tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
+        value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
+                : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
+        guesses = Collections.unmodifiableMap(new HashMap<>(inGuesses));
     }
 
     @Override

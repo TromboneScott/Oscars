@@ -384,9 +384,9 @@ public class Oscars implements Runnable {
         mkdir("player");
         for (Player player : players)
             writeDocument(player.toDOM(),
-                    "player/" + player.firstName
-                            + (player.firstName.isEmpty() || player.lastName.isEmpty() ? "" : " ")
-                            + player.lastName + ".xml",
+                    "player/" + Stream.of(player.firstName, player.lastName)
+                            .filter(name -> !name.isEmpty()).collect(Collectors.joining(" "))
+                            + ".xml",
                     "../xsl/player.xsl");
         System.out.println("DONE");
     }
