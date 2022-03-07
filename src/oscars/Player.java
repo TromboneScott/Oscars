@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
@@ -30,11 +31,11 @@ public class Player implements Cloneable {
     /** Player's current rank */
     private long rank;
 
-    /** Players that this player will lose to */
-    private Set<Player> bestPossibleRankPlayers;
+    /** Player's worst possible rank */
+    private long worstPossibleRank;
 
-    /** Players that will lose to this player */
-    private Set<Player> worstPossibleRankPlayers;
+    /** Players that this player has lost to */
+    private Set<Player> lostTo;
 
     /**
      * Constructs a new Player with specified picks
@@ -59,10 +60,9 @@ public class Player implements Cloneable {
 
     private long time(String inTimeString) {
         String[] timeArray = inTimeString.split(":", 3);
-        return timeArray.length < 2 ? -1
-                : TimeUnit.HOURS.toSeconds(Long.parseLong(timeArray[0]))
-                        + TimeUnit.MINUTES.toSeconds(Long.parseLong(timeArray[1]))
-                        + (timeArray.length > 2 ? Long.parseLong(timeArray[2]) : 0);
+        return TimeUnit.HOURS.toSeconds(Long.parseLong(timeArray[0]))
+                + TimeUnit.MINUTES.toSeconds(Long.parseLong(timeArray[1]))
+                + (timeArray.length > 2 ? Long.parseLong(timeArray[2]) : 0);
     }
 
     /**
@@ -101,12 +101,15 @@ public class Player implements Cloneable {
      */
     public void setRanks(Results inResults, Collection<Player> inPlayers, long inRunningTime,
             long inElapsedTime) {
-        rank = filter(inPlayers, inRunningTime, inElapsedTime, false).size() + 1;
-        bestPossibleRankPlayers = getUpdatedPlayer(this, inResults, true).filter(
-                getUpdatedPlayers(inPlayers, inResults, true), inRunningTime,
-                time > inElapsedTime ? time : inElapsedTime, false);
-        worstPossibleRankPlayers = filter(getUpdatedPlayers(inPlayers, inResults, false),
-                inRunningTime, inElapsedTime, inRunningTime < 0);
+        rank = 1 + lostToStream(inPlayers, inRunningTime, inElapsedTime).count();
+        lostTo = getUpdatedPlayer(this, inResults, true)
+                .lostToStream(getUpdatedPlayers(inPlayers, inResults, true), inRunningTime,
+                        time > inElapsedTime ? time : inElapsedTime)
+                .collect(Collectors.toSet());
+        Collection<Player> worstCasePlayers = getUpdatedPlayers(inPlayers, inResults, false);
+        worstPossibleRank = 1 + Math.max(time > inElapsedTime
+                ? lostToStream(worstCasePlayers, inRunningTime, time - 1).count()
+                : 0, lostToStream(worstCasePlayers, inRunningTime, Long.MAX_VALUE).count());
     }
 
     /**
@@ -124,7 +127,7 @@ public class Player implements Cloneable {
      * @return This Player's best possible rank
      */
     public long getBestPossibleRank() {
-        return bestPossibleRankPlayers.size() + 1;
+        return lostTo.size() + 1;
     }
 
     /**
@@ -133,26 +136,33 @@ public class Player implements Cloneable {
      * @return This Player's worst possible rank
      */
     public long getWorstPossibleRank() {
-        return worstPossibleRankPlayers.size() + 1;
+        return worstPossibleRank;
     }
 
-    public boolean isBetterThan(Player inPlayer) {
-        return !worstPossibleRankPlayers.contains(inPlayer);
+    /**
+     * Determine if this Player and the opponent will be tied at the end of the contest
+     * 
+     * @param inOpponent
+     * @return Whether or not they have all same guesses including the time
+     */
+    public boolean tiedWith(Player inOpponent, Results inResults, long inRunningTime) {
+        return (time == inOpponent.time
+                || inRunningTime >= 0 && time > inRunningTime && inOpponent.time > inRunningTime)
+                && getUpdatedPlayer(this, inResults, true).score
+                        .equals(getUpdatedPlayer(inOpponent, inResults, true).score);
     }
 
-    public boolean isWorseThan(Player inPlayer) {
-        return bestPossibleRankPlayers.contains(inPlayer);
+    public boolean lostTo(Player inOpponent) {
+        return lostTo.contains(inOpponent);
     }
 
-    private Set<Player> filter(Collection<Player> inPlayers, long inRunningTime,
-            double inElapsedTime, boolean inWorst) {
+    private Stream<Player> lostToStream(Collection<Player> inPlayers, long inRunningTime,
+            double inElapsedTime) {
         double runningTime = inRunningTime < 0 ? inElapsedTime : inRunningTime;
         return inPlayers.stream()
                 .filter(opponent -> opponent.score.compareTo(score) > 0
-                        || opponent.score.equals(score) && time != opponent.time
-                                && opponent.time >= 0 && (inWorst || opponent.time <= runningTime)
-                                && (time < opponent.time || time > runningTime))
-                .collect(Collectors.toSet());
+                        || opponent.score.equals(score) && opponent.time <= runningTime
+                                && (time < opponent.time || time > runningTime));
     }
 
     private Collection<Player> getUpdatedPlayers(Collection<Player> inPlayers, Results inResults,

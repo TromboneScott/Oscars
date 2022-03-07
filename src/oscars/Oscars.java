@@ -312,9 +312,11 @@ public class Oscars implements Runnable {
                                                         : "correct")
                                 .addContent(formatTime(player.time)))
                 .addContent(players.stream()
-                        .map(opponent -> new Element("player")
-                                .addContent(player.isWorseThan(opponent) ? "BETTER"
-                                        : player.isBetterThan(opponent) ? "WORSE" : "TBD"))
+                        .map(opponent -> new Element("player").addContent(player.lostTo(opponent)
+                                ? "BETTER"
+                                : opponent.lostTo(player)
+                                        || player.tiedWith(opponent, results, runningTime) ? "WORSE"
+                                                : "TBD"))
                         .reduce(new Element("opponents"), Element::addContent))
                 .setAttribute("id", String.valueOf(playerNum + 1));
     }
