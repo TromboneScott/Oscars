@@ -6,6 +6,13 @@
       <meta http-equiv="cache-control" content="no-cache" />
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
+      <xsl:if test="$results/refresh > 0">
+        <meta http-equiv="refresh" >
+          <xsl:attribute name="content">
+            <xsl:value-of select="$results/refresh" />
+          </xsl:attribute>
+        </meta>
+      </xsl:if>
       <title>
         <xsl:value-of select="$results/title" />
       </title>

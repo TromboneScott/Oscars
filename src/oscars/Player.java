@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,7 +21,7 @@ public class Player implements Cloneable {
     /** Player's picks - immutable */
     public final Map<Category, String> picks;
 
-    /** Player's guessed time in seconds, -1 if invalid */
+    /** Player's guessed time in seconds */
     public final long time;
 
     /** Player's current score */
@@ -59,10 +58,8 @@ public class Player implements Cloneable {
     }
 
     private long time(String inTimeString) {
-        String[] timeArray = inTimeString.split(":", 3);
-        return TimeUnit.HOURS.toSeconds(Long.parseLong(timeArray[0]))
-                + TimeUnit.MINUTES.toSeconds(Long.parseLong(timeArray[1]))
-                + (timeArray.length > 2 ? Long.parseLong(timeArray[2]) : 0);
+        return Stream.of(inTimeString.split(":", 3)).mapToLong(Long::parseLong).reduce(0,
+                (subtotal, element) -> subtotal * 60 + element);
     }
 
     /**

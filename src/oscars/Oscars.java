@@ -213,7 +213,7 @@ public class Oscars implements Runnable {
 
         // In case it was interrupted
         System.out.print("\nWriting final results... ");
-        writeResults();
+        writeResults(false);
         cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
         cleanUpCharts(RankChart.DIRECTORY, players.stream().mapToLong(Player::getRank)
@@ -240,9 +240,9 @@ public class Oscars implements Runnable {
     @Override
     public void run() {
         try {
-            for (long waitTimeMillis = 0; waitTimeMillis >= 0; waitTimeMillis = waitTimeMillis()) {
-                Thread.sleep(waitTimeMillis);
-                writeResults();
+            for (long waitTime = 0; waitTime >= 0; waitTime = nextPlayerTime(10)) {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(waitTime));
+                writeResults(true);
             }
         } catch (InterruptedException e) {
             // Ignore
@@ -251,33 +251,34 @@ public class Oscars implements Runnable {
         }
     }
 
-    private long waitTimeMillis() {
-        final long nextTime = elapsedTime < 0 ? 0
-                : TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(elapsedTime) + 1);
-        return runningTime < 0 ? Math.max(TimeUnit.SECONDS.toMillis(players.stream()
-                .map(player -> player.getTime(runningTime))
-                .filter(playerTime -> playerTime > elapsedTime && playerTime >= 0
-                        && playerTime < nextTime)
-                .mapToLong(Long::valueOf).min().orElse(nextTime)) - results.elapsedTimeMillis(), 0)
-                : -1;
-    }
-
-    private void writeResults() throws IOException {
+    private void writeResults(boolean inRefresh) throws IOException {
         runningTime = results.runningTime();
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
         players.parallelStream().forEach(player -> player.setScore(results));
         players.parallelStream()
                 .forEach(player -> player.setRanks(results, players, runningTime, elapsedTime));
-        writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
+        writeDocument(resultsDOM(inRefresh), Results.RESULTS_FILE, null);
     }
 
-    private Element resultsDOM() {
+    private long nextPlayerTime(long inMaxTime) {
+        // Depends on writeResults to set runningTime and elapsedTime
+        return runningTime >= 0 ? -1
+                : players.stream().mapToLong(player -> player.getTime(runningTime) - elapsedTime)
+                        .filter(playerTime -> playerTime > 0 && playerTime < inMaxTime).min()
+                        .orElse(inMaxTime);
+    }
+
+    private Element resultsDOM(boolean inRefresh) {
         return new Element("results").addContent(new Element("title").addContent(results.title()))
                 .addContent(categories.stream().map(this::resultsCategoryDOM)
                         .reduce(new Element("categories"), Element::addContent))
                 .addContent(IntStream.range(0, players.size()).mapToObj(this::resultsPlayerDOM)
                         .reduce(new Element("players"), Element::addContent))
-                .addContent(resultsShowTimeDOM()).addContent(new Element("updated").addContent(
+                .addContent(resultsShowTimeDOM())
+                .addContent(new Element("refresh").addContent(inRefresh
+                        ? String.valueOf(nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5)
+                        : "-1"))
+                .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(new Date())));
     }
 
