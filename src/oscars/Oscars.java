@@ -213,7 +213,7 @@ public class Oscars implements Runnable {
 
         // In case it was interrupted
         System.out.print("\nWriting final results... ");
-        writeResults(false);
+        writeResults();
         cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
         cleanUpCharts(RankChart.DIRECTORY, players.stream().mapToLong(Player::getRank)
@@ -242,7 +242,7 @@ public class Oscars implements Runnable {
         try {
             for (long waitTime = 0; waitTime >= 0; waitTime = nextPlayerTime(10)) {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(waitTime));
-                writeResults(true);
+                writeResults();
             }
         } catch (InterruptedException e) {
             // Ignore
@@ -251,33 +251,31 @@ public class Oscars implements Runnable {
         }
     }
 
-    private void writeResults(boolean inRefresh) throws IOException {
+    private void writeResults() throws IOException {
         runningTime = results.runningTime();
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
         players.parallelStream().forEach(player -> player.setScore(results));
         players.parallelStream()
                 .forEach(player -> player.setRanks(results, players, runningTime, elapsedTime));
-        writeDocument(resultsDOM(inRefresh), Results.RESULTS_FILE, null);
+        writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
     }
 
     private long nextPlayerTime(long inMaxTime) {
-        // Depends on writeResults to set runningTime and elapsedTime
         return runningTime >= 0 ? -1
                 : players.stream().mapToLong(player -> player.getTime(runningTime) - elapsedTime)
                         .filter(playerTime -> playerTime > 0 && playerTime < inMaxTime).min()
                         .orElse(inMaxTime);
     }
 
-    private Element resultsDOM(boolean inRefresh) {
+    private Element resultsDOM() {
         return new Element("results").addContent(new Element("title").addContent(results.title()))
                 .addContent(categories.stream().map(this::resultsCategoryDOM)
                         .reduce(new Element("categories"), Element::addContent))
                 .addContent(IntStream.range(0, players.size()).mapToObj(this::resultsPlayerDOM)
                         .reduce(new Element("players"), Element::addContent))
                 .addContent(resultsShowTimeDOM())
-                .addContent(new Element("refresh").addContent(inRefresh
-                        ? String.valueOf(nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5)
-                        : "-1"))
+                .addContent(new Element("refresh").addContent(String.valueOf(elapsedTime < 0 ? -1
+                        : (nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5))))
                 .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(new Date())));
     }
