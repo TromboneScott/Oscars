@@ -70,6 +70,10 @@ public class Oscars implements Runnable {
 
     private long elapsedTime;
 
+    private long validTimes = 0;
+
+    private Date updated;
+
     /**
      * Prompt for Oscars results, store them and create output files
      *
@@ -222,6 +226,7 @@ public class Oscars implements Runnable {
     }
 
     private boolean prompt() throws IOException, InterruptedException {
+        updated = new Date();
         Thread thread = new Thread(this);
         try {
             thread.start();
@@ -262,12 +267,18 @@ public class Oscars implements Runnable {
 
     private long nextPlayerTime(long inMaxTime) {
         return runningTime >= 0 ? -1
-                : players.stream().mapToLong(player -> player.getTime(runningTime) - elapsedTime)
+                : players.stream().mapToLong(player -> player.time - elapsedTime)
                         .filter(playerTime -> playerTime > 0 && playerTime < inMaxTime).min()
                         .orElse(inMaxTime);
     }
 
     private Element resultsDOM() {
+        long currentTimes = players.stream().filter(player -> player.time <= elapsedTime).count();
+        if (validTimes != currentTimes) {
+            updated = new Date();
+            validTimes = currentTimes;
+        }
+
         return new Element("results").addContent(new Element("title").addContent(results.title()))
                 .addContent(categories.stream().map(this::resultsCategoryDOM)
                         .reduce(new Element("categories"), Element::addContent))
@@ -277,7 +288,7 @@ public class Oscars implements Runnable {
                 .addContent(new Element("refresh").addContent(String.valueOf(elapsedTime < 0 ? -1
                         : (nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5))))
                 .addContent(new Element("updated").addContent(
-                        new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(new Date())));
+                        new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
     }
 
     private Element resultsCategoryDOM(Category inCategory) {
