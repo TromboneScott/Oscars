@@ -1,6 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template name="init">
     <xsl:param name="results" />
+    <xsl:comment>Oscars Website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
       <meta http-equiv="cache-control" content="no-cache" />

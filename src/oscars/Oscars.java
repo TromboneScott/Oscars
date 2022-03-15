@@ -357,10 +357,12 @@ public class Oscars implements Runnable {
     }
 
     private void writeRankCharts() throws IOException {
-        System.out.print("Step 2 of 4: Writing rank images... ");
+        System.out.print("Step 2 of 4: Writing " + players.size() + " rank images... ");
         mkdir(RankChart.DIRECTORY);
-        for (int rank = 1; rank <= players.size(); rank++)
+        for (int rank = 1; rank <= players.size(); rank++) {
+            System.out.print(rank + "-");
             new RankChart(rank).writeChart(players.size());
+        }
         System.out.println("DONE");
     }
 

@@ -1,6 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:import href="header.xsl" />
+  <xsl:output method="html" encoding="utf-8" indent="yes" />
+  <xsl:include href="header.xsl" />
   <xsl:template match="/categories">
+    <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <xsl:variable name="categories" select="." />
       <xsl:variable name="results" select="document('../results.xml')/results" />
