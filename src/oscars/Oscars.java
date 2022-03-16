@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.jdom2.Comment;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -397,7 +398,8 @@ public class Oscars implements Runnable {
             throws IOException {
         try (PrintWriter writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(inXMLFile), "UTF-8"))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(buildDocument(inElement, inXSLFile),
+            new XMLOutputter(Format.getPrettyFormat()).output(buildDocument(inElement, inXSLFile)
+                    .addContent(0, new Comment("OSCARS website created by Scott McDonald")),
                     writer);
         }
     }
