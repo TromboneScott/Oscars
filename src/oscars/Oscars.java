@@ -246,7 +246,8 @@ public class Oscars implements Runnable {
     @Override
     public void run() {
         try {
-            for (long waitTime = 0; waitTime >= 0; waitTime = nextPlayerTime(10)) {
+            for (long waitTime = 0; waitTime >= 0; waitTime = runningTime >= 0 ? -1
+                    : nextPlayerTime(10)) {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(waitTime));
                 writeResults();
             }
@@ -267,10 +268,9 @@ public class Oscars implements Runnable {
     }
 
     private long nextPlayerTime(long inMaxTime) {
-        return runningTime >= 0 ? -1
-                : players.stream().mapToLong(player -> player.time - elapsedTime)
-                        .filter(playerTime -> playerTime > 0 && playerTime < inMaxTime).min()
-                        .orElse(inMaxTime);
+        return players.stream().mapToLong(player -> player.time - elapsedTime)
+                .filter(playerTime -> playerTime > 0 && playerTime < inMaxTime).min()
+                .orElse(inMaxTime);
     }
 
     private Element resultsDOM() {
@@ -286,8 +286,9 @@ public class Oscars implements Runnable {
                 .addContent(IntStream.range(0, players.size()).mapToObj(this::resultsPlayerDOM)
                         .reduce(new Element("players"), Element::addContent))
                 .addContent(resultsShowTimeDOM())
-                .addContent(new Element("refresh").addContent(String.valueOf(elapsedTime < 0 ? -1
-                        : (nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5))))
+                .addContent(new Element("refresh")
+                        .addContent(String.valueOf(elapsedTime < 0 || runningTime >= 0 ? -1
+                                : nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5)))
                 .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
     }
