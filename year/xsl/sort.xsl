@@ -357,10 +357,22 @@
         <xsl:value-of select="rank" />
       </td>
       <xsl:if test="$inProgress" >
-        <td class="rank">
+        <td>
+          <xsl:attribute name="class">
+            rank
+            <xsl:if test="bpr = wpr" >
+              unannounced
+            </xsl:if>
+          </xsl:attribute>
           <xsl:value-of select="bpr" />
         </td>
-        <td class="rank">
+        <td>
+          <xsl:attribute name="class">
+            rank
+            <xsl:if test="bpr = wpr" >
+              unannounced
+            </xsl:if>
+          </xsl:attribute>
           <xsl:value-of select="wpr" />
         </td>
       </xsl:if>
