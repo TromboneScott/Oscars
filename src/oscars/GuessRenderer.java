@@ -11,17 +11,17 @@ import org.jfree.chart.renderer.category.BarRenderer;
 
 @SuppressWarnings("serial")
 public class GuessRenderer extends BarRenderer {
-    private final List<Color> guessColor;
+    private final List<Color> guessColors;
 
-    public GuessRenderer(List<Color> inGuessColor) {
+    public GuessRenderer(List<Color> inGuessColors) {
         super();
-        guessColor = Collections.unmodifiableList(new ArrayList<>(inGuessColor));
+        guessColors = Collections.unmodifiableList(new ArrayList<>(inGuessColors));
         setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         setBaseItemLabelsVisible(true);
     }
 
     @Override
     public Paint getItemPaint(final int inRow, final int inColumn) {
-        return guessColor.get(inColumn);
+        return guessColors.get(inColumn);
     }
 }

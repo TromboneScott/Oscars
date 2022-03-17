@@ -96,7 +96,7 @@ public final class Category {
     public void writeChart(Results inResults) throws IOException {
         Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        List<Color> guessColor = guesses.keySet().stream().sorted()
+        List<Color> guessColors = guesses.keySet().stream().sorted()
                 .peek(guess -> dataset.addValue(guesses.get(guess), "nominee", guess))
                 .map(guess -> winners.isEmpty() ? BAR_GRAY
                         : winners.contains(guess) ? BAR_GREEN : BAR_RED)
@@ -111,7 +111,7 @@ public final class Category {
             plot.getRangeAxis().setRange(0, totalGuesses * 1.15);// Room for counts on top
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND_COLOR);
-        plot.setRenderer(new GuessRenderer(guessColor));
+        plot.setRenderer(new GuessRenderer(guessColors));
 
         ChartUtilities.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
     }
