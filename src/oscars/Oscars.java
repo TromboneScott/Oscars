@@ -399,8 +399,7 @@ public class Oscars implements Runnable {
             throws IOException {
         try (PrintWriter writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(inXMLFile), "UTF-8"))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(buildDocument(inElement, inXSLFile)
-                    .addContent(0, new Comment("OSCARS website created by Scott McDonald")),
+            new XMLOutputter(Format.getPrettyFormat()).output(buildDocument(inElement, inXSLFile),
                     writer);
         }
     }
@@ -412,7 +411,9 @@ public class Oscars implements Runnable {
                         Stream.of(new String[][] { { "type", "text/xsl" }, { "href", xslFile } })
                                 .collect(Collectors.toMap(element -> element[0],
                                         element -> element[1])))))
-                .orElseGet(Document::new).addContent(inElement);
+                .orElseGet(Document::new)
+                .addContent(new Comment("OSCARS website created by Scott McDonald"))
+                .addContent(inElement);
     }
 
     private void cleanUpCharts(String inDirectory, Stream<String> inChartsToKeep)
