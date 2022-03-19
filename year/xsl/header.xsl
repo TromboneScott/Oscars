@@ -10,7 +10,14 @@
       <xsl:if test="$results/refresh > 0">
         <meta http-equiv="refresh" >
           <xsl:attribute name="content">
-            <xsl:value-of select="$results/refresh" />
+            <xsl:choose>
+              <xsl:when test="$results/refresh > 30">
+                <xsl:value-of select="$results/refresh" />
+              </xsl:when>
+              <xsl:otherwise>
+                30
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:attribute>
         </meta>
       </xsl:if>

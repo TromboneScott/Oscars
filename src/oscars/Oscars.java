@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -288,7 +287,7 @@ public class Oscars implements Runnable {
                 .addContent(resultsShowTimeDOM())
                 .addContent(new Element("refresh")
                         .addContent(String.valueOf(elapsedTime < 0 || runningTime >= 0 ? -1
-                                : nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 5) + 5)))
+                                : nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 7) + 7)))
                 .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
     }
@@ -399,21 +398,17 @@ public class Oscars implements Runnable {
             throws IOException {
         try (PrintWriter writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(inXMLFile), "UTF-8"))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(buildDocument(inElement, inXSLFile),
-                    writer);
+            new XMLOutputter(Format.getPrettyFormat()).output(xmlDocument(inXSLFile)
+                    .addContent(new Comment("OSCARS website created by Scott McDonald"))
+                    .addContent(inElement), writer);
         }
     }
 
-    private Document buildDocument(Element inElement, String inXSLFile) {
-        return Optional.ofNullable(inXSLFile)
-                .map(xslFile -> new Document().addContent(new ProcessingInstruction(
-                        "xml-stylesheet",
-                        Stream.of(new String[][] { { "type", "text/xsl" }, { "href", xslFile } })
-                                .collect(Collectors.toMap(element -> element[0],
-                                        element -> element[1])))))
-                .orElseGet(Document::new)
-                .addContent(new Comment("OSCARS website created by Scott McDonald"))
-                .addContent(inElement);
+    private Document xmlDocument(String inXSLFile) {
+        return inXSLFile == null ? new Document()
+                : new Document().addContent(new ProcessingInstruction("xml-stylesheet", Stream
+                        .of(new String[][] { { "type", "text/xsl" }, { "href", inXSLFile } })
+                        .collect(Collectors.toMap(element -> element[0], element -> element[1]))));
     }
 
     private void cleanUpCharts(String inDirectory, Stream<String> inChartsToKeep)
