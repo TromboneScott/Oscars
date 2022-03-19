@@ -182,16 +182,6 @@ public class Player implements Cloneable {
         }
     }
 
-    /**
-     * Player's guessed time in seconds, -1 if over the actual running time or invalid
-     *
-     * @param inRunningTime
-     *            Actual running time of broadcast in seconds
-     */
-    public long getTime(long inRunningTime) {
-        return inRunningTime >= 0 && time > inRunningTime ? -1 : time;
-    }
-
     public Element toDOM() {
         return new Element("player").addContent(new Element("firstName").addContent(firstName))
                 .addContent(new Element("lastName").addContent(lastName));

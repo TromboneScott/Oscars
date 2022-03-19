@@ -311,17 +311,13 @@ public class Oscars implements Runnable {
                         new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())))
                 .addContent(new Element("wpr")
                         .addContent(String.valueOf(player.getWorstPossibleRank())))
-                .addContent(
-                        new Element("score").addContent(
-                                String.format(scoreFormat, player.getScore())))
-                .addContent(
-                        new Element("time")
-                                .setAttribute("status",
-                                        player.getTime(runningTime) < 0
-                                                || player.getTime(runningTime) > elapsedTime
-                                                        ? "unannounced"
-                                                        : "correct")
-                                .addContent(formatTime(player.time)))
+                .addContent(new Element("score")
+                        .addContent(String.format(scoreFormat, player.getScore())))
+                .addContent(new Element("time")
+                        .setAttribute("status",
+                                player.time <= elapsedTime ? "correct"
+                                        : runningTime < 0 ? "unannounced" : "incorrect")
+                        .addContent(formatTime(player.time)))
                 .addContent(players.stream()
                         .map(opponent -> new Element("player").addContent(player.lostTo(opponent)
                                 ? "BETTER"
