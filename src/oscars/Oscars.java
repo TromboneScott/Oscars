@@ -259,7 +259,7 @@ public class Oscars implements Runnable {
 
     private void writeResults() throws IOException {
         runningTime = results.runningTime();
-        elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
+        elapsedTime = results.elapsedTime();
         players.parallelStream().forEach(player -> player.setScore(results));
         players.parallelStream()
                 .forEach(player -> player.setRanks(results, players, runningTime, elapsedTime));
@@ -286,7 +286,7 @@ public class Oscars implements Runnable {
                         .reduce(new Element("players"), Element::addContent))
                 .addContent(resultsShowTimeDOM())
                 .addContent(new Element("refresh")
-                        .addContent(String.valueOf(elapsedTime < 0 || runningTime >= 0 ? -1
+                        .addContent(String.valueOf(elapsedTime <= 0 || runningTime >= 0 ? -1
                                 : nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 7) + 7)))
                 .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
@@ -314,6 +314,10 @@ public class Oscars implements Runnable {
                 .addContent(new Element("score")
                         .addContent(String.format(scoreFormat, player.getScore())))
                 .addContent(new Element("time")
+                        .setAttribute("delta", player.time <= elapsedTime
+                                ? formatTime(elapsedTime - player.time)
+                                : runningTime < 0 ? "-" + formatTime(player.time - elapsedTime)
+                                        : "OVER")
                         .setAttribute("status",
                                 player.time <= elapsedTime ? "correct"
                                         : runningTime < 0 ? "unannounced" : "incorrect")
@@ -329,8 +333,7 @@ public class Oscars implements Runnable {
     }
 
     private Element resultsShowTimeDOM() {
-        String timeString = formatTime(
-                runningTime >= 0 ? runningTime : elapsedTime >= 0 ? elapsedTime : 0);
+        String timeString = formatTime(elapsedTime);
         return Arrays.stream(ShowTimeType.values())
                 .map(showTimeType -> new Element(showTimeType.name().toLowerCase())
                         .addContent(results.getShowTime(showTimeType)))

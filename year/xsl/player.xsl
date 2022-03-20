@@ -155,16 +155,7 @@
                 </td>
                 <td>
                   <center>
-                    <i>
-                      <xsl:choose>
-                        <xsl:when test="$playerResults/time/@status='correct'">
-                          VALID
-                        </xsl:when>
-                        <xsl:otherwise>
-                          OVER
-                        </xsl:otherwise>
-                      </xsl:choose>
-                    </i>
+                    <xsl:value-of select="$playerResults/time/@delta" />
                   </center>
                 </td>
               </tr>

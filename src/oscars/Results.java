@@ -187,19 +187,20 @@ public class Results {
      * @return The running time in seconds or -1 if it's not ended yet
      */
     public long runningTime() {
-        return showTimes.containsKey(ShowTimeType.END)
-                ? TimeUnit.MILLISECONDS.toSeconds(showTimes.get(ShowTimeType.END).getTime()
-                        - showTimes.get(ShowTimeType.START).getTime())
-                : -1;
+        return showTimes.containsKey(ShowTimeType.END) ? elapsedTime() : -1;
     }
 
     /**
-     * The elapsed time in milliseconds since the start of the broadcast in seconds
+     * The elapsed time since the start of the broadcast in seconds
      *
      * @return The elapsed time, negative if the show hasn't started
      */
-    public long elapsedTimeMillis() {
-        return System.currentTimeMillis() - showTimes.get(ShowTimeType.START).getTime();
+    public long elapsedTime() {
+        return Math.max(0,
+                TimeUnit.MILLISECONDS.toSeconds((showTimes.containsKey(ShowTimeType.END)
+                        ? showTimes.get(ShowTimeType.END).getTime()
+                        : System.currentTimeMillis())
+                        - showTimes.get(ShowTimeType.START).getTime()));
     }
 
     private String format(Date inTime) {

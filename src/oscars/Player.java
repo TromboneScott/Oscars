@@ -88,7 +88,7 @@ public class Player implements Cloneable {
      * which must already be set
      *
      * @param inResults
-     *            The Results to base the status on
+     *            The Results to base the ranks on
      * @param inPlayers
      *            The list of Players (including this one)
      * @param inRunningTime
