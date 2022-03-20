@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -181,13 +182,8 @@ public class Results {
         return showTimes.containsKey(inShowTimeType) ? format(showTimes.get(inShowTimeType)) : "";
     }
 
-    /**
-     * The actual running time of the broadcast in seconds if it's ended
-     *
-     * @return The running time in seconds or -1 if it's not ended yet
-     */
-    public long runningTime() {
-        return showTimes.containsKey(ShowTimeType.END) ? elapsedTime() : -1;
+    public boolean showEnded() {
+        return showTimes.containsKey(ShowTimeType.END);
     }
 
     /**
@@ -197,9 +193,8 @@ public class Results {
      */
     public long elapsedTime() {
         return Math.max(0,
-                TimeUnit.MILLISECONDS.toSeconds((showTimes.containsKey(ShowTimeType.END)
-                        ? showTimes.get(ShowTimeType.END).getTime()
-                        : System.currentTimeMillis())
+                TimeUnit.MILLISECONDS.toSeconds(Optional.ofNullable(showTimes.get(ShowTimeType.END))
+                        .map(Date::getTime).orElseGet(System::currentTimeMillis)
                         - showTimes.get(ShowTimeType.START).getTime()));
     }
 

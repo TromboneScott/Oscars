@@ -66,8 +66,6 @@ public class Oscars implements Runnable {
 
     private final String scoreFormat;
 
-    private long runningTime;
-
     private long elapsedTime;
 
     private long validTimes = 0;
@@ -245,7 +243,7 @@ public class Oscars implements Runnable {
     @Override
     public void run() {
         try {
-            for (long waitTime = 0; waitTime >= 0; waitTime = runningTime >= 0 ? -1
+            for (long waitTime = 0; waitTime >= 0; waitTime = results.showEnded() ? -1
                     : nextPlayerTime(10)) {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(waitTime));
                 writeResults();
@@ -258,11 +256,9 @@ public class Oscars implements Runnable {
     }
 
     private void writeResults() throws IOException {
-        runningTime = results.runningTime();
         elapsedTime = results.elapsedTime();
         players.parallelStream().forEach(player -> player.setScore(results));
-        players.parallelStream()
-                .forEach(player -> player.setRanks(results, players, runningTime, elapsedTime));
+        players.parallelStream().forEach(player -> player.setRanks(results, players, elapsedTime));
         writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
     }
 
@@ -286,7 +282,7 @@ public class Oscars implements Runnable {
                         .reduce(new Element("players"), Element::addContent))
                 .addContent(resultsShowTimeDOM())
                 .addContent(new Element("refresh")
-                        .addContent(String.valueOf(elapsedTime <= 0 || runningTime >= 0 ? -1
+                        .addContent(String.valueOf(elapsedTime <= 0 || results.showEnded() ? -1
                                 : nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 7) + 7)))
                 .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
@@ -314,19 +310,19 @@ public class Oscars implements Runnable {
                 .addContent(new Element("score")
                         .addContent(String.format(scoreFormat, player.getScore())))
                 .addContent(new Element("time")
-                        .setAttribute("delta", player.time <= elapsedTime
-                                ? formatTime(elapsedTime - player.time)
-                                : runningTime < 0 ? "-" + formatTime(player.time - elapsedTime)
-                                        : "OVER")
+                        .setAttribute("delta",
+                                player.time <= elapsedTime ? formatTime(elapsedTime - player.time)
+                                        : results.showEnded() ? "OVER"
+                                                : "-" + formatTime(player.time - elapsedTime))
                         .setAttribute("status",
                                 player.time <= elapsedTime ? "correct"
-                                        : runningTime < 0 ? "unannounced" : "incorrect")
+                                        : results.showEnded() ? "incorrect" : "unannounced")
                         .addContent(formatTime(player.time)))
                 .addContent(players.stream()
                         .map(opponent -> new Element("player").addContent(player.lostTo(opponent)
                                 ? "BETTER"
                                 : opponent.lostTo(player)
-                                        || player.tiedWith(opponent, results, runningTime) ? "WORSE"
+                                        || player.tiedWith(opponent, results, elapsedTime) ? "WORSE"
                                                 : "TBD"))
                         .reduce(new Element("opponents"), Element::addContent))
                 .setAttribute("id", String.valueOf(playerNum + 1));
@@ -339,8 +335,8 @@ public class Oscars implements Runnable {
                         .addContent(results.getShowTime(showTimeType)))
                 .reduce(new Element("showTime")
                         .addContent(new Element("length").addContent(timeString))
-                        .addContent(new Element("header")
-                                .addContent("Time" + (runningTime >= 0 ? "=" : ">") + timeString)),
+                        .addContent(new Element("header").addContent(
+                                "Time" + (results.showEnded() ? "=" : ">") + timeString)),
                         Element::addContent);
     }
 

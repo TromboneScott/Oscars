@@ -17,12 +17,8 @@ Edit categories.csv as a spreadsheet
 5. Replace any commas (,) with back-quotes (`)
 6. Save in CSV (DOS) format as categories.csv
 
-Delete these if they exist:
+Delete this file if it exists:
 File: categoryMaps.xml
-Folder: rank
-Folder: category
-Folder: player
-File: results.xml
 
 From the new year folder run oscars.bat or ./oscars.sh
 

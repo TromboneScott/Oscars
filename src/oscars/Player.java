@@ -91,22 +91,20 @@ public class Player implements Cloneable {
      *            The Results to base the ranks on
      * @param inPlayers
      *            The list of Players (including this one)
-     * @param inRunningTime
-     *            The running time of the show or -1 if not finished
      * @param inElapsedTime
      *            The elapsed time of the show so far
      */
-    public void setRanks(Results inResults, Collection<Player> inPlayers, long inRunningTime,
-            long inElapsedTime) {
-        rank = 1 + lostToStream(inPlayers, inRunningTime, inElapsedTime).count();
+    public void setRanks(Results inResults, Collection<Player> inPlayers, long inElapsedTime) {
+        rank = 1 + lostToStream(inPlayers, inElapsedTime).count();
         lostTo = getUpdatedPlayer(this, inResults, true)
-                .lostToStream(getUpdatedPlayers(inPlayers, inResults, true), inRunningTime,
-                        time > inElapsedTime ? time : inElapsedTime)
+                .lostToStream(getUpdatedPlayers(inPlayers, inResults, true),
+                        inResults.showEnded() || time < inElapsedTime ? inElapsedTime : time)
                 .collect(Collectors.toSet());
         Collection<Player> worstCasePlayers = getUpdatedPlayers(inPlayers, inResults, false);
-        worstPossibleRank = 1 + Math.max(time > inElapsedTime
-                ? lostToStream(worstCasePlayers, inRunningTime, time - 1).count()
-                : 0, lostToStream(worstCasePlayers, inRunningTime, Long.MAX_VALUE).count());
+        worstPossibleRank = inResults.showEnded() ? rank
+                : 1 + Math.max(
+                        time > inElapsedTime ? lostToStream(worstCasePlayers, time - 1).count() : 0,
+                        lostToStream(worstCasePlayers, Long.MAX_VALUE).count());
     }
 
     /**
@@ -142,9 +140,9 @@ public class Player implements Cloneable {
      * @param inOpponent
      * @return Whether or not they have all same guesses including the time
      */
-    public boolean tiedWith(Player inOpponent, Results inResults, long inRunningTime) {
+    public boolean tiedWith(Player inOpponent, Results inResults, long inElapsedTime) {
         return (time == inOpponent.time
-                || inRunningTime >= 0 && time > inRunningTime && inOpponent.time > inRunningTime)
+                || inResults.showEnded() && time > inElapsedTime && inOpponent.time > inElapsedTime)
                 && getUpdatedPlayer(this, inResults, true).score
                         .equals(getUpdatedPlayer(inOpponent, inResults, true).score);
     }
@@ -153,13 +151,11 @@ public class Player implements Cloneable {
         return lostTo.contains(inOpponent);
     }
 
-    private Stream<Player> lostToStream(Collection<Player> inPlayers, long inRunningTime,
-            double inElapsedTime) {
-        double runningTime = inRunningTime < 0 ? inElapsedTime : inRunningTime;
+    private Stream<Player> lostToStream(Collection<Player> inPlayers, double inElapsedTime) {
         return inPlayers.stream()
                 .filter(opponent -> opponent.score.compareTo(score) > 0
-                        || opponent.score.equals(score) && opponent.time <= runningTime
-                                && (time < opponent.time || time > runningTime));
+                        || opponent.score.equals(score) && opponent.time <= inElapsedTime
+                                && (time < opponent.time || time > inElapsedTime));
     }
 
     private Collection<Player> getUpdatedPlayers(Collection<Player> inPlayers, Results inResults,
