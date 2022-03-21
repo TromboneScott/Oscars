@@ -283,7 +283,7 @@ public class Oscars implements Runnable {
                 .addContent(resultsShowTimeDOM())
                 .addContent(new Element("refresh")
                         .addContent(String.valueOf(elapsedTime <= 0 || results.showEnded() ? -1
-                                : nextPlayerTime(TimeUnit.MINUTES.toSeconds(5) - 7) + 7)))
+                                : nextPlayerTime(300 - elapsedTime % 300 - 7) + 7)))
                 .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
     }
