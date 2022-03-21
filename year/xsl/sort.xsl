@@ -8,6 +8,7 @@
       <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
+        <xsl:with-param name="refresh" select="$results/refresh" />
       </xsl:call-template>
       <body>
         <center>
