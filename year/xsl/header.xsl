@@ -1,7 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template name="init">
     <xsl:param name="results" />
-    <xsl:param name="refresh" />
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
@@ -12,8 +11,8 @@
         <meta http-equiv="refresh" >
           <xsl:attribute name="content">
             <xsl:choose>
-              <xsl:when test="$refresh > 30">
-                <xsl:value-of select="$refresh" />
+              <xsl:when test="$results/refresh > 30">
+                <xsl:value-of select="$results/refresh" />
               </xsl:when>
               <xsl:otherwise>
                 30

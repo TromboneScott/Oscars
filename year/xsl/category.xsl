@@ -11,7 +11,6 @@
       <xsl:variable name="categoryResults" select="$results/categories/category[name = $categoryName]" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
-        <xsl:with-param name="refresh" select="300" />
       </xsl:call-template>
       <body>
         <center>
