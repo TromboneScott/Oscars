@@ -243,11 +243,10 @@ public class Oscars implements Runnable {
     @Override
     public void run() {
         try {
-            for (long waitTime = 0; waitTime >= 0; waitTime = results.showEnded() ? -1
-                    : waitTime(TimeUnit.SECONDS.toMillis(60))) {
-                Thread.sleep(waitTime);
+            do {
                 writeResults();
-            }
+                Thread.sleep(waitTime(TimeUnit.SECONDS.toMillis(10)));
+            } while (!results.showEnded());
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
@@ -263,12 +262,12 @@ public class Oscars implements Runnable {
     }
 
     private long waitTime(long inMaxWait) {
+        long nextPlayerTime = TimeUnit.SECONDS.toMillis(players.stream()
+                .mapToLong(player -> player.time).filter(playerTime -> playerTime > elapsedTime)
+                .min().orElseGet(() -> TimeUnit.MILLISECONDS.toSeconds(Long.MAX_VALUE)));
         long elapsedTimeMillis = results.elapsedTimeMillis();
-        return Math.min(players.stream().mapToLong(player -> player.time)
-                .filter(playerTime -> playerTime > elapsedTime)
-                .map(playerTime -> Math.max(0,
-                        TimeUnit.SECONDS.toMillis(playerTime) - elapsedTimeMillis))
-                .min().orElse(Long.MAX_VALUE), inMaxWait - elapsedTimeMillis % inMaxWait);
+        return Math.min(Math.max(nextPlayerTime - elapsedTimeMillis, 0),
+                inMaxWait - elapsedTimeMillis % inMaxWait);
     }
 
     private Element resultsDOM() {
