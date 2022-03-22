@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -187,15 +186,14 @@ public class Results {
     }
 
     /**
-     * The elapsed time since the start of the broadcast in seconds
+     * The elapsed time since the start of the broadcast in milliseconds
      *
      * @return The elapsed time, negative if the show hasn't started
      */
-    public long elapsedTime() {
+    public long elapsedTimeMillis() {
         return Math.max(0,
-                TimeUnit.MILLISECONDS.toSeconds(Optional.ofNullable(showTimes.get(ShowTimeType.END))
-                        .map(Date::getTime).orElseGet(System::currentTimeMillis)
-                        - showTimes.get(ShowTimeType.START).getTime()));
+                Optional.ofNullable(showTimes.get(ShowTimeType.END)).map(Date::getTime).orElseGet(
+                        System::currentTimeMillis) - showTimes.get(ShowTimeType.START).getTime());
     }
 
     private String format(Date inTime) {

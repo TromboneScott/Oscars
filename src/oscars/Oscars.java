@@ -244,8 +244,8 @@ public class Oscars implements Runnable {
     public void run() {
         try {
             for (long waitTime = 0; waitTime >= 0; waitTime = results.showEnded() ? -1
-                    : nextPlayerTime(10)) {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(waitTime));
+                    : waitTime(TimeUnit.SECONDS.toMillis(60))) {
+                Thread.sleep(waitTime);
                 writeResults();
             }
         } catch (InterruptedException e) {
@@ -256,16 +256,19 @@ public class Oscars implements Runnable {
     }
 
     private void writeResults() throws IOException {
-        elapsedTime = results.elapsedTime();
+        elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
         players.parallelStream().forEach(player -> player.setScore(results));
         players.parallelStream().forEach(player -> player.setRanks(results, players, elapsedTime));
         writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
     }
 
-    private long nextPlayerTime(long inMaxTime) {
-        return players.stream().mapToLong(player -> player.time - elapsedTime)
-                .filter(playerTime -> playerTime > 0 && playerTime < inMaxTime).min()
-                .orElse(inMaxTime);
+    private long waitTime(long inMaxWait) {
+        long elapsedTimeMillis = results.elapsedTimeMillis();
+        return Math.min(players.stream().mapToLong(player -> player.time)
+                .filter(playerTime -> playerTime > elapsedTime)
+                .map(playerTime -> Math.max(0,
+                        TimeUnit.SECONDS.toMillis(playerTime) - elapsedTimeMillis))
+                .min().orElse(Long.MAX_VALUE), inMaxWait - elapsedTimeMillis % inMaxWait);
     }
 
     private Element resultsDOM() {
