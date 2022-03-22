@@ -280,11 +280,7 @@ public class Oscars implements Runnable {
                         .reduce(new Element("categories"), Element::addContent))
                 .addContent(IntStream.range(0, players.size()).mapToObj(this::resultsPlayerDOM)
                         .reduce(new Element("players"), Element::addContent))
-                .addContent(resultsShowTimeDOM())
-                .addContent(new Element("refresh")
-                        .addContent(String.valueOf(elapsedTime <= 0 || results.showEnded() ? -1
-                                : nextPlayerTime(300 - elapsedTime % 300 - 7) + 7)))
-                .addContent(new Element("updated").addContent(
+                .addContent(resultsShowTimeDOM()).addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
     }
 
