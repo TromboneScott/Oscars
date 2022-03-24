@@ -316,9 +316,7 @@ public class Oscars implements Runnable {
                 .addContent(players.stream().map(opponent -> new Element("player")
                         .addContent(standings.get(player).lostTo(opponent) ? "BETTER"
                                 : standings.get(opponent).lostTo(player)
-                                        || standings.tied(player, opponent, results, elapsedTime)
-                                                ? "WORSE"
-                                                : "TBD"))
+                                        || standings.tied(player, opponent) ? "WORSE" : "TBD"))
                         .reduce(new Element("opponents"), Element::addContent))
                 .setAttribute("id", String.valueOf(playerNum + 1));
     }
