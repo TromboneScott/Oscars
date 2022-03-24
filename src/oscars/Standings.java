@@ -31,7 +31,7 @@ public final class Standings {
         standings = Collections.unmodifiableMap(inPlayers.parallelStream()
                 .collect(Collectors.toMap(player -> player,
                         player -> new PlayerStanding(scoreMap.get(player),
-                                lostToStream(player, scoreMap, true).count() + 1,
+                                lostToStream(player, scoreMap, elapsedTime, true).count() + 1,
                                 worstPossibleRank(player, scoreMap), lostTo(player, scoreMap)))));
     }
 
@@ -57,25 +57,25 @@ public final class Standings {
     }
 
     private Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
-            Map<Player, BigDecimal> inScoreMap, boolean inCheckOverTime) {
+            Map<Player, BigDecimal> inScoreMap, long inElapsedTime, boolean inCheckOverTime) {
         return inScoreMap.entrySet().stream()
                 .filter(scoreEntry -> inScoreMap.get(inPlayer).compareTo(scoreEntry.getValue()) < 0
                         || inScoreMap.get(inPlayer).equals(scoreEntry.getValue())
-                                && scoreEntry.getKey().time <= elapsedTime
+                                && scoreEntry.getKey().time <= inElapsedTime
                                 && (inPlayer.time < scoreEntry.getKey().time
-                                        || inCheckOverTime && inPlayer.time > elapsedTime));
+                                        || inCheckOverTime && inPlayer.time > inElapsedTime));
     }
 
     private long worstPossibleRank(Player inPlayer, Map<Player, BigDecimal> inScoreMap) {
         Map<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, inScoreMap, false);
         return 1 + Math.max(inPlayer.time > elapsedTime
-                ? lostToStream(inPlayer, worstPossibleScores, true).count()
-                : 0, lostToStream(inPlayer, worstPossibleScores, false).count());
+                ? lostToStream(inPlayer, worstPossibleScores, inPlayer.time - 1, true).count()
+                : 0, lostToStream(inPlayer, worstPossibleScores, Long.MAX_VALUE, false).count());
     }
 
     private Set<Player> lostTo(Player inPlayer, Map<Player, BigDecimal> inScoreMap) {
-        return lostToStream(inPlayer, possibleScores(inPlayer, inScoreMap, true), showEnded)
-                .map(Entry::getKey).collect(Collectors.toSet());
+        return lostToStream(inPlayer, possibleScores(inPlayer, inScoreMap, true), elapsedTime,
+                showEnded).map(Entry::getKey).collect(Collectors.toSet());
     }
 
     private Map<Player, BigDecimal> possibleScores(Player inPlayer,
