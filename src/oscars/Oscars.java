@@ -66,6 +66,8 @@ public class Oscars implements Runnable {
 
     private final String scoreFormat;
 
+    private Standings standings;
+
     private long elapsedTime;
 
     private long validTimes = 0;
@@ -218,8 +220,9 @@ public class Oscars implements Runnable {
         writeResults();
         cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
-        cleanUpCharts(RankChart.DIRECTORY, players.stream().mapToLong(Player::getRank)
-                .mapToObj(RankChart::new).map(RankChart::chartName));
+        cleanUpCharts(RankChart.DIRECTORY,
+                players.stream().mapToLong(player -> standings.get(player).rank)
+                        .mapToObj(RankChart::new).map(RankChart::chartName));
         System.out.println("DONE");
     }
 
@@ -256,8 +259,7 @@ public class Oscars implements Runnable {
 
     private void writeResults() throws IOException {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
-        players.parallelStream().forEach(player -> player.setScore(results));
-        players.parallelStream().forEach(player -> player.setRanks(results, players, elapsedTime));
+        standings = new Standings(players, results, elapsedTime);
         writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
     }
 
@@ -300,13 +302,14 @@ public class Oscars implements Runnable {
     private Element resultsPlayerDOM(int playerNum) {
         Player player = players.get(playerNum);
         return player.toDOM()
-                .addContent(new Element("rank").addContent(String.valueOf(player.getRank())))
                 .addContent(
-                        new Element("bpr").addContent(String.valueOf(player.getBestPossibleRank())))
+                        new Element("rank").addContent(String.valueOf(standings.get(player).rank)))
+                .addContent(new Element("bpr")
+                        .addContent(String.valueOf(standings.get(player).getBestPossibleRank())))
                 .addContent(new Element("wpr")
-                        .addContent(String.valueOf(player.getWorstPossibleRank())))
-                .addContent(new Element("score")
-                        .addContent(String.format(scoreFormat, player.getScore())))
+                        .addContent(String.valueOf(standings.get(player).worstPossibleRank)))
+                .addContent(new Element("score").addContent(
+                        String.format(scoreFormat, standings.get(player).score)))
                 .addContent(new Element("time")
                         .setAttribute("delta",
                                 player.time <= elapsedTime ? formatTime(elapsedTime - player.time)
@@ -316,11 +319,11 @@ public class Oscars implements Runnable {
                                 player.time <= elapsedTime ? "correct"
                                         : results.showEnded() ? "incorrect" : "unannounced")
                         .addContent(formatTime(player.time)))
-                .addContent(players.stream()
-                        .map(opponent -> new Element("player").addContent(player.lostTo(opponent)
-                                ? "BETTER"
-                                : opponent.lostTo(player)
-                                        || player.tiedWith(opponent, results, elapsedTime) ? "WORSE"
+                .addContent(players.stream().map(opponent -> new Element("player")
+                        .addContent(standings.get(player).lostTo(opponent) ? "BETTER"
+                                : standings.get(opponent).lostTo(player)
+                                        || standings.tied(player, opponent, results, elapsedTime)
+                                                ? "WORSE"
                                                 : "TBD"))
                         .reduce(new Element("opponents"), Element::addContent))
                 .setAttribute("id", String.valueOf(playerNum + 1));
