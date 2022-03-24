@@ -301,15 +301,9 @@ public class Oscars implements Runnable {
 
     private Element resultsPlayerDOM(int playerNum) {
         Player player = players.get(playerNum);
-        return player.toDOM()
-                .addContent(
-                        new Element("rank").addContent(String.valueOf(standings.get(player).rank)))
-                .addContent(new Element("bpr")
-                        .addContent(String.valueOf(standings.get(player).getBestPossibleRank())))
-                .addContent(new Element("wpr")
-                        .addContent(String.valueOf(standings.get(player).worstPossibleRank)))
-                .addContent(new Element("score").addContent(
-                        String.format(scoreFormat, standings.get(player).score)))
+        return player
+                .toDOM().addContent(
+                        standings.get(player).toContent(scoreFormat))
                 .addContent(new Element("time")
                         .setAttribute("delta",
                                 player.time <= elapsedTime ? formatTime(elapsedTime - player.time)
