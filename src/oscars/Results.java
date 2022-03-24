@@ -181,10 +181,6 @@ public class Results {
         return showTimes.containsKey(inShowTimeType) ? format(showTimes.get(inShowTimeType)) : "";
     }
 
-    public boolean showEnded() {
-        return showTimes.containsKey(ShowTimeType.END);
-    }
-
     /**
      * The elapsed time since the start of the broadcast in milliseconds
      *

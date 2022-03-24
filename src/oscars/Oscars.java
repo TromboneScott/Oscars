@@ -249,7 +249,7 @@ public class Oscars implements Runnable {
             do {
                 writeResults();
                 Thread.sleep(waitTime(TimeUnit.SECONDS.toMillis(10)));
-            } while (!results.showEnded());
+            } while (!standings.showEnded);
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
@@ -307,11 +307,11 @@ public class Oscars implements Runnable {
                 .addContent(new Element("time")
                         .setAttribute("delta",
                                 player.time <= elapsedTime ? formatTime(elapsedTime - player.time)
-                                        : results.showEnded() ? "OVER"
+                                        : standings.showEnded ? "OVER"
                                                 : "-" + formatTime(player.time - elapsedTime))
                         .setAttribute("status",
                                 player.time <= elapsedTime ? "correct"
-                                        : results.showEnded() ? "incorrect" : "unannounced")
+                                        : standings.showEnded ? "incorrect" : "unannounced")
                         .addContent(formatTime(player.time)))
                 .addContent(players.stream().map(opponent -> new Element("player")
                         .addContent(standings.get(player).lostTo(opponent) ? "BETTER"
@@ -329,7 +329,7 @@ public class Oscars implements Runnable {
                 .reduce(new Element("showTime")
                         .addContent(new Element("length").addContent(timeString))
                         .addContent(new Element("header").addContent(
-                                "Time" + (results.showEnded() ? "=" : ">") + timeString)),
+                                "Time" + (standings.showEnded ? "=" : ">") + timeString)),
                         Element::addContent);
     }
 

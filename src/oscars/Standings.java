@@ -3,22 +3,28 @@ package oscars;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/** The score and rank standings */
+/** The score and rank standings - Immutable */
 public final class Standings {
     private final Map<Player, PlayerStanding> standings;
 
-    private final Results results; // NOT immutable :(
+    private final Map<Category, Set<String>> winners;
+
+    public final boolean showEnded;
 
     private final long elapsedTime;
 
     public Standings(Collection<Player> inPlayers, Results inResults, long inElapsedTime) {
-        results = inResults;
+        winners = Collections.unmodifiableMap(inPlayers.iterator().next().picks.keySet().stream()
+                .collect(Collectors.toMap(category -> category, category -> Collections
+                        .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
+        showEnded = !inResults.getShowTime(ShowTimeType.END).isEmpty();
         elapsedTime = inElapsedTime;
         Map<Player, BigDecimal> scoreMap = inPlayers.parallelStream()
                 .collect(Collectors.toMap(player -> player, this::score));
@@ -35,18 +41,17 @@ public final class Standings {
 
     /** Determine if the player and opponent will be tied at the end of the game */
     public boolean tied(Player inPlayer, Player inOpponent) {
-        return (inPlayer.time == inOpponent.time || results.showEnded()
-                && inPlayer.time > elapsedTime && inOpponent.time > elapsedTime)
+        return (inPlayer.time == inOpponent.time
+                || showEnded && inPlayer.time > elapsedTime && inOpponent.time > elapsedTime)
                 && get(inPlayer).score.equals(get(inOpponent).score)
                 && inPlayer.picks.keySet().stream()
-                        .allMatch(category -> !results.winners(category).isEmpty() || inPlayer.picks
+                        .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
                                 .get(category).equals(inOpponent.picks.get(category)));
     }
 
     private BigDecimal score(Player inPlayer) {
         return inPlayer.picks.entrySet().stream()
-                .filter(pickEntry -> results.winners(pickEntry.getKey())
-                        .contains(pickEntry.getValue()))
+                .filter(pickEntry -> winners.get(pickEntry.getKey()).contains(pickEntry.getValue()))
                 .map(pickEntry -> pickEntry.getKey().value)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -69,8 +74,8 @@ public final class Standings {
     }
 
     private Set<Player> lostTo(Player inPlayer, Map<Player, BigDecimal> inScoreMap) {
-        return lostToStream(inPlayer, possibleScores(inPlayer, inScoreMap, true),
-                results.showEnded()).map(Entry::getKey).collect(Collectors.toSet());
+        return lostToStream(inPlayer, possibleScores(inPlayer, inScoreMap, true), showEnded)
+                .map(Entry::getKey).collect(Collectors.toSet());
     }
 
     private Map<Player, BigDecimal> possibleScores(Player inPlayer,
@@ -78,7 +83,7 @@ public final class Standings {
         return inScoreMap.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
                         scoreEntry -> inPlayer.picks.entrySet().stream().map(Entry::getKey)
-                                .filter(category -> results.winners(category).isEmpty()
+                                .filter(category -> winners.get(category).isEmpty()
                                         && inBest == scoreEntry.getKey().picks.get(category)
                                                 .equals(inPlayer.picks.get(category)))
                                 .map(category -> category.value)
