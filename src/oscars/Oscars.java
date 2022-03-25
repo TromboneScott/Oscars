@@ -68,8 +68,6 @@ public class Oscars implements Runnable {
 
     private Standings standings;
 
-    private long elapsedTime;
-
     private long validTimes = 0;
 
     private Date updated;
@@ -221,8 +219,7 @@ public class Oscars implements Runnable {
         cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
         cleanUpCharts(RankChart.DIRECTORY,
-                players.stream().mapToLong(player -> standings.get(player).rank)
-                        .mapToObj(RankChart::new).map(RankChart::chartName));
+                standings.rankStream().mapToObj(RankChart::new).map(RankChart::chartName));
         System.out.println("DONE");
     }
 
@@ -249,7 +246,7 @@ public class Oscars implements Runnable {
             do {
                 writeResults();
                 Thread.sleep(waitTime(TimeUnit.SECONDS.toMillis(10)));
-            } while (!standings.showEnded);
+            } while (!standings.showEnded());
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
@@ -258,85 +255,38 @@ public class Oscars implements Runnable {
     }
 
     private void writeResults() throws IOException {
-        elapsedTime = TimeUnit.MILLISECONDS.toSeconds(results.elapsedTimeMillis());
-        standings = new Standings(players, results, elapsedTime);
+        standings = new Standings(players, results);
         writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
     }
 
     private long waitTime(long inMaxWait) {
-        long nextPlayerTime = TimeUnit.SECONDS.toMillis(players.stream()
-                .mapToLong(player -> player.time).filter(playerTime -> playerTime > elapsedTime)
-                .min().orElseGet(() -> TimeUnit.MILLISECONDS.toSeconds(Long.MAX_VALUE)));
+        long nextPlayerTime = TimeUnit.SECONDS
+                .toMillis(players.stream().mapToLong(player -> player.time)
+                        .filter(playerTime -> playerTime > standings.elapsedTime).min()
+                        .orElseGet(() -> TimeUnit.MILLISECONDS.toSeconds(Long.MAX_VALUE)));
         long elapsedTimeMillis = results.elapsedTimeMillis();
         return Math.min(Math.max(nextPlayerTime - elapsedTimeMillis, 0),
                 inMaxWait - elapsedTimeMillis % inMaxWait);
     }
 
     private Element resultsDOM() {
-        long currentTimes = players.stream().filter(player -> player.time <= elapsedTime).count();
+        long currentTimes = players.stream().filter(player -> player.time <= standings.elapsedTime)
+                .count();
         if (validTimes != currentTimes) {
             updated = new Date();
             validTimes = currentTimes;
         }
 
         return new Element("results").addContent(new Element("title").addContent(results.title()))
-                .addContent(categories.stream().map(this::resultsCategoryDOM)
+                .addContent(categories.stream().map(standings::resultsCategoryDOM)
                         .reduce(new Element("categories"), Element::addContent))
-                .addContent(IntStream.range(0, players.size()).mapToObj(this::resultsPlayerDOM)
+                .addContent(IntStream.range(0, players.size())
+                        .mapToObj(playerNum -> standings.resultsPlayerDom(players, playerNum,
+                                scoreFormat))
                         .reduce(new Element("players"), Element::addContent))
-                .addContent(resultsShowTimeDOM()).addContent(new Element("updated").addContent(
+                .addContent(standings.resultsShowTimeDOM())
+                .addContent(new Element("updated").addContent(
                         new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
-    }
-
-    private Element resultsCategoryDOM(Category inCategory) {
-        return new Element("category").addContent(new Element("name").addContent(inCategory.name))
-                .addContent(inCategory.guesses.keySet().stream().sorted()
-                        .map(guess -> new Element("nominee").addContent(guess).setAttribute(
-                                "status",
-                                results.winners(inCategory).isEmpty() ? "unannounced"
-                                        : results.winners(inCategory).contains(guess) ? "correct"
-                                                : "incorrect"))
-                        .reduce(new Element("nominees"), Element::addContent));
-    }
-
-    private Element resultsPlayerDOM(int playerNum) {
-        Player player = players.get(playerNum);
-        return player
-                .toDOM().addContent(
-                        standings.get(player).toContent(scoreFormat))
-                .addContent(new Element("time")
-                        .setAttribute("delta",
-                                player.time <= elapsedTime ? formatTime(elapsedTime - player.time)
-                                        : standings.showEnded ? "OVER"
-                                                : "-" + formatTime(player.time - elapsedTime))
-                        .setAttribute("status",
-                                player.time <= elapsedTime ? "correct"
-                                        : standings.showEnded ? "incorrect" : "unannounced")
-                        .addContent(formatTime(player.time)))
-                .addContent(players.stream().map(opponent -> new Element("player")
-                        .addContent(standings.get(player).lostTo(opponent) ? "BETTER"
-                                : standings.get(opponent).lostTo(player)
-                                        || standings.tied(player, opponent) ? "WORSE" : "TBD"))
-                        .reduce(new Element("opponents"), Element::addContent))
-                .setAttribute("id", String.valueOf(playerNum + 1));
-    }
-
-    private Element resultsShowTimeDOM() {
-        String timeString = formatTime(elapsedTime);
-        return Arrays.stream(ShowTimeType.values())
-                .map(showTimeType -> new Element(showTimeType.name().toLowerCase())
-                        .addContent(results.getShowTime(showTimeType)))
-                .reduce(new Element("showTime")
-                        .addContent(new Element("length").addContent(timeString))
-                        .addContent(new Element("header").addContent(
-                                "Time" + (standings.showEnded ? "=" : ">") + timeString)),
-                        Element::addContent);
-    }
-
-    private String formatTime(long inTime) {
-        return inTime < 0 ? ""
-                : String.format("%d:%02d:%02d", TimeUnit.SECONDS.toHours(inTime),
-                        TimeUnit.SECONDS.toMinutes(inTime) % 60, inTime % 60);
     }
 
     private void mkdir(String inDirectory) {
