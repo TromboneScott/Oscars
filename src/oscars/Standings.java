@@ -41,12 +41,8 @@ public final class Standings {
                 .collect(Collectors.toMap(player -> player, player -> lostTo(player, scoreMap))));
     }
 
-    public String showTime(ShowTimeType inShowTimeType) {
-        return showTimes.get(inShowTimeType);
-    }
-
     public boolean showEnded() {
-        return !showTime(ShowTimeType.END).isEmpty();
+        return !showTimes.get(ShowTimeType.END).isEmpty();
     }
 
     private BigDecimal score(Player inPlayer) {
@@ -147,7 +143,7 @@ public final class Standings {
         String timeString = formatTime(elapsedTime);
         return Arrays.stream(ShowTimeType.values())
                 .map(showTimeType -> new Element(showTimeType.name().toLowerCase())
-                        .addContent(showTime(showTimeType)))
+                        .addContent(showTimes.get(showTimeType)))
                 .reduce(new Element("showTime")
                         .addContent(new Element("length").addContent(timeString))
                         .addContent(new Element("header")
@@ -161,7 +157,7 @@ public final class Standings {
                         TimeUnit.SECONDS.toMinutes(inTime) % 60, inTime % 60);
     }
 
-    /** Get a stream of all the players' current ranks */
+    /** Get a stream of the current ranks of all the players */
     public LongStream rankStream() {
         return scoreMap.keySet().stream().mapToLong(this::rank);
     }
