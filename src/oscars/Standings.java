@@ -103,7 +103,7 @@ public final class Standings {
 
     public Element resultsPlayerDom(List<Player> inPlayers, int inPlayerNum, String inScoreFormat) {
         Player player = inPlayers.get(inPlayerNum);
-        return player.toDOM()
+        return player.toDOM().setAttribute("id", String.valueOf(inPlayerNum + 1))
                 .addContent(new Element("rank").addContent(String.valueOf(rank(player))))
                 .addContent(new Element("bpr")
                         .addContent(String.valueOf(lostToMap.get(player).size() + 1)))
@@ -125,8 +125,7 @@ public final class Standings {
                                 .addContent(lostToMap.get(player).contains(opponent) ? "BETTER"
                                         : lostToMap.get(opponent).contains(player)
                                                 || tied(player, opponent) ? "WORSE" : "TBD"))
-                        .reduce(new Element("opponents"), Element::addContent))
-                .setAttribute("id", String.valueOf(inPlayerNum + 1));
+                        .reduce(new Element("opponents"), Element::addContent));
     }
 
     /** Determine if the player and opponent will be tied at the end of the game */
@@ -144,11 +143,10 @@ public final class Standings {
         return Arrays.stream(ShowTimeType.values())
                 .map(showTimeType -> new Element(showTimeType.name().toLowerCase())
                         .addContent(showTimes.get(showTimeType)))
-                .reduce(new Element("showTime")
-                        .addContent(new Element("length").addContent(timeString))
-                        .addContent(new Element("header")
-                                .addContent("Time" + (showEnded() ? "=" : ">") + timeString)),
-                        Element::addContent);
+                .reduce(new Element("showTime"), Element::addContent)
+                .addContent(new Element("length").addContent(timeString))
+                .addContent(new Element("header")
+                        .addContent("Time" + (showEnded() ? "=" : ">") + timeString));
     }
 
     private String formatTime(long inTime) {
