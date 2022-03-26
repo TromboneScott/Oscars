@@ -40,19 +40,19 @@
             </xsl:when>
             <xsl:otherwise>
               <div class="info">
+                <xsl:if test="not(string($results/showTime/end))">
+                  <u>BPR / WPR</u>
+                  - Best Possible Rank / Worst Possible Rank: If guesses for all remaining
+                  <a href="../category/all.xml">categories</a>
+                  turn out to be correct / incorrect.
+                  <br />
+                  <br />
+                </xsl:if>
                 <u>Score</u>
                 - One point for each correct
                 <a href="../category/all.xml">category</a>
                 plus .1 for tie breaker #1, .01 for #2, .001 for #3,
                 etc.
-                <xsl:if test="not(string($results/showTime/end))">
-                  <br />
-                  <br />
-                  <u>BPR / WPR</u>
-                  - Best Possible Rank / Worst Possible Rank: If guesses for all remaining
-                  <a href="../category/all.xml">categories</a>
-                  turn out to be correct / incorrect.
-                </xsl:if>
               </div>
               <br />
               <br />
