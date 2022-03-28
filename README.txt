@@ -1,3 +1,11 @@
+NOTE FOR 2023:
+
+When creating the Google Form include the names of the people that are nominated in all categories that include them.  That way we'll be able to match them up with the correct winner during the broadast if they only annouce the name of the person and not the name of the movie.
+
+We won't be able to use that for any nominees that no one guesses as those descriptions won't be downloaded from the Google Form.  But those nominees are highly unlikely to win.
+
+----
+
 To start a new year:
 
 Update any code and files as needed
@@ -36,7 +44,6 @@ Remove any columns not in categories.csv
 Verify columns are in same order as categories.csv
 Remove the header row so all you have is the survey data
 IMPORTANT: Use search and replace to remove any commas
-Use search and replace to remove any special characters like á and é
 Save in CSV (DOS) format as players.csv
 
 You will be prompted on how to map survey answers to nominees for each category.

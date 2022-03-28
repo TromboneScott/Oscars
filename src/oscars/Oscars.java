@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -103,7 +104,8 @@ public class Oscars implements Runnable {
     }
 
     private static List<String[]> readValues(String inFileName) throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(inFileName))) {
+        try (Stream<String> stream = Files.lines(Paths.get(inFileName),
+                StandardCharsets.ISO_8859_1)) {
             return stream.map(line -> Stream.of(line.split(VALUE_DELIMITER, -1))
                     .map(value -> value.replace(COMMA_REPLACEMENT, VALUE_DELIMITER))
                     .toArray(String[]::new)).collect(Collectors.toList());
