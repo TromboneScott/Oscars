@@ -5,12 +5,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,11 +29,9 @@ public class Results {
 
     private static final String WINNER_DELIMITER = ",";
 
-    private static final String TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
-
     private final Map<Category, Set<String>> winners = new HashMap<>();
 
-    private final Map<ShowTimeType, Date> showTimes = new HashMap<>();
+    private final Map<ShowTimeType, LocalDateTime> showTimes = new HashMap<>();
 
     public Results(Collection<Category> inCategories) throws IOException {
         File resultsFile = new File(RESULTS_FILE);
@@ -62,17 +59,12 @@ public class Results {
             promptTime(ShowTimeType.START);
     }
 
-    private Map<ShowTimeType, Date> showTimes(Element inShowTimeDOM) {
-        Map<ShowTimeType, Date> showTimes = new HashMap<>();
+    private Map<ShowTimeType, LocalDateTime> showTimes(Element inShowTimeDOM) {
+        Map<ShowTimeType, LocalDateTime> showTimes = new HashMap<>();
         for (ShowTimeType showTimeType : ShowTimeType.values()) {
             String showTimeText = inShowTimeDOM.getChildText(showTimeType.name().toLowerCase());
             if (showTimeText != null && !showTimeText.isEmpty())
-                try {
-                    showTimes.put(showTimeType,
-                            new SimpleDateFormat(TIME_FORMAT).parse(showTimeText));
-                } catch (ParseException e) {
-                    System.out.println("WARNING: Invalid " + showTimeType + " value");
-                }
+                showTimes.put(showTimeType, LocalDateTime.parse(showTimeText));
         }
         return showTimes;
     }
@@ -80,7 +72,7 @@ public class Results {
     private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
         System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
-                "Enter * for system time, leave blank to remove, format: " + format(new Date()));
+                "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
         String enteredTime = new BufferedReader(new InputStreamReader(System.in)).readLine();
         if (enteredTime.isEmpty())
             if (inShowTimeType == ShowTimeType.START)
@@ -88,11 +80,11 @@ public class Results {
             else
                 showTimes.remove(inShowTimeType);
         else if ("*".equals(enteredTime))
-            showTimes.put(inShowTimeType, new Date());
+            showTimes.put(inShowTimeType, LocalDateTime.now());
         else
             try {
-                showTimes.put(inShowTimeType, new SimpleDateFormat(TIME_FORMAT).parse(enteredTime));
-            } catch (ParseException e) {
+                showTimes.put(inShowTimeType, LocalDateTime.parse(enteredTime));
+            } catch (DateTimeParseException e) {
                 System.out.println("Invalid time format");
             }
         return true;
@@ -174,7 +166,8 @@ public class Results {
     }
 
     public String getShowTime(ShowTimeType inShowTimeType) {
-        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(this::format).orElse("");
+        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(LocalDateTime::toString)
+                .orElse("");
     }
 
     /**
@@ -184,12 +177,12 @@ public class Results {
      */
     public long elapsedTimeMillis() {
         return Math.max(0,
-                Optional.ofNullable(showTimes.get(ShowTimeType.END)).map(Date::getTime).orElseGet(
-                        System::currentTimeMillis) - showTimes.get(ShowTimeType.START).getTime());
+                Optional.ofNullable(showTimes.get(ShowTimeType.END)).map(this::toMillis).orElseGet(
+                        System::currentTimeMillis) - toMillis(showTimes.get(ShowTimeType.START)));
     }
 
-    private String format(Date inTime) {
-        return new SimpleDateFormat(TIME_FORMAT).format(inTime);
+    private long toMillis(LocalDateTime inTime) {
+        return inTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
     /**
@@ -209,8 +202,6 @@ public class Results {
      * @return The title text to use for the results
      */
     public String title() {
-        Calendar calStartTime = Calendar.getInstance();
-        calStartTime.setTime(showTimes.get(ShowTimeType.START));
-        return calStartTime.get(Calendar.YEAR) + " OSCARS";
+        return showTimes.get(ShowTimeType.START).getYear() + " OSCARS";
     }
 }
