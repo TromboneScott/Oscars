@@ -78,7 +78,7 @@ public class Results {
     }
 
     private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
-        System.out.println("\n" + showTimeString(inShowTimeType));
+        System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
                 "Enter * for system time, leave blank to remove, format: " + format(new Date()));
         String enteredTime = new BufferedReader(new InputStreamReader(System.in)).readLine();
@@ -98,10 +98,8 @@ public class Results {
         return true;
     }
 
-    private String showTimeString(ShowTimeType inShowTimeType) {
-        return inShowTimeType + (showTimes.containsKey(inShowTimeType)
-                ? " = " + format(showTimes.get(inShowTimeType))
-                : "");
+    private String toString(ShowTimeType inShowTimeType) {
+        return inShowTimeType + " = " + getShowTime(inShowTimeType);
     }
 
     /**
@@ -120,7 +118,7 @@ public class Results {
                 .println((resultNum + 1) + ": " + toString(inCategories.get(resultNum))));
         IntStream.range(0, ShowTimeType.values().length)
                 .forEach(timeNum -> System.out.println((inCategories.size() + timeNum + 1) + ": "
-                        + showTimeString(ShowTimeType.values()[timeNum])));
+                        + toString(ShowTimeType.values()[timeNum])));
 
         System.out.print("Enter results number to change (enter to quit): ");
         String selectedResult = stdin.readLine();
@@ -176,7 +174,7 @@ public class Results {
     }
 
     public String getShowTime(ShowTimeType inShowTimeType) {
-        return showTimes.containsKey(inShowTimeType) ? format(showTimes.get(inShowTimeType)) : "";
+        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(this::format).orElse("");
     }
 
     /**
