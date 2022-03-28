@@ -117,7 +117,7 @@ public class Results {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Results");
         IntStream.range(0, inCategories.size()).forEach(resultNum -> System.out
-                .println((resultNum + 1) + ": " + categoryString(inCategories.get(resultNum))));
+                .println((resultNum + 1) + ": " + toString(inCategories.get(resultNum))));
         IntStream.range(0, ShowTimeType.values().length)
                 .forEach(timeNum -> System.out.println((inCategories.size() + timeNum + 1) + ": "
                         + showTimeString(ShowTimeType.values()[timeNum])));
@@ -139,7 +139,7 @@ public class Results {
     }
 
     private boolean promptWinner(Category inCategory) throws IOException {
-        System.out.println("\n" + categoryString(inCategory));
+        System.out.println("\n" + toString(inCategory));
 
         Set<String> pickNamesSet = new TreeSet<>(inCategory.guesses.keySet());
         String[] pickNames = pickNamesSet.toArray(new String[pickNamesSet.size()]);
@@ -169,7 +169,7 @@ public class Results {
         return true;
     }
 
-    private String categoryString(Category inCategory) {
+    private String toString(Category inCategory) {
         return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
