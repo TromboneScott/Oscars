@@ -32,8 +32,6 @@ public class Results {
 
     private static final String TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
-    private static final Set<String> EMPTY_STRING_SET = Collections.emptySet();
-
     private final Map<Category, Set<String>> winners = new HashMap<>();
 
     private final Map<ShowTimeType, Date> showTimes = new HashMap<>();
@@ -172,9 +170,7 @@ public class Results {
     }
 
     private String categoryString(Category inCategory) {
-        return inCategory + (winners.containsKey(inCategory)
-                ? " = " + String.join(WINNER_DELIMITER, winners.get(inCategory))
-                : "");
+        return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
     public String getShowTime(ShowTimeType inShowTimeType) {
@@ -204,7 +200,7 @@ public class Results {
      * @return All the winners that have been entered for this category
      */
     public Set<String> winners(Category inCategory) {
-        return winners.containsKey(inCategory) ? winners.get(inCategory) : EMPTY_STRING_SET;
+        return Optional.ofNullable(winners.get(inCategory)).orElseGet(Collections::emptySet);
     }
 
     /**
