@@ -19,9 +19,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -184,11 +184,13 @@ public class Oscars implements Runnable {
         return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> new Category(
                 inCategoryNames[categoryNum],
                 inCategoryNominees.get(categoryNum).stream().collect(Collectors.toMap(
-                        Function.identity(),
+                        nominee -> nominee,
                         nominee -> inPlayerValues.stream()
                                 .map(guesses -> inCategoryMaps.get(inCategoryNames[categoryNum])
                                         .get(guesses[categoryNum]))
-                                .filter(nominee::equals).count()))))
+                                .filter(nominee::equals).count())),
+                inCategoryMaps.get(inCategoryNames[categoryNum]).entrySet().stream()
+                        .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))
                 .toArray(Category[]::new);
     }
 

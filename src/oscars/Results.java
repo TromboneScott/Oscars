@@ -144,7 +144,9 @@ public class Results {
         Set<String> pickNamesSet = new TreeSet<>(inCategory.guesses.keySet());
         String[] pickNames = pickNamesSet.toArray(new String[pickNamesSet.size()]);
         IntStream.range(0, pickNames.length)
-                .forEach(x -> System.out.println((x + 1) + ": " + pickNames[x]));
+                .forEach(x -> System.out.println((x + 1) + ": " + pickNames[x] + ": "
+                        + Optional.ofNullable(inCategory.guessDescriptions.get(pickNames[x]))
+                                .orElse("(no description - not guessed)")));
 
         System.out.print("Select winner number(s) (use " + WINNER_DELIMITER
                 + " to separate ties or leave blank to remove winner): ");

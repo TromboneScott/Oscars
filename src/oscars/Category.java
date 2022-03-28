@@ -27,11 +27,11 @@ public final class Category {
 
     public static final String DIRECTORY = "category/";
 
-    public static final Category FIRST_NAME = new Category("First");
+    public static final Category FIRST_NAME = new Category("First", null, null);
 
-    public static final Category LAST_NAME = new Category("Last");
+    public static final Category LAST_NAME = new Category("Last", null, null);
 
-    public static final Category TIME = new Category("Time");
+    public static final Category TIME = new Category("Time", null, null);
 
     public static final Color BAR_GRAY = Color.GRAY;
 
@@ -53,20 +53,18 @@ public final class Category {
     /** Players' guesses in this category */
     public final Map<String, Long> guesses;
 
-    private Category(String inName) {
-        name = inName;
-        tieBreakerValue = null;
-        value = null;
-        guesses = null;
-    }
+    public final Map<String, String> guessDescriptions;
 
-    public Category(String inName, Map<String, Long> inGuesses) {
+    public Category(String inName, Map<String, Long> inGuesses,
+            Map<String, String> inGuessDescriptions) {
         Matcher tieBreakerMatcher = TIE_BREAKER_PATTERN.matcher(inName);
         name = tieBreakerMatcher.replaceFirst("");
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        guesses = Collections.unmodifiableMap(new HashMap<>(inGuesses));
+        guesses = inGuesses == null ? null : Collections.unmodifiableMap(new HashMap<>(inGuesses));
+        guessDescriptions = inGuessDescriptions == null ? null
+                : Collections.unmodifiableMap(new HashMap<>(inGuessDescriptions));
     }
 
     @Override
