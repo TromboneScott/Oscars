@@ -13,10 +13,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class Oscars implements Runnable {
 
     private long validTimes = 0;
 
-    private Date updated;
+    private LocalDateTime updated;
 
     /**
      * Prompt for Oscars results, store them and create output files
@@ -228,7 +229,7 @@ public class Oscars implements Runnable {
     }
 
     private boolean prompt() throws IOException, InterruptedException {
-        updated = new Date();
+        updated = LocalDateTime.now();
         Thread thread = new Thread(this);
         try {
             thread.start();
@@ -277,7 +278,7 @@ public class Oscars implements Runnable {
         long currentTimes = players.stream().filter(player -> player.time <= standings.elapsedTime)
                 .count();
         if (validTimes != currentTimes) {
-            updated = new Date();
+            updated = LocalDateTime.now();
             validTimes = currentTimes;
         }
 
@@ -289,8 +290,8 @@ public class Oscars implements Runnable {
                                 scoreFormat))
                         .reduce(new Element("players"), Element::addContent))
                 .addContent(standings.resultsShowTimeDOM())
-                .addContent(new Element("updated").addContent(
-                        new SimpleDateFormat("MM/dd/yyyy h:mm:ss a - z").format(updated)));
+                .addContent(new Element("updated").addContent(updated.atZone(ZoneId.systemDefault())
+                        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
     }
 
     private void mkdir(String inDirectory) {
