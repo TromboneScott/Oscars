@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -48,7 +49,13 @@ public class Results {
                                         .filter(nominee -> "correct"
                                                 .equals(nominee.getAttributeValue("status")))
                                         .map(Element::getText).collect(Collectors.toSet())))));
-                showTimes.putAll(showTimes(resultsDOM.getChild("showTime")));
+                Stream.of(ShowTimeType.values())
+                        .forEach(showTimeType -> Optional
+                                .ofNullable(resultsDOM.getChild("showTime")
+                                        .getChildText(showTimeType.name().toLowerCase()))
+                                .filter(showTimeText -> !showTimeText.isEmpty())
+                                .ifPresent(showTimeText -> showTimes.put(showTimeType,
+                                        LocalDateTime.parse(showTimeText))));
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
             }
@@ -57,16 +64,6 @@ public class Results {
 
         while (!showTimes.containsKey(ShowTimeType.START))
             promptTime(ShowTimeType.START);
-    }
-
-    private Map<ShowTimeType, LocalDateTime> showTimes(Element inShowTimeDOM) {
-        Map<ShowTimeType, LocalDateTime> showTimes = new HashMap<>();
-        for (ShowTimeType showTimeType : ShowTimeType.values()) {
-            String showTimeText = inShowTimeDOM.getChildText(showTimeType.name().toLowerCase());
-            if (showTimeText != null && !showTimeText.isEmpty())
-                showTimes.put(showTimeType, LocalDateTime.parse(showTimeText));
-        }
-        return showTimes;
     }
 
     private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
