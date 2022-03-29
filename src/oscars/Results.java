@@ -41,14 +41,14 @@ public class Results {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
                 Map<String, Category> categoryMap = inCategories.stream()
                         .collect(Collectors.toMap(category -> category.name, category -> category));
-                winners.putAll(resultsDOM.getChild("categories").getChildren("category").stream()
-                        .collect(Collectors.toMap(
-                                categoryDOM -> categoryMap.get(categoryDOM.getChildText("name")),
-                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
-                                        .getChild("nominees").getChildren("nominee").stream()
+                resultsDOM.getChild("categories").getChildren("category")
+                        .forEach(categoryDOM -> winners.put(
+                                categoryMap.get(categoryDOM.getChildText("name")),
+                                Collections.unmodifiableSet(categoryDOM.getChild("nominees")
+                                        .getChildren("nominee").stream()
                                         .filter(nominee -> "correct"
                                                 .equals(nominee.getAttributeValue("status")))
-                                        .map(Element::getText).collect(Collectors.toSet())))));
+                                        .map(Element::getText).collect(Collectors.toSet()))));
                 Stream.of(ShowTimeType.values())
                         .forEach(showTimeType -> Optional
                                 .ofNullable(resultsDOM.getChild("showTime")
