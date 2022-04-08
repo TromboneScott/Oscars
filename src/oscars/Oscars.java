@@ -337,7 +337,7 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
     }
 
-    private void writeDocument(Element inElement, String inXMLFile, String inXSLFile)
+    public static void writeDocument(Element inElement, String inXMLFile, String inXSLFile)
             throws IOException {
         try (PrintWriter writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(inXMLFile), "UTF-8"))) {
@@ -347,7 +347,7 @@ public class Oscars implements Runnable {
         }
     }
 
-    private Document xmlDocument(String inXSLFile) {
+    private static Document xmlDocument(String inXSLFile) {
         return inXSLFile == null ? new Document()
                 : new Document().addContent(new ProcessingInstruction("xml-stylesheet", Stream
                         .of(new String[][] { { "type", "text/xsl" }, { "href", inXSLFile } })

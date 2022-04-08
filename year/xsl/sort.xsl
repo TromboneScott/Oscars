@@ -37,6 +37,16 @@
                   </td>
                 </tr>
               </table>
+              <br />
+              <br />
+              <h3>Ballots Received</h3>
+              <table>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>Name</th>
+                </tr>
+                <xsl:apply-templates select="$results/entries/entry" />
+              </table>
             </xsl:when>
             <xsl:otherwise>
               <div class="info">
@@ -76,6 +86,20 @@
         </center>
       </body>
     </html>
+  </xsl:template>
+  <xsl:template match="entry">
+    <tr>
+      <td>
+        <xsl:value-of select="time" />
+      </td>
+      <td>
+        <xsl:value-of select="lastName" />
+        <xsl:if test="firstName != '' and lastName != ''">
+          <xsl:value-of select="', '" />
+        </xsl:if>
+        <xsl:value-of select="firstName" />
+      </td>
+    </tr>
   </xsl:template>
   <xsl:template name="player-table">
     <xsl:param name="results" />
