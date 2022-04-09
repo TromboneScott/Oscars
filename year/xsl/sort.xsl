@@ -27,7 +27,7 @@
                     &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
                     <br />
                     <br />
-                    This site will be updated once all contest data is collected.
+                    This site will be updated after all ballots have been collected.
                     <br />
                     <br />
                     Check here for live results during the Oscars broadcast.
@@ -37,16 +37,18 @@
                   </td>
                 </tr>
               </table>
-              <br />
-              <br />
-              <h3>Ballots Received</h3>
-              <table>
-                <tr>
-                  <th>Date/Time</th>
-                  <th>Name</th>
-                </tr>
-                <xsl:apply-templates select="$results/entries/entry" />
-              </table>
+              <xsl:if test="count($results/entries/entry) > 0">
+                <br />
+                <br />
+                <h3>Ballots Received</h3>
+                <table>
+                  <tr>
+                    <th>Date/Time</th>
+                    <th>Name</th>
+                  </tr>
+                  <xsl:apply-templates select="$results/entries/entry" />
+                </table>
+              </xsl:if>
             </xsl:when>
             <xsl:otherwise>
               <div class="info">
