@@ -11,9 +11,6 @@ https://stackoverflow.com/questions/22423011/pass-parameter-from-a-url-to-a-xsl-
   a. Add new entries to main web page in near real time using a daemon that continuously runs from the time the form is opened for entries to the time data is loaded on the website
     i. Only include names and entry times
     ii. Sortable by name or entry time
-    iii. Send email to player with guesses
-      I. Make email required in form
-      II. Add check box for opt-in of receipt email
   b. Load player data directly from gsheet instead of players.csv
     i. Do this only on-demand
     ii. Still have to map guesses to nominees for categoryMaps.xml

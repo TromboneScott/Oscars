@@ -1,5 +1,6 @@
 package oscars;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.jdom2.Element;
 
 import com.opencsv.CSVReaderHeaderAware;
+import com.opencsv.exceptions.CsvException;
 
 public final class Batch {
     private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter
@@ -35,21 +37,22 @@ public final class Batch {
     }
 
     private void run() throws Exception {
-        int entryCount = 0;
+        int entryCount = -1;
         while (true) {
             List<String[]> entries = entries();
-            if (entries.size() > entryCount)
+            if (entries.size() > entryCount) {
                 writeResults(entries);
-            entryCount = entries.size();
+                entryCount = entries.size();
+            }
             Thread.sleep(10000);
         }
     }
 
-    private List<String[]> entries() {
+    private List<String[]> entries() throws CsvException {
         try (InputStreamReader inputReader = new InputStreamReader(url.openStream());
                 CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
             return csvReader.readAll();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error downloading entries: " + e);
             return Collections.emptyList();
         }
