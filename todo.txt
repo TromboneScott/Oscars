@@ -17,10 +17,3 @@ https://stackoverflow.com/questions/22423011/pass-parameter-from-a-url-to-a-xsl-
   b. Load player data directly from gsheet instead of players.csv
     i. Do this only on-demand
     ii. Still have to map guesses to nominees for categoryMaps.xml
-
-On Google Sheet
-1. Select File -> Share -> Publish to web
-2. Choose Link = Form Responses 1 (the tab name) and Embed = Comma-separated values (.csv)
-3. Check box for "Automatically rebulish when changes are made"
-4. Click "Publish"
-5. Copy the URL it generates and use that for downloading the CSV file

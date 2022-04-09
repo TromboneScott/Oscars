@@ -8,6 +8,23 @@ We won't be able to use that for any nominees that no one guesses as those descr
 
 To start a new year:
 
+Create Google Form:
+1. Open last year's form at forms.google.com
+2. Select the dots menu at top right and click "Make a copy"
+3. Make all necessary updates for the current year
+  a. Change any categories and tie-breakers
+  b. Update the broadcast date
+  c. Update nominees
+4. Set up data export
+  a. Click Responses tab
+  b. Click the green spreadsheet button to Create Spreadsheet
+  c. Open responses spreadsheet
+  d. Select File/Share/Publish to web
+  e. Choose Link = Form Responses 1 (the tab name) and Embed = Comma-separated values (.csv)
+  f. Check box for "Automatically rebulish when changes are made"
+  g. Click "Publish"
+  h. Copy the URL it generates and use that on the command line when running the oscars programs
+
 Update any code and files as needed
 1. git add <file> (for each <file>)
 2. git commit

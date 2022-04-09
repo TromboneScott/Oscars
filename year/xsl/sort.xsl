@@ -20,18 +20,18 @@
                 <tr>
                   <td id="rank">
                     <br />
-                    <br />
                     <b>BALLOTS ARE BEING COLLECTED</b>
                     <br />
                     <br />
                     &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
                     <br />
                     <br />
-                    This site will be updated after all ballots have been collected.
+                    Ballots will appear here a few minutes after they're entered.
+                    <br />
+                    Details will be added after all ballots have been collected.
                     <br />
                     <br />
-                    Check here for live results during the Oscars broadcast.
-                    <br />
+                    <i>Check here for live results during the Oscars broadcast.</i>
                     <br />
                     <br />
                   </td>
