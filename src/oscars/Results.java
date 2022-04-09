@@ -41,21 +41,21 @@ public class Results {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
                 Map<String, Category> categoryMap = inCategories.stream()
                         .collect(Collectors.toMap(category -> category.name, category -> category));
-                resultsDOM.getChild("categories").getChildren("category")
+                Optional.ofNullable(resultsDOM.getChild("categories")).ifPresent(element -> element
+                        .getChildren("category")
                         .forEach(categoryDOM -> winners.put(
                                 categoryMap.get(categoryDOM.getChildText("name")),
                                 Collections.unmodifiableSet(categoryDOM.getChild("nominees")
                                         .getChildren("nominee").stream()
                                         .filter(nominee -> "correct"
                                                 .equals(nominee.getAttributeValue("status")))
-                                        .map(Element::getText).collect(Collectors.toSet()))));
-                Stream.of(ShowTimeType.values())
-                        .forEach(showTimeType -> Optional
-                                .ofNullable(resultsDOM.getChild("showTime")
-                                        .getChildText(showTimeType.name().toLowerCase()))
-                                .filter(showTimeText -> !showTimeText.isEmpty())
-                                .ifPresent(showTimeText -> showTimes.put(showTimeType,
-                                        LocalDateTime.parse(showTimeText))));
+                                        .map(Element::getText).collect(Collectors.toSet())))));
+                Stream.of(ShowTimeType.values()).forEach(showTimeType -> Optional
+                        .ofNullable(resultsDOM.getChild("showTime"))
+                        .map(element -> element.getChildText(showTimeType.name().toLowerCase()))
+                        .filter(showTimeText -> !showTimeText.isEmpty())
+                        .ifPresent(showTimeText -> showTimes.put(showTimeType,
+                                LocalDateTime.parse(showTimeText))));
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
             }

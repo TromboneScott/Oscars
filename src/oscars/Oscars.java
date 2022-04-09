@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,8 @@ import org.jdom2.ProcessingInstruction;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+
+import com.opencsv.CSVReaderHeaderAware;
 
 /**
  * This program will allow Oscars winners to be selected and a new results file will be generated.
@@ -80,13 +84,15 @@ public class Oscars implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void main(String[] inArgs) throws IOException, InterruptedException {
-        new Oscars().process();
+    public static void main(String[] inArgs) throws Exception {
+        new Oscars(inArgs).process();
     }
 
-    private Oscars() throws IOException {
+    private Oscars(String[] inArgs) throws Exception {
+        if (inArgs.length != 1)
+            throw new IllegalArgumentException("Usage: Oscars <URL>");
         System.out.print("Loading data... ");
-        List<String[]> playerValues = readValues(PLAYERS_FILE);
+        Collection<String[]> playerValues = playerValues(new URL(inArgs[0]));
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
@@ -104,6 +110,17 @@ public class Oscars implements Runnable {
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
     }
 
+    private Collection<String[]> playerValues(URL inURL) throws Exception {
+        try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
+                CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
+            return csvReader.readAll().stream()
+                    .map(row -> Stream.of(row).skip(1).limit(row.length - 2).toArray(String[]::new))
+                    .collect(Collectors.toMap(row -> (row[0] + "|" + row[1]).toUpperCase(),
+                            row -> row, (row1, row2) -> row2))
+                    .values();
+        }
+    }
+
     private static List<String[]> readValues(String inFileName) throws IOException {
         try (Stream<String> stream = Files.lines(Paths.get(inFileName),
                 StandardCharsets.ISO_8859_1)) {
@@ -114,7 +131,7 @@ public class Oscars implements Runnable {
     }
 
     private Map<String, Map<String, String>> categoryMaps(List<String[]> inCategoryValues,
-            List<String[]> inPlayerValues, List<? extends List<String>> inCategoryNominees)
+            Collection<String[]> inPlayerValues, List<? extends List<String>> inCategoryNominees)
             throws IOException {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -182,7 +199,7 @@ public class Oscars implements Runnable {
 
     private Category[] buildCategories(String[] inCategoryNames,
             List<? extends List<String>> inCategoryNominees,
-            Map<String, Map<String, String>> inCategoryMaps, List<String[]> inPlayerValues)
+            Map<String, Map<String, String>> inCategoryMaps, Collection<String[]> inPlayerValues)
             throws IOException {
         return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> new Category(
                 inCategoryNames[categoryNum],
@@ -197,8 +214,9 @@ public class Oscars implements Runnable {
                 .toArray(Category[]::new);
     }
 
-    private List<Player> buildPlayers(List<String[]> inPlayerValues, Category[] inCategoryArray,
-            String[] inCategoryNames, Map<String, Map<String, String>> inCategoryMaps) {
+    private List<Player> buildPlayers(Collection<String[]> inPlayerValues,
+            Category[] inCategoryArray, String[] inCategoryNames,
+            Map<String, Map<String, String>> inCategoryMaps) {
         return inPlayerValues.stream().map(playerValues -> new Player(IntStream
                 .range(0, inCategoryArray.length).boxed()
                 .collect(Collectors.toMap(categoryNum -> inCategoryArray[categoryNum],
