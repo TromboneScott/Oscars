@@ -133,23 +133,23 @@ public class Oscars implements Runnable {
                     k -> new HashMap<>());
             List<String> nominees = inCategoryNominees.get(categoryNum);
             if (!nominees.isEmpty())
-                for (String[] guesses : inPlayerValues) {
-                    String guess = guesses[categoryNum];
-                    if (!categoryMap.containsKey(guess)) {
-                        List<String> mappings = nominees.stream().filter(guess::contains)
+                for (String[] guesses : inPlayerValues)
+                    if (!categoryMap.containsKey(guesses[categoryNum])) {
+                        List<String> mappings = nominees.stream()
+                                .filter(guesses[categoryNum]::contains)
                                 .collect(Collectors.toList());
                         if (mappings.size() == 1)
-                            categoryMap.put(guess, mappings.get(0));
+                            categoryMap.put(guesses[categoryNum], mappings.get(0));
                         else {
                             System.out.println("\nCATEGORY: " + categoryName);
                             IntStream.range(0, nominees.size()).forEach(nomineeNum -> System.out
                                     .println((nomineeNum + 1) + ": " + nominees.get(nomineeNum)));
-                            System.out.print(guess + " = ");
+                            System.out.print(guesses[categoryNum] + " = ");
                             String guessNum = stdin.readLine();
-                            categoryMap.put(guess, nominees.get(Integer.parseInt(guessNum) - 1));
+                            categoryMap.put(guesses[categoryNum],
+                                    nominees.get(Integer.parseInt(guessNum) - 1));
                         }
                     }
-                }
         }
         writeCategoryMaps(categoryMaps);
         return categoryMaps;
