@@ -88,7 +88,7 @@ public class Oscars implements Runnable {
         if (inArgs.length != 1)
             throw new IllegalArgumentException("Usage: Oscars <URL>");
         System.out.print("Loading data... ");
-        Collection<String[]> playerValues = Ballots.uniqueBallots(new URL(inArgs[0]));
+        Collection<String[]> playerValues = Ballots.unique(Ballots.ballots(new URL(inArgs[0])));
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 

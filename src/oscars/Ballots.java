@@ -41,9 +41,9 @@ public final class Ballots {
         int entryCount = -1;
         while (true) {
             try {
-                Collection<String[]> entries = uniqueBallots(url);
+                Collection<String[]> entries = ballots(url);
                 if (entries.size() > entryCount) {
-                    writeResults(entries);
+                    writeResults(unique(entries));
                     entryCount = entries.size();
                 }
             } catch (IOException e) {
@@ -60,8 +60,8 @@ public final class Ballots {
         }
     }
 
-    public static Collection<String[]> uniqueBallots(URL inURL) throws Exception {
-        return ballots(inURL).stream()
+    public static Collection<String[]> unique(Collection<String[]> inBallots) throws Exception {
+        return inBallots.stream()
                 .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
                         (row1, row2) -> row2))
                 .values();
