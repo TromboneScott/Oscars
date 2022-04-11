@@ -108,8 +108,8 @@ public class Oscars implements Runnable {
 
     private Collection<String[]> playerValues(URL inURL) throws Exception {
         return Ballots.ballots(inURL).stream()
-                .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(),
-                        row -> Stream.of(row).skip(1).toArray(String[]::new), (row1, row2) -> row2))
+                .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
+                        (row1, row2) -> row2))
                 .values();
     }
 
