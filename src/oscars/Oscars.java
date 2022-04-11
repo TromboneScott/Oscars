@@ -88,7 +88,7 @@ public class Oscars implements Runnable {
         if (inArgs.length != 1)
             throw new IllegalArgumentException("Usage: Oscars <URL>");
         System.out.print("Loading data... ");
-        Collection<String[]> playerValues = playerValues(new URL(inArgs[0]));
+        Collection<String[]> playerValues = Ballots.uniqueBallots(new URL(inArgs[0]));
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
@@ -104,13 +104,6 @@ public class Oscars implements Runnable {
         results = new Results(categories);
         scoreFormat = "%." + categories.stream()
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
-    }
-
-    private Collection<String[]> playerValues(URL inURL) throws Exception {
-        return Ballots.ballots(inURL).stream()
-                .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
-                        (row1, row2) -> row2))
-                .values();
     }
 
     private static List<String[]> readValues(String inFileName) throws IOException {

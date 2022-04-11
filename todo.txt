@@ -3,6 +3,3 @@
 It may be possible to add check boxes for all categories so people can select hypothetical winners.  Then send that to an HTML file with JQuery and use JavaScript to predict the possible scores and rankings.
 
 https://stackoverflow.com/questions/22423011/pass-parameter-from-a-url-to-a-xsl-stylesheet
-
-
-2. Make received ballots sortable by name or entry time

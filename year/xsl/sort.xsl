@@ -43,10 +43,63 @@
                 <h3>Ballots Received</h3>
                 <table>
                   <tr>
-                    <th>Date/Time</th>
-                    <th>Name</th>
+                    <th>
+                      <xsl:choose>
+                        <xsl:when test=". = 'rank'">
+                          <xsl:call-template name="player-table-column-header">
+                            <xsl:with-param name="text" select="'Date/Time'" />
+                            <xsl:with-param name="link" select="'rankReverse.xml'" />
+                          </xsl:call-template>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:call-template name="player-table-column-header">
+                            <xsl:with-param name="text" select="'Date/Time'" />
+                            <xsl:with-param name="link" select="'rank.xml'" />
+                          </xsl:call-template>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </th>
+                    <th>
+                      <xsl:choose>
+                        <xsl:when test=". = 'name'">
+                          <xsl:call-template name="player-table-column-header">
+                            <xsl:with-param name="text" select="'Name'" />
+                            <xsl:with-param name="link" select="'nameReverse.xml'" />
+                          </xsl:call-template>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:call-template name="player-table-column-header">
+                            <xsl:with-param name="text" select="'Name'" />
+                            <xsl:with-param name="link" select="'name.xml'" />
+                          </xsl:call-template>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </th>
                   </tr>
-                  <xsl:apply-templates select="$results/entries/entry" />
+                  <xsl:choose>
+                    <xsl:when test=". = 'rank'">
+                      <xsl:apply-templates select="$results/entries/entry">
+                        <xsl:sort select="time" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                    <xsl:when test=". = 'rankReverse'">
+                      <xsl:apply-templates select="$results/entries/entry">
+                        <xsl:sort select="time" order="descending" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                    <xsl:when test=". = 'name'">
+                      <xsl:apply-templates select="$results/entries/entry">
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                    <xsl:when test=". = 'nameReverse'">
+                      <xsl:apply-templates select="$results/entries/entry">
+                        <xsl:sort select="lastName" order="descending" />
+                        <xsl:sort select="firstName" order="descending" />
+                      </xsl:apply-templates>
+                    </xsl:when>
+                  </xsl:choose>
                 </table>
               </xsl:if>
             </xsl:when>

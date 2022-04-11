@@ -5,7 +5,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jdom2.Element;
 
@@ -39,7 +41,7 @@ public final class Ballots {
         int entryCount = -1;
         while (true) {
             try {
-                List<String[]> entries = ballots(url);
+                Collection<String[]> entries = uniqueBallots(url);
                 if (entries.size() > entryCount) {
                     writeResults(entries);
                     entryCount = entries.size();
@@ -58,7 +60,14 @@ public final class Ballots {
         }
     }
 
-    private void writeResults(List<String[]> inEntries) throws Exception {
+    public static Collection<String[]> uniqueBallots(URL inURL) throws Exception {
+        return ballots(inURL).stream()
+                .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
+                        (row1, row2) -> row2))
+                .values();
+    }
+
+    private void writeResults(Collection<String[]> inEntries) throws Exception {
         String updated = LocalDateTime.now().format(OUTPUT_FORMAT);
         Oscars.writeDocument(
                 new Element("results").addContent(new Element("title").addContent(title))
@@ -68,7 +77,7 @@ public final class Ballots {
         System.err.println(updated + " - Wrote " + inEntries.size() + " entries");
     }
 
-    private Element entriesDOM(List<String[]> inEntries) throws Exception {
+    private Element entriesDOM(Collection<String[]> inEntries) throws Exception {
         return inEntries.stream()
                 .map(row -> new Element("entry")
                         .addContent(new Element("time").addContent(
