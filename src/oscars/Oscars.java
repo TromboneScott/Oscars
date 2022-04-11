@@ -39,8 +39,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import com.opencsv.CSVReaderHeaderAware;
-
 /**
  * This program will allow Oscars winners to be selected and a new results file will be generated.
  * The Oscars picks for each player are in a comma delimited file which won't change during the
@@ -55,8 +53,6 @@ import com.opencsv.CSVReaderHeaderAware;
  */
 public class Oscars implements Runnable {
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
-
-    private static final String PLAYERS_FILE = "players.csv";
 
     private static final String CATEGORIES_FILE = "categories.csv";
 
@@ -111,14 +107,10 @@ public class Oscars implements Runnable {
     }
 
     private Collection<String[]> playerValues(URL inURL) throws Exception {
-        try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
-                CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
-            return csvReader.readAll().stream()
-                    .map(row -> Stream.of(row).skip(1).limit(row.length - 2).toArray(String[]::new))
-                    .collect(Collectors.toMap(row -> (row[0] + "|" + row[1]).toUpperCase(),
-                            row -> row, (row1, row2) -> row2))
-                    .values();
-        }
+        return Ballots.ballots(inURL).stream()
+                .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(),
+                        row -> Stream.of(row).skip(1).toArray(String[]::new), (row1, row2) -> row2))
+                .values();
     }
 
     private static List<String[]> readValues(String inFileName) throws IOException {

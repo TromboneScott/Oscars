@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 
 import org.jdom2.Element;
@@ -13,7 +12,7 @@ import org.jdom2.Element;
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvException;
 
-public final class Batch {
+public final class Ballots {
     private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter
             .ofPattern("M/d/yyyy H:mm:ss");
 
@@ -25,10 +24,10 @@ public final class Batch {
     private final URL url;
 
     public static void main(String[] inArgs) throws Exception {
-        new Batch(inArgs).run();
+        new Ballots(inArgs).run();
     }
 
-    private Batch(String[] inArgs) throws Exception {
+    private Ballots(String[] inArgs) throws Exception {
         if (inArgs.length != 2)
             throw new IllegalArgumentException("Usage: Batch <year> <URL>");
         title = inArgs[0] + " OSCARS";
@@ -39,22 +38,23 @@ public final class Batch {
     private void run() throws Exception {
         int entryCount = -1;
         while (true) {
-            List<String[]> entries = entries();
-            if (entries.size() > entryCount) {
-                writeResults(entries);
-                entryCount = entries.size();
+            try {
+                List<String[]> entries = ballots(url);
+                if (entries.size() > entryCount) {
+                    writeResults(entries);
+                    entryCount = entries.size();
+                }
+            } catch (IOException e) {
+                System.err.println("Error downloading entries: " + e);
             }
             Thread.sleep(10000);
         }
     }
 
-    private List<String[]> entries() throws CsvException {
-        try (InputStreamReader inputReader = new InputStreamReader(url.openStream());
+    public static List<String[]> ballots(URL inURL) throws IOException, CsvException {
+        try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
                 CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
             return csvReader.readAll();
-        } catch (IOException e) {
-            System.err.println("Error downloading entries: " + e);
-            return Collections.emptyList();
         }
     }
 
