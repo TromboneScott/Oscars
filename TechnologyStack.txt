@@ -8,9 +8,9 @@ Java 8
 
 LIBRARIES
 ---------
-JCommon 1.0.23
 JDOM 2.0.5
-JFreeChart 1.0.19
+JFreeChart 1.0.19 requires JCommon 1.0.23
+OpenCSV 5.6 requires commons-lang3 3.12.0
 
 PLATFORM
 --------

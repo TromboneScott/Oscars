@@ -40,7 +40,8 @@ Edit categories.csv as a spreadsheet
 3. Edit the titles so the tie-breakers in parenthesis are correct
 4. Add all the nominees under each category in the order you want them (usually alphabetical)
 5. Replace any commas (,) with back-quotes (`)
-6. Save in CSV (DOS) format as categories.csv
+6. Special characters such as á and é are allowed
+7. Save in CSV (DOS) format as categories.csv
 
 Delete this file if it exists:
 File: categoryMaps.xml
@@ -50,13 +51,24 @@ From the new year folder run oscars.bat or ./oscars.sh
 Update the link in ../index.html to point to current year.
 
 
+-- While ballots are being collected
+
+From the new year folder run the batch:
+  ballots.bat (or ./ballots.sh) <year> <url>
+Leave it running so it can continuosly download the ballots as they're entered
+
+Check the ballots and fix any namew where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered.
+
 --- After contest deadline for entering guesses
 
-Update any names where they didn't capitalize properly
-Verify columns are in same order as categories.csv
+From the new year folder run the batch:
+  emails.bat (or ./emails.sh) <url>
+Send the list of names and emails to Scott Takeda.
 
-You will be prompted on how to map survey answers to nominees for each category.
+From the new year folder run the batch:
+  oscars.bat (or ./oscars.sh) <url>
+You will be prompted on how to map survey answers to nominees for each category where it can't be done automatically.
 This will be saved so you only have to do this for new survey answers.
 If any mistakes are made you must edit (or delete) categoryMaps.xml and start oscars.bat or oscars.sh over again.
 
-Go to site44.com and click on the refresh button after each category is updated so that it will update the website.
+On the Responses tab of the Google Form turn off the Accepting Responses option.
