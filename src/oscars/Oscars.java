@@ -292,19 +292,21 @@ public class Oscars implements Runnable {
             validTimes = currentTimes;
         }
 
-        return new Element("results").addContent(new Element("title").addContent(results.title()))
+        return resultsDOM(results.title(), updated)
                 .addContent(categories.stream().map(standings::resultsCategoryDOM)
                         .reduce(new Element("categories"), Element::addContent))
                 .addContent(IntStream.range(0, players.size())
                         .mapToObj(playerNum -> standings.resultsPlayerDom(players, playerNum,
                                 scoreFormat))
                         .reduce(new Element("players"), Element::addContent))
-                .addContent(standings.resultsShowTimeDOM()).addContent(updatedDOM(updated));
+                .addContent(standings.resultsShowTimeDOM());
     }
 
-    public static Element updatedDOM(LocalDateTime inUpdated) {
-        return new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")));
+    public static Element resultsDOM(String inTitle, LocalDateTime inUpdated) {
+        return new Element("results").addContent(new Element("title").addContent(inTitle))
+                .addContent(
+                        new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
+                                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
     }
 
     private void mkdir(String inDirectory) {

@@ -73,9 +73,7 @@ public final class Ballots {
 
     private void writeResults(Collection<String[]> inEntries) throws Exception {
         Oscars.writeDocument(
-                new Element("results").addContent(new Element("title").addContent(title))
-                        .addContent(entriesDOM(inEntries))
-                        .addContent(Oscars.updatedDOM(LocalDateTime.now())),
+                Oscars.resultsDOM(title, LocalDateTime.now()).addContent(entriesDOM(inEntries)),
                 Results.RESULTS_FILE, null);
         System.err.println(LocalDateTime.now() + " - Wrote " + inEntries.size() + " entries");
     }
