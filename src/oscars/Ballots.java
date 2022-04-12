@@ -47,7 +47,7 @@ public final class Ballots {
                     entryCount = entries.size();
                 }
             } catch (IOException e) {
-                System.err.println("Error downloading entries: " + e);
+                System.err.println(LocalDateTime.now() + " - Error downloading entries: " + e);
             }
             Thread.sleep(10000);
         }
