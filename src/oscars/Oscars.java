@@ -299,9 +299,12 @@ public class Oscars implements Runnable {
                         .mapToObj(playerNum -> standings.resultsPlayerDom(players, playerNum,
                                 scoreFormat))
                         .reduce(new Element("players"), Element::addContent))
-                .addContent(standings.resultsShowTimeDOM())
-                .addContent(new Element("updated").addContent(updated.atZone(ZoneId.systemDefault())
-                        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
+                .addContent(standings.resultsShowTimeDOM()).addContent(updatedDOM(updated));
+    }
+
+    public static Element updatedDOM(LocalDateTime inUpdated) {
+        return new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")));
     }
 
     private void mkdir(String inDirectory) {

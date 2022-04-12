@@ -47,13 +47,13 @@
                       <xsl:choose>
                         <xsl:when test=". = 'rank'">
                           <xsl:call-template name="player-table-column-header">
-                            <xsl:with-param name="text" select="'Date/Time'" />
+                            <xsl:with-param name="text" select="'Timestamp'" />
                             <xsl:with-param name="link" select="'rankReverse.xml'" />
                           </xsl:call-template>
                         </xsl:when>
                         <xsl:otherwise>
                           <xsl:call-template name="player-table-column-header">
-                            <xsl:with-param name="text" select="'Date/Time'" />
+                            <xsl:with-param name="text" select="'Timestamp'" />
                             <xsl:with-param name="link" select="'rank.xml'" />
                           </xsl:call-template>
                         </xsl:otherwise>
@@ -79,12 +79,16 @@
                   <xsl:choose>
                     <xsl:when test=". = 'rank'">
                       <xsl:apply-templates select="$results/entries/entry">
-                        <xsl:sort select="time" />
+                        <xsl:sort select="timestamp/@raw" />
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'rankReverse'">
                       <xsl:apply-templates select="$results/entries/entry">
-                        <xsl:sort select="time" order="descending" />
+                        <xsl:sort select="timestamp/@raw" order="descending" />
+                        <xsl:sort select="lastName" />
+                        <xsl:sort select="firstName" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'name'">
@@ -145,7 +149,7 @@
   <xsl:template match="entry">
     <tr>
       <td>
-        <xsl:value-of select="time" />
+        <xsl:value-of select="timestamp" />
       </td>
       <td>
         <xsl:value-of select="lastName" />

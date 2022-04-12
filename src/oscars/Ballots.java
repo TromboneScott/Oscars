@@ -19,7 +19,7 @@ public final class Ballots {
             .ofPattern("M/d/yyyy H:mm:ss");
 
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter
-            .ofPattern("MM/dd/yyyy HH:mm:ss");
+            .ofPattern("MM/dd/yyyy hh:mm:ss a");
 
     private final String title;
 
@@ -61,29 +61,31 @@ public final class Ballots {
     }
 
     public static Collection<String[]> unique(Collection<String[]> inBallots) throws Exception {
-        return inBallots.stream()
+        return inBallots.stream().sorted((row1, row2) -> timestamp(row1).compareTo(timestamp(row2)))
                 .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
                         (row1, row2) -> row2))
                 .values();
     }
 
+    private static LocalDateTime timestamp(String[] inRow) {
+        return LocalDateTime.parse(inRow[0], INPUT_FORMAT);
+    }
+
     private void writeResults(Collection<String[]> inEntries) throws Exception {
-        String updated = LocalDateTime.now().format(OUTPUT_FORMAT);
         Oscars.writeDocument(
                 new Element("results").addContent(new Element("title").addContent(title))
                         .addContent(entriesDOM(inEntries))
-                        .addContent(new Element("updated").addContent(updated)),
+                        .addContent(Oscars.updatedDOM(LocalDateTime.now())),
                 Results.RESULTS_FILE, null);
-        System.err.println(updated + " - Wrote " + inEntries.size() + " entries");
+        System.err.println(LocalDateTime.now() + " - Wrote " + inEntries.size() + " entries");
     }
 
     private Element entriesDOM(Collection<String[]> inEntries) throws Exception {
-        return inEntries.stream()
-                .map(row -> new Element("entry")
-                        .addContent(new Element("time").addContent(
-                                LocalDateTime.parse(row[0], INPUT_FORMAT).format(OUTPUT_FORMAT)))
-                        .addContent(new Element("firstName").addContent(row[1]))
-                        .addContent(new Element("lastName").addContent(row[2])))
+        return inEntries.stream().map(row -> new Element("entry")
+                .addContent(new Element("timestamp").setAttribute("raw", timestamp(row).toString())
+                        .addContent(timestamp(row).format(OUTPUT_FORMAT)))
+                .addContent(new Element("firstName").addContent(row[1]))
+                .addContent(new Element("lastName").addContent(row[2])))
                 .reduce(new Element("entries"), Element::addContent);
     }
 }
