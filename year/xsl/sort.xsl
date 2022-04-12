@@ -40,7 +40,10 @@
               <xsl:if test="count($results/entries/entry) > 0">
                 <br />
                 <br />
-                <h3>Ballots Received</h3>
+                <h3>
+                  Ballots Received: 
+                  <xsl:value-of select="count($results/entries/entry)" />
+                </h3>
                 <table>
                   <tr>
                     <th>

@@ -32,7 +32,7 @@
     </table>
     <xsl:if test="not(string($results/showTime/end))">
       <br />
-      <i>Refresh this page to get updated results as winners are announced.</i>
+      <i>Refresh this page to get updated results during the contest.</i>
       <br />
       <br />
       <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
