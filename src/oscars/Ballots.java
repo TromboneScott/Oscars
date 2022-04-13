@@ -43,8 +43,10 @@ public final class Ballots {
             try {
                 Collection<String[]> entries = ballots(url);
                 if (entries.size() > entryCount) {
-                    writeResults(unique(entries));
                     entryCount = entries.size();
+                    Results.writeResults(title, LocalDateTime.now(),
+                            element -> element.addContent(entriesDOM(unique(entries))));
+                    System.err.println(LocalDateTime.now() + " - Wrote " + entryCount + " entries");
                 }
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading entries: " + e);
@@ -60,7 +62,7 @@ public final class Ballots {
         }
     }
 
-    public static Collection<String[]> unique(Collection<String[]> inBallots) throws Exception {
+    public static Collection<String[]> unique(Collection<String[]> inBallots) {
         return inBallots.stream().sorted((row1, row2) -> timestamp(row1).compareTo(timestamp(row2)))
                 .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
                         (row1, row2) -> row2))
@@ -71,14 +73,7 @@ public final class Ballots {
         return LocalDateTime.parse(inRow[0], INPUT_FORMAT);
     }
 
-    private void writeResults(Collection<String[]> inEntries) throws Exception {
-        Oscars.writeDocument(
-                Oscars.resultsDOM(title, LocalDateTime.now()).addContent(entriesDOM(inEntries)),
-                Results.RESULTS_FILE, null);
-        System.err.println(LocalDateTime.now() + " - Wrote " + inEntries.size() + " entries");
-    }
-
-    private Element entriesDOM(Collection<String[]> inEntries) throws Exception {
+    private Element entriesDOM(Collection<String[]> inEntries) {
         return inEntries.stream().map(row -> new Element("entry")
                 .addContent(new Element("timestamp").setAttribute("raw", timestamp(row).toString())
                         .addContent(timestamp(row).format(OUTPUT_FORMAT)))

@@ -15,8 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -269,11 +267,6 @@ public class Oscars implements Runnable {
         }
     }
 
-    private void writeResults() throws IOException {
-        standings = new Standings(players, results);
-        writeDocument(resultsDOM(), Results.RESULTS_FILE, null);
-    }
-
     private long waitTime(long inMaxWait) {
         long nextPlayerTime = TimeUnit.SECONDS
                 .toMillis(players.stream().mapToLong(player -> player.time)
@@ -284,15 +277,19 @@ public class Oscars implements Runnable {
                 inMaxWait - elapsedTimeMillis % inMaxWait);
     }
 
-    private Element resultsDOM() {
+    private void writeResults() throws IOException {
+        standings = new Standings(players, results);
         long currentTimes = players.stream().filter(player -> player.time <= standings.elapsedTime)
                 .count();
         if (validTimes != currentTimes) {
             updated = LocalDateTime.now();
             validTimes = currentTimes;
         }
+        Results.writeResults(results.title(), updated, this::resultsDOM);
+    }
 
-        return resultsDOM(results.title(), updated)
+    private Element resultsDOM(Element inElement) {
+        return inElement
                 .addContent(categories.stream().map(standings::resultsCategoryDOM)
                         .reduce(new Element("categories"), Element::addContent))
                 .addContent(IntStream.range(0, players.size())
@@ -300,13 +297,6 @@ public class Oscars implements Runnable {
                                 scoreFormat))
                         .reduce(new Element("players"), Element::addContent))
                 .addContent(standings.resultsShowTimeDOM());
-    }
-
-    public static Element resultsDOM(String inTitle, LocalDateTime inUpdated) {
-        return new Element("results").addContent(new Element("title").addContent(inTitle))
-                .addContent(
-                        new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
-                                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
     }
 
     private void mkdir(String inDirectory) {

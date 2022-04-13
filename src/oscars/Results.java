@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,7 +28,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Results {
-    public static final String RESULTS_FILE = "results.xml";
+    private static final String RESULTS_FILE = "results.xml";
 
     private static final String WINNER_DELIMITER = ",";
 
@@ -200,5 +202,17 @@ public class Results {
      */
     public String title() {
         return showTimes.get(ShowTimeType.START).getYear() + " OSCARS";
+    }
+
+    public static void writeResults(String inTitle, LocalDateTime inUpdated,
+            Function<Element, Element> inUpdater) throws IOException {
+        Oscars.writeDocument(inUpdater.apply(resultsDOM(inTitle, inUpdated)), RESULTS_FILE, null);
+    }
+
+    private static Element resultsDOM(String inTitle, LocalDateTime inUpdated) {
+        return new Element("results").addContent(new Element("title").addContent(inTitle))
+                .addContent(
+                        new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
+                                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
     }
 }
