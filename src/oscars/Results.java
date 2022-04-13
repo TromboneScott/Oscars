@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -195,22 +196,15 @@ public class Results {
         return Optional.ofNullable(winners.get(inCategory)).orElseGet(Collections::emptySet);
     }
 
-    /**
-     * The title text to use for the results
-     *
-     * @return The title text to use for the results
-     */
-    public String title() {
-        return showTimes.get(ShowTimeType.START).getYear() + " OSCARS";
+    public static void write(LocalDateTime inUpdated, Function<Element, Element> inUpdater)
+            throws IOException {
+        Oscars.writeDocument(inUpdater.apply(resultsDOM(inUpdated)), RESULTS_FILE, null);
     }
 
-    public static void writeResults(String inTitle, LocalDateTime inUpdated,
-            Function<Element, Element> inUpdater) throws IOException {
-        Oscars.writeDocument(inUpdater.apply(resultsDOM(inTitle, inUpdated)), RESULTS_FILE, null);
-    }
-
-    private static Element resultsDOM(String inTitle, LocalDateTime inUpdated) {
-        return new Element("results").addContent(new Element("title").addContent(inTitle))
+    private static Element resultsDOM(LocalDateTime inUpdated) {
+        return new Element("results")
+                .addContent(new Element("title").addContent(
+                        Paths.get(".").toAbsolutePath().normalize().getFileName() + " OSCARS"))
                 .addContent(
                         new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
                                 .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));

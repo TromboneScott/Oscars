@@ -21,8 +21,6 @@ public final class Ballots {
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter
             .ofPattern("MM/dd/yyyy hh:mm:ss a");
 
-    private final String title;
-
     private final URL url;
 
     public static void main(String[] inArgs) throws Exception {
@@ -30,10 +28,9 @@ public final class Ballots {
     }
 
     private Ballots(String[] inArgs) throws Exception {
-        if (inArgs.length != 2)
-            throw new IllegalArgumentException("Usage: Batch <year> <URL>");
-        title = inArgs[0] + " OSCARS";
-        url = new URL(inArgs[1]);
+        if (inArgs.length != 1)
+            throw new IllegalArgumentException("Usage: Batch <URL>");
+        url = new URL(inArgs[0]);
         url.openConnection().setDefaultUseCaches(false);
     }
 
@@ -44,7 +41,7 @@ public final class Ballots {
                 Collection<String[]> entries = ballots(url);
                 if (entries.size() > entryCount) {
                     entryCount = entries.size();
-                    Results.writeResults(title, LocalDateTime.now(),
+                    Results.write(LocalDateTime.now(),
                             element -> element.addContent(entriesDOM(unique(entries))));
                     System.err.println(LocalDateTime.now() + " - Wrote " + entryCount + " entries");
                 }

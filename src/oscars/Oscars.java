@@ -285,7 +285,7 @@ public class Oscars implements Runnable {
             updated = LocalDateTime.now();
             validTimes = currentTimes;
         }
-        Results.writeResults(results.title(), updated, this::resultsDOM);
+        Results.write(updated, this::resultsDOM);
     }
 
     private Element resultsDOM(Element inElement) {
