@@ -64,9 +64,6 @@ public class Results {
             }
         else
             System.out.println("\nStarting new results file: " + RESULTS_FILE);
-
-        while (!showTimes.containsKey(ShowTimeType.START))
-            promptTime(ShowTimeType.START);
     }
 
     private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
@@ -75,10 +72,7 @@ public class Results {
                 "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
         String enteredTime = new BufferedReader(new InputStreamReader(System.in)).readLine();
         if (enteredTime.isEmpty())
-            if (inShowTimeType == ShowTimeType.START)
-                System.out.println(ShowTimeType.START + " is required");
-            else
-                showTimes.remove(inShowTimeType);
+            showTimes.remove(inShowTimeType);
         else if ("*".equals(enteredTime))
             showTimes.put(inShowTimeType, LocalDateTime.now());
         else
@@ -173,16 +167,16 @@ public class Results {
     /**
      * The elapsed time since the start of the broadcast in milliseconds
      *
-     * @return The elapsed time, negative if the show hasn't started
+     * @return The elapsed time, zero if the show hasn't started
      */
     public long elapsedTimeMillis() {
-        return Math.max(0,
-                Optional.ofNullable(showTimes.get(ShowTimeType.END)).map(this::toMillis).orElseGet(
-                        System::currentTimeMillis) - toMillis(showTimes.get(ShowTimeType.START)));
+        return Math.max(0, toMillis(ShowTimeType.END) - toMillis(ShowTimeType.START));
     }
 
-    private long toMillis(LocalDateTime inTime) {
-        return inTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    private Long toMillis(ShowTimeType inShowTimeType) {
+        return Optional.ofNullable(showTimes.get(inShowTimeType))
+                .map(showTime -> showTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .orElseGet(System::currentTimeMillis);
     }
 
     /**
