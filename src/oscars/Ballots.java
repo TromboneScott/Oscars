@@ -60,9 +60,9 @@ public final class Ballots {
     }
 
     public static Collection<String[]> unique(Collection<String[]> inBallots) {
-        return inBallots.stream().sorted((row1, row2) -> timestamp(row1).compareTo(timestamp(row2)))
-                .collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
-                        (row1, row2) -> row2))
+        return inBallots.stream().collect(Collectors.toMap(
+                row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
+                (row1, row2) -> timestamp(row1).compareTo(timestamp(row2)) > 0 ? row1 : row2))
                 .values();
     }
 
