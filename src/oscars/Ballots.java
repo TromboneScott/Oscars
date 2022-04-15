@@ -6,7 +6,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jdom2.Element;
@@ -21,28 +20,21 @@ public final class Ballots {
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter
             .ofPattern("MM/dd/yyyy hh:mm:ss a");
 
-    private final URL url;
+    public final Collection<String[]> all;
 
     public static void main(String[] inArgs) throws Exception {
-        new Ballots(inArgs).run();
-    }
-
-    private Ballots(String[] inArgs) throws Exception {
         if (inArgs.length != 1)
             throw new IllegalArgumentException("Usage: Batch <URL>");
-        url = new URL(inArgs[0]);
+        URL url = new URL(inArgs[0]);
         url.openConnection().setDefaultUseCaches(false);
-    }
-
-    private void run() throws Exception {
         int entryCount = -1;
         while (true) {
             try {
-                Collection<String[]> entries = ballots(url);
-                if (entries.size() > entryCount) {
-                    entryCount = entries.size();
+                Ballots ballots = new Ballots(url);
+                if (ballots.all.size() > entryCount) {
+                    entryCount = ballots.all.size();
                     Results.write(LocalDateTime.now(),
-                            element -> element.addContent(entriesDOM(unique(entries))));
+                            element -> element.addContent(entriesDOM(ballots.latest())));
                     System.err.println(LocalDateTime.now() + " - Wrote " + entryCount + " entries");
                 }
             } catch (IOException e) {
@@ -52,16 +44,16 @@ public final class Ballots {
         }
     }
 
-    public static List<String[]> ballots(URL inURL) throws IOException, CsvException {
+    public Ballots(URL inURL) throws IOException, CsvException {
         try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
                 CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
-            return csvReader.readAll();
+            all = csvReader.readAll();
         }
     }
 
-    public static Collection<String[]> unique(Collection<String[]> inBallots) {
-        return inBallots.stream().collect(Collectors.toMap(
-                row -> (row[1] + "|" + row[2]).toUpperCase(), row -> row,
+    public Collection<String[]> latest() {
+        return all.stream().collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(),
+                row -> row,
                 (row1, row2) -> timestamp(row1).compareTo(timestamp(row2)) > 0 ? row1 : row2))
                 .values();
     }
@@ -70,7 +62,7 @@ public final class Ballots {
         return LocalDateTime.parse(inRow[0], INPUT_FORMAT);
     }
 
-    private Element entriesDOM(Collection<String[]> inEntries) {
+    private static Element entriesDOM(Collection<String[]> inEntries) {
         return inEntries.stream().map(row -> new Element("entry")
                 .addContent(new Element("timestamp").setAttribute("raw", timestamp(row).toString())
                         .addContent(timestamp(row).format(OUTPUT_FORMAT)))
