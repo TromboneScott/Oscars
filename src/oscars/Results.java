@@ -33,6 +33,9 @@ public class Results {
 
     private static final String WINNER_DELIMITER = ",";
 
+    private static final String TITLE = Paths.get(".").toAbsolutePath().normalize().getFileName()
+            + " OSCARS";
+
     private final Map<Category, Set<String>> winners = new HashMap<>();
 
     private final Map<ShowTimeType, LocalDateTime> showTimes = new HashMap<>();
@@ -85,7 +88,7 @@ public class Results {
     }
 
     private String toString(ShowTimeType inShowTimeType) {
-        return inShowTimeType + " = " + getShowTime(inShowTimeType);
+        return inShowTimeType + " = " + get(inShowTimeType);
     }
 
     /**
@@ -159,9 +162,8 @@ public class Results {
         return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
-    public String getShowTime(ShowTimeType inShowTimeType) {
-        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(LocalDateTime::toString)
-                .orElse("");
+    public String get(ShowTimeType inShowTimeType) {
+        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(Object::toString).orElse("");
     }
 
     /**
@@ -170,10 +172,10 @@ public class Results {
      * @return The elapsed time, zero if the show hasn't started
      */
     public long elapsedTimeMillis() {
-        return Math.max(0, toMillis(ShowTimeType.END) - toMillis(ShowTimeType.START));
+        return Math.max(0, getMillis(ShowTimeType.END) - getMillis(ShowTimeType.START));
     }
 
-    private Long toMillis(ShowTimeType inShowTimeType) {
+    private Long getMillis(ShowTimeType inShowTimeType) {
         return Optional.ofNullable(showTimes.get(inShowTimeType))
                 .map(showTime -> showTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .orElseGet(System::currentTimeMillis);
@@ -196,11 +198,8 @@ public class Results {
     }
 
     private static Element resultsDOM(LocalDateTime inUpdated) {
-        return new Element("results")
-                .addContent(new Element("title").addContent(
-                        Paths.get(".").toAbsolutePath().normalize().getFileName() + " OSCARS"))
-                .addContent(
-                        new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
-                                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
+        return new Element("results").addContent(new Element("title").addContent(TITLE)).addContent(
+                new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
+                        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
     }
 }

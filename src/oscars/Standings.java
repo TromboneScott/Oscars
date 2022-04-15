@@ -33,7 +33,7 @@ public final class Standings {
                 .collect(Collectors.toMap(category -> category, category -> Collections
                         .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
         showTimes = Collections.unmodifiableMap(Stream.of(ShowTimeType.values())
-                .collect(Collectors.toMap(showTimeType -> showTimeType, inResults::getShowTime)));
+                .collect(Collectors.toMap(showTimeType -> showTimeType, inResults::get)));
         scoreMap = Collections.unmodifiableMap(inPlayers.parallelStream()
                 .collect(Collectors.toMap(player -> player, this::score)));
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
