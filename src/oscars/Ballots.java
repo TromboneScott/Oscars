@@ -34,7 +34,7 @@ public final class Ballots {
                 if (ballots.all.size() > entryCount) {
                     entryCount = ballots.all.size();
                     Results.write(LocalDateTime.now(),
-                            element -> element.addContent(entriesDOM(ballots.latest())));
+                            element -> element.addContent(ballots.entriesDOM()));
                     System.err.println(LocalDateTime.now() + " - Wrote " + entryCount + " entries");
                 }
             } catch (IOException e) {
@@ -62,8 +62,8 @@ public final class Ballots {
         return LocalDateTime.parse(inRow[0], INPUT_FORMAT);
     }
 
-    private static Element entriesDOM(Collection<String[]> inEntries) {
-        return inEntries.stream().map(row -> new Element("entry")
+    private Element entriesDOM() {
+        return latest().stream().map(row -> new Element("entry")
                 .addContent(new Element("timestamp").setAttribute("raw", timestamp(row).toString())
                         .addContent(timestamp(row).format(OUTPUT_FORMAT)))
                 .addContent(new Element("firstName").addContent(row[1]))
