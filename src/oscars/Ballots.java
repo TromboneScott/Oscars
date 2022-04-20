@@ -25,10 +25,9 @@ public final class Ballots {
     public static void main(String[] inArgs) throws Exception {
         if (inArgs.length != 1)
             throw new IllegalArgumentException("Usage: Batch <URL>");
-        URL url = new URL(inArgs[0]);
-        url.openConnection().setDefaultUseCaches(false);
-        int entryCount = -1;
-        while (true) {
+        for (int entryCount = -1;;) {
+            URL url = new URL(inArgs[0]);
+            url.openConnection().setDefaultUseCaches(false);
             try {
                 Ballots ballots = new Ballots(url);
                 if (ballots.all.size() > entryCount) {
