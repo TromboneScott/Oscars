@@ -6,6 +6,8 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import org.jdom2.Element;
@@ -49,9 +51,9 @@ public final class Ballots {
     }
 
     public Collection<String[]> latest() {
-        return all.stream().collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(),
-                row -> row,
-                (row1, row2) -> timestamp(row1).compareTo(timestamp(row2)) > 0 ? row1 : row2))
+        return all
+                .stream().collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(),
+                        row -> row, BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
                 .values();
     }
 
