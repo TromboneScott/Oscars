@@ -34,8 +34,7 @@ public final class Ballots {
                 Ballots ballots = new Ballots(url);
                 if (ballots.all.size() > entryCount) {
                     entryCount = ballots.all.size();
-                    Results.write(LocalDateTime.now(),
-                            element -> element.addContent(ballots.entriesDOM()));
+                    Results.write(LocalDateTime.now(), ballots.entriesDOM());
                     System.err.println(LocalDateTime.now() + " - Wrote " + entryCount + " entries");
                 }
             } catch (IOException e) {

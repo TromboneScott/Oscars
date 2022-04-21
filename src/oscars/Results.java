@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,11 +20,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.jdom2.Content;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -192,14 +193,12 @@ public class Results {
         return Optional.ofNullable(winners.get(inCategory)).orElseGet(Collections::emptySet);
     }
 
-    public static void write(LocalDateTime inUpdated, Function<Element, Element> inUpdater)
-            throws IOException {
-        Oscars.writeDocument(inUpdater.apply(resultsDOM(inUpdated)), RESULTS_FILE, null);
-    }
-
-    private static Element resultsDOM(LocalDateTime inUpdated) {
-        return new Element("results").addContent(new Element("title").addContent(TITLE)).addContent(
-                new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
-                        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))));
+    public static void write(LocalDateTime inUpdated, Content... inContent) throws IOException {
+        Oscars.writeDocument(new Element("results")
+                .addContent(new Element("title").addContent(TITLE))
+                .addContent(
+                        new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
+                                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))
+                .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 }

@@ -285,18 +285,14 @@ public class Oscars implements Runnable {
             updated = LocalDateTime.now();
             validTimes = currentTimes;
         }
-        Results.write(updated, this::resultsDOM);
-    }
-
-    private Element resultsDOM(Element inElement) {
-        return inElement
-                .addContent(categories.stream().map(standings::resultsCategoryDOM)
-                        .reduce(new Element("categories"), Element::addContent))
-                .addContent(IntStream.range(0, players.size())
+        Results.write(updated,
+                categories.stream().map(standings::resultsCategoryDOM)
+                        .reduce(new Element("categories"), Element::addContent),
+                IntStream.range(0, players.size())
                         .mapToObj(playerNum -> standings.resultsPlayerDom(players, playerNum,
                                 scoreFormat))
-                        .reduce(new Element("players"), Element::addContent))
-                .addContent(standings.resultsShowTimeDOM());
+                        .reduce(new Element("players"), Element::addContent),
+                standings.resultsShowTimeDOM());
     }
 
     private void mkdir(String inDirectory) {
