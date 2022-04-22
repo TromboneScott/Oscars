@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -90,42 +91,49 @@ public final class Standings {
                                 .reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
-    public Element resultsCategoryDOM(Category inCategory) {
-        return new Element("category").addContent(new Element("name").addContent(inCategory.name))
-                .addContent(inCategory.guesses.keySet().stream().sorted()
-                        .map(guess -> new Element("nominee").addContent(guess).setAttribute(
-                                "status",
-                                winners.get(inCategory).isEmpty() ? "unannounced"
-                                        : winners.get(inCategory).contains(guess) ? "correct"
-                                                : "incorrect"))
-                        .reduce(new Element("nominees"), Element::addContent));
+    public Element resultsCategoryDOM(List<Category> inCategories) {
+        return inCategories.stream()
+                .map(category -> new Element("category")
+                        .addContent(new Element("name").addContent(category.name))
+                        .addContent(category.guesses.keySet().stream().sorted()
+                                .map(guess -> new Element("nominee").addContent(guess).setAttribute(
+                                        "status",
+                                        winners.get(category).isEmpty() ? "unannounced"
+                                                : winners.get(category).contains(guess) ? "correct"
+                                                        : "incorrect"))
+                                .reduce(new Element("nominees"), Element::addContent)))
+                .reduce(new Element("categories"), Element::addContent);
     }
 
-    public Element resultsPlayerDom(List<Player> inPlayers, int inPlayerNum, String inScoreFormat) {
-        Player player = inPlayers.get(inPlayerNum);
-        return player.toDOM().setAttribute("id", String.valueOf(inPlayerNum + 1))
-                .addContent(new Element("rank").addContent(String.valueOf(rank(player))))
-                .addContent(new Element("bpr")
-                        .addContent(String.valueOf(lostToMap.get(player).size() + 1)))
-                .addContent(new Element("wpr")
-                        .addContent(String.valueOf(worstPossibleRank(player, scoreMap))))
-                .addContent(new Element("score")
-                        .addContent(String.format(inScoreFormat, scoreMap.get(player))))
-                .addContent(new Element("time")
-                        .setAttribute("delta",
-                                player.time <= elapsedTime ? formatTime(elapsedTime - player.time)
+    public Element resultsPlayerDOM(List<Player> inPlayers, String inScoreFormat) {
+        return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
+                .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
+                .addContent(new Element("rank")
+                        .addContent(String.valueOf(rank(inPlayers.get(playerNum)))))
+                .addContent(new Element("bpr").addContent(
+                        String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1)))
+                .addContent(new Element("wpr").addContent(
+                        String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap))))
+                .addContent(new Element("score").addContent(String.format(inScoreFormat,
+                        scoreMap.get(inPlayers.get(playerNum)))))
+                .addContent(
+                        new Element("time")
+                                .setAttribute("delta", inPlayers.get(playerNum).time <= elapsedTime
+                                        ? formatTime(elapsedTime - inPlayers.get(playerNum).time)
                                         : showEnded() ? "OVER"
-                                                : "-" + formatTime(player.time - elapsedTime))
-                        .setAttribute("status",
-                                player.time <= elapsedTime ? "correct"
-                                        : showEnded() ? "incorrect" : "unannounced")
-                        .addContent(formatTime(player.time)))
-                .addContent(inPlayers.stream()
-                        .map(opponent -> new Element("player")
-                                .addContent(lostToMap.get(player).contains(opponent) ? "BETTER"
-                                        : lostToMap.get(opponent).contains(player)
-                                                || tied(player, opponent) ? "WORSE" : "TBD"))
-                        .reduce(new Element("opponents"), Element::addContent));
+                                                : "-" + formatTime(inPlayers.get(playerNum).time
+                                                        - elapsedTime))
+                                .setAttribute("status",
+                                        inPlayers.get(playerNum).time <= elapsedTime ? "correct"
+                                                : showEnded() ? "incorrect" : "unannounced")
+                                .addContent(formatTime(inPlayers.get(playerNum).time)))
+                .addContent(inPlayers.stream().map(opponent -> new Element("player").addContent(
+                        lostToMap.get(inPlayers.get(playerNum)).contains(opponent) ? "BETTER"
+                                : lostToMap.get(opponent).contains(inPlayers.get(playerNum))
+                                        || tied(inPlayers.get(playerNum), opponent) ? "WORSE"
+                                                : "TBD"))
+                        .reduce(new Element("opponents"), Element::addContent)))
+                .reduce(new Element("players"), Element::addContent);
     }
 
     /** Determine if the player and opponent will be tied at the end of the game */
