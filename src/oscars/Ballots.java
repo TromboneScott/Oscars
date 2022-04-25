@@ -16,12 +16,6 @@ import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvException;
 
 public final class Ballots {
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter
-            .ofPattern("M/d/yyyy H:mm:ss");
-
-    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter
-            .ofPattern("MM/dd/yyyy hh:mm:ss a");
-
     public final Collection<String[]> all;
 
     public static void main(String[] inArgs) throws Exception {
@@ -34,7 +28,7 @@ public final class Ballots {
                 Ballots ballots = new Ballots(url);
                 if (ballots.all.size() > entryCount) {
                     entryCount = ballots.all.size();
-                    Results.write(LocalDateTime.now(), ballots.entriesDOM());
+                    Results.write(LocalDateTime.now(), toDOM(ballots.latest()));
                     System.err.println(LocalDateTime.now() + " - Wrote " + entryCount + " entries");
                 }
             } catch (IOException e) {
@@ -57,15 +51,19 @@ public final class Ballots {
     }
 
     private static LocalDateTime timestamp(String[] inRow) {
-        return LocalDateTime.parse(inRow[0], INPUT_FORMAT);
+        return LocalDateTime.parse(inRow[0], DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
-    private Element entriesDOM() {
-        return latest().stream().map(row -> new Element("entry")
-                .addContent(new Element("timestamp").setAttribute("raw", timestamp(row).toString())
-                        .addContent(timestamp(row).format(OUTPUT_FORMAT)))
-                .addContent(new Element("firstName").addContent(row[1]))
-                .addContent(new Element("lastName").addContent(row[2])))
+    private static Element toDOM(Collection<String[]> inRows) {
+        return inRows.stream()
+                .map(row -> new Element("entry").addContent(toDOM(timestamp(row)))
+                        .addContent(new Element("firstName").addContent(row[1]))
+                        .addContent(new Element("lastName").addContent(row[2])))
                 .reduce(new Element("entries"), Element::addContent);
+    }
+
+    private static Element toDOM(LocalDateTime inTimestamp) {
+        return new Element("timestamp").setAttribute("raw", inTimestamp.toString()).addContent(
+                inTimestamp.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a")));
     }
 }

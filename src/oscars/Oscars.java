@@ -85,7 +85,7 @@ public class Oscars implements Runnable {
     private Oscars(String[] inArgs) throws Exception {
         if (inArgs.length != 1)
             throw new IllegalArgumentException("Usage: Oscars <URL>");
-        System.out.print("Loading data... ");
+        System.out.print("Step 1 of 5: Loading data... ");
         Collection<String[]> playerValues = new Ballots(new URL(inArgs[0])).latest();
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
@@ -175,7 +175,7 @@ public class Oscars implements Runnable {
 
     private void writeCategoryMaps(Map<String, Map<String, String>> inCategoryMaps)
             throws IOException {
-        System.out.print("Step 1 of 4: Writing category mappings... ");
+        System.out.print("Step 2 of 5: Writing category mappings... ");
         writeDocument(inCategoryMaps.keySet().stream()
                 .map(category -> inCategoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map")
@@ -295,7 +295,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeRankCharts() throws IOException {
-        System.out.print("Step 2 of 4: Writing " + players.size() + " rank images... ");
+        System.out.print("Step 3 of 5: Writing " + players.size() + " rank images... ");
         mkdir(RankChart.DIRECTORY);
         for (int rank = 1; rank <= players.size(); rank++) {
             System.out.print(rank + "-");
@@ -305,7 +305,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        System.out.print("Step 3 of 4: Writing category web pages... ");
+        System.out.print("Step 4 of 5: Writing category web pages... ");
         mkdir(Category.DIRECTORY);
         writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
@@ -320,7 +320,7 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
-        System.out.print("Step 4 of 4: Writing player web pages... ");
+        System.out.print("Step 5 of 5: Writing player web pages... ");
         mkdir("player");
         for (Player player : players)
             writeDocument(player.toDOM(),
