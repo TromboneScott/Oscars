@@ -37,12 +37,12 @@
                   </td>
                 </tr>
               </table>
-              <xsl:if test="count($results/entries/entry) > 0">
+              <xsl:if test="count($results/ballots/ballot) > 0">
                 <br />
                 <br />
                 <h3>
                   Ballots Received: 
-                  <xsl:value-of select="count($results/entries/entry)" />
+                  <xsl:value-of select="count($results/ballots/ballot)" />
                 </h3>
                 <table>
                   <tr>
@@ -81,29 +81,25 @@
                   </tr>
                   <xsl:choose>
                     <xsl:when test=". = 'rank'">
-                      <xsl:apply-templates select="$results/entries/entry">
+                      <xsl:apply-templates select="$results/ballots/ballot">
                         <xsl:sort select="timestamp/@raw" />
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
+                        <xsl:sort select="name" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'rankReverse'">
-                      <xsl:apply-templates select="$results/entries/entry">
+                      <xsl:apply-templates select="$results/ballots/ballot">
                         <xsl:sort select="timestamp/@raw" order="descending" />
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
+                        <xsl:sort select="name" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'name'">
-                      <xsl:apply-templates select="$results/entries/entry">
-                        <xsl:sort select="lastName" />
-                        <xsl:sort select="firstName" />
+                      <xsl:apply-templates select="$results/ballots/ballot">
+                        <xsl:sort select="name" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'nameReverse'">
-                      <xsl:apply-templates select="$results/entries/entry">
-                        <xsl:sort select="lastName" order="descending" />
-                        <xsl:sort select="firstName" order="descending" />
+                      <xsl:apply-templates select="$results/ballots/ballot">
+                        <xsl:sort select="name" order="descending" />
                       </xsl:apply-templates>
                     </xsl:when>
                   </xsl:choose>
@@ -149,17 +145,13 @@
       </body>
     </html>
   </xsl:template>
-  <xsl:template match="entry">
+  <xsl:template match="ballot">
     <tr>
       <td>
         <xsl:value-of select="timestamp" />
       </td>
       <td>
-        <xsl:value-of select="lastName" />
-        <xsl:if test="firstName != '' and lastName != ''">
-          <xsl:value-of select="', '" />
-        </xsl:if>
-        <xsl:value-of select="firstName" />
+        <xsl:value-of select="name" />
       </td>
     </tr>
   </xsl:template>

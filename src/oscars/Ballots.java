@@ -44,10 +44,12 @@ public final class Ballots {
     }
 
     public Collection<String[]> latest() {
-        return all
-                .stream().collect(Collectors.toMap(row -> (row[1] + "|" + row[2]).toUpperCase(),
-                        row -> row, BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
-                .values();
+        return all.stream().collect(Collectors.toMap(row -> name(row).toUpperCase(), row -> row,
+                BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp)))).values();
+    }
+
+    private static String name(String[] inRow) {
+        return inRow[2] + ", " + inRow[1];
     }
 
     private static LocalDateTime timestamp(String[] inRow) {
@@ -56,10 +58,9 @@ public final class Ballots {
 
     private static Element toDOM(Collection<String[]> inRows) {
         return inRows.stream()
-                .map(row -> new Element("entry").addContent(toDOM(timestamp(row)))
-                        .addContent(new Element("firstName").addContent(row[1]))
-                        .addContent(new Element("lastName").addContent(row[2])))
-                .reduce(new Element("entries"), Element::addContent);
+                .map(row -> new Element("ballot").addContent(toDOM(timestamp(row)))
+                        .addContent(new Element("name").addContent(name(row))))
+                .reduce(new Element("ballots"), Element::addContent);
     }
 
     private static Element toDOM(LocalDateTime inTimestamp) {
