@@ -47,7 +47,7 @@ public final class Ballots {
                 BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp)))).values();
     }
 
-    private static String name(String[] inRow) {
+    public static String name(String[] inRow) {
         return inRow[2] + ", " + inRow[1];
     }
 
