@@ -90,17 +90,17 @@ public class Oscars implements Runnable {
     private Oscars(String[] inArgs) throws Exception {
         Oscars.validateArgs(inArgs);
         System.out.print("Step 1 of 5: Loading data... ");
-        Collection<String[]> playerValues = new Ballots(new URL(inArgs[0])).latest();
+        Collection<Ballot> ballots = Ballot.latest(Ballot.stream(new URL(inArgs[0])));
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
         List<? extends List<String>> categoryNominees = categoryNominees(categoryValues);
-        Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, playerValues,
+        Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, ballots,
                 categoryNominees);
         Category[] categoryArray = buildCategories(categoryValues.get(0), categoryNominees,
-                categoryMaps, playerValues);
+                categoryMaps, ballots);
         players = Collections.unmodifiableList(
-                buildPlayers(playerValues, categoryArray, categoryValues.get(0), categoryMaps));
+                buildPlayers(ballots, categoryArray, categoryValues.get(0), categoryMaps));
         categories = Collections.unmodifiableList(Arrays.stream(categoryArray)
                 .filter(category -> !category.guesses.isEmpty()).collect(Collectors.toList()));
         results = new Results(categories);
@@ -118,7 +118,7 @@ public class Oscars implements Runnable {
     }
 
     private Map<String, Map<String, String>> categoryMaps(List<String[]> inCategoryValues,
-            Collection<String[]> inPlayerValues, List<? extends List<String>> inCategoryNominees)
+            Collection<Ballot> ballots, List<? extends List<String>> inCategoryNominees)
             throws IOException {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -128,20 +128,20 @@ public class Oscars implements Runnable {
                     k -> new HashMap<>());
             List<String> nominees = inCategoryNominees.get(categoryNum);
             if (!nominees.isEmpty())
-                for (String[] guesses : inPlayerValues)
-                    if (!categoryMap.containsKey(guesses[categoryNum])) {
+                for (Ballot ballot : ballots)
+                    if (!categoryMap.containsKey(ballot.get(categoryNum))) {
                         List<String> mappings = nominees.stream()
-                                .filter(guesses[categoryNum]::contains)
+                                .filter(ballot.get(categoryNum)::contains)
                                 .collect(Collectors.toList());
                         if (mappings.size() == 1)
-                            categoryMap.put(guesses[categoryNum], mappings.get(0));
+                            categoryMap.put(ballot.get(categoryNum), mappings.get(0));
                         else {
                             System.out.println("\nCATEGORY: " + categoryName);
                             IntStream.range(0, nominees.size()).forEach(nomineeNum -> System.out
                                     .println((nomineeNum + 1) + ": " + nominees.get(nomineeNum)));
-                            System.out.print(guesses[categoryNum] + " = ");
+                            System.out.print(ballot.get(categoryNum) + " = ");
                             String guessNum = stdin.readLine();
-                            categoryMap.put(guesses[categoryNum],
+                            categoryMap.put(ballot.get(categoryNum),
                                     nominees.get(Integer.parseInt(guessNum) - 1));
                         }
                     }
@@ -193,31 +193,29 @@ public class Oscars implements Runnable {
 
     private Category[] buildCategories(String[] inCategoryNames,
             List<? extends List<String>> inCategoryNominees,
-            Map<String, Map<String, String>> inCategoryMaps, Collection<String[]> inPlayerValues)
+            Map<String, Map<String, String>> inCategoryMaps, Collection<Ballot> ballots)
             throws IOException {
         return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> new Category(
                 inCategoryNames[categoryNum],
-                inCategoryNominees.get(categoryNum).stream().collect(Collectors.toMap(
-                        nominee -> nominee,
-                        nominee -> inPlayerValues.stream()
-                                .map(guesses -> inCategoryMaps.get(inCategoryNames[categoryNum])
-                                        .get(guesses[categoryNum]))
+                inCategoryNominees.get(categoryNum).stream()
+                        .collect(Collectors.toMap(nominee -> nominee, nominee -> ballots.stream()
+                                .map(ballot -> inCategoryMaps.get(inCategoryNames[categoryNum])
+                                        .get(ballot.get(categoryNum)))
                                 .filter(nominee::equals).count())),
                 inCategoryMaps.get(inCategoryNames[categoryNum]).entrySet().stream()
                         .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))
                 .toArray(Category[]::new);
     }
 
-    private List<Player> buildPlayers(Collection<String[]> inPlayerValues,
-            Category[] inCategoryArray, String[] inCategoryNames,
-            Map<String, Map<String, String>> inCategoryMaps) {
-        return inPlayerValues.stream().map(playerValues -> new Player(IntStream
-                .range(0, inCategoryArray.length).boxed()
+    private List<Player> buildPlayers(Collection<Ballot> ballots, Category[] inCategoryArray,
+            String[] inCategoryNames, Map<String, Map<String, String>> inCategoryMaps) {
+        return ballots.stream().map(ballot -> new Player(IntStream.range(0, inCategoryArray.length)
+                .boxed()
                 .collect(Collectors.toMap(categoryNum -> inCategoryArray[categoryNum],
                         categoryNum -> inCategoryMaps.get(inCategoryNames[categoryNum]).isEmpty()
-                                ? playerValues[categoryNum]
+                                ? ballot.get(categoryNum)
                                 : inCategoryMaps.get(inCategoryNames[categoryNum])
-                                        .get(playerValues[categoryNum])))))
+                                        .get(ballot.get(categoryNum))))))
                 .collect(Collectors.toList());
     }
 
