@@ -5,13 +5,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,39 +20,16 @@ import com.opencsv.exceptions.CsvException;
 
 /** The values on a player's ballot - Immutable */
 public final class Ballot {
-    private final List<String> values;
+    public static final Collector<Ballot, ?, Collection<Ballot>> LATEST = Collectors
+            .collectingAndThen(
+                    Collectors.toMap(ballot -> ballot.name().toUpperCase(), ballot -> ballot,
+                            BinaryOperator.maxBy(Comparator.comparing(Ballot::timestamp))),
+                    Map::values);
 
-    public Ballot(String[] inValues) {
-        values = Collections.unmodifiableList(new ArrayList<>(Arrays.asList(inValues)));
-    }
+    private final String[] values;
 
-    public String get(int inColumn) {
-        return values.get(inColumn);
-    }
-
-    public String name() {
-        return get(2) + ", " + get(1);
-    }
-
-    public String email() {
-        return get(values.size() - 1);
-    }
-
-    private LocalDateTime timestamp() {
-        return LocalDateTime.parse(get(0), DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
-    }
-
-    public static Stream<Ballot> stream(URL inURL) throws IOException, CsvException {
-        try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
-                CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
-            return csvReader.readAll().stream().map(Ballot::new);
-        }
-    }
-
-    public static Collection<Ballot> latest(Stream<Ballot> inStream) {
-        return inStream.collect(Collectors.toMap(ballot -> ballot.name().toUpperCase(),
-                ballot -> ballot, BinaryOperator.maxBy(Comparator.comparing(Ballot::timestamp))))
-                .values();
+    private Ballot(String[] inValues) {
+        values = inValues;
     }
 
     public static void main(String[] inArgs) throws Exception {
@@ -63,7 +38,7 @@ public final class Ballot {
             try {
                 URL url = new URL(inArgs[0]);
                 url.openConnection().setDefaultUseCaches(false);
-                Collection<Ballot> ballots = latest(stream(url));
+                Collection<Ballot> ballots = stream(url).collect(LATEST);
                 if (ballots.stream().map(Ballot::timestamp).anyMatch(lastTimestamp::isBefore)) {
                     Results.write(LocalDateTime.now(), ballots.stream().map(Ballot::toDOM)
                             .reduce(new Element("ballots"), Element::addContent));
@@ -81,5 +56,28 @@ public final class Ballot {
         return new Element("ballot").addContent(new Element("name").addContent(name())).addContent(
                 new Element("timestamp").setAttribute("raw", timestamp().toString()).addContent(
                         timestamp().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"))));
+    }
+
+    public static Stream<Ballot> stream(URL inURL) throws IOException, CsvException {
+        try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
+                CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
+            return csvReader.readAll().stream().map(Ballot::new);
+        }
+    }
+
+    public String get(int inColumn) {
+        return values[inColumn];
+    }
+
+    public String name() {
+        return values[2] + ", " + values[1];
+    }
+
+    public String email() {
+        return values[values.length - 1];
+    }
+
+    private LocalDateTime timestamp() {
+        return LocalDateTime.parse(values[0], DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 }

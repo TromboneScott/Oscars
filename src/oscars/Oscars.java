@@ -90,7 +90,7 @@ public class Oscars implements Runnable {
     private Oscars(String[] inArgs) throws Exception {
         Oscars.validateArgs(inArgs);
         System.out.print("Step 1 of 5: Loading data... ");
-        Collection<Ballot> ballots = Ballot.latest(Ballot.stream(new URL(inArgs[0])));
+        Collection<Ballot> ballots = Ballot.stream(new URL(inArgs[0])).collect(Ballot.LATEST);
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
