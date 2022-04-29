@@ -38,11 +38,11 @@ public final class Ballot {
                 LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
-                    lastTimestamp = maxTimestamp;
                     Results.write(LocalDateTime.now(), ballots.stream().map(Ballot::toDOM)
                             .reduce(new Element("ballots"), Element::addContent));
                     System.err.println(
                             LocalDateTime.now() + " - Wrote " + ballots.size() + " ballots");
+                    lastTimestamp = maxTimestamp;
                 }
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
