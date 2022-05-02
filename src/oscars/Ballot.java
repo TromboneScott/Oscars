@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public final class Ballot {
 
     public static void main(String[] inArgs) throws Exception {
         Oscars.validateArgs(inArgs);
-        for (LocalDateTime lastTimestamp = null;; Thread.sleep(10000))
+        for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
                 URL url = new URL(inArgs[0]);
                 url.openConnection().setDefaultUseCaches(false);
