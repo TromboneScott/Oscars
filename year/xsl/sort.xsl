@@ -16,27 +16,29 @@
           </xsl:call-template>
           <xsl:choose>
             <xsl:when test="count($results/players/player)=0">
-              <table>
-                <tr>
-                  <td id="rank">
-                    <br />
-                    <b>BALLOTS ARE BEING COLLECTED</b>
-                    <br />
-                    <br />
-                    &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
-                    <br />
-                    <br />
-                    Ballots will appear here a few minutes after they're entered.
-                    <br />
-                    Details will be added after all ballots have been collected.
-                    <br />
-                    <br />
-                    <i>Check here for live results during the Oscars broadcast.</i>
-                    <br />
-                    <br />
-                  </td>
-                </tr>
-              </table>
+              <a href="javascript:history.go(0)" style="all: unset">
+                <table>
+                  <tr>
+                    <td id="rank">
+                      <br />
+                      <b>BALLOTS ARE BEING COLLECTED</b>
+                      <br />
+                      <br />
+                      &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
+                      <br />
+                      <br />
+                      Ballots will appear here a few minutes after they're entered.
+                      <br />
+                      Details will be added after all ballots have been collected.
+                      <br />
+                      <br />
+                      <i>Check here for live results during the Oscars broadcast.</i>
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                </table>
+              </a>
               <xsl:if test="count($results/ballots/ballot) > 0">
                 <br />
                 <br />
