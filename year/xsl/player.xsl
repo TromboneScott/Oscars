@@ -177,7 +177,7 @@
           <a href="../category/all.xml" id="return">All Categories</a>
           <br />
           <br />
-          <a href="../index.html" id="return">Return to Main Page</a>
+          <a href=".." id="return">Return to Main Page</a>
           <br />
           <br />
           <div id="date">

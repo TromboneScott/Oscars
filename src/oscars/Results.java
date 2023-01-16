@@ -34,8 +34,8 @@ public class Results {
 
     private static final String WINNER_DELIMITER = ",";
 
-    private static final String TITLE = Paths.get(".").toAbsolutePath().normalize().getFileName()
-            + " OSCARS";
+    private static final String YEAR = Paths.get(".").toAbsolutePath().normalize().getFileName()
+            .toString();
 
     private final Map<Category, Set<String>> winners = new HashMap<>();
 
@@ -194,8 +194,7 @@ public class Results {
     }
 
     public static void write(LocalDateTime inUpdated, Content... inContent) throws IOException {
-        Oscars.writeDocument(new Element("results")
-                .addContent(new Element("title").addContent(TITLE))
+        Oscars.writeDocument(new Element("results").addContent(new Element("year").addContent(YEAR))
                 .addContent(
                         new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
                                 .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))

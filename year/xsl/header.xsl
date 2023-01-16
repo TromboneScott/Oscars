@@ -8,28 +8,39 @@
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
       <title>
-        <xsl:value-of select="$results/title" />
+        <xsl:value-of select="$results/year" />
+        OSCARS 
       </title>
     </head>
   </xsl:template>
   <xsl:template name="header">
     <xsl:param name="results" />
-    <table id="header">
-      <tr>
-        <td rowspan="2">
-          <img src="../../trophy.png" id="trophy" />
-        </td>
-        <th>
-          <xsl:value-of select="$results/title" />
-        </th>
-        <td rowspan="2">
-          <img src="../../trophy.png" id="trophy" />
-        </td>
-      </tr>
-      <tr>
-        <td>(Unofficial Results)</td>
-      </tr>
-    </table>
+    <a href="https://oscars.site44.com/{$results/year}" style="all: unset">
+      <table id="header">
+        <tr>
+          <td rowspan="2">
+            <img src="../../trophy.png" id="trophy" />
+          </td>
+          <th>
+            <xsl:value-of select="$results/year" />
+            OSCARS
+          </th>
+          <td rowspan="2">
+            <img src="../../trophy.png" id="trophy" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <i>(Unofficial Results)</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <hr />
+          </td>
+        </tr>
+      </table>
+    </a>
     <xsl:if test="not(string($results/showTime/end))">
       <br />
       <i>Refresh this page to get updated results during the contest.</i>
