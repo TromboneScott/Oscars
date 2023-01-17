@@ -36,7 +36,7 @@
         </tr>
         <tr>
           <td colspan="3">
-            <hr />
+            <hr color="black"/>
           </td>
         </tr>
       </table>
