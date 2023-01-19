@@ -84,7 +84,7 @@ public class Oscars implements Runnable {
 
     public static void validateArgs(String[] inArgs) {
         if (inArgs.length != 1)
-            throw new IllegalArgumentException("Missing paramter: URL");
+            throw new IllegalArgumentException("Missing parameter: URL");
     }
 
     private Oscars(String[] inArgs) throws Exception {
