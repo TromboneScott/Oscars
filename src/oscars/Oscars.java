@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.URL;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,7 +90,7 @@ public class Oscars implements Runnable {
     private Oscars(String[] inArgs) throws Exception {
         Oscars.validateArgs(inArgs);
         System.out.print("Step 1 of 5: Loading data... ");
-        Collection<Ballot> ballots = Ballot.stream(new URL(inArgs[0])).collect(Ballot.LATEST);
+        Collection<Ballot> ballots = Ballot.stream(inArgs).collect(Ballot.LATEST);
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
@@ -335,7 +335,7 @@ public class Oscars implements Runnable {
 
     public static void writeDocument(Element inElement, String inXMLFile, String inXSLFile)
             throws IOException {
-        try (PrintWriter writer = new PrintWriter(
+        try (Writer writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(inXMLFile), "UTF-8"))) {
             new XMLOutputter(Format.getPrettyFormat()).output(xmlDocument(inXSLFile)
                     .addContent(new Comment("OSCARS website created by Scott McDonald"))

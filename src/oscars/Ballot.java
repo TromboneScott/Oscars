@@ -16,8 +16,8 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderHeaderAware;
-import com.opencsv.exceptions.CsvException;
 
 /** The values on a player's ballot - Immutable */
 public final class Ballot {
@@ -33,9 +33,7 @@ public final class Ballot {
         Oscars.validateArgs(inArgs);
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                URL url = new URL(inArgs[0]);
-                url.openConnection().setDefaultUseCaches(false);
-                Collection<Ballot> ballots = stream(url).collect(LATEST);
+                Collection<Ballot> ballots = stream(inArgs).collect(LATEST);
                 LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
@@ -50,10 +48,11 @@ public final class Ballot {
             }
     }
 
-    public static Stream<Ballot> stream(URL inURL) throws IOException, CsvException {
-        try (InputStreamReader inputReader = new InputStreamReader(inURL.openStream());
-                CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(inputReader)) {
-            return csvReader.readAll().stream().map(Ballot::new);
+    public static Stream<Ballot> stream(String[] inArgs) throws Exception {
+        URL url = new URL(inArgs[0]);
+        url.openConnection().setDefaultUseCaches(false);
+        try (CSVReader reader = new CSVReaderHeaderAware(new InputStreamReader(url.openStream()))) {
+            return reader.readAll().stream().map(Ballot::new);
         }
     }
 
