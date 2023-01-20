@@ -1,6 +1,7 @@
 package oscars;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -139,7 +140,7 @@ public final class Standings {
     /** Determine if the player and opponent will be tied at the end of the game */
     private boolean tied(Player inPlayer, Player inOpponent) {
         return (inPlayer.time == inOpponent.time
-                || showEnded() && inPlayer.time > elapsedTime && inOpponent.time > elapsedTime)
+                || inPlayer.time > elapsedTime && inOpponent.time > elapsedTime && showEnded())
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
                 && inPlayer.picks.keySet().stream()
                         .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
@@ -158,9 +159,7 @@ public final class Standings {
     }
 
     private String formatTime(long inTime) {
-        return inTime < 0 ? ""
-                : String.format("%d:%02d:%02d", TimeUnit.SECONDS.toHours(inTime),
-                        TimeUnit.SECONDS.toMinutes(inTime) % 60, inTime % 60);
+        return inTime < 0 ? "" : LocalTime.ofSecondOfDay(inTime).format(Player.TIME_FORMAT);
     }
 
     /** Get a stream of the current ranks of all the players */

@@ -1,14 +1,17 @@
 package oscars;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
 /** Player information - Immutable */
 public final class Player {
+    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm:ss");
+
     /** Player's first name */
     public final String firstName;
 
@@ -19,7 +22,7 @@ public final class Player {
     public final Map<Category, String> picks;
 
     /** Player's guessed time in seconds */
-    public final long time;
+    public final int time;
 
     /**
      * Constructs a new Player with specified picks
@@ -28,34 +31,18 @@ public final class Player {
      *            All the entries for this Player
      */
     public Player(Map<Category, String> inEntries) {
-        String tempFirstName = inEntries.get(Category.FIRST_NAME);
-        String tempLastName = inEntries.get(Category.LAST_NAME);
-        if (tempLastName.isEmpty()) {
-            tempLastName = tempFirstName;
-            tempFirstName = "";
-        }
-        firstName = tempFirstName.trim();
-        lastName = tempLastName.trim();
+        firstName = inEntries.get(Category.LAST_NAME).isEmpty() ? ""
+                : inEntries.get(Category.FIRST_NAME).trim();
+        lastName = (inEntries.get(Category.LAST_NAME).isEmpty() ? inEntries.get(Category.FIRST_NAME)
+                : inEntries.get(Category.LAST_NAME)).trim();
         picks = Collections.unmodifiableMap(
                 inEntries.entrySet().stream().filter(entry -> !entry.getKey().guesses.isEmpty())
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        time = Stream.of(inEntries.get(Category.TIME).split(":", 3)).mapToLong(Long::parseLong)
-                .reduce(0, (subtotal, element) -> subtotal * 60 + element);
+        time = LocalTime.parse(inEntries.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
     }
 
     public Element toDOM() {
         return new Element("player").addContent(new Element("firstName").addContent(firstName))
                 .addContent(new Element("lastName").addContent(lastName));
-    }
-
-    @Override
-    public int hashCode() {
-        return (lastName + ", " + firstName).hashCode();
-    }
-
-    @Override
-    public boolean equals(Object inPlayer) {
-        return firstName.equals(((Player) inPlayer).firstName)
-                && lastName.equals(((Player) inPlayer).lastName);
     }
 }
