@@ -14,12 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -37,40 +35,29 @@ public class Results {
     private static final String YEAR = Paths.get(".").toAbsolutePath().normalize().getFileName()
             .toString();
 
-    private final Map<Category, Set<String>> winners = new HashMap<>();
+    private final Map<Category, Set<String>> winners;
 
-    private final Map<ShowTimeType, LocalDateTime> showTimes = new HashMap<>();
+    private final Map<ShowTimeType, LocalDateTime> showTimes;
 
     public Results(Collection<Category> inCategories) throws IOException {
         File resultsFile = new File(RESULTS_FILE);
         if (resultsFile.exists())
             try {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
-                Map<String, Category> categoryMap = inCategories.stream()
-                        .collect(Collectors.toMap(category -> category.name, category -> category));
-                Optional.ofNullable(resultsDOM.getChild("categories")).ifPresent(element -> element
-                        .getChildren("category")
-                        .forEach(categoryDOM -> winners.put(
-                                categoryMap.get(categoryDOM.getChildText("name")),
-                                Collections.unmodifiableSet(categoryDOM.getChild("nominees")
-                                        .getChildren("nominee").stream()
-                                        .filter(nominee -> "correct"
-                                                .equals(nominee.getAttributeValue("status")))
-                                        .map(Element::getText).collect(Collectors.toSet())))));
-                Stream.of(ShowTimeType.values()).forEach(showTimeType -> Optional
-                        .ofNullable(resultsDOM.getChild("showTime"))
-                        .map(element -> element.getChildText(showTimeType.name().toLowerCase()))
-                        .filter(showTimeText -> !showTimeText.isEmpty())
-                        .ifPresent(showTimeText -> showTimes.put(showTimeType,
-                                LocalDateTime.parse(showTimeText))));
+                winners = Standings.readWinners(resultsDOM, inCategories.stream().collect(
+                        Collectors.toMap(category -> category.name, category -> category)));
+                showTimes = Standings.readShowTimes(resultsDOM);
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
             }
-        else
+        else {
             System.out.println("\nStarting new results file: " + RESULTS_FILE);
+            winners = new HashMap<>();
+            showTimes = new HashMap<>();
+        }
     }
 
-    private boolean promptTime(ShowTimeType inShowTimeType) throws IOException {
+    private void promptTime(ShowTimeType inShowTimeType) throws IOException {
         System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
                 "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
@@ -83,9 +70,8 @@ public class Results {
             try {
                 showTimes.put(inShowTimeType, LocalDateTime.parse(enteredTime));
             } catch (DateTimeParseException e) {
-                System.out.println("Invalid time format");
+                System.out.println("Invalid time: " + enteredTime);
             }
-        return true;
     }
 
     private String toString(ShowTimeType inShowTimeType) {
@@ -110,53 +96,49 @@ public class Results {
                 .forEach(timeNum -> System.out.println((inCategories.size() + timeNum + 1) + ": "
                         + toString(ShowTimeType.values()[timeNum])));
 
-        System.out.print("Enter results number to change (enter to quit): ");
+        System.out.print("Enter results number to change or \"exit\": ");
         String selectedResult = stdin.readLine();
-        if (selectedResult.isEmpty())
+        if ("exit".equalsIgnoreCase(selectedResult))
             return false;
         try {
             int resultNum = Integer.parseInt(selectedResult);
-            if (resultNum > 0 && resultNum <= inCategories.size() + ShowTimeType.values().length)
-                return resultNum > inCategories.size()
-                        ? promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1])
-                        : promptWinner(inCategories.get(resultNum - 1));
+            if (resultNum < 1 || resultNum > inCategories.size() + ShowTimeType.values().length)
+                throw new NumberFormatException();
+            if (resultNum > inCategories.size())
+                promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1]);
+            else
+                promptWinner(inCategories.get(resultNum - 1));
         } catch (NumberFormatException e) {
+            System.out.println("Invalid selection: " + selectedResult);
         }
-        System.out.println("Invalid selection");
         return true;
     }
 
-    private boolean promptWinner(Category inCategory) throws IOException {
+    private void promptWinner(Category inCategory) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
-        Set<String> pickNamesSet = new TreeSet<>(inCategory.guesses.keySet());
-        String[] pickNames = pickNamesSet.toArray(new String[pickNamesSet.size()]);
-        IntStream.range(0, pickNames.length)
-                .forEach(x -> System.out.println((x + 1) + ": " + pickNames[x] + ": "
-                        + Optional.ofNullable(inCategory.guessDescriptions.get(pickNames[x]))
-                                .orElse("(no description - not guessed)")));
+        String[] pickNames = inCategory.guesses.keySet().stream().sorted().toArray(String[]::new);
+        for (int x = 0; x < pickNames.length; x++)
+            System.out.println((x + 1) + ": " + pickNames[x] + " -> "
+                    + Optional.ofNullable(inCategory.guessDescriptions.get(pickNames[x]))
+                            .orElse("(no guesses so not downloaded)"));
 
         System.out.print("Select winner number(s) (use " + WINNER_DELIMITER
                 + " to separate ties or leave blank to remove winner): ");
         String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
-        if (input.isEmpty())
-            winners.remove(inCategory);
-        else {
-            Set<String> winnerSet = new HashSet<>();
-            for (String selectedWinner : input.split(WINNER_DELIMITER))
-                try {
-                    int selectedWinnerNum = Integer.parseInt(selectedWinner);
-                    if (selectedWinnerNum > pickNames.length || selectedWinnerNum < 1)
-                        throw new NumberFormatException();
-                    winnerSet.add(pickNames[selectedWinnerNum - 1]);
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid selection");
-                    return true;
-                }
-            winners.put(inCategory, Collections.unmodifiableSet(winnerSet));
+        try {
+            winners.put(inCategory,
+                    Collections.unmodifiableSet(
+                            Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
+                                    .mapToInt(Integer::parseInt).peek(number -> {
+                                        if (number > pickNames.length || number < 1)
+                                            throw new NumberFormatException();
+                                    }).mapToObj(number -> pickNames[number - 1])
+                                    .collect(Collectors.toSet())));
+            inCategory.writeChart(this);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid selection: " + input);
         }
-        inCategory.writeChart(this);
-        return true;
     }
 
     private String toString(Category inCategory) {
@@ -190,7 +172,7 @@ public class Results {
      * @return All the winners that have been entered for this category
      */
     public Set<String> winners(Category inCategory) {
-        return Optional.ofNullable(winners.get(inCategory)).orElseGet(Collections::emptySet);
+        return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 
     public static void write(LocalDateTime inUpdated, Content... inContent) throws IOException {

@@ -18,7 +18,7 @@ public final class Player {
     /** Player's last name */
     public final String lastName;
 
-    /** Player's picks - immutable */
+    /** Player's picks - Immutable */
     public final Map<Category, String> picks;
 
     /** Player's guessed time in seconds */

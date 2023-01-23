@@ -1,7 +1,9 @@
 package oscars;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -165,5 +168,28 @@ public final class Standings {
     /** Get a stream of the current ranks of all the players */
     public LongStream rankStream() {
         return scoreMap.keySet().stream().mapToLong(this::rank);
+    }
+
+    public static Map<Category, Set<String>> readWinners(Element inResultsDOM,
+            Map<String, Category> inCategoryMap) {
+        return Optional.ofNullable(inResultsDOM.getChild("categories"))
+                .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
+                .collect(Collectors
+                        .toMap(categoryDOM -> inCategoryMap.get(categoryDOM.getChildText("name")),
+                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
+                                        .getChild("nominees").getChildren("nominee").stream()
+                                        .filter(nominee -> "correct"
+                                                .equals(nominee.getAttributeValue("status")))
+                                        .map(Element::getText).collect(Collectors.toSet()))));
+    }
+
+    public static Map<ShowTimeType, LocalDateTime> readShowTimes(Element inResultsDOM) {
+        return Stream.of(ShowTimeType.values())
+                .map(showTimeType -> new SimpleEntry<>(showTimeType,
+                        Optional.ofNullable(inResultsDOM.getChild("showTime")).map(
+                                element -> element.getChildText(showTimeType.name().toLowerCase()))
+                                .orElse("")))
+                .filter(entry -> !entry.getValue().isEmpty()).collect(Collectors.toMap(
+                        entry -> entry.getKey(), entry -> LocalDateTime.parse(entry.getValue())));
     }
 }
