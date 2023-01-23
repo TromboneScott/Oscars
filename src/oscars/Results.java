@@ -74,7 +74,7 @@ public class Results {
                     + (resultNum < inCategories.size() ? toString(inCategories.get(resultNum))
                             : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
 
-        System.out.print("Enter results number to change or \"exit\": ");
+        System.out.print("Enter number to change (\"exit\" to quit): ");
         String selectedResult = stdin.readLine();
         if ("exit".equalsIgnoreCase(selectedResult))
             return false;
@@ -122,8 +122,8 @@ public class Results {
                     + Optional.ofNullable(inCategory.guessDescriptions.get(pickNames[x]))
                             .orElse("(no guesses so not downloaded)"));
 
-        System.out.print("Select winner number(s) (use " + WINNER_DELIMITER
-                + " to separate ties or leave blank to remove winner): ");
+        System.out.print("Select number(s) (use " + WINNER_DELIMITER
+                + " to separate ties, leave blank to remove): ");
         String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
         try {
             winners.put(inCategory,

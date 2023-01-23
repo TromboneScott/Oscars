@@ -29,8 +29,7 @@ Update any code and files as needed
 1. git add <file> (for each <file>)
 2. git commit
 3. git push
-4. git tag -f <year> (for current year)
-5. git push -f --tags
+4. git tag -f <year> && git push -f --tags (for current <year>)
 
 Copy year folder to oscars site and rename to current year.
 
