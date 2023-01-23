@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Content;
@@ -57,6 +56,42 @@ public class Results {
         }
     }
 
+    /**
+     * Prompt for results
+     *
+     * @param inCategories
+     *            Categories to prompt for
+     * @param inPlayers
+     *            Players whose picks we can choose from
+     * @return true unless user wants to exit the program
+     */
+    public boolean prompt(List<Category> inCategories) throws IOException {
+        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Results");
+        for (int resultNum = 0; resultNum < inCategories.size()
+                + ShowTimeType.values().length; resultNum++)
+            System.out.println((resultNum + 1) + ": "
+                    + (resultNum < inCategories.size() ? toString(inCategories.get(resultNum))
+                            : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
+
+        System.out.print("Enter results number to change or \"exit\": ");
+        String selectedResult = stdin.readLine();
+        if ("exit".equalsIgnoreCase(selectedResult))
+            return false;
+        try {
+            int resultNum = Integer.parseInt(selectedResult) - 1;
+            if (resultNum < 0 || resultNum >= inCategories.size() + ShowTimeType.values().length)
+                throw new NumberFormatException();
+            if (resultNum >= inCategories.size())
+                promptTime(ShowTimeType.values()[resultNum - inCategories.size()]);
+            else
+                promptWinner(inCategories.get(resultNum));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid selection: " + selectedResult);
+        }
+        return true;
+    }
+
     private void promptTime(ShowTimeType inShowTimeType) throws IOException {
         System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
@@ -76,42 +111,6 @@ public class Results {
 
     private String toString(ShowTimeType inShowTimeType) {
         return inShowTimeType + " = " + get(inShowTimeType);
-    }
-
-    /**
-     * Prompt for results
-     *
-     * @param inCategories
-     *            Categories to prompt for
-     * @param inPlayers
-     *            Players whose picks we can choose from
-     * @return true unless user wants to exit the program
-     */
-    public boolean prompt(List<Category> inCategories) throws IOException {
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Results");
-        IntStream.range(0, inCategories.size()).forEach(resultNum -> System.out
-                .println((resultNum + 1) + ": " + toString(inCategories.get(resultNum))));
-        IntStream.range(0, ShowTimeType.values().length)
-                .forEach(timeNum -> System.out.println((inCategories.size() + timeNum + 1) + ": "
-                        + toString(ShowTimeType.values()[timeNum])));
-
-        System.out.print("Enter results number to change or \"exit\": ");
-        String selectedResult = stdin.readLine();
-        if ("exit".equalsIgnoreCase(selectedResult))
-            return false;
-        try {
-            int resultNum = Integer.parseInt(selectedResult);
-            if (resultNum < 1 || resultNum > inCategories.size() + ShowTimeType.values().length)
-                throw new NumberFormatException();
-            if (resultNum > inCategories.size())
-                promptTime(ShowTimeType.values()[resultNum - inCategories.size() - 1]);
-            else
-                promptWinner(inCategories.get(resultNum - 1));
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid selection: " + selectedResult);
-        }
-        return true;
     }
 
     private void promptWinner(Category inCategory) throws IOException {

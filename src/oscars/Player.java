@@ -36,7 +36,7 @@ public final class Player {
         lastName = (inEntries.get(Category.LAST_NAME).isEmpty() ? inEntries.get(Category.FIRST_NAME)
                 : inEntries.get(Category.LAST_NAME)).trim();
         picks = Collections.unmodifiableMap(
-                inEntries.entrySet().stream().filter(entry -> !entry.getKey().guesses.isEmpty())
+                inEntries.entrySet().stream().filter(entry -> entry.getKey().guesses != null)
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         time = LocalTime.parse(inEntries.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
     }

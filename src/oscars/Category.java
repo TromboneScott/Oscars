@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
@@ -55,7 +56,7 @@ public final class Category {
 
     public final Map<String, String> guessDescriptions;
 
-    public Category(String inName, Map<String, Long> inGuesses,
+    private Category(String inName, Map<String, Long> inGuesses,
             Map<String, String> inGuessDescriptions) {
         Matcher tieBreakerMatcher = TIE_BREAKER_PATTERN.matcher(inName);
         name = tieBreakerMatcher.replaceFirst("");
@@ -67,20 +68,16 @@ public final class Category {
                 : Collections.unmodifiableMap(new HashMap<>(inGuessDescriptions));
     }
 
+    public static Category of(String inName, Map<String, Long> inGuesses,
+            Map<String, String> inGuessDescriptions) {
+        return Stream.of(FIRST_NAME, LAST_NAME, TIME)
+                .filter(category -> category.name.equals(inName)).findAny()
+                .orElseGet(() -> new Category(inName, inGuesses, inGuessDescriptions));
+    }
+
     @Override
     public String toString() {
         return name;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object inOther) {
-        return this == inOther || inOther != null && getClass() == inOther.getClass()
-                && name.equals(((Category) inOther).name);
     }
 
     public String chartName(Results inResults) {

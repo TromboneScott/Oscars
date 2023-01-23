@@ -101,8 +101,8 @@ public class Oscars implements Runnable {
                 categoryMaps, ballots);
         players = Collections.unmodifiableList(
                 buildPlayers(ballots, categoryArray, categoryValues.get(0), categoryMaps));
-        categories = Collections.unmodifiableList(Arrays.stream(categoryArray)
-                .filter(category -> !category.guesses.isEmpty()).collect(Collectors.toList()));
+        categories = Collections.unmodifiableList(Arrays.stream(categoryArray).skip(1)
+                .filter(category -> category.guesses != null).collect(Collectors.toList()));
         results = new Results(categories);
         scoreFormat = "%." + categories.stream()
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
@@ -137,8 +137,9 @@ public class Oscars implements Runnable {
                             categoryMap.put(ballot.get(categoryNum), mappings.get(0));
                         else {
                             System.out.println("\nCATEGORY: " + categoryName);
-                            IntStream.range(0, nominees.size()).forEach(nomineeNum -> System.out
-                                    .println((nomineeNum + 1) + ": " + nominees.get(nomineeNum)));
+                            for (int nomineeNum = 0; nomineeNum < nominees.size(); nomineeNum++)
+                                System.out.println(
+                                        (nomineeNum + 1) + ": " + nominees.get(nomineeNum));
                             System.out.print(ballot.get(categoryNum) + " = ");
                             String guessNum = stdin.readLine();
                             categoryMap.put(ballot.get(categoryNum),
@@ -195,7 +196,7 @@ public class Oscars implements Runnable {
             List<? extends List<String>> inCategoryNominees,
             Map<String, Map<String, String>> inCategoryMaps, Collection<Ballot> ballots)
             throws IOException {
-        return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> new Category(
+        return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> Category.of(
                 inCategoryNames[categoryNum],
                 inCategoryNominees.get(categoryNum).stream()
                         .collect(Collectors.toMap(nominee -> nominee, nominee -> ballots.stream()
