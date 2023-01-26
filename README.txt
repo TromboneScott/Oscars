@@ -1,18 +1,24 @@
-NOTE FOR 2023:
-
-When creating the Google Form include the names of the people that are nominated in all categories that include them.  That way we'll be able to match them up with the correct winner during the broadast if they only annouce the name of the person and not the name of the movie.
-
-We won't be able to use that for any nominees that no one guesses as those descriptions won't be downloaded from the Google Form.  But those nominees are highly unlikely to win.
-
-----
-
 To start a new year:
+
+Download 100x180 pixel pictures for Google Form for these categories:
+- Actor/Actress including Supporting
+- Best Picture
+- International Feature
+- Animated Short
+- Documentary Feature
+- Animated Feature
+1. Go to imdb.com
+2. Use the search window to search for the movie or actor
+3. Right-click on the little image of the correct movie or actor that appears in the search drop down and select Save image as...
+4. Save the ~5Kb JPG file for use in the Google Form
 
 Create Google Form:
 1. Open last year's form at forms.google.com
 2. Select the dots menu at top right and click "Make a copy"
 3. Make all necessary updates for the current year
-  a. Change any categories and tie-breakers
+  a. Change tie-breakers 3 & 4
+    i. Even years: 3 = Actress, 4 = Supporting Actor
+    ii. Odd years: 3 = Actor, 4 = Supporting Actress
   b. Update the broadcast date
   c. Update nominees
 4. Set up data export
@@ -23,7 +29,7 @@ Create Google Form:
   e. Choose Link = Form Responses 1 (the tab name) and Embed = Comma-separated values (.csv)
   f. Check box for "Automatically rebulish when changes are made"
   g. Click "Publish"
-  h. Copy the URL it generates and use that on the command line when running the oscars programs
+  h. Copy the URL it generates and paste it as the only line in the file: ResponsesURL.txt
 
 Update any code and files as needed
 1. git add <file> (for each <file>)
@@ -35,7 +41,7 @@ Copy year folder to oscars site and rename to current year.
 
 Edit categories.csv as a spreadsheet
 1. Update the categories as a few change each year
-2. Make sure the categories are in the same order as the export file
+2. Make sure the categories are in the same order as the Google Form
 3. Edit the titles so the tie-breakers in parenthesis are correct
 4. Add all the nominees under each category in the order you want them (usually alphabetical)
 5. Replace any commas (,) with back-quotes (`)
@@ -56,7 +62,7 @@ From the new year folder run the batch:
   ballots.bat (or ./ballots.sh) <url>
 Leave it running so it can continuosly download the ballots as they're entered
 
-Check the ballots and fix any namew where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered.
+Check the ballots and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered.
 
 --- After contest deadline for entering guesses
 
