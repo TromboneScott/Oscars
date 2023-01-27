@@ -59,7 +59,7 @@ Update the link in ../index.html to point to current year.
 -- While ballots are being collected
 
 From the new year folder run the batch:
-  ballots.bat (or ./ballots.sh) <url>
+  ballots.bat (or ./ballots.sh)
 Leave it running so it can continuosly download the ballots as they're entered
 
 Check the ballots and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered.
@@ -67,11 +67,11 @@ Check the ballots and fix any names where they didn't capitalize properly direcl
 --- After contest deadline for entering guesses
 
 From the new year folder run the batch:
-  emails.bat (or ./emails.sh) <url>
+  emails.bat (or ./emails.sh)
 Send the list of names and emails to Scott Takeda.
 
 From the new year folder run the batch:
-  oscars.bat (or ./oscars.sh) <url>
+  oscars.bat (or ./oscars.sh)
 You will be prompted on how to map survey answers to nominees for each category where it can't be done automatically.
 This will be saved so you only have to do this for new survey answers.
 If any mistakes are made you must edit (or delete) categoryMaps.xml and start oscars.bat or oscars.sh over again.

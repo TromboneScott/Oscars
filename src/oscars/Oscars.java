@@ -82,15 +82,9 @@ public class Oscars implements Runnable {
         new Oscars(inArgs).process();
     }
 
-    public static void validateArgs(String[] inArgs) {
-        if (inArgs.length != 1)
-            throw new IllegalArgumentException("Missing parameter: URL");
-    }
-
     private Oscars(String[] inArgs) throws Exception {
-        Oscars.validateArgs(inArgs);
         System.out.print("Step 1 of 5: Downloading ballots... ");
-        Collection<Ballot> ballots = Ballot.stream(inArgs).collect(Ballot.LATEST);
+        Collection<Ballot> ballots = Ballot.stream().collect(Ballot.LATEST);
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 

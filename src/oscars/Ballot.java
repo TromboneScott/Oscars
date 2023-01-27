@@ -3,6 +3,8 @@ package oscars;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -21,6 +23,8 @@ import com.opencsv.CSVReaderHeaderAware;
 
 /** The values on a player's ballot - Immutable */
 public final class Ballot {
+    private static final String URL_FILE = "ResponsesURL.txt";
+
     public static final Collector<Ballot, ?, Collection<Ballot>> LATEST = Collectors
             .collectingAndThen(
                     Collectors.toMap(ballot -> ballot.getName().toUpperCase(), ballot -> ballot,
@@ -30,10 +34,9 @@ public final class Ballot {
     private final String[] values;
 
     public static void main(String[] inArgs) throws Exception {
-        Oscars.validateArgs(inArgs);
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Ballot> ballots = stream(inArgs).collect(LATEST);
+                Collection<Ballot> ballots = stream().collect(LATEST);
                 LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
@@ -48,11 +51,15 @@ public final class Ballot {
             }
     }
 
-    public static Stream<Ballot> stream(String[] inArgs) throws Exception {
-        URL url = new URL(inArgs[0]);
-        url.openConnection().setDefaultUseCaches(false);
-        try (CSVReader reader = new CSVReaderHeaderAware(new InputStreamReader(url.openStream()))) {
-            return reader.readAll().stream().map(Ballot::new);
+    public static Stream<Ballot> stream() throws Exception {
+        try (Stream<String> lines = Files
+                .lines(Paths.get(Ballot.class.getClassLoader().getResource(URL_FILE).toURI()))) {
+            URL url = new URL(lines.iterator().next());
+            url.openConnection().setDefaultUseCaches(false);
+            try (CSVReader reader = new CSVReaderHeaderAware(
+                    new InputStreamReader(url.openStream()))) {
+                return reader.readAll().stream().map(Ballot::new);
+            }
         }
     }
 
