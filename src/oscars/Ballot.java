@@ -51,7 +51,7 @@ public final class Ballot {
                     System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
                 }
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            Ballot.stream().filter(ballot -> !ballot.getEmail().isEmpty()).forEach(
+            stream().filter(ballot -> !ballot.getEmail().isEmpty()).forEach(
                     ballot -> System.out.println(ballot.getName() + " = " + ballot.getEmail()));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
