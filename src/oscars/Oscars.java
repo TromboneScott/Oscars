@@ -79,10 +79,10 @@ public class Oscars implements Runnable {
      * @throws InterruptedException
      */
     public static void main(String[] inArgs) throws Exception {
-        new Oscars(inArgs).process();
+        new Oscars().process();
     }
 
-    private Oscars(String[] inArgs) throws Exception {
+    private Oscars() throws Exception {
         System.out.print("Step 1 of 5: Downloading ballots... ");
         Collection<Ballot> ballots = Ballot.stream().collect(Ballot.LATEST);
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);

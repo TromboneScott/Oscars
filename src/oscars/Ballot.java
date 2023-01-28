@@ -34,21 +34,27 @@ public final class Ballot {
     private final String[] values;
 
     public static void main(String[] inArgs) throws Exception {
-        for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
-            try {
-                Collection<Ballot> ballots = stream().collect(LATEST);
-                LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
-                        .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
-                if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
-                    Results.write(LocalDateTime.now(), ballots.stream().map(Ballot::toDOM)
-                            .reduce(new Element("ballots"), Element::addContent));
-                    System.err.println(
-                            LocalDateTime.now() + " - Wrote " + ballots.size() + " ballots");
-                    lastTimestamp = maxTimestamp;
+        if (inArgs.length == 0)
+            for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
+                try {
+                    Collection<Ballot> ballots = stream().collect(LATEST);
+                    LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
+                            .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
+                    if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
+                        Results.write(LocalDateTime.now(), ballots.stream().map(Ballot::toDOM)
+                                .reduce(new Element("ballots"), Element::addContent));
+                        System.err.println(
+                                LocalDateTime.now() + " - Wrote " + ballots.size() + " ballots");
+                        lastTimestamp = maxTimestamp;
+                    }
+                } catch (IOException e) {
+                    System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
                 }
-            } catch (IOException e) {
-                System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
-            }
+        else if ("emails".equalsIgnoreCase(inArgs[0]))
+            Ballot.stream().filter(ballot -> !ballot.getEmail().isEmpty()).forEach(
+                    ballot -> System.out.println(ballot.getName() + " = " + ballot.getEmail()));
+        else
+            throw new Exception("Unknown action: " + inArgs[0]);
     }
 
     public static Stream<Ballot> stream() throws Exception {
@@ -71,11 +77,11 @@ public final class Ballot {
         return values[inColumn];
     }
 
-    public String getName() {
+    private String getName() {
         return values[2] + ", " + values[1];
     }
 
-    public String getEmail() {
+    private String getEmail() {
         return values[values.length - 1];
     }
 

@@ -1,1 +1,1 @@
-@call execute.bat Emails
+@call execute.bat Ballot emails

@@ -1,1 +1,1 @@
-./execute.sh Emails
+./execute.sh Ballot emails
