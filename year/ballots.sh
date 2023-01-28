@@ -1,1 +1,1 @@
-./execute.sh Ballot
+./execute.sh Ballot $*

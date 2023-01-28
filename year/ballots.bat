@@ -1,1 +1,1 @@
-@call execute.bat Ballot
+@execute.bat Ballot %*

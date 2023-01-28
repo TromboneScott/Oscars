@@ -1,1 +1,1 @@
-./execute.sh Ballot emails
+./ballots.sh emails $*
