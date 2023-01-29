@@ -83,7 +83,11 @@ public class Oscars implements Runnable {
     }
 
     private Oscars() throws Exception {
-        System.out.print("Step 1 of 5: Downloading ballots... ");
+        System.out.print("Step 1 of 6: Deleting any old data... ");
+        Stream.of("category", "player", "rank").map(File::new).map(File::listFiles)
+                .flatMap(Stream::of).forEach(File::delete);
+        System.out.println("DONE");
+        System.out.print("Step 2 of 6: Downloading ballots... ");
         Collection<Ballot> ballots = Ballot.stream().collect(Ballot.LATEST);
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
@@ -174,7 +178,7 @@ public class Oscars implements Runnable {
 
     private void writeCategoryMaps(Map<String, Map<String, String>> inCategoryMaps)
             throws IOException {
-        System.out.print("Step 2 of 5: Writing category mappings... ");
+        System.out.print("Step 3 of 6: Writing category mappings... ");
         writeDocument(inCategoryMaps.keySet().stream()
                 .map(category -> inCategoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map")
@@ -292,7 +296,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeRankCharts() throws IOException {
-        System.out.print("Step 3 of 5: Writing " + players.size() + " rank images... ");
+        System.out.print("Step 4 of 6: Writing " + players.size() + " rank images... ");
         mkdir(RankChart.DIRECTORY);
         for (int rank = 1; rank <= players.size(); rank++) {
             System.out.print(rank + "-");
@@ -302,7 +306,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        System.out.print("Step 4 of 5: Writing category web pages... ");
+        System.out.print("Step 5 of 6: Writing category web pages... ");
         mkdir(Category.DIRECTORY);
         writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
@@ -317,7 +321,7 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
-        System.out.print("Step 5 of 5: Writing player web pages... ");
+          System.out.print("Step 6 of 6: Writing player web pages... ");
         mkdir("player");
         for (Player player : players)
             writeDocument(player.toDOM(),
