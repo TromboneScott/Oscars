@@ -12,30 +12,24 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public final class RankChart {
     public static final String DIRECTORY = "rank/";
 
-    private final long rank;
-
-    public RankChart(long inRank) {
-        rank = inRank;
+    public static String name(long inRank) {
+        return "rank_" + inRank + ".png";
     }
 
-    public String chartName() {
-        return "rank_" + rank + ".png";
-    }
-
-    public void writeChart(int playerCount) throws IOException {
+    public static void write(long inRank, int inPlayerCount) throws IOException {
         DefaultCategoryDataset data = new DefaultCategoryDataset();
-        data.addValue(rank, "A", "");
-        data.addValue(playerCount, "B", "");
+        data.addValue(inRank, "A", "");
+        data.addValue(inPlayerCount, "B", "");
 
         JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
-        plot.getRangeAxis().setRange(1, Math.max(2, playerCount));
+        plot.getRangeAxis().setRange(1, Math.max(2, inPlayerCount));
         plot.getRangeAxis().setInverted(true);
         plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
         plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
 
-        ChartUtilities.saveChartAsPNG(new File(DIRECTORY + chartName()), chart, 80, 180);
+        ChartUtilities.saveChartAsPNG(new File(DIRECTORY + name(inRank)), chart, 80, 180);
     }
 }

@@ -205,12 +205,12 @@ public class Oscars implements Runnable {
 
     private Category[] buildCategories(String[] inCategoryNames,
             List<? extends List<String>> inCategoryNominees,
-            Map<String, Map<String, String>> inCategoryMaps, Collection<Ballot> ballots)
+            Map<String, Map<String, String>> inCategoryMaps, Collection<Ballot> inBallots)
             throws IOException {
         return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> Category.of(
                 inCategoryNames[categoryNum],
                 inCategoryNominees.get(categoryNum).stream()
-                        .collect(Collectors.toMap(nominee -> nominee, nominee -> ballots.stream()
+                        .collect(Collectors.toMap(nominee -> nominee, nominee -> inBallots.stream()
                                 .map(ballot -> inCategoryMaps.get(inCategoryNames[categoryNum])
                                         .get(ballot.get(categoryNum)))
                                 .filter(nominee::equals).count())),
@@ -219,10 +219,10 @@ public class Oscars implements Runnable {
                 .toArray(Category[]::new);
     }
 
-    private List<Player> buildPlayers(Collection<Ballot> ballots, Category[] inCategoryArray,
+    private List<Player> buildPlayers(Collection<Ballot> inBallots, Category[] inCategoryArray,
             String[] inCategoryNames, Map<String, Map<String, String>> inCategoryMaps) {
-        return ballots.stream().map(ballot -> new Player(IntStream.range(0, inCategoryArray.length)
-                .boxed()
+        return inBallots.stream().map(ballot -> new Player(IntStream
+                .range(0, inCategoryArray.length).boxed()
                 .collect(Collectors.toMap(categoryNum -> inCategoryArray[categoryNum],
                         categoryNum -> inCategoryMaps.get(inCategoryNames[categoryNum]).isEmpty()
                                 ? ballot.get(categoryNum)
@@ -241,8 +241,7 @@ public class Oscars implements Runnable {
         writeResults();
         cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
-        cleanUpCharts(RankChart.DIRECTORY,
-                standings.rankStream().mapToObj(RankChart::new).map(RankChart::chartName));
+        cleanUpCharts(RankChart.DIRECTORY, standings.rankStream().mapToObj(RankChart::name));
         System.out.println("DONE");
     }
 
@@ -306,10 +305,8 @@ public class Oscars implements Runnable {
 
     private void writeRankCharts() throws IOException {
         mkdir(RankChart.DIRECTORY);
-        for (int rank = 1; rank <= players.size(); rank++) {
-            System.out.print(rank + "-");
-            new RankChart(rank).writeChart(players.size());
-        }
+        for (int rank = 1; rank <= players.size(); rank++)
+            RankChart.write(rank, players.size());
     }
 
     private void writeCategoryPages() throws IOException {
