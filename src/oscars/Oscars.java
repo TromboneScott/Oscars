@@ -84,17 +84,22 @@ public class Oscars implements Runnable {
 
     private Oscars() throws Exception {
         System.out.print("Step 1 of 6: Deleting any old data... ");
-        Stream.of("category", "player", "rank").map(File::new).map(File::listFiles)
-                .flatMap(Stream::of).forEach(File::delete);
+        Stream.of(Category.DIRECTORY, Player.DIRECTORY, RankChart.DIRECTORY).map(File::new)
+                .map(File::listFiles).flatMap(Stream::of).forEach(File::delete);
         System.out.println("DONE");
+
         System.out.print("Step 2 of 6: Downloading ballots... ");
         Collection<Ballot> ballots = Ballot.stream().collect(Ballot.LATEST);
         List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
+        System.out.print("Step 3 of 6: Writing category mappings... ");
         List<? extends List<String>> categoryNominees = categoryNominees(categoryValues);
         Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, ballots,
                 categoryNominees);
+        System.out.println("DONE");
+
+        System.out.print("Step 4 of 6: Reading any existing results... ");
         Category[] categoryArray = buildCategories(categoryValues.get(0), categoryNominees,
                 categoryMaps, ballots);
         players = Collections.unmodifiableList(
@@ -104,6 +109,16 @@ public class Oscars implements Runnable {
         results = new Results(categories);
         scoreFormat = "%." + categories.stream()
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
+        System.out.println("DONE");
+
+        System.out.print("Step 5 of 6: Writing " + players.size() + " rank images... ");
+        writeRankCharts();
+        System.out.println("DONE");
+
+        System.out.print("Step 6 of 6: Writing web pages... ");
+        writeCategoryPages();
+        writePlayerPages();
+        System.out.println("DONE");
     }
 
     private static List<String[]> readValues(String inFileName) throws IOException {
@@ -178,7 +193,6 @@ public class Oscars implements Runnable {
 
     private void writeCategoryMaps(Map<String, Map<String, String>> inCategoryMaps)
             throws IOException {
-        System.out.print("Step 3 of 6: Writing category mappings... ");
         writeDocument(inCategoryMaps.keySet().stream()
                 .map(category -> inCategoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map")
@@ -187,7 +201,6 @@ public class Oscars implements Runnable {
                         .reduce(new Element("category").addContent(
                                 new Element("name").addContent(category)), Element::addContent))
                 .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
-        System.out.println("DONE");
     }
 
     private Category[] buildCategories(String[] inCategoryNames,
@@ -219,10 +232,6 @@ public class Oscars implements Runnable {
     }
 
     private void process() throws IOException, InterruptedException {
-        writeRankCharts();
-        writeCategoryPages();
-        writePlayerPages();
-
         System.out.println();
         while (prompt())
             System.out.println();
@@ -296,17 +305,14 @@ public class Oscars implements Runnable {
     }
 
     private void writeRankCharts() throws IOException {
-        System.out.print("Step 4 of 6: Writing " + players.size() + " rank images... ");
         mkdir(RankChart.DIRECTORY);
         for (int rank = 1; rank <= players.size(); rank++) {
             System.out.print(rank + "-");
             new RankChart(rank).writeChart(players.size());
         }
-        System.out.println("DONE");
     }
 
     private void writeCategoryPages() throws IOException {
-        System.out.print("Step 5 of 6: Writing category web pages... ");
         mkdir(Category.DIRECTORY);
         writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
@@ -317,19 +323,16 @@ public class Oscars implements Runnable {
             writeDocument(new Element("category").addContent(category.name),
                     Category.DIRECTORY + category.name + ".xml", "../xsl/category.xsl");
         }
-        System.out.println("DONE");
     }
 
     private void writePlayerPages() throws IOException {
-          System.out.print("Step 6 of 6: Writing player web pages... ");
-        mkdir("player");
+        mkdir(Player.DIRECTORY);
         for (Player player : players)
             writeDocument(player.toDOM(),
-                    "player/" + Stream.of(player.firstName, player.lastName)
+                    Player.DIRECTORY + Stream.of(player.firstName, player.lastName)
                             .filter(name -> !name.isEmpty()).collect(Collectors.joining(" "))
                             + ".xml",
                     "../xsl/player.xsl");
-        System.out.println("DONE");
     }
 
     public static void writeDocument(Element inElement, String inXMLFile, String inXSLFile)

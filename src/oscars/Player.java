@@ -12,6 +12,8 @@ import org.jdom2.Element;
 public final class Player {
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm:ss");
 
+    public static final String DIRECTORY = "player/";
+
     /** Player's first name */
     public final String firstName;
 
