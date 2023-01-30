@@ -90,10 +90,10 @@ public class Oscars implements Runnable {
 
         System.out.print("Step 2 of 6: Downloading ballots... ");
         Collection<Ballot> ballots = Ballot.stream().collect(Ballot.LATEST);
-        List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         System.out.println("DONE");
 
         System.out.print("Step 3 of 6: Writing category mappings... ");
+        List<String[]> categoryValues = readValues(CATEGORIES_FILE);
         List<? extends List<String>> categoryNominees = categoryNominees(categoryValues);
         Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, ballots,
                 categoryNominees);
@@ -111,7 +111,7 @@ public class Oscars implements Runnable {
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
         System.out.println("DONE");
 
-        System.out.print("Step 5 of 6: Writing " + players.size() + " rank images... ");
+        System.out.print("Step 5 of 6: Writing rank images... ");
         writeRankCharts();
         System.out.println("DONE");
 
