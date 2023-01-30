@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
@@ -57,7 +56,7 @@ public final class Standings {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private long rank(Player inPlayer) {
+    public long rank(Player inPlayer) {
         return lostToStream(inPlayer, scoreMap, elapsedTime, true).count() + 1;
     }
 
@@ -163,11 +162,6 @@ public final class Standings {
 
     private String formatTime(long inTime) {
         return inTime < 0 ? "" : LocalTime.ofSecondOfDay(inTime).format(Player.TIME_FORMAT);
-    }
-
-    /** Get a stream of the current ranks of all the players */
-    public LongStream rankStream() {
-        return scoreMap.keySet().stream().mapToLong(this::rank);
     }
 
     public static Map<Category, Set<String>> readWinners(Element inResultsDOM,

@@ -232,16 +232,16 @@ public class Oscars implements Runnable {
     }
 
     private void process() throws IOException, InterruptedException {
-        System.out.println();
-        while (prompt())
+        do
             System.out.println();
+        while (prompt());
 
-        // In case it was interrupted
         System.out.print("\nWriting final results... ");
-        writeResults();
+        writeResults(); // In case it was interrupted in the thread
         cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
-        cleanUpCharts(RankChart.DIRECTORY, standings.rankStream().mapToObj(RankChart::name));
+        cleanUpCharts(RankChart.DIRECTORY,
+                players.stream().mapToLong(standings::rank).mapToObj(RankChart::name));
         System.out.println("DONE");
     }
 
@@ -252,9 +252,8 @@ public class Oscars implements Runnable {
             thread.start();
             return results.prompt(categories);
         } finally {
-            // Stop file I/O thread and wait for it to finish
-            thread.interrupt();
-            thread.join();
+            thread.interrupt(); // Stop file I/O thread
+            thread.join(); // Wait for it to finish
         }
     }
 
