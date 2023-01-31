@@ -76,7 +76,7 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
     }
 
-    private void process() throws IOException, InterruptedException {
+    private void process() throws Exception {
         do
             System.out.println();
         while (prompt());
@@ -90,7 +90,7 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
     }
 
-    private boolean prompt() throws IOException, InterruptedException {
+    private boolean prompt() throws Exception {
         updated = LocalDateTime.now();
         Thread thread = new Thread(this);
         try {
