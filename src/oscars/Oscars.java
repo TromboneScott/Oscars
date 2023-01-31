@@ -111,7 +111,7 @@ public class Oscars implements Runnable {
         try {
             do {
                 writeResults();
-                Thread.sleep(waitTime(TimeUnit.SECONDS.toMillis(60)));
+                Thread.sleep(waitTime(TimeUnit.MINUTES.toMillis(1)));
             } while (!standings.showEnded());
         } catch (InterruptedException e) {
             // Ignore
