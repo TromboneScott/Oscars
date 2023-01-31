@@ -175,7 +175,8 @@ public class Results {
     }
 
     public static void write(LocalDateTime inUpdated, Content... inContent) throws IOException {
-        Oscars.writeDocument(new Element("results").addContent(new Element("year").addContent(YEAR))
+        IOUtils.writeDocument(new Element("results")
+                .addContent(new Element("year").addContent(YEAR))
                 .addContent(
                         new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
                                 .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))

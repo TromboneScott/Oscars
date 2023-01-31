@@ -1,41 +1,16 @@
 package oscars;
 
-/** Oscars - Calculate the standings in the Oscars competition */
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import org.jdom2.Comment;
-import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.ProcessingInstruction;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 /**
  * This program will allow Oscars winners to be selected and a new results file will be generated.
@@ -50,14 +25,6 @@ import org.jdom2.output.XMLOutputter;
  * @version 4.5
  */
 public class Oscars implements Runnable {
-    private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
-
-    private static final String CATEGORIES_FILE = "categories.csv";
-
-    private static final String VALUE_DELIMITER = ",";
-
-    private static final String COMMA_REPLACEMENT = "`";
-
     private final List<Player> players;
 
     private final List<Category> categories;
@@ -84,8 +51,7 @@ public class Oscars implements Runnable {
 
     private Oscars() throws Exception {
         System.out.print("Step 1 of 6: Deleting any old data... ");
-        Stream.of(Category.DIRECTORY, Player.DIRECTORY, RankChart.DIRECTORY).map(File::new)
-                .map(File::listFiles).flatMap(Stream::of).forEach(File::delete);
+        IOUtils.deleteOldData();
         System.out.println("DONE");
 
         System.out.print("Step 2 of 6: Downloading ballots... ");
@@ -93,17 +59,17 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
 
         System.out.print("Step 3 of 6: Writing category mappings... ");
-        List<String[]> categoryValues = readValues(CATEGORIES_FILE);
-        List<? extends List<String>> categoryNominees = categoryNominees(categoryValues);
-        Map<String, Map<String, String>> categoryMaps = categoryMaps(categoryValues, ballots,
-                categoryNominees);
+        List<String[]> categoryValues = IOUtils.readCategoryValues();
+        List<? extends List<String>> categoryNominees = IOUtils.categoryNominees(categoryValues);
+        Map<String, Map<String, String>> categoryMaps = IOUtils.categoryMaps(categoryValues,
+                ballots, categoryNominees);
         System.out.println("DONE");
 
         System.out.print("Step 4 of 6: Reading any existing results... ");
-        Category[] categoryArray = buildCategories(categoryValues.get(0), categoryNominees,
+        Category[] categoryArray = IOUtils.buildCategories(categoryValues.get(0), categoryNominees,
                 categoryMaps, ballots);
         players = Collections.unmodifiableList(
-                buildPlayers(ballots, categoryArray, categoryValues.get(0), categoryMaps));
+                IOUtils.buildPlayers(ballots, categoryArray, categoryValues.get(0), categoryMaps));
         categories = Collections.unmodifiableList(Arrays.stream(categoryArray).skip(1)
                 .filter(category -> category.guesses != null).collect(Collectors.toList()));
         results = new Results(categories);
@@ -121,116 +87,6 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
     }
 
-    private static List<String[]> readValues(String inFileName) throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(inFileName),
-                StandardCharsets.ISO_8859_1)) {
-            return stream.map(line -> Stream.of(line.split(VALUE_DELIMITER, -1))
-                    .map(value -> value.replace(COMMA_REPLACEMENT, VALUE_DELIMITER))
-                    .toArray(String[]::new)).collect(Collectors.toList());
-        }
-    }
-
-    private Map<String, Map<String, String>> categoryMaps(List<String[]> inCategoryValues,
-            Collection<Ballot> ballots, List<? extends List<String>> inCategoryNominees)
-            throws IOException {
-        Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-        for (int categoryNum = 0; categoryNum < inCategoryValues.get(0).length; categoryNum++) {
-            String categoryName = inCategoryValues.get(0)[categoryNum];
-            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryName,
-                    k -> new HashMap<>());
-            List<String> nominees = inCategoryNominees.get(categoryNum);
-            if (!nominees.isEmpty())
-                for (Ballot ballot : ballots)
-                    if (!categoryMap.containsKey(ballot.get(categoryNum))) {
-                        List<String> mappings = nominees.stream()
-                                .filter(ballot.get(categoryNum)::contains)
-                                .collect(Collectors.toList());
-                        if (mappings.size() == 1)
-                            categoryMap.put(ballot.get(categoryNum), mappings.get(0));
-                        else {
-                            System.out.println("\nCATEGORY: " + categoryName);
-                            for (int nomineeNum = 0; nomineeNum < nominees.size(); nomineeNum++)
-                                System.out.println(
-                                        (nomineeNum + 1) + ": " + nominees.get(nomineeNum));
-                            System.out.print(ballot.get(categoryNum) + " = ");
-                            String guessNum = stdin.readLine();
-                            categoryMap.put(ballot.get(categoryNum),
-                                    nominees.get(Integer.parseInt(guessNum) - 1));
-                        }
-                    }
-        }
-        writeCategoryMaps(categoryMaps);
-        return categoryMaps;
-    }
-
-    private List<? extends List<String>> categoryNominees(List<String[]> inCategoryValues) {
-        return IntStream.range(0, inCategoryValues.get(0).length)
-                .mapToObj(categoryNum -> inCategoryValues.stream().skip(1)
-                        .map(guesses -> guesses[categoryNum]).filter(guess -> !guess.isEmpty())
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList());
-    }
-
-    private Map<String, Map<String, String>> readCategoryMaps() throws IOException {
-        File categoryMapsFile = new File(CATEGORY_MAPS_FILE);
-        if (categoryMapsFile.exists())
-            try {
-                return new SAXBuilder().build(categoryMapsFile).getRootElement()
-                        .getChildren("category").stream()
-                        .collect(Collectors.toMap(categoryDOM -> categoryDOM.getChildText("name"),
-                                categoryDOM -> categoryDOM.getChildren("map").stream()
-                                        .collect(Collectors.toMap(
-                                                mapDOM -> mapDOM.getChildText("key"),
-                                                mapDOM -> mapDOM.getChildText("value")))));
-            } catch (JDOMException e) {
-                throw new IOException(
-                        "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
-            }
-        System.out.println("\nStarting new category maps file: " + CATEGORY_MAPS_FILE);
-        return new HashMap<>();
-    }
-
-    private void writeCategoryMaps(Map<String, Map<String, String>> inCategoryMaps)
-            throws IOException {
-        writeDocument(inCategoryMaps.keySet().stream()
-                .map(category -> inCategoryMaps.get(category).entrySet().stream()
-                        .map(map -> new Element("map")
-                                .addContent(new Element("key").addContent(map.getKey()))
-                                .addContent(new Element("value").addContent(map.getValue())))
-                        .reduce(new Element("category").addContent(
-                                new Element("name").addContent(category)), Element::addContent))
-                .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
-    }
-
-    private Category[] buildCategories(String[] inCategoryNames,
-            List<? extends List<String>> inCategoryNominees,
-            Map<String, Map<String, String>> inCategoryMaps, Collection<Ballot> inBallots)
-            throws IOException {
-        return IntStream.range(0, inCategoryNames.length).mapToObj(categoryNum -> Category.of(
-                inCategoryNames[categoryNum],
-                inCategoryNominees.get(categoryNum).stream()
-                        .collect(Collectors.toMap(nominee -> nominee, nominee -> inBallots.stream()
-                                .map(ballot -> inCategoryMaps.get(inCategoryNames[categoryNum])
-                                        .get(ballot.get(categoryNum)))
-                                .filter(nominee::equals).count())),
-                inCategoryMaps.get(inCategoryNames[categoryNum]).entrySet().stream()
-                        .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))
-                .toArray(Category[]::new);
-    }
-
-    private List<Player> buildPlayers(Collection<Ballot> inBallots, Category[] inCategoryArray,
-            String[] inCategoryNames, Map<String, Map<String, String>> inCategoryMaps) {
-        return inBallots.stream().map(ballot -> new Player(IntStream
-                .range(0, inCategoryArray.length).boxed()
-                .collect(Collectors.toMap(categoryNum -> inCategoryArray[categoryNum],
-                        categoryNum -> inCategoryMaps.get(inCategoryNames[categoryNum]).isEmpty()
-                                ? ballot.get(categoryNum)
-                                : inCategoryMaps.get(inCategoryNames[categoryNum])
-                                        .get(ballot.get(categoryNum))))))
-                .collect(Collectors.toList());
-    }
-
     private void process() throws IOException, InterruptedException {
         do
             System.out.println();
@@ -238,9 +94,9 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        cleanUpCharts(Category.DIRECTORY,
+        IOUtils.cleanUpCharts(Category.DIRECTORY,
                 categories.stream().map(category -> category.chartName(results)));
-        cleanUpCharts(RankChart.DIRECTORY,
+        IOUtils.cleanUpCharts(RankChart.DIRECTORY,
                 players.stream().mapToLong(standings::rank).mapToObj(RankChart::name));
         System.out.println("DONE");
     }
@@ -296,62 +152,30 @@ public class Oscars implements Runnable {
                 standings.resultsPlayerDOM(players, scoreFormat), standings.resultsShowTimeDOM());
     }
 
-    private void mkdir(String inDirectory) {
-        File directory = new File(inDirectory);
-        if (!directory.exists())
-            directory.mkdir();
-    }
-
     private void writeRankCharts() throws IOException {
-        mkdir(RankChart.DIRECTORY);
+        IOUtils.mkdir(RankChart.DIRECTORY);
         for (int rank = 1; rank <= players.size(); rank++)
             RankChart.write(rank, players.size());
     }
 
     private void writeCategoryPages() throws IOException {
-        mkdir(Category.DIRECTORY);
-        writeDocument(
+        IOUtils.mkdir(Category.DIRECTORY);
+        IOUtils.writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
                         .reduce(new Element("categories"), Element::addContent),
                 Category.DIRECTORY + "all.xml", "../xsl/categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results);
-            writeDocument(new Element("category").addContent(category.name),
+            IOUtils.writeDocument(new Element("category").addContent(category.name),
                     Category.DIRECTORY + category.name + ".xml", "../xsl/category.xsl");
         }
     }
 
     private void writePlayerPages() throws IOException {
-        mkdir(Player.DIRECTORY);
+        IOUtils.mkdir(Player.DIRECTORY);
         for (Player player : players)
-            writeDocument(player.toDOM(),
+            IOUtils.writeDocument(player.toDOM(),
                     Player.DIRECTORY + (player.firstName + " " + player.lastName).trim() + ".xml",
                     "../xsl/player.xsl");
-    }
-
-    public static void writeDocument(Element inElement, String inXMLFile, String inXSLFile)
-            throws IOException {
-        try (Writer writer = new PrintWriter(
-                new OutputStreamWriter(new FileOutputStream(inXMLFile), "UTF-8"))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(xmlDocument(inXSLFile)
-                    .addContent(new Comment("OSCARS website created by Scott McDonald"))
-                    .addContent(inElement), writer);
-        }
-    }
-
-    private static Document xmlDocument(String inXSLFile) {
-        return inXSLFile == null ? new Document()
-                : new Document().addContent(new ProcessingInstruction("xml-stylesheet", Stream
-                        .of(new String[][] { { "type", "text/xsl" }, { "href", inXSLFile } })
-                        .collect(Collectors.toMap(element -> element[0], element -> element[1]))));
-    }
-
-    private void cleanUpCharts(String inDirectory, Stream<String> inChartsToKeep)
-            throws IOException {
-        Set<String> chartsToKeep = inChartsToKeep.collect(Collectors.toSet());
-        Files.list(Paths.get(inDirectory))
-                .filter(file -> file.toString().endsWith(".png")
-                        && !chartsToKeep.contains(file.getFileName().toString()))
-                .map(Path::toFile).forEach(File::delete);
     }
 }
