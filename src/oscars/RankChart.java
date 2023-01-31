@@ -16,20 +16,23 @@ public final class RankChart {
         return "rank_" + inRank + ".png";
     }
 
-    public static void write(long inRank, int inPlayerCount) throws IOException {
-        DefaultCategoryDataset data = new DefaultCategoryDataset();
-        data.addValue(inRank, "A", "");
-        data.addValue(inPlayerCount, "B", "");
+    public static void writeAll(int inPlayerCount) throws IOException {
+        IOUtils.mkdir(DIRECTORY);
+        for (int inRank = 1; inRank <= inPlayerCount; inRank++) {
+            DefaultCategoryDataset data = new DefaultCategoryDataset();
+            data.addValue(inRank, "A", "");
+            data.addValue(inPlayerCount, "B", "");
 
-        JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
-        chart.removeLegend();
+            JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
+            chart.removeLegend();
 
-        CategoryPlot plot = chart.getCategoryPlot();
-        plot.getRangeAxis().setRange(1, Math.max(2, inPlayerCount));
-        plot.getRangeAxis().setInverted(true);
-        plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
-        plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
+            CategoryPlot plot = chart.getCategoryPlot();
+            plot.getRangeAxis().setRange(1, Math.max(2, inPlayerCount));
+            plot.getRangeAxis().setInverted(true);
+            plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
+            plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
 
-        ChartUtilities.saveChartAsPNG(new File(DIRECTORY + name(inRank)), chart, 80, 180);
+            ChartUtilities.saveChartAsPNG(new File(DIRECTORY + name(inRank)), chart, 80, 180);
+        }
     }
 }

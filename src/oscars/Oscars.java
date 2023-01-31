@@ -2,13 +2,9 @@ package oscars;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
@@ -55,30 +51,23 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
 
         System.out.print("Step 2 of 6: Downloading ballots... ");
-        Collection<Ballot> ballots = Ballot.stream().collect(Ballot.LATEST);
+        Stream<Ballot> ballots = Ballot.stream();
         System.out.println("DONE");
 
-        System.out.print("Step 3 of 6: Writing category mappings... ");
-        List<String[]> categoryValues = IOUtils.readCategoryValues();
-        List<? extends List<String>> categoryNominees = IOUtils.categoryNominees(categoryValues);
-        Map<String, Map<String, String>> categoryMaps = IOUtils.categoryMaps(categoryValues,
-                ballots, categoryNominees);
-        System.out.println("DONE");
-
-        System.out.print("Step 4 of 6: Reading any existing results... ");
-        Category[] categoryArray = IOUtils.buildCategories(categoryValues.get(0), categoryNominees,
-                categoryMaps, ballots);
-        players = Collections.unmodifiableList(
-                IOUtils.buildPlayers(ballots, categoryArray, categoryValues.get(0), categoryMaps));
-        categories = Collections.unmodifiableList(Arrays.stream(categoryArray).skip(1)
-                .filter(category -> category.guesses != null).collect(Collectors.toList()));
-        results = new Results(categories);
+        System.out.print("Step 3 of 6: Mapping the category data... ");
+        CategoryMapper categoryMapper = new CategoryMapper(ballots);
+        players = categoryMapper.getPlayers();
+        categories = categoryMapper.getCategories();
         scoreFormat = "%." + categories.stream()
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
         System.out.println("DONE");
 
+        System.out.print("Step 4 of 6: Reading any existing results... ");
+        results = new Results(categories);
+        System.out.println("DONE");
+
         System.out.print("Step 5 of 6: Writing rank images... ");
-        writeRankCharts();
+        RankChart.writeAll(players.size());
         System.out.println("DONE");
 
         System.out.print("Step 6 of 6: Writing web pages... ");
@@ -150,12 +139,6 @@ public class Oscars implements Runnable {
         validTimes = currentTimes;
         Results.write(updated, standings.resultsCategoryDOM(categories),
                 standings.resultsPlayerDOM(players, scoreFormat), standings.resultsShowTimeDOM());
-    }
-
-    private void writeRankCharts() throws IOException {
-        IOUtils.mkdir(RankChart.DIRECTORY);
-        for (int rank = 1; rank <= players.size(); rank++)
-            RankChart.write(rank, players.size());
     }
 
     private void writeCategoryPages() throws IOException {
