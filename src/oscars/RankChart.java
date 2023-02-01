@@ -16,23 +16,23 @@ public final class RankChart {
         return "rank_" + inRank + ".png";
     }
 
-    public static void writeAll(int inPlayerCount) throws IOException {
+    public static void writeAll(int inTotal) throws IOException {
         IOUtils.mkdir(DIRECTORY);
-        for (int inRank = 1; inRank <= inPlayerCount; inRank++) {
+        for (int rank = 1; rank <= inTotal; rank++) {
             DefaultCategoryDataset data = new DefaultCategoryDataset();
-            data.addValue(inRank, "A", "");
-            data.addValue(inPlayerCount, "B", "");
+            data.addValue(rank, "A", "");
+            data.addValue(inTotal, "B", "");
 
             JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
             chart.removeLegend();
 
             CategoryPlot plot = chart.getCategoryPlot();
-            plot.getRangeAxis().setRange(1, Math.max(2, inPlayerCount));
+            plot.getRangeAxis().setRange(1, Math.max(2, inTotal));
             plot.getRangeAxis().setInverted(true);
             plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
             plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
 
-            ChartUtilities.saveChartAsPNG(new File(DIRECTORY + name(inRank)), chart, 80, 180);
+            ChartUtilities.saveChartAsPNG(new File(DIRECTORY + name(rank)), chart, 80, 180);
         }
     }
 }

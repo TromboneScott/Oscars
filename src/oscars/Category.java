@@ -38,9 +38,9 @@ public final class Category {
 
     public static final Color BAR_GREEN = Color.getColor("", 0x28A428);
 
-    public static final Color BAR_RED = Color.getColor("", 0xCC0000);
+    private static final Color BAR_RED = Color.getColor("", 0xCC0000);
 
-    public static final Color BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
+    private static final Color BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
 
     /** Category name without tieBreaker */
     public final String name;

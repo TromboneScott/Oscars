@@ -9,6 +9,7 @@ import java.util.List;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.BarRenderer;
 
+/** Set bar colors for Category guesses - Immutable */
 @SuppressWarnings("serial")
 public class GuessRenderer extends BarRenderer {
     private final List<Color> guessColors;

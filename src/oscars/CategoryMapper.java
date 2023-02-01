@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,20 +49,20 @@ public final class CategoryMapper {
     }
 
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(ballots.stream().map(ballot -> new Player(IntStream
-                .range(0, categoryArray.length).boxed()
+        return ballots.stream().map(ballot -> new Player(IntStream.range(0, categoryArray.length)
+                .boxed()
                 .collect(Collectors.toMap(categoryNum -> categoryArray[categoryNum],
                         categoryNum -> categoryMaps.get(categoryValues.get(0)[categoryNum])
                                 .isEmpty()
                                         ? ballot.get(categoryNum)
                                         : categoryMaps.get(categoryValues.get(0)[categoryNum])
                                                 .get(ballot.get(categoryNum))))))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     public List<Category> getCategories() {
-        return Collections.unmodifiableList(Arrays.stream(categoryArray).skip(1)
-                .filter(category -> category.guesses != null).collect(Collectors.toList()));
+        return Arrays.stream(categoryArray).skip(1).filter(category -> category.guesses != null)
+                .collect(Collectors.toList());
     }
 
     private static List<String[]> readCategoryValues() throws IOException {

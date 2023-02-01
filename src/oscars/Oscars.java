@@ -2,6 +2,7 @@ package oscars;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -56,8 +57,8 @@ public class Oscars implements Runnable {
 
         System.out.print("Step 3 of 6: Mapping the category data... ");
         CategoryMapper categoryMapper = new CategoryMapper(ballots);
-        players = categoryMapper.getPlayers();
-        categories = categoryMapper.getCategories();
+        players = Collections.unmodifiableList(categoryMapper.getPlayers());
+        categories = Collections.unmodifiableList(categoryMapper.getCategories());
         scoreFormat = "%." + categories.stream()
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
         System.out.println("DONE");
