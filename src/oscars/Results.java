@@ -1,10 +1,7 @@
 package oscars;
 
-/** Prompt and store Oscars results */
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -43,9 +40,9 @@ public class Results {
         if (resultsFile.exists())
             try {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
-                winners = Standings.readWinners(resultsDOM, inCategories.stream().collect(
+                winners = Standings.winners(resultsDOM, inCategories.stream().collect(
                         Collectors.toMap(category -> category.name, category -> category)));
-                showTimes = Standings.readShowTimes(resultsDOM);
+                showTimes = Standings.showTimes(resultsDOM);
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
             }
@@ -66,7 +63,6 @@ public class Results {
      * @return true unless user wants to exit the program
      */
     public boolean prompt(List<Category> inCategories) throws IOException {
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Results");
         for (int resultNum = 0; resultNum < inCategories.size()
                 + ShowTimeType.values().length; resultNum++)
@@ -75,38 +71,25 @@ public class Results {
                             : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
-        String selectedResult = stdin.readLine();
+        String selectedResult = IOUtils.STDIN.readLine();
         if ("exit".equalsIgnoreCase(selectedResult))
             return false;
         try {
             int resultNum = Integer.parseInt(selectedResult) - 1;
             if (resultNum < 0 || resultNum >= inCategories.size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum >= inCategories.size())
-                promptTime(ShowTimeType.values()[resultNum - inCategories.size()]);
-            else
+            if (resultNum < inCategories.size())
                 promptWinner(inCategories.get(resultNum));
+            else
+                promptTime(ShowTimeType.values()[resultNum - inCategories.size()]);
         } catch (NumberFormatException e) {
             System.out.println("Invalid selection: " + selectedResult);
         }
         return true;
     }
 
-    private void promptTime(ShowTimeType inShowTimeType) throws IOException {
-        System.out.println("\n" + toString(inShowTimeType));
-        System.out.println(
-                "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
-        String enteredTime = new BufferedReader(new InputStreamReader(System.in)).readLine();
-        if (enteredTime.isEmpty())
-            showTimes.remove(inShowTimeType);
-        else if ("*".equals(enteredTime))
-            showTimes.put(inShowTimeType, LocalDateTime.now());
-        else
-            try {
-                showTimes.put(inShowTimeType, LocalDateTime.parse(enteredTime));
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid time: " + enteredTime);
-            }
+    private String toString(Category inCategory) {
+        return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
     private String toString(ShowTimeType inShowTimeType) {
@@ -124,7 +107,7 @@ public class Results {
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
-        String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
+        String input = IOUtils.STDIN.readLine();
         try {
             winners.put(inCategory,
                     Collections.unmodifiableSet(
@@ -140,8 +123,21 @@ public class Results {
         }
     }
 
-    private String toString(Category inCategory) {
-        return inCategory + " = " + String.join(", ", winners(inCategory));
+    private void promptTime(ShowTimeType inShowTimeType) throws IOException {
+        System.out.println("\n" + toString(inShowTimeType));
+        System.out.println(
+                "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
+        String enteredTime = IOUtils.STDIN.readLine();
+        if (enteredTime.isEmpty())
+            showTimes.remove(inShowTimeType);
+        else if ("*".equals(enteredTime))
+            showTimes.put(inShowTimeType, LocalDateTime.now());
+        else
+            try {
+                showTimes.put(inShowTimeType, LocalDateTime.parse(enteredTime));
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid time: " + enteredTime);
+            }
     }
 
     public String get(ShowTimeType inShowTimeType) {

@@ -1,9 +1,7 @@
 package oscars;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -85,33 +83,33 @@ public final class CategoryMapper {
     private Map<String, Map<String, String>> categoryMaps(List<List<String>> inCategoryNominees)
             throws IOException {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         for (int categoryNum = 0; categoryNum < categoryValues.get(0).length; categoryNum++) {
             String categoryName = categoryValues.get(0)[categoryNum];
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryName,
                     k -> new HashMap<>());
             List<String> nominees = inCategoryNominees.get(categoryNum);
             if (!nominees.isEmpty())
-                for (Ballot ballot : ballots)
-                    if (!categoryMap.containsKey(ballot.get(categoryNum))) {
-                        List<String> mappings = nominees.stream()
-                                .filter(ballot.get(categoryNum)::contains)
+                for (Ballot ballot : ballots) {
+                    String guess = ballot.get(categoryNum);
+                    if (!categoryMap.containsKey(guess)) {
+                        List<String> mappings = nominees.stream().filter(
+                                nominee -> guess.toUpperCase().contains(nominee.toUpperCase()))
                                 .collect(Collectors.toList());
-                        if (mappings.size() == 1)
-                            categoryMap.put(ballot.get(categoryNum), mappings.get(0));
-                        else {
-                            System.out.println("\nCATEGORY: " + categoryName);
-                            for (int nomineeNum = 0; nomineeNum < nominees.size(); nomineeNum++)
-                                System.out.println(
-                                        (nomineeNum + 1) + ": " + nominees.get(nomineeNum));
-                            System.out.print(ballot.get(categoryNum) + " = ");
-                            String guessNum = stdin.readLine();
-                            categoryMap.put(ballot.get(categoryNum),
-                                    nominees.get(Integer.parseInt(guessNum) - 1));
-                        }
+                        categoryMap.put(guess, mappings.size() == 1 ? mappings.get(0)
+                                : prompt(categoryName, guess, nominees));
                     }
+                }
         }
         return categoryMaps;
+    }
+
+    private static String prompt(String inCategoryName, String inGuess, List<String> inNominees)
+            throws IOException {
+        System.out.println("\nCATEGORY: " + inCategoryName);
+        for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
+            System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
+        System.out.print(inGuess + " = ");
+        return inNominees.get(Integer.parseInt(IOUtils.STDIN.readLine()) - 1);
     }
 
     private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {

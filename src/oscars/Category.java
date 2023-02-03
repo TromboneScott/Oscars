@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,9 +23,9 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public final class Category {
-    private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)");
-
     public static final String DIRECTORY = "category/";
+
+    private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)");
 
     public static final Category FIRST_NAME = new Category("First", null, null);
 
@@ -91,19 +90,18 @@ public final class Category {
     public void writeChart(Results inResults) throws IOException {
         Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        List<Color> guessColors = guesses.keySet().stream().sorted()
+        Color[] guessColors = guesses.keySet().stream().sorted()
                 .peek(guess -> dataset.addValue(guesses.get(guess), "nominee", guess))
                 .map(guess -> winners.isEmpty() ? BAR_GRAY
                         : winners.contains(guess) ? BAR_GREEN : BAR_RED)
-                .collect(Collectors.toList());
+                .toArray(Color[]::new);
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
-        long totalGuesses = guesses.values().stream().mapToLong(Long::longValue).sum();
-        if (totalGuesses > 0)
-            plot.getRangeAxis().setRange(0, totalGuesses * 1.15);// Room for counts on top
+        plot.getRangeAxis().setRange(0,
+                guesses.values().stream().mapToLong(Long::longValue).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND_COLOR);
         plot.setRenderer(new GuessRenderer(guessColors));

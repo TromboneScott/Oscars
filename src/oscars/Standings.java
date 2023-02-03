@@ -41,8 +41,9 @@ public final class Standings {
         scoreMap = Collections.unmodifiableMap(
                 inPlayers.stream().collect(Collectors.toMap(player -> player, this::score)));
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
-        lostToMap = Collections.unmodifiableMap(inPlayers.stream()
-                .collect(Collectors.toMap(player -> player, player -> lostTo(player, scoreMap))));
+        lostToMap = Collections
+                .unmodifiableMap(inPlayers.stream().collect(Collectors.toMap(player -> player,
+                        player -> Collections.unmodifiableSet(lostTo(player, scoreMap)))));
     }
 
     public boolean showEnded() {
@@ -164,7 +165,7 @@ public final class Standings {
         return inTime < 0 ? "" : LocalTime.ofSecondOfDay(inTime).format(Player.TIME_FORMAT);
     }
 
-    public static Map<Category, Set<String>> readWinners(Element inResultsDOM,
+    public static Map<Category, Set<String>> winners(Element inResultsDOM,
             Map<String, Category> inCategoryMap) {
         return Optional.ofNullable(inResultsDOM.getChild("categories"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
@@ -177,7 +178,7 @@ public final class Standings {
                                         .map(Element::getText).collect(Collectors.toSet()))));
     }
 
-    public static Map<ShowTimeType, LocalDateTime> readShowTimes(Element inResultsDOM) {
+    public static Map<ShowTimeType, LocalDateTime> showTimes(Element inResultsDOM) {
         return Stream.of(ShowTimeType.values())
                 .map(showTimeType -> new SimpleEntry<>(showTimeType,
                         Optional.ofNullable(inResultsDOM.getChild("showTime")).map(
