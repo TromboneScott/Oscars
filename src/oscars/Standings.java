@@ -109,7 +109,9 @@ public final class Standings {
                 .reduce(new Element("categories"), Element::addContent);
     }
 
-    public Element resultsPlayerDOM(List<Player> inPlayers, String inScoreFormat) {
+    public Element resultsPlayerDOM(List<Player> inPlayers) {
+        int tieBreakers = (int) inPlayers.iterator().next().picks.keySet().stream()
+                .filter(category -> !category.tieBreakerValue.isEmpty()).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
                 .addContent(new Element("rank")
@@ -118,8 +120,8 @@ public final class Standings {
                         String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1)))
                 .addContent(new Element("wpr").addContent(
                         String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap))))
-                .addContent(new Element("score").addContent(String.format(inScoreFormat,
-                        scoreMap.get(inPlayers.get(playerNum)))))
+                .addContent(new Element("score").addContent(scoreMap.get(inPlayers.get(playerNum))
+                        .setScale(tieBreakers).toString()))
                 .addContent(
                         new Element("time")
                                 .setAttribute("delta", inPlayers.get(playerNum).time <= elapsedTime

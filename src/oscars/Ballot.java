@@ -36,7 +36,7 @@ public final class Ballot {
     public static void main(String[] inArgs) throws Exception {
         if (inArgs.length == 0)
             for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
-                lastTimestamp = update(lastTimestamp);
+                lastTimestamp = writeNewBallots(lastTimestamp);
         else if ("emails".equalsIgnoreCase(inArgs[0]))
             stream().filter(ballot -> !ballot.getEmail().isEmpty()).forEach(
                     ballot -> System.out.println(ballot.getName() + " = " + ballot.getEmail()));
@@ -56,7 +56,7 @@ public final class Ballot {
         }
     }
 
-    private static LocalDateTime update(LocalDateTime inLastTimestamp) throws Exception {
+    private static LocalDateTime writeNewBallots(LocalDateTime inLastTimestamp) throws Exception {
         try {
             Collection<Ballot> ballots = stream().collect(LATEST);
             LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)

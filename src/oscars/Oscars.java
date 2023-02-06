@@ -28,8 +28,6 @@ public class Oscars implements Runnable {
 
     private final Results results;
 
-    private final String scoreFormat;
-
     private Standings standings;
 
     private long validTimes = 0;
@@ -59,8 +57,6 @@ public class Oscars implements Runnable {
         CategoryMapper categoryMapper = new CategoryMapper(ballots);
         players = Collections.unmodifiableList(categoryMapper.getPlayers());
         categories = Collections.unmodifiableList(categoryMapper.getCategories());
-        scoreFormat = "%." + categories.stream()
-                .filter(category -> !category.tieBreakerValue.isEmpty()).count() + "f";
         System.out.println("DONE");
 
         System.out.print("Step 4 of 6: Reading any existing results... ");
@@ -139,7 +135,7 @@ public class Oscars implements Runnable {
             updated = LocalDateTime.now();
         validTimes = currentTimes;
         Results.write(updated, standings.resultsCategoryDOM(categories),
-                standings.resultsPlayerDOM(players, scoreFormat), standings.resultsShowTimeDOM());
+                standings.resultsPlayerDOM(players), standings.resultsShowTimeDOM());
     }
 
     private void writeCategoryPages() throws IOException {
