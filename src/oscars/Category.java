@@ -25,7 +25,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public final class Category {
     public static final String DIRECTORY = "category/";
 
-    private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)");
+    private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)$");
 
     public static final Category FIRST_NAME = new Category("First", null, null);
 
