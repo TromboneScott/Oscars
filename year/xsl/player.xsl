@@ -134,8 +134,8 @@
                 </xsl:attribute>
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
-                  <xsl:for-each select="$categories/category/tieBreaker"> 
-                    <xsl:sort select="." data-type="number"/>
+                  <xsl:for-each select="$categories/category/tieBreaker">
+                    <xsl:sort select="." data-type="number" />
                     <xsl:if test="position()=last()">
                       <xsl:call-template name="tieBreaker">
                         <xsl:with-param name="tieBreaker" select=". + 1" />
@@ -184,7 +184,7 @@
             Last updated:
             <xsl:value-of select="$results/updated" />
           </div>
-          </center>
+        </center>
       </body>
     </html>
   </xsl:template>

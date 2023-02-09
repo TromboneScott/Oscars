@@ -29,9 +29,10 @@
           Point Value:
           <xsl:value-of select="$categoryData/value" />
           <xsl:if test="count($categoryResults/nominees/nominee[@status = 'correct']) &gt; 1">
-              <br />
-              <br />
-              <b>TIE</b> - Everyone who selected one of the winners in this category get the points.
+            <br />
+            <br />
+            <b>TIE</b>
+            - Everyone who selected one of the winners in this category get the points.
           </xsl:if>
           <br />
           <br />

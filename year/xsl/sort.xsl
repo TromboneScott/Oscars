@@ -43,7 +43,7 @@
                 <br />
                 <br />
                 <h3>
-                  Ballots Received: 
+                  Ballots Received:
                   <xsl:value-of select="count($results/ballots/ballot)" />
                 </h3>
                 <table>
@@ -121,8 +121,7 @@
                 <u>Score</u>
                 - One point for each correct
                 <a href="../category/all.xml">category</a>
-                plus .1 for tie breaker #1, .01 for #2, .001 for #3,
-                etc.
+                plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc.
               </div>
               <br />
               <br />
@@ -436,11 +435,11 @@
       <td class="rank">
         <xsl:value-of select="rank" />
       </td>
-      <xsl:if test="$inProgress" >
+      <xsl:if test="$inProgress">
         <td>
           <xsl:attribute name="class">
             rank
-            <xsl:if test="bpr = wpr" >
+            <xsl:if test="bpr = wpr">
               unannounced
             </xsl:if>
           </xsl:attribute>
@@ -449,7 +448,7 @@
         <td>
           <xsl:attribute name="class">
             rank
-            <xsl:if test="bpr = wpr" >
+            <xsl:if test="bpr = wpr">
               unannounced
             </xsl:if>
           </xsl:attribute>
@@ -466,12 +465,12 @@
           </xsl:call-template>
         </xsl:variable>
         <xsl:variable name="scoreWidth" select="round(score) * 16 + $scoreTieBreakers" />
-        <img src="../../bar_green.bmp" height="15" >
+        <img src="../../bar_green.bmp" height="15">
           <xsl:attribute name="width">
             <xsl:value-of select="$scoreWidth" />
           </xsl:attribute>
         </img>
-        <img src="../../bar_grey.bmp" height="15" >
+        <img src="../../bar_grey.bmp" height="15">
           <xsl:attribute name="width">
             <xsl:value-of select="16 * 19 - 1 - $scoreWidth" />
           </xsl:attribute>
@@ -479,7 +478,8 @@
       </td>
       <td>
         <xsl:attribute name="class">
-          <xsl:value-of select="time/@status" /> time
+          <xsl:value-of select="time/@status" />
+          time
         </xsl:attribute>
         <xsl:value-of select="time" />
       </td>
@@ -499,7 +499,7 @@
             <xsl:with-param name="value" select="$value div 2" />
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="round($score * 10) mod 2 * $value + $tieBreakers" /> 
+        <xsl:value-of select="round($score * 10) mod 2 * $value + $tieBreakers" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

@@ -74,12 +74,12 @@
                       </td>
                       <td>
                         <xsl:variable name="greenWidth" select="$graphWidth * $correct div $playerCount" />
-                        <img src="../../bar_green.bmp" height="15" >
+                        <img src="../../bar_green.bmp" height="15">
                           <xsl:attribute name="width">
                             <xsl:value-of select="$greenWidth" />
                           </xsl:attribute>
                         </img>
-                        <img src="../../bar_red.bmp" height="15" >
+                        <img src="../../bar_red.bmp" height="15">
                           <xsl:attribute name="width">
                             <xsl:value-of select="$graphWidth - $greenWidth" />
                           </xsl:attribute>
@@ -90,7 +90,7 @@
                       <td class="unannounced" />
                       <td class="unannounced" />
                       <td>
-                        <img src="../../bar_grey.bmp" height="15" >
+                        <img src="../../bar_grey.bmp" height="15">
                           <xsl:attribute name="width">
                             <xsl:value-of select="$graphWidth" />
                           </xsl:attribute>

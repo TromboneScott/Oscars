@@ -9,7 +9,7 @@
       <meta http-equiv="pragma" content="no-cache" />
       <title>
         <xsl:value-of select="$results/year" />
-        OSCARS 
+        OSCARS
       </title>
     </head>
   </xsl:template>
@@ -36,7 +36,7 @@
         </tr>
         <tr>
           <td colspan="3">
-            <hr color="black"/>
+            <hr color="black" />
           </td>
         </tr>
       </table>
