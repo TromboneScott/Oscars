@@ -43,9 +43,9 @@ public final class IOUtils {
 
     private static Document xmlDocument(String inXSLFile) {
         return inXSLFile == null ? new Document()
-                : new Document().addContent(new ProcessingInstruction("xml-stylesheet", Stream
-                        .of(new String[][] { { "type", "text/xsl" }, { "href", inXSLFile } })
-                        .collect(Collectors.toMap(element -> element[0], element -> element[1]))));
+                : new Document().addContent(new ProcessingInstruction("xml-stylesheet",
+                        Stream.of(new String[][] { { "type", "text/xsl" }, { "href", inXSLFile } })
+                                .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
     }
 
     public static void cleanUpCharts(String inDirectory, Stream<String> inChartsToKeep)
