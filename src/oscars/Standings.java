@@ -99,7 +99,7 @@ public final class Standings {
         return inCategories.stream()
                 .map(category -> new Element("category")
                         .addContent(new Element("name").addContent(category.name))
-                        .addContent(category.guesses.keySet().stream().sorted()
+                        .addContent(category.guesses.keySet().stream()
                                 .map(guess -> new Element("nominee").addContent(guess).setAttribute(
                                         "status",
                                         winners.get(category).isEmpty() ? "unannounced"

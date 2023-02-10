@@ -99,7 +99,7 @@ public class Results {
     private void promptWinner(Category inCategory) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
-        String[] pickNames = inCategory.guesses.keySet().stream().sorted().toArray(String[]::new);
+        String[] pickNames = inCategory.guesses.keySet().stream().toArray(String[]::new);
         for (int x = 0; x < pickNames.length; x++)
             System.out.println((x + 1) + ": " + pickNames[x] + " -> "
                     + Optional.ofNullable(inCategory.guessDescriptions.get(pickNames[x]))

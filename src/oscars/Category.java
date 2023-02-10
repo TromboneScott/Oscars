@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,7 +64,13 @@ public final class Category {
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        guesses = inGuesses == null ? null : Collections.unmodifiableMap(new HashMap<>(inGuesses));
+        if (inGuesses == null)
+            guesses = null;
+        else {
+            TreeMap<String, Long> guessMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            guessMap.putAll(inGuesses);
+            guesses = Collections.unmodifiableMap(guessMap);
+        }
         guessDescriptions = inGuessDescriptions == null ? null
                 : Collections.unmodifiableMap(new HashMap<>(inGuessDescriptions));
     }
@@ -82,7 +89,7 @@ public final class Category {
 
     public String chartName(Results inResults) {
         return name + "_"
-                + guesses.keySet().stream().sorted()
+                + guesses.keySet().stream()
                         .map(guess -> inResults.winners(this).contains(guess) ? "1" : "0")
                         .collect(Collectors.joining())
                 + ".png";
@@ -91,11 +98,8 @@ public final class Category {
     public void writeChart(Results inResults) throws IOException {
         Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        Paint[] guessColors = guesses.keySet().stream().sorted()
-                .peek(guess -> dataset.addValue(guesses.get(guess), "nominee", guess))
-                .map(guess -> winners.isEmpty() ? BAR_GRAY
-                        : winners.contains(guess) ? BAR_GREEN : BAR_RED)
-                .toArray(Paint[]::new);
+        guesses.entrySet()
+                .forEach(entry -> dataset.addValue(entry.getValue(), "nominee", entry.getKey()));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
@@ -105,7 +109,11 @@ public final class Category {
                 guesses.values().stream().mapToLong(Long::longValue).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND_COLOR);
-        plot.setRenderer(new GuessRenderer(guessColors));
+        plot.setRenderer(
+                new GuessRenderer(guesses.keySet().stream()
+                        .map(guess -> winners.isEmpty() ? BAR_GRAY
+                                : winners.contains(guess) ? BAR_GREEN : BAR_RED)
+                        .toArray(Paint[]::new)));
 
         ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
     }
