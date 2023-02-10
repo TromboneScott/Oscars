@@ -64,13 +64,10 @@ public final class Category {
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        if (inGuesses == null)
-            guesses = null;
-        else {
-            TreeMap<String, Long> guessMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-            guessMap.putAll(inGuesses);
-            guesses = Collections.unmodifiableMap(guessMap);
-        }
+        guesses = inGuesses == null ? null
+                : Collections.unmodifiableMap(inGuesses.entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum,
+                                () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER))));
         guessDescriptions = inGuessDescriptions == null ? null
                 : Collections.unmodifiableMap(new HashMap<>(inGuessDescriptions));
     }
