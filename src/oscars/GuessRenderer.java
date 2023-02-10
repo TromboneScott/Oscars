@@ -1,6 +1,5 @@
 package oscars;
 
-import java.awt.Color;
 import java.awt.Paint;
 
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
@@ -9,13 +8,13 @@ import org.jfree.chart.renderer.category.BarRenderer;
 /** Set bar colors for Category guesses */
 @SuppressWarnings("serial")
 public class GuessRenderer extends BarRenderer {
-    private final Color[] guessColors;
+    private final Paint[] guessColors;
 
-    public GuessRenderer(Color[] inGuessColors) {
+    public GuessRenderer(Paint[] inGuessColors) {
         super();
         guessColors = inGuessColors.clone();
-        setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        setBaseItemLabelsVisible(true);
+        setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        setDefaultItemLabelsVisible(true);
     }
 
     @Override

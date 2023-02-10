@@ -2,6 +2,7 @@ package oscars;
 
 /** Category information - Immutable */
 import java.awt.Color;
+import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.plot.CategoryPlot;
@@ -33,13 +34,13 @@ public final class Category {
 
     public static final Category TIME = new Category("Time", null, null);
 
-    public static final Color BAR_GRAY = Color.GRAY;
+    public static final Paint BAR_GRAY = Color.GRAY;
 
-    public static final Color BAR_GREEN = Color.getColor("", 0x28A428);
+    public static final Paint BAR_GREEN = Color.getColor("", 0x28A428);
 
-    private static final Color BAR_RED = Color.getColor("", 0xCC0000);
+    private static final Paint BAR_RED = Color.getColor("", 0xCC0000);
 
-    private static final Color BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
+    private static final Paint BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
 
     /** Category name without tieBreaker */
     public final String name;
@@ -90,11 +91,11 @@ public final class Category {
     public void writeChart(Results inResults) throws IOException {
         Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        Color[] guessColors = guesses.keySet().stream().sorted()
+        Paint[] guessColors = guesses.keySet().stream().sorted()
                 .peek(guess -> dataset.addValue(guesses.get(guess), "nominee", guess))
                 .map(guess -> winners.isEmpty() ? BAR_GRAY
                         : winners.contains(guess) ? BAR_GREEN : BAR_RED)
-                .toArray(Color[]::new);
+                .toArray(Paint[]::new);
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
@@ -106,7 +107,7 @@ public final class Category {
         plot.setBackgroundPaint(BACKGROUND_COLOR);
         plot.setRenderer(new GuessRenderer(guessColors));
 
-        ChartUtilities.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
+        ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
     }
 
     public Element toDOM(Collection<Player> inPlayers) {

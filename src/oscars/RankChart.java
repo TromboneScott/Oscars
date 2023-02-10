@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -32,7 +32,7 @@ public final class RankChart {
             plot.getRenderer().setSeriesPaint(0, Category.BAR_GRAY);
             plot.getRenderer().setSeriesPaint(1, Category.BAR_GREEN);
 
-            ChartUtilities.saveChartAsPNG(new File(DIRECTORY + name(rank)), chart, 80, 180);
+            ChartUtils.saveChartAsPNG(new File(DIRECTORY + name(rank)), chart, 80, 180);
         }
     }
 }
