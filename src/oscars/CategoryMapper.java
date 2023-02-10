@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -135,12 +134,12 @@ public final class CategoryMapper {
         return IntStream.range(0, categoryValues.get(0).length).mapToObj(categoryNum -> Category.of(
                 categoryValues.get(0)[categoryNum],
                 inCategoryNominees.get(categoryNum).stream()
-                        .collect(Collectors.toMap(nominee -> nominee, nominee -> ballots.stream()
+                        .map(nominee -> new Guess(nominee, ballots.stream()
                                 .map(ballot -> categoryMaps.get(categoryValues.get(0)[categoryNum])
                                         .get(ballot.get(categoryNum)))
-                                .filter(nominee::equals).count())),
-                categoryMaps.get(categoryValues.get(0)[categoryNum]).entrySet().stream()
-                        .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))
+                                .filter(nominee::equals).count(),
+                                categoryMaps.get(categoryValues.get(0)[categoryNum])
+                                        .get(nominee)))))
                 .toArray(Category[]::new);
     }
 

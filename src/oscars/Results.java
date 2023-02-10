@@ -99,10 +99,9 @@ public class Results {
     private void promptWinner(Category inCategory) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
-        String[] pickNames = inCategory.guesses.keySet().stream().toArray(String[]::new);
-        for (int x = 0; x < pickNames.length; x++)
-            System.out.println((x + 1) + ": " + pickNames[x] + " -> "
-                    + Optional.ofNullable(inCategory.guessDescriptions.get(pickNames[x]))
+        for (int x = 0; x < inCategory.guesses.size(); x++)
+            System.out.println((x + 1) + ": " + inCategory.guesses.get(x).name + " -> "
+                    + Optional.ofNullable(inCategory.guesses.get(x).description)
                             .orElse("(no guesses so not downloaded)"));
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
@@ -113,9 +112,9 @@ public class Results {
                     Collections.unmodifiableSet(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
-                                        if (number > pickNames.length || number < 1)
+                                        if (number > inCategory.guesses.size() || number < 1)
                                             throw new NumberFormatException();
-                                    }).mapToObj(number -> pickNames[number - 1])
+                                    }).mapToObj(number -> inCategory.guesses.get(number - 1).name)
                                     .collect(Collectors.toSet())));
             inCategory.writeChart(this);
         } catch (NumberFormatException e) {

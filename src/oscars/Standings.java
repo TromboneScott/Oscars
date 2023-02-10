@@ -96,16 +96,15 @@ public final class Standings {
     }
 
     public Element resultsCategoryDOM(List<Category> inCategories) {
-        return inCategories.stream()
-                .map(category -> new Element("category")
-                        .addContent(new Element("name").addContent(category.name))
-                        .addContent(category.guesses.keySet().stream()
-                                .map(guess -> new Element("nominee").addContent(guess).setAttribute(
-                                        "status",
-                                        winners.get(category).isEmpty() ? "unannounced"
-                                                : winners.get(category).contains(guess) ? "correct"
-                                                        : "incorrect"))
-                                .reduce(new Element("nominees"), Element::addContent)))
+        return inCategories.stream().map(category -> new Element("category")
+                .addContent(new Element("name").addContent(category.name))
+                .addContent(category.guesses.stream()
+                        .map(guess -> new Element("nominee").addContent(guess.name).setAttribute(
+                                "status",
+                                winners.get(category).isEmpty() ? "unannounced"
+                                        : winners.get(category).contains(guess.name) ? "correct"
+                                                : "incorrect"))
+                        .reduce(new Element("nominees"), Element::addContent)))
                 .reduce(new Element("categories"), Element::addContent);
     }
 

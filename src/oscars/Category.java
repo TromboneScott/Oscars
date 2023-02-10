@@ -8,9 +8,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,11 +28,11 @@ public final class Category {
 
     private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)$");
 
-    public static final Category FIRST_NAME = new Category("First", null, null);
+    public static final Category FIRST_NAME = new Category("First", null);
 
-    public static final Category LAST_NAME = new Category("Last", null, null);
+    public static final Category LAST_NAME = new Category("Last", null);
 
-    public static final Category TIME = new Category("Time", null, null);
+    public static final Category TIME = new Category("Time", null);
 
     public static final Paint BAR_GRAY = Color.GRAY;
 
@@ -53,30 +52,24 @@ public final class Category {
     public final BigDecimal value;
 
     /** Players' guesses in this category */
-    public final Map<String, Long> guesses;
+    public final List<Guess> guesses;
 
-    public final Map<String, String> guessDescriptions;
-
-    private Category(String inName, Map<String, Long> inGuesses,
-            Map<String, String> inGuessDescriptions) {
+    private Category(String inName, Stream<Guess> inGuesses) {
         Matcher tieBreakerMatcher = TIE_BREAKER_PATTERN.matcher(inName);
         name = tieBreakerMatcher.replaceFirst("");
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
         guesses = inGuesses == null ? null
-                : Collections.unmodifiableMap(inGuesses.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum,
-                                () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER))));
-        guessDescriptions = inGuessDescriptions == null ? null
-                : Collections.unmodifiableMap(new HashMap<>(inGuessDescriptions));
+                : Collections.unmodifiableList(
+                        inGuesses.sorted(Comparator.comparing(guess -> guess.name.toUpperCase()))
+                                .collect(Collectors.toList()));
     }
 
-    public static Category of(String inName, Map<String, Long> inGuesses,
-            Map<String, String> inGuessDescriptions) {
+    public static Category of(String inName, Stream<Guess> inGuesses) {
         return Stream.of(FIRST_NAME, LAST_NAME, TIME)
                 .filter(category -> category.name.equals(inName)).findAny()
-                .orElseGet(() -> new Category(inName, inGuesses, inGuessDescriptions));
+                .orElseGet(() -> new Category(inName, inGuesses));
     }
 
     @Override
@@ -86,8 +79,8 @@ public final class Category {
 
     public String chartName(Results inResults) {
         return name + "_"
-                + guesses.keySet().stream()
-                        .map(guess -> inResults.winners(this).contains(guess) ? "1" : "0")
+                + guesses.stream()
+                        .map(guess -> inResults.winners(this).contains(guess.name) ? "1" : "0")
                         .collect(Collectors.joining())
                 + ".png";
     }
@@ -95,22 +88,20 @@ public final class Category {
     public void writeChart(Results inResults) throws IOException {
         Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        guesses.entrySet()
-                .forEach(entry -> dataset.addValue(entry.getValue(), "nominee", entry.getKey()));
+        guesses.forEach(guess -> dataset.addValue(guess.count, "nominee", guess.name));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(0,
-                guesses.values().stream().mapToLong(Long::longValue).sum() * 1.15);
+                guesses.stream().mapToLong(guess -> guess.count).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND_COLOR);
-        plot.setRenderer(
-                new GuessRenderer(guesses.keySet().stream()
-                        .map(guess -> winners.isEmpty() ? BAR_GRAY
-                                : winners.contains(guess) ? BAR_GREEN : BAR_RED)
-                        .toArray(Paint[]::new)));
+        plot.setRenderer(new GuessRenderer(guesses.stream()
+                .map(guess -> winners.isEmpty() ? BAR_GRAY
+                        : winners.contains(guess.name) ? BAR_GREEN : BAR_RED)
+                .toArray(Paint[]::new)));
 
         ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
     }
