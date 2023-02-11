@@ -5,20 +5,20 @@ import java.awt.Paint;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.BarRenderer;
 
-/** Set bar colors for Category guesses */
+/** Set bar colors for each Nominee in a Category */
 @SuppressWarnings("serial")
-public class GuessRenderer extends BarRenderer {
-    private final Paint[] guessColors;
+public class NomineeRenderer extends BarRenderer {
+    private final Paint[] nomineeColors;
 
-    public GuessRenderer(Paint[] inGuessColors) {
+    public NomineeRenderer(Paint[] inNomineeColors) {
         super();
-        guessColors = inGuessColors.clone();
+        nomineeColors = inNomineeColors.clone();
         setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         setDefaultItemLabelsVisible(true);
     }
 
     @Override
     public Paint getItemPaint(final int inRow, final int inColumn) {
-        return guessColors[inColumn];
+        return nomineeColors[inColumn];
     }
 }

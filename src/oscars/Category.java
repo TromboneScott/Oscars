@@ -51,25 +51,25 @@ public final class Category {
     /** Scoring value */
     public final BigDecimal value;
 
-    /** Players' guesses in this category */
-    public final List<Guess> guesses;
+    /** Nominees of this category in display order */
+    public final List<Nominee> nominees;
 
-    private Category(String inName, Stream<Guess> inGuesses) {
+    private Category(String inName, Stream<Nominee> inNominees) {
         Matcher tieBreakerMatcher = TIE_BREAKER_PATTERN.matcher(inName);
         name = tieBreakerMatcher.replaceFirst("");
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        guesses = inGuesses == null ? null
-                : Collections.unmodifiableList(
-                        inGuesses.sorted(Comparator.comparing(guess -> guess.name.toUpperCase()))
-                                .collect(Collectors.toList()));
+        nominees = inNominees == null ? null
+                : Collections.unmodifiableList(inNominees
+                        .sorted(Comparator.comparing(nominee -> nominee.name.toUpperCase()))
+                        .collect(Collectors.toList()));
     }
 
-    public static Category of(String inName, Stream<Guess> inGuesses) {
+    public static Category of(String inName, Stream<Nominee> inNominees) {
         return Stream.of(FIRST_NAME, LAST_NAME, TIME)
                 .filter(category -> category.name.equals(inName)).findAny()
-                .orElseGet(() -> new Category(inName, inGuesses));
+                .orElseGet(() -> new Category(inName, inNominees));
     }
 
     @Override
@@ -79,8 +79,8 @@ public final class Category {
 
     public String chartName(Results inResults) {
         return name + "_"
-                + guesses.stream()
-                        .map(guess -> inResults.winners(this).contains(guess.name) ? "1" : "0")
+                + nominees.stream()
+                        .map(nominee -> inResults.winners(this).contains(nominee.name) ? "1" : "0")
                         .collect(Collectors.joining())
                 + ".png";
     }
@@ -88,19 +88,19 @@ public final class Category {
     public void writeChart(Results inResults) throws IOException {
         Collection<String> winners = inResults.winners(this);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        guesses.forEach(guess -> dataset.addValue(guess.count, "nominee", guess.name));
+        nominees.forEach(nominee -> dataset.addValue(nominee.count, "nominee", nominee.name));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(0,
-                guesses.stream().mapToLong(guess -> guess.count).sum() * 1.15);
+                nominees.stream().mapToLong(nominee -> nominee.count).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND_COLOR);
-        plot.setRenderer(new GuessRenderer(guesses.stream()
-                .map(guess -> winners.isEmpty() ? BAR_GRAY
-                        : winners.contains(guess.name) ? BAR_GREEN : BAR_RED)
+        plot.setRenderer(new NomineeRenderer(nominees.stream()
+                .map(nominee -> winners.isEmpty() ? BAR_GRAY
+                        : winners.contains(nominee.name) ? BAR_GREEN : BAR_RED)
                 .toArray(Paint[]::new)));
 
         ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);

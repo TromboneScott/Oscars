@@ -99,10 +99,9 @@ public class Results {
     private void promptWinner(Category inCategory) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
-        for (int x = 0; x < inCategory.guesses.size(); x++)
-            System.out.println((x + 1) + ": " + inCategory.guesses.get(x).name + " -> "
-                    + Optional.ofNullable(inCategory.guesses.get(x).description)
-                            .orElse("(no guesses so not downloaded)"));
+        for (int x = 0; x < inCategory.nominees.size(); x++)
+            System.out.println((x + 1) + ": " + inCategory.nominees.get(x).name + " -> "
+                    + inCategory.nominees.get(x).description);
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
@@ -112,9 +111,9 @@ public class Results {
                     Collections.unmodifiableSet(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
-                                        if (number > inCategory.guesses.size() || number < 1)
+                                        if (number > inCategory.nominees.size() || number < 1)
                                             throw new NumberFormatException();
-                                    }).mapToObj(number -> inCategory.guesses.get(number - 1).name)
+                                    }).mapToObj(number -> inCategory.nominees.get(number - 1).name)
                                     .collect(Collectors.toSet())));
             inCategory.writeChart(this);
         } catch (NumberFormatException e) {

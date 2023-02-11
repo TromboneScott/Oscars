@@ -58,7 +58,7 @@ public final class CategoryMapper {
     }
 
     public List<Category> getCategories() {
-        return Arrays.stream(categoryArray).skip(1).filter(category -> category.guesses != null)
+        return Arrays.stream(categoryArray).skip(1).filter(category -> category.nominees != null)
                 .collect(Collectors.toList());
     }
 
@@ -133,13 +133,13 @@ public final class CategoryMapper {
     private Category[] categoryArray(List<List<String>> inCategoryNominees) {
         return IntStream.range(0, categoryValues.get(0).length).mapToObj(categoryNum -> Category.of(
                 categoryValues.get(0)[categoryNum],
-                inCategoryNominees.get(categoryNum).stream()
-                        .map(nominee -> new Guess(nominee, ballots.stream()
+                inCategoryNominees.get(categoryNum).stream().map(nominee -> new Nominee(nominee,
+                        categoryMaps.get(categoryValues.get(0)[categoryNum]).computeIfAbsent(
+                                nominee, k -> "(not guessed so description unavailable)"),
+                        ballots.stream()
                                 .map(ballot -> categoryMaps.get(categoryValues.get(0)[categoryNum])
                                         .get(ballot.get(categoryNum)))
-                                .filter(nominee::equals).count(),
-                                categoryMaps.get(categoryValues.get(0)[categoryNum])
-                                        .get(nominee)))))
+                                .filter(nominee::equals).count()))))
                 .toArray(Category[]::new);
     }
 
