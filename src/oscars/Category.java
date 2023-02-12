@@ -42,7 +42,7 @@ public final class Category {
 
     private static final Paint BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
 
-    /** Category name without tieBreaker */
+    /** Category name */
     public final String name;
 
     /** TieBreaker value */
@@ -51,7 +51,7 @@ public final class Category {
     /** Scoring value */
     public final BigDecimal value;
 
-    /** Nominees of this category in display order */
+    /** Nominees in display order */
     public final List<Nominee> nominees;
 
     private Category(String inName, Stream<Nominee> inNominees) {
@@ -70,11 +70,6 @@ public final class Category {
         return Stream.of(FIRST_NAME, LAST_NAME, TIME)
                 .filter(category -> category.name.equals(inName)).findAny()
                 .orElseGet(() -> new Category(inName, inNominees));
-    }
-
-    @Override
-    public String toString() {
-        return name;
     }
 
     public String chartName(Results inResults) {
