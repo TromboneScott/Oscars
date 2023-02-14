@@ -35,7 +35,7 @@
               <td>
                 <img>
                   <xsl:attribute name="src">
-                    <xsl:value-of select="concat('../rank/rank_', $playerResults/rank, '.png')" />
+                    <xsl:value-of select="concat('../rank/', $playerResults/rank/@chart)" />
                   </xsl:attribute>
                 </img>
               </td>

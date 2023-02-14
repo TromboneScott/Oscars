@@ -97,6 +97,7 @@ public final class Standings {
 
     public Element resultsCategoryDOM(List<Category> inCategories) {
         return inCategories.stream().map(category -> new Element("category")
+                .setAttribute("chart", category.chartName(winners.get(category)))
                 .addContent(new Element("name").addContent(category.name))
                 .addContent(category.nominees.stream().map(nominee -> new Element("nominee")
                         .addContent(nominee.name).setAttribute("status",
@@ -112,8 +113,7 @@ public final class Standings {
                 .filter(category -> !category.tieBreakerValue.isEmpty()).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
-                .addContent(new Element("rank")
-                        .addContent(String.valueOf(rank(inPlayers.get(playerNum)))))
+                .addContent(rankDOM(rank(inPlayers.get(playerNum))))
                 .addContent(new Element("bpr").addContent(
                         String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1)))
                 .addContent(new Element("wpr").addContent(
@@ -138,6 +138,11 @@ public final class Standings {
                                                 : "TBD"))
                         .reduce(new Element("opponents"), Element::addContent)))
                 .reduce(new Element("players"), Element::addContent);
+    }
+
+    private Element rankDOM(long inRank) {
+        return new Element("rank").setAttribute("chart", RankChart.name(inRank))
+                .addContent(String.valueOf(inRank));
     }
 
     /** Determine if the player and opponent will be tied at the end of the game */

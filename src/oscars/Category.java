@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -73,11 +74,9 @@ public final class Category {
         return INSTANCES.computeIfAbsent(inName, k -> new Category(inName, inNominees));
     }
 
-    public String chartName(Results inResults) {
-        return String.format("%s_%s.png", name,
-                nominees.stream()
-                        .map(nominee -> inResults.winners(this).contains(nominee.name) ? "1" : "0")
-                        .collect(Collectors.joining()));
+    public String chartName(Set<String> inWinners) {
+        return name + nominees.stream().map(nominee -> inWinners.contains(nominee.name) ? "1" : "0")
+                .collect(Collectors.joining()) + ".png";
     }
 
     public void writeChart(Results inResults) throws IOException {
@@ -98,7 +97,8 @@ public final class Category {
                         : winners.contains(nominee.name) ? BAR_GREEN : BAR_RED)
                 .toArray(Paint[]::new)));
 
-        ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults)), chart, 500, 300);
+        ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults.winners(this))), chart,
+                500, 300);
     }
 
     public Element toDOM(Collection<Player> inPlayers) {
