@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,11 +30,13 @@ public final class Category {
 
     private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)$");
 
-    public static final Category FIRST_NAME = new Category("First", null);
+    private static final Map<String, Category> INSTANCES = new HashMap<>();
 
-    public static final Category LAST_NAME = new Category("Last", null);
+    public static final Category FIRST_NAME = of("First", null);
 
-    public static final Category TIME = new Category("Time", null);
+    public static final Category LAST_NAME = of("Last", null);
+
+    public static final Category TIME = of("Time", null);
 
     public static final Paint BAR_GRAY = Color.GRAY;
 
@@ -67,17 +71,14 @@ public final class Category {
     }
 
     public static Category of(String inName, Stream<Nominee> inNominees) {
-        return Stream.of(FIRST_NAME, LAST_NAME, TIME)
-                .filter(category -> category.name.equals(inName)).findAny()
-                .orElseGet(() -> new Category(inName, inNominees));
+        return INSTANCES.computeIfAbsent(inName, k -> new Category(inName, inNominees));
     }
 
     public String chartName(Results inResults) {
-        return name + "_"
-                + nominees.stream()
+        return String.format("%s_%s.png", name,
+                nominees.stream()
                         .map(nominee -> inResults.winners(this).contains(nominee.name) ? "1" : "0")
-                        .collect(Collectors.joining())
-                + ".png";
+                        .collect(Collectors.joining()));
     }
 
     public void writeChart(Results inResults) throws IOException {

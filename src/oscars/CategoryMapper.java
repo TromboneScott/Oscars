@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -134,8 +135,10 @@ public final class CategoryMapper {
         return IntStream.range(0, categoryValues.get(0).length).mapToObj(categoryNum -> Category.of(
                 categoryValues.get(0)[categoryNum],
                 inCategoryNominees.get(categoryNum).stream().map(nominee -> new Nominee(nominee,
-                        categoryMaps.get(categoryValues.get(0)[categoryNum]).computeIfAbsent(
-                                nominee, k -> "(not guessed so description unavailable)"),
+                        categoryMaps.get(categoryValues.get(0)[categoryNum]).entrySet().stream()
+                                .filter(entry -> nominee.equals(entry.getValue())).map(
+                                        Entry::getKey)
+                                .findAny().orElse("(not guessed so description unavailable)"),
                         ballots.stream()
                                 .map(ballot -> categoryMaps.get(categoryValues.get(0)[categoryNum])
                                         .get(ballot.get(categoryNum)))
