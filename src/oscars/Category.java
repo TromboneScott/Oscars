@@ -32,11 +32,11 @@ public final class Category {
 
     private static final Map<String, Category> INSTANCES = new HashMap<>();
 
-    public static final Category FIRST_NAME = of("First", null);
+    public static final Category FIRST_NAME = of("First", Stream.empty());
 
-    public static final Category LAST_NAME = of("Last", null);
+    public static final Category LAST_NAME = of("Last", Stream.empty());
 
-    public static final Category TIME = of("Time", null);
+    public static final Category TIME = of("Time", Stream.empty());
 
     public static final Paint BAR_GRAY = Color.GRAY;
 
@@ -64,9 +64,8 @@ public final class Category {
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        nominees = inNominees == null ? null
-                : Collections.unmodifiableList(inNominees
-                        .sorted(Comparator.comparing(nominee -> nominee.name.toUpperCase()))
+        nominees = Collections.unmodifiableList(
+                inNominees.sorted(Comparator.comparing(nominee -> nominee.name.toUpperCase()))
                         .collect(Collectors.toList()));
     }
 

@@ -59,7 +59,7 @@ public final class CategoryMapper {
     }
 
     public List<Category> getCategories() {
-        return Arrays.stream(categoryArray).skip(1).filter(category -> category.nominees != null)
+        return Arrays.stream(categoryArray).skip(1).filter(category -> !category.nominees.isEmpty())
                 .collect(Collectors.toList());
     }
 
