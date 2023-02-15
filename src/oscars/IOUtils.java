@@ -22,7 +22,7 @@ import org.jdom2.ProcessingInstruction;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-public final class IOUtils {
+public abstract class IOUtils {
     public static final BufferedReader STDIN = new BufferedReader(new InputStreamReader(System.in));
 
     public static void mkdir(String inDirectory) {

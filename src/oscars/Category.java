@@ -1,8 +1,5 @@
 package oscars;
 
-/** Category information - Immutable */
-import java.awt.Color;
-import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -26,6 +23,7 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+/** Category information - Immutable */
 public final class Category {
     public static final String DIRECTORY = "category/";
 
@@ -38,14 +36,6 @@ public final class Category {
     public static final Category LAST_NAME = of("Last", Stream.empty());
 
     public static final Category TIME = of("Time", Stream.empty());
-
-    public static final Paint BAR_GRAY = Color.GRAY;
-
-    public static final Paint BAR_GREEN = Color.getColor("", 0x28A428);
-
-    private static final Paint BAR_RED = Color.getColor("", 0xCC0000);
-
-    private static final Paint BACKGROUND_COLOR = Color.getColor("", 0xB0C4DE);
 
     /** Category name */
     public final String name;
@@ -92,10 +82,10 @@ public final class Category {
         plot.getRangeAxis().setRange(0,
                 nominees.stream().mapToLong(nominee -> nominee.count).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-        plot.setBackgroundPaint(BACKGROUND_COLOR);
-        plot.setRenderer(
-                new NomineeRenderer(nominees.stream().map(nominee -> winners.isEmpty() ? BAR_GRAY
-                        : winners.contains(nominee.name) ? BAR_GREEN : BAR_RED)));
+        plot.setBackgroundPaint(ChartColor.BACKGROUND);
+        plot.setRenderer(new NomineeRenderer(
+                nominees.stream().map(nominee -> winners.isEmpty() ? ChartColor.GRAY
+                        : winners.contains(nominee.name) ? ChartColor.GREEN : ChartColor.RED)));
 
         ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(winners)), chart, 500, 300);
     }
