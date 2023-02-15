@@ -10,16 +10,16 @@ import java.util.stream.Stream;
 import org.jdom2.Element;
 
 /**
- * This program will allow Oscars winners to be selected and a new results file will be generated.
- * The Oscars picks for each player are in a comma delimited file which won't change during the
- * contest. A separate file indicates the column names of that file and all nominees for each
- * category the way they should be displayed on the web site. The column name can include a tie
- * breaker number inside parentheses like this: Director(1) to indicate that Director is the first
- * tie breaker. The contestants' names must be in the columns named "First" and "Last" and their
- * time estimate must be in the column named "Time" in the format "H:MM" or "H:MM:SS.D".
+ * This program will allow Oscars winners to be entered and it will update the results on the web
+ * site. Ballots with each player's guesses are downloaded from the web. A comma delimited file
+ * indicates the categories on the ballot and all nominees for each category as they should be
+ * displayed on the web site. The column name can include a tie breaker number inside parentheses
+ * like this: Director(1) to indicate that Director is the first tie breaker. The players' names
+ * must be in the columns named "First" and "Last" and their time estimate must be in the column
+ * named "Time" in the format "H:MM" or "H:MM:SS.D".
  *
  * @author Scott McDonald
- * @version 4.5
+ * @version 5.0
  */
 public class Oscars implements Runnable {
     private final List<Player> players;
@@ -109,7 +109,7 @@ public class Oscars implements Runnable {
             do {
                 writeResults();
                 Thread.sleep(waitTime(TimeUnit.MINUTES.toMillis(1)));
-            } while (!standings.showEnded());
+            } while (results.elapsedTimeMillis() > 0 && !standings.showEnded());
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
