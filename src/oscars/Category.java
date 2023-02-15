@@ -80,7 +80,8 @@ public final class Category {
     }
 
     public void writeChart(Results inResults) throws IOException {
-        Collection<String> winners = inResults.winners(this);
+        Set<String> winners = inResults.winners(this);
+
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.addValue(nominee.count, "nominee", nominee.name));
 
@@ -92,13 +93,11 @@ public final class Category {
                 nominees.stream().mapToLong(nominee -> nominee.count).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND_COLOR);
-        plot.setRenderer(new NomineeRenderer(nominees.stream()
-                .map(nominee -> winners.isEmpty() ? BAR_GRAY
-                        : winners.contains(nominee.name) ? BAR_GREEN : BAR_RED)
-                .toArray(Paint[]::new)));
+        plot.setRenderer(
+                new NomineeRenderer(nominees.stream().map(nominee -> winners.isEmpty() ? BAR_GRAY
+                        : winners.contains(nominee.name) ? BAR_GREEN : BAR_RED)));
 
-        ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(inResults.winners(this))), chart,
-                500, 300);
+        ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(winners)), chart, 500, 300);
     }
 
     public Element toDOM(Collection<Player> inPlayers) {

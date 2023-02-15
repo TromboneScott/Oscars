@@ -1,6 +1,7 @@
 package oscars;
 
 import java.awt.Paint;
+import java.util.stream.Stream;
 
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -10,9 +11,9 @@ import org.jfree.chart.renderer.category.BarRenderer;
 public class NomineeRenderer extends BarRenderer {
     private final Paint[] nomineeColors;
 
-    public NomineeRenderer(Paint[] inNomineeColors) {
+    public NomineeRenderer(Stream<Paint> inNomineeColors) {
         super();
-        nomineeColors = inNomineeColors.clone();
+        nomineeColors = inNomineeColors.toArray(Paint[]::new);
         setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         setDefaultItemLabelsVisible(true);
     }
