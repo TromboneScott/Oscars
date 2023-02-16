@@ -10,14 +10,11 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public abstract class RankChart {
-    public static final String DIRECTORY = "rank/";
-
     public static String name(long inRank) {
         return "rank_" + inRank + ".png";
     }
 
     public static void writeAll(int inTotal) throws IOException {
-        IOUtils.mkdir(DIRECTORY);
         for (int rank = 1; rank <= inTotal; rank++) {
             DefaultCategoryDataset data = new DefaultCategoryDataset();
             data.addValue(rank, "A", "");
@@ -32,7 +29,8 @@ public abstract class RankChart {
             plot.getRenderer().setSeriesPaint(0, ChartColor.GRAY);
             plot.getRenderer().setSeriesPaint(1, ChartColor.GREEN);
 
-            ChartUtils.saveChartAsPNG(new File(DIRECTORY + name(rank)), chart, 80, 180);
+            ChartUtils.saveChartAsPNG(new File(Directory.RANK, name(rank)), chart, 80, 180);
         }
+        Directory.RANK.cleanUp();
     }
 }

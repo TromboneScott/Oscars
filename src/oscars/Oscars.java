@@ -45,29 +45,25 @@ public class Oscars implements Runnable {
     }
 
     private Oscars() throws Exception {
-        System.out.print("Step 1 of 6: Deleting any old data... ");
-        IOUtils.deleteOldData();
-        System.out.println("DONE");
-
-        System.out.print("Step 2 of 6: Downloading ballots... ");
+        System.out.print("Step 1 of 5: Downloading ballots... ");
         Stream<Ballot> ballots = Ballot.stream();
         System.out.println("DONE");
 
-        System.out.print("Step 3 of 6: Mapping the category data... ");
+        System.out.print("Step 2 of 5: Mapping the category data... ");
         CategoryMapper categoryMapper = new CategoryMapper(ballots);
         players = Collections.unmodifiableList(categoryMapper.getPlayers());
         categories = Collections.unmodifiableList(categoryMapper.getCategories());
         System.out.println("DONE");
 
-        System.out.print("Step 4 of 6: Reading any existing results... ");
+        System.out.print("Step 3 of 5: Reading any existing results... ");
         results = new Results(categories);
         System.out.println("DONE");
 
-        System.out.print("Step 5 of 6: Writing rank images... ");
+        System.out.print("Step 4 of 5: Writing rank images... ");
         RankChart.writeAll(players.size());
         System.out.println("DONE");
 
-        System.out.print("Step 6 of 6: Writing web pages... ");
+        System.out.print("Step 5 of 5: Writing web pages... ");
         writeCategoryPages();
         writePlayerPages();
         System.out.println("DONE");
@@ -80,9 +76,9 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        IOUtils.cleanUpCharts(Category.DIRECTORY,
+        Directory.CATEGORY.cleanUpCharts(
                 categories.stream().map(category -> category.chartName(results.winners(category))));
-        IOUtils.cleanUpCharts(RankChart.DIRECTORY,
+        Directory.RANK.cleanUpCharts(
                 players.stream().mapToLong(standings::rank).mapToObj(RankChart::name));
         System.out.println("DONE");
     }
@@ -139,23 +135,22 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        IOUtils.mkdir(Category.DIRECTORY);
-        IOUtils.writeDocument(
+        Directory.CATEGORY.writeDocument(
                 categories.stream().map(category -> category.toDOM(players))
                         .reduce(new Element("categories"), Element::addContent),
-                Category.DIRECTORY + "all.xml", "../xsl/categoryGraphs.xsl");
+                "all.xml", "categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results);
-            IOUtils.writeDocument(new Element("category").addContent(category.name),
-                    Category.DIRECTORY + category.name + ".xml", "../xsl/category.xsl");
+            Directory.CATEGORY.writeDocument(new Element("category").addContent(category.name),
+                    category.name + ".xml", "category.xsl");
         }
+        Directory.CATEGORY.cleanUp();
     }
 
     private void writePlayerPages() throws IOException {
-        IOUtils.mkdir(Player.DIRECTORY);
         for (Player player : players)
-            IOUtils.writeDocument(player.toDOM(),
-                    Player.DIRECTORY + (player.firstName + " " + player.lastName).trim() + ".xml",
-                    "../xsl/player.xsl");
+            Directory.PLAYER.writeDocument(player.toDOM(),
+                    (player.firstName + " " + player.lastName).trim() + ".xml", "player.xsl");
+        Directory.PLAYER.cleanUp();
     }
 }

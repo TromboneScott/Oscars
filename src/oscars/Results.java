@@ -1,7 +1,9 @@
 package oscars;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,6 +26,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Results {
+    public static final BufferedReader STDIN = new BufferedReader(new InputStreamReader(System.in));
+
     private static final String RESULTS_FILE = "results.xml";
 
     private static final String WINNER_DELIMITER = ",";
@@ -71,7 +75,7 @@ public class Results {
                             : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
-        String selectedResult = IOUtils.STDIN.readLine();
+        String selectedResult = STDIN.readLine();
         if ("exit".equalsIgnoreCase(selectedResult))
             return false;
         try {
@@ -105,7 +109,7 @@ public class Results {
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
-        String input = IOUtils.STDIN.readLine();
+        String input = STDIN.readLine();
         try {
             winners.put(inCategory,
                     Collections.unmodifiableSet(
@@ -125,7 +129,7 @@ public class Results {
         System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
                 "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
-        String enteredTime = IOUtils.STDIN.readLine();
+        String enteredTime = STDIN.readLine();
         if (enteredTime.isEmpty())
             showTimes.remove(inShowTimeType);
         else if ("*".equals(enteredTime))
@@ -169,7 +173,7 @@ public class Results {
     }
 
     public static void write(LocalDateTime inUpdated, Content... inContent) throws IOException {
-        IOUtils.writeDocument(new Element("results")
+        Directory.CURRENT.writeDocument(new Element("results")
                 .addContent(new Element("year").addContent(YEAR))
                 .addContent(
                         new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())

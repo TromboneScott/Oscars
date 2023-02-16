@@ -109,7 +109,7 @@ public final class CategoryMapper {
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");
-        return inNominees.get(Integer.parseInt(IOUtils.STDIN.readLine()) - 1);
+        return inNominees.get(Integer.parseInt(Results.STDIN.readLine()) - 1);
     }
 
     private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {
@@ -147,7 +147,7 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        IOUtils.writeDocument(categoryMaps.keySet().stream()
+        Directory.CURRENT.writeDocument(categoryMaps.keySet().stream()
                 .map(category -> categoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map")
                                 .addContent(new Element("key").addContent(map.getKey()))

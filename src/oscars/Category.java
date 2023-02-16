@@ -25,8 +25,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
 public final class Category {
-    public static final String DIRECTORY = "category/";
-
     private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)$");
 
     private static final Map<String, Category> INSTANCES = new HashMap<>();
@@ -87,7 +85,8 @@ public final class Category {
                 nominees.stream().map(nominee -> winners.isEmpty() ? ChartColor.GRAY
                         : winners.contains(nominee.name) ? ChartColor.GREEN : ChartColor.RED)));
 
-        ChartUtils.saveChartAsPNG(new File(DIRECTORY + chartName(winners)), chart, 500, 300);
+        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(winners)), chart, 500,
+                300);
     }
 
     public Element toDOM(Collection<Player> inPlayers) {

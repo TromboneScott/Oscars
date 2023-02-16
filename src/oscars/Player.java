@@ -10,8 +10,6 @@ import org.jdom2.Element;
 
 /** Player information - Immutable */
 public final class Player {
-    public static final String DIRECTORY = "player/";
-
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm:ss");
 
     /** Player's first name */
