@@ -1,7 +1,7 @@
 package oscars;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +32,7 @@ public class Oscars implements Runnable {
 
     private long validTimes = 0;
 
-    private LocalDateTime updated;
+    private ZonedDateTime updated;
 
     /**
      * Prompt for Oscars results, store them and create output files
@@ -84,7 +84,7 @@ public class Oscars implements Runnable {
     }
 
     private boolean prompt() throws Exception {
-        updated = LocalDateTime.now();
+        updated = ZonedDateTime.now();
         Thread thread = new Thread(this);
         try {
             thread.start();
@@ -128,7 +128,7 @@ public class Oscars implements Runnable {
         long currentTimes = players.stream().filter(player -> player.time <= standings.elapsedTime)
                 .count();
         if (validTimes != currentTimes)
-            updated = LocalDateTime.now();
+            updated = ZonedDateTime.now();
         validTimes = currentTimes;
         Results.write(updated, standings.resultsCategoryDOM(categories),
                 standings.resultsPlayerDOM(players), standings.resultsShowTimeDOM());

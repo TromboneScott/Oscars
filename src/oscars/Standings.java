@@ -1,8 +1,8 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collection;
@@ -183,13 +183,13 @@ public final class Standings {
                                         .map(Element::getText).collect(Collectors.toSet()))));
     }
 
-    public static Map<ShowTimeType, LocalDateTime> showTimes(Element inResultsDOM) {
+    public static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {
         return Stream.of(ShowTimeType.values())
                 .map(showTimeType -> new SimpleEntry<>(showTimeType,
                         Optional.ofNullable(inResultsDOM.getChild("showTime")).map(
                                 element -> element.getChildText(showTimeType.name().toLowerCase()))
                                 .orElse("")))
                 .filter(entry -> !entry.getValue().isEmpty()).collect(Collectors.toMap(
-                        entry -> entry.getKey(), entry -> LocalDateTime.parse(entry.getValue())));
+                        entry -> entry.getKey(), entry -> ZonedDateTime.parse(entry.getValue())));
     }
 }

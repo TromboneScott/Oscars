@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ public class Results {
 
     private final Map<Category, Set<String>> winners;
 
-    private final Map<ShowTimeType, LocalDateTime> showTimes;
+    private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     public Results(Collection<Category> inCategories) throws IOException {
         File resultsFile = new File(RESULTS_FILE);
@@ -133,10 +135,11 @@ public class Results {
         if (enteredTime.isEmpty())
             showTimes.remove(inShowTimeType);
         else if ("*".equals(enteredTime))
-            showTimes.put(inShowTimeType, LocalDateTime.now());
+            showTimes.put(inShowTimeType, ZonedDateTime.now());
         else
             try {
-                showTimes.put(inShowTimeType, LocalDateTime.parse(enteredTime));
+                showTimes.put(inShowTimeType,
+                        LocalDateTime.parse(enteredTime).atZone(ZoneId.systemDefault()));
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid time: " + enteredTime);
             }
@@ -156,9 +159,8 @@ public class Results {
     }
 
     private Long getMillis(ShowTimeType inShowTimeType) {
-        return Optional.ofNullable(showTimes.get(inShowTimeType))
-                .map(showTime -> showTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
-                .orElseGet(System::currentTimeMillis);
+        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(ZonedDateTime::toInstant)
+                .orElseGet(Instant::now).toEpochMilli();
     }
 
     /**
@@ -172,12 +174,11 @@ public class Results {
         return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 
-    public static void write(LocalDateTime inUpdated, Content... inContent) throws IOException {
+    public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
         Directory.CURRENT.writeDocument(new Element("results")
                 .addContent(new Element("year").addContent(YEAR))
-                .addContent(
-                        new Element("updated").addContent(inUpdated.atZone(ZoneId.systemDefault())
-                                .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))
+                .addContent(new Element("updated").addContent(
+                        inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))
                 .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 }

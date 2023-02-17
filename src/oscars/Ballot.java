@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
@@ -62,7 +63,7 @@ public final class Ballot {
             LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                     .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
             if (inLastTimestamp == null || inLastTimestamp.isBefore(maxTimestamp)) {
-                Results.write(LocalDateTime.now(), ballots.stream().map(Ballot::toDOM)
+                Results.write(ZonedDateTime.now(), ballots.stream().map(Ballot::toDOM)
                         .reduce(new Element("ballots"), Element::addContent));
                 System.err.println(LocalDateTime.now() + " - Wrote " + ballots.size() + " ballots");
                 return maxTimestamp;

@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Set;
@@ -66,11 +65,10 @@ public class Directory extends File {
     }
 
     /** Delete any charts except the ones we want to keep */
-    public void cleanUpCharts(Stream<String> inChartsToKeep) throws IOException {
+    public void cleanUpCharts(Stream<String> inChartsToKeep) {
         Set<String> chartsToKeep = inChartsToKeep.collect(Collectors.toSet());
-        Files.list(toPath())
-                .filter(file -> file.toString().endsWith(".png")
-                        && !chartsToKeep.contains(file.getFileName().toString()))
-                .map(Path::toFile).forEach(File::delete);
+        for (File file : listFiles())
+            if (file.getName().endsWith(".png") && !chartsToKeep.contains(file.getName()))
+                file.delete();
     }
 }
