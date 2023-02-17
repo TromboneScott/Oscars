@@ -114,10 +114,9 @@ public class Oscars implements Runnable {
     }
 
     private long waitTime(long inMaxWait) {
-        long nextPlayerTime = TimeUnit.SECONDS
-                .toMillis(players.stream().mapToLong(player -> player.time)
-                        .filter(playerTime -> playerTime > standings.elapsedTime).min()
-                        .orElseGet(() -> TimeUnit.MILLISECONDS.toSeconds(Long.MAX_VALUE)));
+        long nextPlayerTime = players.stream().mapToLong(player -> player.time)
+                .filter(playerTime -> playerTime > standings.elapsedTime)
+                .map(TimeUnit.SECONDS::toMillis).min().orElse(Long.MAX_VALUE);
         long elapsedTimeMillis = results.elapsedTimeMillis();
         return Math.min(Math.max(nextPlayerTime - elapsedTimeMillis, 0),
                 inMaxWait - elapsedTimeMillis % inMaxWait);

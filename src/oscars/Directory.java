@@ -64,7 +64,7 @@ public class Directory extends File {
                 file.delete();
     }
 
-    /** Delete any charts except the ones we want to keep */
+    /** Delete all charts we don't want to keep */
     public void cleanUpCharts(Stream<String> inChartsToKeep) {
         Set<String> chartsToKeep = inChartsToKeep.collect(Collectors.toSet());
         for (File file : listFiles())
