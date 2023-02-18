@@ -47,16 +47,15 @@ public class Directory extends File {
             xmlDocument.addContent(new ProcessingInstruction("xml-stylesheet", Stream.of(
                     new String[][] { { "type", "text/xsl" }, { "href", "../xsl/" + inXSLFile } })
                     .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
+        xmlDocument.addContent(new Comment("OSCARS website created by Scott McDonald"))
+                .addContent(inElement);
         try (Writer writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(this + "/" + inXMLFile), "UTF-8"))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(
-                    xmlDocument.addContent(new Comment("OSCARS website created by Scott McDonald"))
-                            .addContent(inElement),
-                    writer);
+            new XMLOutputter(Format.getPrettyFormat()).output(xmlDocument, writer);
         }
     }
 
-    /** Delete any files in this directory that haven't been modified since the program started */
+    /** Delete all files in this directory that haven't been modified since the program started */
     public void cleanUp() throws IOException {
         for (File file : listFiles())
             if (Files.readAttributes(file.toPath(), BasicFileAttributes.class).lastModifiedTime()
@@ -64,7 +63,7 @@ public class Directory extends File {
                 file.delete();
     }
 
-    /** Delete all charts we don't want to keep */
+    /** Delete all charts in this directory that we don't want to keep */
     public void cleanUpCharts(Stream<String> inChartsToKeep) {
         Set<String> chartsToKeep = inChartsToKeep.collect(Collectors.toSet());
         for (File file : listFiles())
