@@ -175,7 +175,7 @@ public class Results {
     }
 
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        Directory.CURRENT.writeDocument(new Element("results")
+        Directory.CURRENT.write(new Element("results")
                 .addContent(new Element("year").addContent(YEAR))
                 .addContent(new Element("updated").addContent(
                         inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))

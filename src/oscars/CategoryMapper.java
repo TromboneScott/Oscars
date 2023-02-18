@@ -147,7 +147,7 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.writeDocument(categoryMaps.keySet().stream()
+        Directory.CURRENT.write(categoryMaps.keySet().stream()
                 .map(category -> categoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map")
                                 .addContent(new Element("key").addContent(map.getKey()))

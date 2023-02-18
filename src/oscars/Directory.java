@@ -40,18 +40,17 @@ public class Directory extends File {
     }
 
     /** Write the Element to an XML file in this directory */
-    public void writeDocument(Element inElement, String inXMLFile, String inXSLFile)
-            throws IOException {
-        Document xmlDocument = new Document();
+    public void write(Element inElement, String inXMLFile, String inXSLFile) throws IOException {
+        Document document = new Document();
         if (inXSLFile != null)
-            xmlDocument.addContent(new ProcessingInstruction("xml-stylesheet", Stream.of(
+            document.addContent(new ProcessingInstruction("xml-stylesheet", Stream.of(
                     new String[][] { { "type", "text/xsl" }, { "href", "../xsl/" + inXSLFile } })
                     .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
-        xmlDocument.addContent(new Comment("OSCARS website created by Scott McDonald"))
-                .addContent(inElement);
+        document.addContent(new Comment("OSCARS website created by Scott McDonald"));
         try (Writer writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(this + "/" + inXMLFile), "UTF-8"))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(xmlDocument, writer);
+            new XMLOutputter(Format.getPrettyFormat()).output(document.addContent(inElement),
+                    writer);
         }
     }
 

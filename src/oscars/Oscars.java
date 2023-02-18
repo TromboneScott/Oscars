@@ -134,13 +134,13 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        Directory.CATEGORY.writeDocument(
+        Directory.CATEGORY.write(
                 categories.stream().map(category -> category.toDOM(players))
                         .reduce(new Element("categories"), Element::addContent),
                 "all.xml", "categoryGraphs.xsl");
         for (Category category : categories) {
             category.writeChart(results);
-            Directory.CATEGORY.writeDocument(new Element("category").addContent(category.name),
+            Directory.CATEGORY.write(new Element("category").addContent(category.name),
                     category.name + ".xml", "category.xsl");
         }
         Directory.CATEGORY.cleanUp();
@@ -148,7 +148,7 @@ public class Oscars implements Runnable {
 
     private void writePlayerPages() throws IOException {
         for (Player player : players)
-            Directory.PLAYER.writeDocument(player.toDOM(),
+            Directory.PLAYER.write(player.toDOM(),
                     (player.firstName + " " + player.lastName).trim() + ".xml", "player.xsl");
         Directory.PLAYER.cleanUp();
     }
