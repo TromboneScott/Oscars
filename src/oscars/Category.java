@@ -93,9 +93,12 @@ public final class Category {
                 300);
     }
 
+    public Element toDOM() {
+        return new Element("category").addContent(new Element("name").addContent(name));
+    }
+
     public Element toDOM(Collection<Player> inPlayers) {
-        return new Element("category").addContent(new Element("name").addContent(name))
-                .addContent(new Element("tieBreaker").addContent(tieBreakerValue))
+        return toDOM().addContent(new Element("tieBreaker").addContent(tieBreakerValue))
                 .addContent(new Element("value").addContent(value.toString()))
                 .addContent(inPlayers.stream()
                         .map(player -> player.toDOM().addContent(

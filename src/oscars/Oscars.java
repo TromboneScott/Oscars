@@ -134,15 +134,13 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        Directory.CATEGORY.write(
-                categories.stream().map(category -> category.toDOM(players))
-                        .reduce(new Element("categories"), Element::addContent),
-                "all.xml", "categoryGraphs.xsl");
+        Element all = new Element("categories");
         for (Category category : categories) {
             category.writeChart(results);
-            Directory.CATEGORY.write(new Element("category").addContent(category.name),
-                    category.webPage(), "category.xsl");
+            Directory.CATEGORY.write(category.toDOM(), category.webPage(), "category.xsl");
+            all.addContent(category.toDOM(players));
         }
+        Directory.CATEGORY.write(all, "all.xml", "categoryGraphs.xsl");
         Directory.CATEGORY.cleanUp();
     }
 
