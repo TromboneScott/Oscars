@@ -121,8 +121,8 @@ public final class CategoryMapper {
                         .collect(Collectors.toMap(categoryDOM -> categoryDOM.getChildText("name"),
                                 categoryDOM -> categoryDOM.getChildren("map").stream()
                                         .collect(Collectors.toMap(
-                                                mapDOM -> mapDOM.getChildText("key"),
-                                                mapDOM -> mapDOM.getChildText("value")))));
+                                                mapDOM -> mapDOM.getChildText("ballot"),
+                                                mapDOM -> mapDOM.getChildText("website")))));
             } catch (JDOMException e) {
                 throw new IOException(
                         "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
@@ -150,8 +150,8 @@ public final class CategoryMapper {
         Directory.CURRENT.write(categoryMaps.keySet().stream()
                 .map(category -> categoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map")
-                                .addContent(new Element("key").addContent(map.getKey()))
-                                .addContent(new Element("value").addContent(map.getValue())))
+                                .addContent(new Element("ballot").addContent(map.getKey()))
+                                .addContent(new Element("website").addContent(map.getValue())))
                         .reduce(new Element("category").addContent(
                                 new Element("name").addContent(category)), Element::addContent))
                 .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
