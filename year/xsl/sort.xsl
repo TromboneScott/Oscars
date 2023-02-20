@@ -399,14 +399,6 @@
     <xsl:param name="inProgress" />
     <xsl:variable name="id" select="@id" />
     <tr>
-      <xsl:variable name="playerName">
-        <xsl:value-of select="firstName" />
-        <xsl:if test="firstName != '' and lastName != ''">
-          <xsl:value-of select="' '" />
-        </xsl:if>
-        <xsl:value-of select="lastName" />
-      </xsl:variable>
-      <xsl:variable name="playerFile" select="concat('../player/', $playerName, '.xml')" />
       <td>
         <xsl:attribute name="class">
           header
@@ -423,7 +415,7 @@
         </xsl:attribute>
         <a>
           <xsl:attribute name="href">
-            <xsl:value-of select="$playerFile" />
+            <xsl:value-of select="concat('../player/', @webPage)" />
           </xsl:attribute>
           <xsl:value-of select="lastName" />
           <xsl:if test="firstName != '' and lastName != ''">

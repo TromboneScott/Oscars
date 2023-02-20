@@ -97,6 +97,7 @@ public final class Standings {
 
     public Element resultsCategoryDOM(List<Category> inCategories) {
         return inCategories.stream().map(category -> new Element("category")
+                .setAttribute("webPage", category.webPage())
                 .setAttribute("chart", category.chartName(winners.get(category)))
                 .addContent(new Element("name").addContent(category.name))
                 .addContent(category.nominees.stream().map(nominee -> new Element("nominee")

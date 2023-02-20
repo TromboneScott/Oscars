@@ -62,6 +62,10 @@ public final class Category {
         return INSTANCES.computeIfAbsent(inName, k -> new Category(inName, inNominees));
     }
 
+    public String webPage() {
+        return name + ".xml";
+    }
+
     public String chartName(Set<String> inWinners) {
         return name + nominees.stream().map(nominee -> inWinners.contains(nominee.name) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";

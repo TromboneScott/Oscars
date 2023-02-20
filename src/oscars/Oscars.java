@@ -141,15 +141,14 @@ public class Oscars implements Runnable {
         for (Category category : categories) {
             category.writeChart(results);
             Directory.CATEGORY.write(new Element("category").addContent(category.name),
-                    category.name + ".xml", "category.xsl");
+                    category.webPage(), "category.xsl");
         }
         Directory.CATEGORY.cleanUp();
     }
 
     private void writePlayerPages() throws IOException {
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(),
-                    (player.firstName + " " + player.lastName).trim() + ".xml", "player.xsl");
+            Directory.PLAYER.write(player.toDOM(), player.webPage(), "player.xsl");
         Directory.PLAYER.cleanUp();
     }
 }

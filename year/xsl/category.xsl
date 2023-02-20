@@ -61,14 +61,6 @@
                 <xsl:sort select="lastName" />
                 <xsl:sort select="firstName" />
                 <xsl:variable name="guess" select="guess" />
-                <xsl:variable name="playerName">
-                  <xsl:value-of select="firstName" />
-                  <xsl:if test="firstName != '' and lastName != ''">
-                    <xsl:value-of select="' '" />
-                  </xsl:if>
-                  <xsl:value-of select="lastName" />
-                </xsl:variable>
-                <xsl:variable name="playerFile" select="concat('../player/', $playerName, '.xml')" />
                 <xsl:variable name="playerDisplayName">
                   <xsl:value-of select="lastName" />
                   <xsl:if test="firstName != '' and lastName != ''">
@@ -83,7 +75,7 @@
                   <td class="header">
                     <a>
                       <xsl:attribute name="href">
-                        <xsl:value-of select="$playerFile" />
+                        <xsl:value-of select="concat('../player/', @webPage)" />
                       </xsl:attribute>
                       <xsl:value-of select="$playerDisplayName" />
                     </a>

@@ -41,8 +41,13 @@ public final class Player {
         time = LocalTime.parse(inEntries.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
     }
 
+    public String webPage() {
+        return firstName + "_" + lastName + ".xml";
+    }
+
     public Element toDOM() {
-        return new Element("player").addContent(new Element("firstName").addContent(firstName))
+        return new Element("player").setAttribute("webPage", webPage())
+                .addContent(new Element("firstName").addContent(firstName))
                 .addContent(new Element("lastName").addContent(lastName));
     }
 }
