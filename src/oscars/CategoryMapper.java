@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import org.jdom2.input.SAXBuilder;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final String CATEGORIES_FILE = "categories.csv";
+    private static final String CATEGORY_VALUES_FILE = "categoryValues.csv";
 
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
 
@@ -64,7 +65,7 @@ public final class CategoryMapper {
     }
 
     private static List<String[]> readCategoryValues() throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(CATEGORIES_FILE),
+        try (Stream<String> stream = Files.lines(Paths.get(CATEGORY_VALUES_FILE),
                 StandardCharsets.ISO_8859_1)) {
             return stream.map(line -> Stream.of(line.split(VALUE_DELIMITER, -1))
                     .map(value -> value.replace(COMMA_REPLACEMENT, VALUE_DELIMITER))
@@ -148,8 +149,9 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.write(categoryMaps.keySet().stream()
+        Directory.CURRENT.write(Stream.of(categoryValues.get(0))
                 .map(category -> categoryMaps.get(category).entrySet().stream()
+                        .sorted(Comparator.comparing(Entry::getKey, String::compareToIgnoreCase))
                         .map(map -> new Element("map")
                                 .addContent(new Element("ballot").addContent(map.getKey()))
                                 .addContent(new Element("website").addContent(map.getValue())))
