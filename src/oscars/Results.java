@@ -1,9 +1,7 @@
 package oscars;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -18,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,7 +27,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Results {
-    public static final BufferedReader STDIN = new BufferedReader(new InputStreamReader(System.in));
+    public static final Scanner STDIN = new Scanner(System.in);
 
     private static final String RESULTS_FILE = "results.xml";
 
@@ -77,7 +76,7 @@ public class Results {
                             : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
-        String selectedResult = STDIN.readLine();
+        String selectedResult = STDIN.nextLine();
         if ("exit".equalsIgnoreCase(selectedResult))
             return false;
         try {
@@ -111,7 +110,7 @@ public class Results {
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
-        String input = STDIN.readLine();
+        String input = STDIN.nextLine();
         try {
             winners.put(inCategory,
                     Collections.unmodifiableSet(
@@ -131,7 +130,7 @@ public class Results {
         System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
                 "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
-        String enteredTime = STDIN.readLine();
+        String enteredTime = STDIN.nextLine();
         if (enteredTime.isEmpty())
             showTimes.remove(inShowTimeType);
         else if ("*".equals(enteredTime))

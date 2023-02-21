@@ -110,7 +110,7 @@ public final class CategoryMapper {
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");
-        return inNominees.get(Integer.parseInt(Results.STDIN.readLine()) - 1);
+        return inNominees.get(Integer.parseInt(Results.STDIN.nextLine()) - 1);
     }
 
     private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {
