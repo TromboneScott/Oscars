@@ -104,13 +104,18 @@ public final class CategoryMapper {
         return categoryMaps;
     }
 
-    private static String prompt(String inCategoryName, String inGuess, List<String> inNominees)
-            throws IOException {
+    private static String prompt(String inCategoryName, String inGuess, List<String> inNominees) {
         System.out.println("\nCATEGORY: " + inCategoryName);
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");
-        return inNominees.get(Integer.parseInt(Results.STDIN.nextLine()) - 1);
+        String input = Results.STDIN.nextLine();
+        try {
+            return inNominees.get(Integer.parseInt(input) - 1);
+        } catch (Exception e) {
+            System.out.println("\nInvalid Input: " + input);
+            return prompt(inCategoryName, inGuess, inNominees);
+        }
     }
 
     private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {

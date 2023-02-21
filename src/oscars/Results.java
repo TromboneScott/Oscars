@@ -76,11 +76,11 @@ public class Results {
                             : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
-        String selectedResult = STDIN.nextLine();
-        if ("exit".equalsIgnoreCase(selectedResult))
+        String input = STDIN.nextLine();
+        if ("exit".equalsIgnoreCase(input))
             return false;
         try {
-            int resultNum = Integer.parseInt(selectedResult) - 1;
+            int resultNum = Integer.parseInt(input) - 1;
             if (resultNum < 0 || resultNum >= inCategories.size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
             if (resultNum < inCategories.size())
@@ -88,7 +88,7 @@ public class Results {
             else
                 promptTime(ShowTimeType.values()[resultNum - inCategories.size()]);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid selection: " + selectedResult);
+            System.out.println("\nInvalid selection: " + input);
         }
         return true;
     }
@@ -122,25 +122,25 @@ public class Results {
                                     .collect(Collectors.toSet())));
             inCategory.writeChart(this);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid selection: " + input);
+            System.out.println("\nInvalid selection: " + input);
         }
     }
 
-    private void promptTime(ShowTimeType inShowTimeType) throws IOException {
+    private void promptTime(ShowTimeType inShowTimeType) {
         System.out.println("\n" + toString(inShowTimeType));
         System.out.println(
                 "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
-        String enteredTime = STDIN.nextLine();
-        if (enteredTime.isEmpty())
+        String input = STDIN.nextLine();
+        if (input.isEmpty())
             showTimes.remove(inShowTimeType);
-        else if ("*".equals(enteredTime))
+        else if ("*".equals(input))
             showTimes.put(inShowTimeType, ZonedDateTime.now());
         else
             try {
                 showTimes.put(inShowTimeType,
-                        LocalDateTime.parse(enteredTime).atZone(ZoneId.systemDefault()));
+                        LocalDateTime.parse(input).atZone(ZoneId.systemDefault()));
             } catch (DateTimeParseException e) {
-                System.out.println("Invalid time: " + enteredTime);
+                System.out.println("\nInvalid time: " + input);
             }
     }
 
