@@ -4,7 +4,7 @@
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
-      <meta http-equiv="cache-control" content="no-cache" />
+      <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
       <title>
