@@ -27,7 +27,7 @@
                       &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
                       <br />
                       <br />
-                      Ballots will appear here a few minutes after they're entered.
+                      Ballots will appear here a few minutes after they're submitted.
                       <br />
                       Details will be added after all ballots have been collected.
                       <br />
