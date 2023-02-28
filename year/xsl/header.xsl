@@ -98,4 +98,15 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
+  <xsl:template name="updated">
+    <xsl:param name="results" />
+    <table>
+      <tr>
+        <td id="rank">
+          Last updated:
+          <xsl:value-of select="$results/updated" />
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
 </xsl:stylesheet>

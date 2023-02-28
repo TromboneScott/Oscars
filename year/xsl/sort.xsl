@@ -138,10 +138,9 @@
           <a href="../../history">Oscars History</a>
           <br />
           <br />
-          <div id="date">
-            Last updated:
-            <xsl:value-of select="$results/updated" />
-          </div>
+          <xsl:call-template name="updated">
+            <xsl:with-param name="results" select="$results" />
+          </xsl:call-template>
         </center>
       </body>
     </html>
