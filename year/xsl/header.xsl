@@ -16,27 +16,31 @@
   <xsl:template name="header">
     <xsl:param name="results" />
     <a href="https://oscars.site44.com/{$results/year}" style="all: unset">
-      <table id="header">
+      <table id="header" style="color:PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%;">
         <tr>
-          <td rowspan="2">
-            <img src="../../trophy.png" id="trophy" />
+          <td rowspan="3" />
+          <td rowspan="3">
+            <img src="../../trophy1.png" id="trophy" />
           </td>
-          <th>
+          <td>
+            <br />
+          </td>
+          <td rowspan="3">
+            <img src="../../trophy1.png" id="trophy" />
+          </td>
+          <td rowspan="3" />
+        </tr>
+        <tr>
+          <th style="background-color: transparent">
             <xsl:value-of select="$results/year" />
             OSCARS
           </th>
-          <td rowspan="2">
-            <img src="../../trophy.png" id="trophy" />
-          </td>
         </tr>
         <tr>
           <td>
             <i>(Unofficial Results)</i>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3">
-            <hr color="black" />
+            <br />
+            <br />
           </td>
         </tr>
       </table>
