@@ -32,7 +32,7 @@
                 Out of
                 <xsl:value-of select="count($results/players/player)" />
               </td>
-              <td>
+              <td class="header">
                 <img>
                   <xsl:attribute name="src">
                     <xsl:value-of select="concat('../rank/', $playerResults/rank/@chart)" />

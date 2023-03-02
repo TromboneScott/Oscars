@@ -11,6 +11,7 @@
         <xsl:value-of select="$results/year" />
         OSCARS
       </title>
+      <style>body {background-color: PaleGoldenrod}</style>
     </head>
   </xsl:template>
   <xsl:template name="header">
@@ -20,13 +21,13 @@
         <tr>
           <td rowspan="3" />
           <td rowspan="3">
-            <img src="../../trophy1.png" id="trophy" />
+            <img src="http://oscars.site44.com/trophy1.png" id="trophy" />
           </td>
           <td>
             <br />
           </td>
           <td rowspan="3">
-            <img src="../../trophy1.png" id="trophy" />
+            <img src="http://oscars.site44.com/trophy1.png" id="trophy" />
           </td>
           <td rowspan="3" />
         </tr>
