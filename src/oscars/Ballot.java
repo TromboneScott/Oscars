@@ -86,7 +86,7 @@ public final class Ballot {
     }
 
     private String getName() {
-        return values[2] + ", " + values[1];
+        return values[2].trim() + ", " + values[1].trim();
     }
 
     private String getEmail() {
