@@ -7,15 +7,12 @@
 
 2. Add bpr results
   a. Update results.xml for each player to add ranks of other players when this player's guesses are correct for all remaining categories.
-  b. Update writing of category charts at start-up to write out correct charts for each nominee (for categories not yet announced).
   c. Create directory for each player in the players directory
-    i. Create page.xml in each player directory with same data as their current XML file
-    ii. Create index.html in player directory to redirect to page.xml
-    iii. Create bpr directory in each player directory
-    iv. Create page.xml in bpr directory with same info as page.xml above but with attribute of bpr
-    v. Create index.html in bpr directory to redirect to page.xml
-    vi. Create category directory in bpr directory
-    vii. Create all category.xml files with the same data but with bpr attribute
-  d. Update XSL files to look for bpr attribute to show results as if all of <player>'s guesses un unannounced categories are correct - but only if there are still unannounced categories.
+    i. Create data.xml (is there a better name?) in each player directory with same data as their current XML file
+    ii. Create index.html in player directory to redirect to data.xml
+    iii. Create bpr.xml file with same info as data.xml above but with sort.xsl as the stylesheet
+  d. Update sort.xsl to look for player if not all categories are announced and then show bpr results for that player 
     i. Add note about "Showing results as if all of <player>'s guesses turn out to be correct.
-    ii. Add link to player/<player>/bpr on <player>'s bpr value in sort.xml
+    ii. Add link to return to normal view
+    iii. Add link to player/<player>/bpr.xml on <player>'s bpr value
+    iv. Update links on all players to point to player/<player> (remove xml)
