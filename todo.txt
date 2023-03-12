@@ -1,5 +1,21 @@
-1. Add ability to check hypothetical winners
+1. Refactor Ballot.java
+  a. Rename to BallotReader.java
+  b. Read categoryValues.csv in constructor
+  c. Change stream() to map to UnmodifiableMap(Map<Category, String>)
+  d. Change CategoryMapper to use BallotReader
+  e. Change oscars.sh and oscars.bat to refer to BallotReader
 
-It may be possible to add check boxes for all categories so people can select hypothetical winners.  Then send that to an HTML file with JQuery and use JavaScript to predict the possible scores and rankings.
-
-https://stackoverflow.com/questions/22423011/pass-parameter-from-a-url-to-a-xsl-stylesheet
+2. Add bpr results
+  a. Update results.xml for each player to add ranks of other players when this player's guesses are correct for all remaining categories.
+  b. Update writing of category charts at start-up to write out correct charts for each nominee (for categories not yet announced).
+  c. Create directory for each player in the players directory
+    i. Create page.xml in each player directory with same data as their current XML file
+    ii. Create index.html in player directory to redirect to page.xml
+    iii. Create bpr directory in each player directory
+    iv. Create page.xml in bpr directory with same info as page.xml above but with attribute of bpr
+    v. Create index.html in bpr directory to redirect to page.xml
+    vi. Create category directory in bpr directory
+    vii. Create all category.xml files with the same data but with bpr attribute
+  d. Update XSL files to look for bpr attribute to show results as if all of <player>'s guesses un unannounced categories are correct - but only if there are still unannounced categories.
+    i. Add note about "Showing results as if all of <player>'s guesses turn out to be correct.
+    ii. Add link to player/<player>/bpr on <player>'s bpr value in sort.xml
