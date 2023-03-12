@@ -82,19 +82,19 @@ public final class Ballot {
     }
 
     public String get(int inColumn) {
-        return values[inColumn];
+        return values[inColumn].trim();
     }
 
     private String getName() {
-        return values[2].trim() + ", " + values[1].trim();
+        return get(2) + ", " + get(1);
     }
 
     private String getEmail() {
-        return values[values.length - 1];
+        return get(values.length - 1);
     }
 
     private LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(values[0], DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
+        return LocalDateTime.parse(get(0), DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     private Element toDOM() {

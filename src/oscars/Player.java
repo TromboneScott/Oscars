@@ -2,6 +2,7 @@ package oscars;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,13 +33,18 @@ public final class Player {
      */
     public Player(Map<Category, String> inEntries) {
         firstName = inEntries.get(Category.LAST_NAME).isEmpty() ? ""
-                : inEntries.get(Category.FIRST_NAME).trim();
-        lastName = (inEntries.get(Category.LAST_NAME).isEmpty() ? inEntries.get(Category.FIRST_NAME)
-                : inEntries.get(Category.LAST_NAME)).trim();
+                : inEntries.get(Category.FIRST_NAME);
+        lastName = inEntries.get(Category.LAST_NAME).isEmpty() ? inEntries.get(Category.FIRST_NAME)
+                : inEntries.get(Category.LAST_NAME);
         picks = Collections.unmodifiableMap(
                 inEntries.entrySet().stream().filter(entry -> !entry.getKey().nominees.isEmpty())
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        time = LocalTime.parse(inEntries.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
+        try {
+            time = LocalTime.parse(inEntries.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException(firstName + " " + lastName + " has invalid time guess: "
+                    + inEntries.get(Category.TIME), e);
+        }
     }
 
     public String webPage() {
