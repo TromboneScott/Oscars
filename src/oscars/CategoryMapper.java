@@ -144,8 +144,7 @@ public final class CategoryMapper {
         return IntStream.range(0, categoryValues.get(0).length).mapToObj(categoryNum -> Category.of(
                 categoryValues.get(0)[categoryNum],
                 inCategoryNominees.get(categoryNum).stream().map(nominee -> new Nominee(nominee,
-                        nomineeMaps.get(categoryValues.get(0)[categoryNum]).computeIfAbsent(nominee,
-                                k -> "(not guessed so description unavailable)"),
+                        nomineeMaps.get(categoryValues.get(0)[categoryNum]).get(nominee),
                         ballots.stream()
                                 .map(ballot -> categoryMaps.get(categoryValues.get(0)[categoryNum])
                                         .get(ballot.get(categoryNum)))

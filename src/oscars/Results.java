@@ -105,8 +105,7 @@ public class Results {
         System.out.println("\n" + toString(inCategory));
 
         for (int x = 0; x < inCategory.nominees.size(); x++)
-            System.out.println((x + 1) + ": " + inCategory.nominees.get(x).name + " -> "
-                    + inCategory.nominees.get(x).description);
+            System.out.println((x + 1) + ": " + inCategory.nominees.get(x).description);
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
