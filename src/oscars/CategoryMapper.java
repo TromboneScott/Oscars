@@ -76,8 +76,8 @@ public final class CategoryMapper {
     private List<List<String>> categoryNominees() {
         return IntStream.range(0, categoryValues.get(0).length)
                 .mapToObj(categoryNum -> categoryValues.stream().skip(1)
-                        .map(guesses -> guesses[categoryNum]).filter(guess -> !guess.isEmpty())
-                        .collect(Collectors.toList()))
+                        .map(guesses -> guesses[categoryNum].trim())
+                        .filter(guess -> !guess.isEmpty()).collect(Collectors.toList()))
                 .collect(Collectors.toList());
     }
 
