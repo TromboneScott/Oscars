@@ -29,7 +29,9 @@ import org.jdom2.Element;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderHeaderAware;
 
-public class BallotReader {
+/** Reader for ballots and the ballot definition - Immutable */
+public final class BallotReader {
+    /** Provides the latest ballot for each player */
     public static final Collector<Map<String, String>, ?, Collection<Map<String, String>>> LATEST = Collectors
             .collectingAndThen(
                     Collectors.toMap(ballot -> getName(ballot), ballot -> ballot,
@@ -45,8 +47,10 @@ public class BallotReader {
 
     private static final String COMMA_REPLACEMENT = "`";
 
+    /** An ordered Map that defines each category name and any nominees for that category */
     public final Map<String, List<String>> categoryValues;
 
+    /** Output either the name and timestamp or the email for each ballot */
     public static void main(String[] inArgs) throws Exception {
         BallotReader ballotReader = new BallotReader();
         if (inArgs.length == 0)
@@ -60,6 +64,7 @@ public class BallotReader {
             throw new Exception("Unknown action: " + inArgs[0]);
     }
 
+    /** Prepare to read ballots by reading the ballot definition */
     public BallotReader() throws IOException {
         categoryValues = Collections.unmodifiableMap(toMap(categoryValues()));
     }
@@ -76,11 +81,10 @@ public class BallotReader {
     private static Map<String, List<String>> toMap(List<String[]> inLines) {
         return IntStream.range(0, inLines.get(0).length).boxed()
                 .collect(Collectors.toMap(column -> inLines.get(0)[column],
-                        column -> inLines.stream().skip(1).map(entries -> entries[column])
-                                .filter(value -> !value.isEmpty()).collect(Collectors.toList()),
-                        (list1, list2) -> Stream.of(list1, list2).flatMap(List::stream)
-                                .collect(Collectors.toList()),
-                        LinkedHashMap::new));
+                        column -> Collections.unmodifiableList(inLines.stream().skip(1)
+                                .map(entries -> entries[column]).filter(value -> !value.isEmpty())
+                                .collect(Collectors.toList())),
+                        (list1, list2) -> list1, LinkedHashMap::new));
     }
 
     public Stream<Map<String, String>> readBallots() throws Exception {
@@ -91,9 +95,9 @@ public class BallotReader {
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReaderHeaderAware(
                     new InputStreamReader(url.openStream()))) {
-                return reader.readAll().stream()
-                        .map(ballot -> IntStream.range(0, categoryNames.size()).boxed().collect(
-                                Collectors.toMap(categoryNames::get, column -> ballot[column])));
+                return reader.readAll().stream().map(ballot -> Collections
+                        .unmodifiableMap(IntStream.range(0, categoryNames.size()).boxed().collect(
+                                Collectors.toMap(categoryNames::get, column -> ballot[column]))));
             }
         }
     }

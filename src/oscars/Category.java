@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +56,7 @@ public final class Category {
         tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
         value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        nominees = Collections.unmodifiableList(
-                inNominees.sorted(Comparator.comparing(nominee -> nominee.name.toUpperCase()))
-                        .collect(Collectors.toList()));
+        nominees = Collections.unmodifiableList(inNominees.collect(Collectors.toList()));
     }
 
     public static Category of(String inName, Stream<Nominee> inNominees) {

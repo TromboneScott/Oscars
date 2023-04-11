@@ -24,28 +24,27 @@ public final class CategoryMapper {
 
     private final Map<String, Map<String, String>> categoryMaps;
 
-    private final List<Category> categories;
-
     public CategoryMapper() throws Exception {
         ballotReader = new BallotReader();
         ballots = ballotReader.readBallots().collect(BallotReader.LATEST);
         categoryMaps = categoryMaps();
-        categories = categories();
+        defineCategories();
         writeCategoryMaps();
     }
 
     public List<Player> getPlayers() {
         return ballots.stream()
                 .map(ballot -> new Player(categoryMaps.entrySet().stream()
-                        .collect(Collectors.toMap(category -> Category.of(category.getKey(), null),
+                        .collect(Collectors.toMap(entry -> Category.of(entry.getKey(), null),
                                 entry -> entry.getValue().isEmpty() ? ballot.get(entry.getKey())
                                         : entry.getValue().get(ballot.get(entry.getKey()))))))
                 .collect(Collectors.toList());
     }
 
     public List<Category> getCategories() {
-        return categories.stream().filter(category -> !category.nominees.isEmpty())
-                .collect(Collectors.toList());
+        return ballotReader.categoryValues.entrySet().stream()
+                .filter(entry -> !entry.getValue().isEmpty())
+                .map(entry -> Category.of(entry.getKey(), null)).collect(Collectors.toList());
     }
 
     private Map<String, Map<String, String>> categoryMaps() throws IOException {
@@ -102,20 +101,17 @@ public final class CategoryMapper {
         return new HashMap<>();
     }
 
-    private List<Category> categories() {
+    private void defineCategories() {
         Map<String, Map<String, String>> nomineeMaps = categoryMaps.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().entrySet()
                         .stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
-        return ballotReader.categoryValues.entrySet().stream()
-                .map(entry -> Category.of(entry.getKey(),
-                        entry.getValue().stream()
-                                .map(nominee -> new Nominee(nominee,
-                                        nomineeMaps.get(entry.getKey()).get(nominee),
-                                        ballots.stream()
-                                                .map(ballot -> categoryMaps.get(entry.getKey())
-                                                        .get(ballot.get(entry.getKey())))
-                                                .filter(nominee::equals).count()))))
-                .collect(Collectors.toList());
+        ballotReader.categoryValues.entrySet().forEach(entry -> Category.of(entry.getKey(), entry
+                .getValue().stream()
+                .map(nominee -> new Nominee(nominee, nomineeMaps.get(entry.getKey()).get(nominee),
+                        ballots.stream()
+                                .map(ballot -> categoryMaps.get(entry.getKey())
+                                        .get(ballot.get(entry.getKey())))
+                                .filter(nominee::equals).count()))));
     }
 
     private void writeCategoryMaps() throws IOException {
