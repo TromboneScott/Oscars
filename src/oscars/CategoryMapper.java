@@ -2,10 +2,6 @@ package oscars;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -22,82 +16,53 @@ import org.jdom2.input.SAXBuilder;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final String CATEGORY_VALUES_FILE = "categoryValues.csv";
-
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
 
-    private static final String VALUE_DELIMITER = ",";
+    private final BallotReader ballotReader;
 
-    private static final String COMMA_REPLACEMENT = "`";
-
-    private final Collection<Ballot> ballots;
-
-    private final List<String[]> categoryValues;
+    private final Collection<Map<String, String>> ballots;
 
     private final Map<String, Map<String, String>> categoryMaps;
 
-    private final Category[] categoryArray;
+    private final List<Category> categories;
 
-    public CategoryMapper(Stream<Ballot> inBallots) throws IOException {
-        ballots = inBallots.collect(Ballot.LATEST);
-        categoryValues = readCategoryValues();
-        List<List<String>> categoryNominees = categoryNominees();
-        categoryMaps = categoryMaps(categoryNominees);
-        categoryArray = categoryArray(categoryNominees);
+    public CategoryMapper() throws Exception {
+        ballotReader = new BallotReader();
+        ballots = ballotReader.readBallots().collect(BallotReader.LATEST);
+        categoryMaps = categoryMaps();
+        categories = categories();
         writeCategoryMaps();
     }
 
     public List<Player> getPlayers() {
-        return ballots.stream().map(ballot -> new Player(IntStream.range(0, categoryArray.length)
-                .boxed()
-                .collect(Collectors.toMap(categoryNum -> categoryArray[categoryNum],
-                        categoryNum -> categoryMaps.get(categoryValues.get(0)[categoryNum])
-                                .isEmpty()
-                                        ? ballot.get(categoryNum)
-                                        : categoryMaps.get(categoryValues.get(0)[categoryNum])
-                                                .get(ballot.get(categoryNum))))))
+        return ballots.stream()
+                .map(ballot -> new Player(categoryMaps.entrySet().stream()
+                        .collect(Collectors.toMap(category -> Category.of(category.getKey(), null),
+                                entry -> entry.getValue().isEmpty() ? ballot.get(entry.getKey())
+                                        : entry.getValue().get(ballot.get(entry.getKey()))))))
                 .collect(Collectors.toList());
     }
 
     public List<Category> getCategories() {
-        return Arrays.stream(categoryArray).skip(1).filter(category -> !category.nominees.isEmpty())
+        return categories.stream().filter(category -> !category.nominees.isEmpty())
                 .collect(Collectors.toList());
     }
 
-    private static List<String[]> readCategoryValues() throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(CATEGORY_VALUES_FILE),
-                StandardCharsets.ISO_8859_1)) {
-            return stream.map(line -> Stream.of(line.split(VALUE_DELIMITER, -1))
-                    .map(value -> value.replace(COMMA_REPLACEMENT, VALUE_DELIMITER))
-                    .toArray(String[]::new)).collect(Collectors.toList());
-        }
-    }
-
-    private List<List<String>> categoryNominees() {
-        return IntStream.range(0, categoryValues.get(0).length)
-                .mapToObj(categoryNum -> categoryValues.stream().skip(1)
-                        .map(guesses -> guesses[categoryNum].trim())
-                        .filter(guess -> !guess.isEmpty()).collect(Collectors.toList()))
-                .collect(Collectors.toList());
-    }
-
-    private Map<String, Map<String, String>> categoryMaps(List<List<String>> inCategoryNominees)
-            throws IOException {
+    private Map<String, Map<String, String>> categoryMaps() throws IOException {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
-        for (int categoryNum = 0; categoryNum < categoryValues.get(0).length; categoryNum++) {
-            String categoryName = categoryValues.get(0)[categoryNum];
-            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryName,
+        for (Entry<String, List<String>> categoryValue : ballotReader.categoryValues.entrySet()) {
+            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryValue.getKey(),
                     k -> new HashMap<>());
-            List<String> nominees = inCategoryNominees.get(categoryNum);
+            List<String> nominees = categoryValue.getValue();
             if (!nominees.isEmpty())
-                for (Ballot ballot : ballots) {
-                    String guess = ballot.get(categoryNum);
+                for (Map<String, String> ballot : ballots) {
+                    String guess = ballot.get(categoryValue.getKey());
                     if (!categoryMap.containsKey(guess)) {
                         List<String> mappings = nominees.stream().filter(
                                 nominee -> guess.toUpperCase().contains(nominee.toUpperCase()))
                                 .collect(Collectors.toList());
                         categoryMap.put(guess, mappings.size() == 1 ? mappings.get(0)
-                                : prompt(categoryName, guess, nominees));
+                                : prompt(categoryValue.getKey(), guess, nominees));
                     }
                 }
         }
@@ -137,23 +102,24 @@ public final class CategoryMapper {
         return new HashMap<>();
     }
 
-    private Category[] categoryArray(List<List<String>> inCategoryNominees) {
+    private List<Category> categories() {
         Map<String, Map<String, String>> nomineeMaps = categoryMaps.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().entrySet()
                         .stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
-        return IntStream.range(0, categoryValues.get(0).length).mapToObj(categoryNum -> Category.of(
-                categoryValues.get(0)[categoryNum],
-                inCategoryNominees.get(categoryNum).stream().map(nominee -> new Nominee(nominee,
-                        nomineeMaps.get(categoryValues.get(0)[categoryNum]).get(nominee),
-                        ballots.stream()
-                                .map(ballot -> categoryMaps.get(categoryValues.get(0)[categoryNum])
-                                        .get(ballot.get(categoryNum)))
-                                .filter(nominee::equals).count()))))
-                .toArray(Category[]::new);
+        return ballotReader.categoryValues.entrySet().stream()
+                .map(entry -> Category.of(entry.getKey(),
+                        entry.getValue().stream()
+                                .map(nominee -> new Nominee(nominee,
+                                        nomineeMaps.get(entry.getKey()).get(nominee),
+                                        ballots.stream()
+                                                .map(ballot -> categoryMaps.get(entry.getKey())
+                                                        .get(ballot.get(entry.getKey())))
+                                                .filter(nominee::equals).count()))))
+                .collect(Collectors.toList());
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.write(Stream.of(categoryValues.get(0))
+        Directory.CURRENT.write(ballotReader.categoryValues.keySet().stream()
                 .map(category -> categoryMaps.get(category).entrySet().stream()
                         .sorted(Comparator.comparing(Entry::getKey, String::compareToIgnoreCase))
                         .map(map -> new Element("map")

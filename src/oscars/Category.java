@@ -29,11 +29,15 @@ public final class Category {
 
     private static final Map<String, Category> INSTANCES = new HashMap<>();
 
+    public static final Category TIMESTAMP = of("Timestamp", Stream.empty());
+
     public static final Category FIRST_NAME = of("First", Stream.empty());
 
     public static final Category LAST_NAME = of("Last", Stream.empty());
 
     public static final Category TIME = of("Time", Stream.empty());
+
+    public static final Category EMAIL = of("EMail", Stream.empty());
 
     /** Category name */
     public final String name;

@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
@@ -45,25 +44,21 @@ public class Oscars implements Runnable {
     }
 
     private Oscars() throws Exception {
-        System.out.print("Step 1 of 5: Downloading ballots... ");
-        Stream<Ballot> ballots = Ballot.stream();
+        System.out.print("Step 1 of 4: Downloading ballots... ");
+        CategoryMapper categoryMapper = new CategoryMapper();
         System.out.println("DONE");
 
-        System.out.print("Step 2 of 5: Mapping the category data... ");
-        CategoryMapper categoryMapper = new CategoryMapper(ballots);
+        System.out.print("Step 2 of 4: Reading any existing results... ");
         players = Collections.unmodifiableList(categoryMapper.getPlayers());
         categories = Collections.unmodifiableList(categoryMapper.getCategories());
-        System.out.println("DONE");
-
-        System.out.print("Step 3 of 5: Reading any existing results... ");
         results = new Results(categories);
         System.out.println("DONE");
 
-        System.out.print("Step 4 of 5: Writing rank images... ");
+        System.out.print("Step 3 of 4: Writing rank images... ");
         RankChart.writeAll(players.size());
         System.out.println("DONE");
 
-        System.out.print("Step 5 of 5: Writing web pages... ");
+        System.out.print("Step 4 of 4: Writing web pages... ");
         writeCategoryPages();
         writePlayerPages();
         System.out.println("DONE");
