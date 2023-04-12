@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
 import com.opencsv.CSVReader;
@@ -82,7 +83,7 @@ public final class BallotReader {
         return IntStream.range(0, inLines.get(0).length).boxed()
                 .collect(Collectors.toMap(column -> inLines.get(0)[column],
                         column -> Collections.unmodifiableList(inLines.stream().skip(1)
-                                .map(entries -> entries[column]).filter(value -> !value.isEmpty())
+                                .map(entries -> entries[column]).filter(StringUtils::isNotEmpty)
                                 .collect(Collectors.toList())),
                         (list1, list2) -> list1, LinkedHashMap::new));
     }
