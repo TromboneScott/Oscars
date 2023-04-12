@@ -1,9 +1,9 @@
 package oscars;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -44,10 +44,6 @@ public final class BallotReader {
 
     private static final String CATEGORY_VALUES_FILE = "categoryValues.csv";
 
-    private static final String VALUE_DELIMITER = ",";
-
-    private static final String COMMA_REPLACEMENT = "`";
-
     /** An ordered Map that defines each category name and any nominees for that category */
     public final Map<String, List<String>> categoryValues;
 
@@ -66,26 +62,17 @@ public final class BallotReader {
     }
 
     /** Prepare to read ballots by reading the ballot definition */
-    public BallotReader() throws IOException {
-        categoryValues = Collections.unmodifiableMap(toMap(categoryValues()));
-    }
-
-    private static List<String[]> categoryValues() throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(CATEGORY_VALUES_FILE),
-                StandardCharsets.ISO_8859_1)) {
-            return stream.map(line -> Stream.of(line.split(VALUE_DELIMITER, -1))
-                    .map(value -> value.replace(COMMA_REPLACEMENT, VALUE_DELIMITER))
-                    .toArray(String[]::new)).collect(Collectors.toList());
+    public BallotReader() throws Exception {
+        try (CSVReader reader = new CSVReader(new FileReader(CATEGORY_VALUES_FILE))) {
+            List<String[]> lines = reader.readAll();
+            categoryValues = Collections.unmodifiableMap(IntStream.range(0, lines.get(0).length)
+                    .boxed()
+                    .collect(Collectors.toMap(column -> lines.get(0)[column],
+                            column -> Collections.unmodifiableList(lines.stream().skip(1)
+                                    .map(entries -> entries[column]).filter(StringUtils::isNotEmpty)
+                                    .collect(Collectors.toList())),
+                            (list1, list2) -> list1, LinkedHashMap::new)));
         }
-    }
-
-    private static Map<String, List<String>> toMap(List<String[]> inLines) {
-        return IntStream.range(0, inLines.get(0).length).boxed()
-                .collect(Collectors.toMap(column -> inLines.get(0)[column],
-                        column -> Collections.unmodifiableList(inLines.stream().skip(1)
-                                .map(entries -> entries[column]).filter(StringUtils::isNotEmpty)
-                                .collect(Collectors.toList())),
-                        (list1, list2) -> list1, LinkedHashMap::new));
     }
 
     public Stream<Map<String, String>> readBallots() throws Exception {

@@ -43,8 +43,8 @@ Edit categoryValues.csv as a spreadsheet
 1. Update the categories as a few change each year
 2. Make sure the categories are in the same order as the Google Form
 3. Edit the titles so the tie-breakers in parenthesis are correct
-4. Add all the nominees under each category in the order you want them (usually alphabetical)
-5. Replace any commas (,) with back-quotes (`)
+4. These categories have to have these exact titles: Timestamp, First, Last, Time, EMail
+5. Add all the nominees under each category in the order you want them (usually alphabetical)
 6. Special characters such as á and é are allowed
 7. Save in CSV (DOS) format as categoryValues.csv
 
