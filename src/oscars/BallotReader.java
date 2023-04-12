@@ -76,7 +76,7 @@ public final class BallotReader {
     }
 
     public Stream<Map<String, String>> readBallots() throws Exception {
-        ArrayList<String> categoryNames = new ArrayList<>(categoryValues.keySet());
+        List<String> categoryNames = new ArrayList<>(categoryValues.keySet());
         try (Stream<String> lines = Files.lines(
                 Paths.get(BallotReader.class.getClassLoader().getResource(URL_FILE).toURI()))) {
             URL url = new URL(lines.iterator().next());
@@ -120,10 +120,10 @@ public final class BallotReader {
     }
 
     private static Element toDOM(Map<String, String> inBallot) {
+        LocalDateTime timestamp = getTimestamp(inBallot);
         return new Element("ballot").addContent(new Element("name").addContent(getName(inBallot)))
-                .addContent(new Element("timestamp")
-                        .setAttribute("raw", getTimestamp(inBallot).toString())
-                        .addContent(getTimestamp(inBallot)
+                .addContent(new Element("timestamp").setAttribute("raw", timestamp.toString())
+                        .addContent(timestamp
                                 .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"))));
     }
 }
