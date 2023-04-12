@@ -87,7 +87,7 @@ public final class Standings {
             Map<Player, BigDecimal> inScoreMap, boolean inBest) {
         return inScoreMap.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
-                        scoreEntry -> inPlayer.picks.entrySet().stream().map(Entry::getKey)
+                        scoreEntry -> inPlayer.picks.keySet().stream()
                                 .filter(category -> winners.get(category).isEmpty()
                                         && inBest == scoreEntry.getKey().picks.get(category)
                                                 .equals(inPlayer.picks.get(category)))

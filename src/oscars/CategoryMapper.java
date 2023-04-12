@@ -35,7 +35,7 @@ public final class CategoryMapper {
     public List<Player> getPlayers() {
         return ballots.stream()
                 .map(ballot -> new Player(categoryMaps.entrySet().stream()
-                        .collect(Collectors.toMap(entry -> Category.of(entry.getKey(), null),
+                        .collect(Collectors.toMap(entry -> Category.of(entry.getKey()),
                                 entry -> entry.getValue().isEmpty() ? ballot.get(entry.getKey())
                                         : entry.getValue().get(ballot.get(entry.getKey()))))))
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public final class CategoryMapper {
     public List<Category> getCategories() {
         return ballotReader.categoryValues.entrySet().stream()
                 .filter(entry -> !entry.getValue().isEmpty())
-                .map(entry -> Category.of(entry.getKey(), null)).collect(Collectors.toList());
+                .map(entry -> Category.of(entry.getKey())).collect(Collectors.toList());
     }
 
     private Map<String, Map<String, String>> categoryMaps() throws IOException {

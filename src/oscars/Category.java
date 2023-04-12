@@ -28,15 +28,15 @@ public final class Category {
 
     private static final Map<String, Category> INSTANCES = new HashMap<>();
 
-    public static final Category TIMESTAMP = of("Timestamp", Stream.empty());
+    public static final Category TIMESTAMP = of("Timestamp");
 
-    public static final Category FIRST_NAME = of("First", Stream.empty());
+    public static final Category FIRST_NAME = of("First");
 
-    public static final Category LAST_NAME = of("Last", Stream.empty());
+    public static final Category LAST_NAME = of("Last");
 
-    public static final Category TIME = of("Time", Stream.empty());
+    public static final Category TIME = of("Time");
 
-    public static final Category EMAIL = of("EMail", Stream.empty());
+    public static final Category EMAIL = of("EMail");
 
     /** Category name */
     public final String name;
@@ -61,6 +61,10 @@ public final class Category {
 
     public static Category of(String inName, Stream<Nominee> inNominees) {
         return INSTANCES.computeIfAbsent(inName, k -> new Category(inName, inNominees));
+    }
+
+    public static Category of(String inName) {
+        return of(inName, Stream.empty());
     }
 
     public String webPage() {
