@@ -23,7 +23,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
-public final class Category {
+public final class Category implements ChartColor {
     private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)$");
 
     private static final Map<String, Category> INSTANCES = new HashMap<>();
@@ -89,10 +89,10 @@ public final class Category {
         plot.getRangeAxis().setRange(0,
                 nominees.stream().mapToLong(nominee -> nominee.count).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-        plot.setBackgroundPaint(ChartColor.BACKGROUND);
-        plot.setRenderer(new NomineeRenderer(
-                nominees.stream().map(nominee -> winners.isEmpty() ? ChartColor.GRAY
-                        : winners.contains(nominee.name) ? ChartColor.GREEN : ChartColor.RED)));
+        plot.setBackgroundPaint(BACKGROUND);
+        plot.setRenderer(
+                new NomineeRenderer(nominees.stream().map(nominee -> winners.isEmpty() ? GRAY
+                        : winners.contains(nominee.name) ? GREEN : RED)));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(winners)), chart, 500,
                 300);
