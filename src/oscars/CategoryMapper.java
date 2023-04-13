@@ -20,13 +20,13 @@ public final class CategoryMapper {
 
     private final BallotReader ballotReader;
 
-    private final Collection<Map<String, String>> ballots;
+    private final Collection<Ballot> ballots;
 
     private final Map<String, Map<String, String>> categoryMaps;
 
     public CategoryMapper() throws Exception {
         ballotReader = new BallotReader();
-        ballots = ballotReader.readBallots().collect(BallotReader.LATEST);
+        ballots = ballotReader.readBallots().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
         defineCategories();
         writeCategoryMaps();
@@ -54,7 +54,7 @@ public final class CategoryMapper {
                     k -> new HashMap<>());
             List<String> nominees = categoryValue.getValue();
             if (!nominees.isEmpty())
-                for (Map<String, String> ballot : ballots) {
+                for (Ballot ballot : ballots) {
                     String guess = ballot.get(categoryValue.getKey());
                     if (!categoryMap.containsKey(guess)) {
                         List<String> mappings = nominees.stream().filter(
