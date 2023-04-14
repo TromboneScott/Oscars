@@ -30,12 +30,11 @@ public final class Ballot {
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
-        BallotReader ballotReader = new BallotReader();
         if (inArgs.length == 0)
-            for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
-                lastTimestamp = writeNewBallots(ballotReader, lastTimestamp);
+            writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            ballotReader.readBallots().filter(ballot -> !ballot.get(Category.EMAIL.name).isEmpty())
+            new BallotReader().readBallots()
+                    .filter(ballot -> !ballot.get(Category.EMAIL.name).isEmpty())
                     .forEach(ballot -> System.out
                             .println(ballot.getName() + " = " + ballot.get(Category.EMAIL.name)));
         else
@@ -67,24 +66,25 @@ public final class Ballot {
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
-    private static LocalDateTime writeNewBallots(BallotReader inBallotReader,
-            LocalDateTime inLastTimestamp) throws Exception {
-        try {
-            Collection<Ballot> ballots = inBallotReader.readBallots().collect(LATEST);
-            LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
-                    .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
-            if (inLastTimestamp == null || inLastTimestamp.isBefore(maxTimestamp)) {
-                System.err.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()
-                        + " ballots - After: " + Duration.between(maxTimestamp, LocalDateTime.now())
-                                .toString().substring(2));
-                Results.write(ZonedDateTime.now(), ballots.stream().map(Ballot::toDOM)
-                        .reduce(new Element("ballots"), Element::addContent));
-                return maxTimestamp;
+    private static void writeNewBallots() throws Exception {
+        BallotReader ballotReader = new BallotReader();
+        for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
+            try {
+                Collection<Ballot> ballots = ballotReader.readBallots().collect(LATEST);
+                LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
+                        .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
+                if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
+                    System.err.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()
+                            + " ballots - After: "
+                            + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
+                                    .substring(2));
+                    Results.write(ZonedDateTime.now(), ballots.stream().map(Ballot::toDOM)
+                            .reduce(new Element("ballots"), Element::addContent));
+                    lastTimestamp = maxTimestamp;
+                }
+            } catch (IOException e) {
+                System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
             }
-        } catch (IOException e) {
-            System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
-        }
-        return inLastTimestamp;
     }
 
     private Element toDOM() {
