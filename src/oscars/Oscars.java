@@ -43,7 +43,7 @@ public class Oscars implements Runnable {
         new Oscars().process();
     }
 
-    private Oscars() throws Exception {
+    private Oscars() throws IOException {
         System.out.print("Step 1 of 4: Downloading ballots... ");
         CategoryMapper categoryMapper = new CategoryMapper();
         System.out.println("DONE");

@@ -24,7 +24,7 @@ public final class CategoryMapper {
 
     private final Map<String, Map<String, String>> categoryMaps;
 
-    public CategoryMapper() throws Exception {
+    public CategoryMapper() throws IOException {
         ballotReader = new BallotReader();
         ballots = ballotReader.readBallots().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();

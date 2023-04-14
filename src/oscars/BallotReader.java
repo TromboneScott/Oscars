@@ -1,6 +1,7 @@
 package oscars;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
@@ -25,13 +26,16 @@ public final class BallotReader {
 
     private static final String CATEGORY_VALUES_FILE = "categoryValues.csv";
 
-    /** Categories in order mapping each category name to its nominees */
+    /** Categories (in order) mapped to their nominees (also in order) */
     public final Map<String, List<String>> categoryValues;
 
     /** Prepare to read ballots by reading the ballot definition */
-    public BallotReader() throws Exception {
+    public BallotReader() throws IOException {
         try (CSVReader reader = new CSVReader(new FileReader(CATEGORY_VALUES_FILE))) {
             List<String[]> lines = reader.readAll();
+            for (int row = 1; row < lines.size(); row++)
+                if (lines.get(row).length != lines.get(0).length)
+                    throw new Exception("Number of columns is inconsistent");
             categoryValues = Collections.unmodifiableMap(IntStream.range(0, lines.get(0).length)
                     .boxed()
                     .collect(Collectors.toMap(column -> lines.get(0)[column],
@@ -39,10 +43,12 @@ public final class BallotReader {
                                     .map(entries -> entries[column]).filter(StringUtils::isNotEmpty)
                                     .collect(Collectors.toList())),
                             (list1, list2) -> list1, LinkedHashMap::new)));
+        } catch (Exception e) {
+            throw new IOException("Error reading file: " + CATEGORY_VALUES_FILE, e);
         }
     }
 
-    public Stream<Ballot> readBallots() throws Exception {
+    public Stream<Ballot> readBallots() throws IOException {
         List<String> categoryNames = new ArrayList<>(categoryValues.keySet());
         try (Stream<String> lines = Files.lines(
                 Paths.get(BallotReader.class.getClassLoader().getResource(URL_FILE).toURI()))) {
@@ -50,10 +56,15 @@ public final class BallotReader {
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReaderHeaderAware(
                     new InputStreamReader(url.openStream()))) {
-                return reader.readAll().stream()
-                        .map(ballot -> IntStream.range(0, categoryNames.size()).boxed().collect(
-                                Ballot.toBallot(categoryNames::get, column -> ballot[column])));
+                return reader.readAll().stream().peek(ballot -> {
+                    if (ballot.length != categoryNames.size())
+                        throw new RuntimeException("Ballot length: " + ballot.length
+                                + " does not match category values: " + categoryNames.size());
+                }).map(ballot -> IntStream.range(0, ballot.length).boxed()
+                        .collect(Ballot.toBallot(categoryNames::get, column -> ballot[column])));
             }
+        } catch (Exception e) {
+            throw new IOException("Error reading ballots using URL from: " + URL_FILE, e);
         }
     }
 }
