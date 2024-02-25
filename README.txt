@@ -59,7 +59,7 @@ Update the link in ../index.html to point to current year.
 -- While ballots are being collected
 
 From the new year folder run the batch:
-  ballots.bat (or ./ballots.sh)
+  oscars.bat Ballot (or ./oscars.sh -b)
 Leave it running so it can continuosly download the ballots as they're entered
 
 Check the ballots and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered.
