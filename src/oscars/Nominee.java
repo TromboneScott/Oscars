@@ -1,7 +1,5 @@
 package oscars;
 
-import java.util.Optional;
-
 /** A nomineee of a category - Immutable */
 public final class Nominee {
     /** Name of nominee for website */
@@ -15,7 +13,7 @@ public final class Nominee {
 
     public Nominee(String inName, String inDescription, long inCount) {
         name = inName;
-        description = Optional.ofNullable(inDescription).orElse(inName + " (not on any ballots)");
+        description = inDescription == null ? inName + " (not on any ballots)" : inDescription;
         count = inCount;
     }
 }
