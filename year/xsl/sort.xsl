@@ -296,6 +296,7 @@
           <xsl:when test="$sort = 'rank' or $sort = 'score'">
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="bpr" data-type="number" />
               <xsl:sort select="lastName" />
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -306,6 +307,7 @@
             test="$sort = 'rankReverse' or $sort = 'scoreReverse'">
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="rank" data-type="number" order="descending" />
+              <xsl:sort select="bpr" data-type="number" order="descending" />
               <xsl:sort select="lastName" />
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -326,7 +328,7 @@
           <xsl:when test="$sort = 'bprReverse'">
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="bpr" data-type="number" order="descending" />
-              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="rank" data-type="number" order="descending" />
               <xsl:sort select="lastName" />
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -346,7 +348,7 @@
           <xsl:when test="$sort = 'wprReverse'">
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="wpr" data-type="number" order="descending" />
-              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="rank" data-type="number" order="descending" />
               <xsl:sort select="lastName" />
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
