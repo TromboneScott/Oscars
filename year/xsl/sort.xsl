@@ -297,6 +297,7 @@
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="rank" data-type="number" />
               <xsl:sort select="bpr" data-type="number" />
+              <xsl:sort select="wpr" data-type="number" />
               <xsl:sort select="lastName" />
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -308,6 +309,7 @@
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="rank" data-type="number" order="descending" />
               <xsl:sort select="bpr" data-type="number" order="descending" />
+              <xsl:sort select="wpr" data-type="number" order="descending" />
               <xsl:sort select="lastName" />
               <xsl:sort select="firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
