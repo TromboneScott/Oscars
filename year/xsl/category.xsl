@@ -45,12 +45,20 @@
           <table>
             <thead>
               <tr>
-                <th class="header">Name</th>
+                <th class="header">
+                  <xsl:value-of select="$categoryName" />
+                </th>
                 <xsl:for-each select="$categoryResults/nominees/nominee">
                   <th>
                     <xsl:attribute name="class">
                       <xsl:value-of select="./@status" />
                     </xsl:attribute>
+                    <img>
+                      <xsl:attribute name="src">
+                        <xsl:value-of select="./@img" />
+                      </xsl:attribute>
+                    </img>
+                    <br />
                     <xsl:value-of select="." />
                   </th>
                 </xsl:for-each>

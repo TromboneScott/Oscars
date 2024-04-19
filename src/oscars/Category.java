@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,21 +50,40 @@ public final class Category implements ChartColor {
     /** Nominees in display order */
     public final List<Nominee> nominees;
 
-    private Category(String inName, Stream<Nominee> inNominees) {
-        Matcher tieBreakerMatcher = TIE_BREAKER_PATTERN.matcher(inName);
-        name = tieBreakerMatcher.replaceFirst("");
-        tieBreakerValue = tieBreakerMatcher.find(0) ? tieBreakerMatcher.group(1) : "";
-        value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
-                : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        nominees = Collections.unmodifiableList(inNominees.collect(Collectors.toList()));
-    }
-
-    public static Category of(String inName, Stream<Nominee> inNominees) {
-        return INSTANCES.computeIfAbsent(inName, k -> new Category(inName, inNominees));
+    private Category(String inName) {
+        name = inName;
+        tieBreakerValue = "";
+        value = BigDecimal.ZERO;
+        nominees = Collections.emptyList();
     }
 
     public static Category of(String inName) {
-        return of(inName, Stream.empty());
+        return INSTANCES.computeIfAbsent(inName, k -> new Category(inName));
+    }
+
+    public Category(Element inCategoryDOM) {
+        name = inCategoryDOM.getChildText("name").trim();
+        tieBreakerValue = Optional.ofNullable(inCategoryDOM.getAttributeValue("tieBreaker"))
+                .orElse("");
+        value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
+                : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
+        nominees = Collections
+                .unmodifiableList(inCategoryDOM.getChildren("nominees").stream()
+                        .flatMap(nominees -> nominees.getChildren("nominee").stream())
+                        .map(nominee -> new Nominee(nominee.getValue().trim(),
+                                nominee.getAttributeValue("img"), null, 0))
+                        .collect(Collectors.toList()));
+    }
+
+    private Category(Category inCategory, Stream<Nominee> inNominees) {
+        name = inCategory.name;
+        tieBreakerValue = inCategory.tieBreakerValue;
+        value = inCategory.value;
+        nominees = Collections.unmodifiableList(inNominees.collect(Collectors.toList()));
+    }
+
+    public static void define(Category inCategory, Stream<Nominee> inNominees) {
+        INSTANCES.put(inCategory.name, new Category(inCategory, inNominees));
     }
 
     public String webPage() {

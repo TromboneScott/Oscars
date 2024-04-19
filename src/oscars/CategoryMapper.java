@@ -42,26 +42,27 @@ public final class CategoryMapper {
     }
 
     public List<Category> getCategories() {
-        return ballotReader.categoryValues.entrySet().stream()
-                .filter(entry -> !entry.getValue().isEmpty())
-                .map(entry -> Category.of(entry.getKey())).collect(Collectors.toList());
+        return ballotReader.categoryDefinitions.values().stream()
+                .filter(category -> !category.nominees.isEmpty())
+                .map(category -> Category.of(category.name)).collect(Collectors.toList());
     }
 
     private Map<String, Map<String, String>> categoryMaps() throws IOException {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
-        for (Entry<String, List<String>> categoryValue : ballotReader.categoryValues.entrySet()) {
-            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryValue.getKey(),
+        for (Entry<String, Category> categoryEntry : ballotReader.categoryDefinitions.entrySet()) {
+            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryEntry.getKey(),
                     k -> new HashMap<>());
-            List<String> nominees = categoryValue.getValue();
+            List<String> nominees = categoryEntry.getValue().nominees.stream()
+                    .map(nominee -> nominee.name).collect(Collectors.toList());
             if (!nominees.isEmpty())
                 for (Ballot ballot : ballots) {
-                    String guess = ballot.get(categoryValue.getKey());
+                    String guess = ballot.get(categoryEntry.getKey());
                     if (!categoryMap.containsKey(guess)) {
                         List<String> mappings = nominees.stream().filter(
                                 nominee -> guess.toUpperCase().contains(nominee.toUpperCase()))
                                 .collect(Collectors.toList());
                         categoryMap.put(guess, mappings.size() == 1 ? mappings.get(0)
-                                : prompt(categoryValue.getKey(), guess, nominees));
+                                : prompt(categoryEntry.getKey(), guess, nominees));
                     }
                 }
         }
@@ -105,17 +106,20 @@ public final class CategoryMapper {
         Map<String, Map<String, String>> nomineeMaps = categoryMaps.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().entrySet()
                         .stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
-        ballotReader.categoryValues.entrySet().forEach(entry -> Category.of(entry.getKey(), entry
-                .getValue().stream()
-                .map(nominee -> new Nominee(nominee, nomineeMaps.get(entry.getKey()).get(nominee),
-                        ballots.stream()
-                                .map(ballot -> categoryMaps.get(entry.getKey())
-                                        .get(ballot.get(entry.getKey())))
-                                .filter(nominee::equals).count()))));
+        ballotReader.categoryDefinitions.values().stream()
+                .filter(category -> !category.nominees.isEmpty())
+                .forEach(category -> Category.define(category,
+                        category.nominees.stream()
+                                .map(nominee -> new Nominee(nominee.name, nominee.img,
+                                        nomineeMaps.get(category.name).get(nominee.name),
+                                        ballots.stream()
+                                                .map(ballot -> categoryMaps.get(category.name)
+                                                        .get(ballot.get(category.name)))
+                                                .filter(nominee.name::equals).count()))));
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.write(ballotReader.categoryValues.keySet().stream()
+        Directory.CURRENT.write(ballotReader.categoryDefinitions.keySet().stream()
                 .map(category -> categoryMaps.get(category).entrySet().stream()
                         .sorted(Comparator.comparing(Entry::getKey, String::compareToIgnoreCase))
                         .map(map -> new Element("map")

@@ -103,8 +103,8 @@
             </tbody>
           </table>
           <br />
-          <br />
           <xsl:for-each select="$results/categories/category">
+            <br />
             <br />
             <br />
             <a>
@@ -123,6 +123,16 @@
                 <xsl:value-of select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
+              <xsl:for-each select="nominees/nominee">
+                <xsl:if test="(position() - 1) mod 5 = 0">
+                  <br />
+                </xsl:if>
+                <img>
+                  <xsl:attribute name="src">
+                    <xsl:value-of select="./@img" />
+                  </xsl:attribute>
+                </img>
+              </xsl:for-each>
               <br />
               <xsl:call-template name="chart">
                 <xsl:with-param name="categoryResults" select="." />

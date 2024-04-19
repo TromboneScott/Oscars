@@ -39,14 +39,16 @@ Update any code and files as needed
 
 Copy year folder to oscars site and rename to current year.
 
-Edit categoryValues.csv as a spreadsheet
+Edit categoryDefinitions.xml
 1. Update the categories as a few change each year
 2. Make sure the categories are in the same order as the Google Form
-3. Edit the titles so the tie-breakers in parenthesis are correct
-4. These categories have to have these exact titles: Timestamp, First, Last, Time, EMail
+3. Update the tieBreaker values
+4. These categories have to have these exact names: Timestamp, First, Last, Time, EMail
 5. Add all the nominees under each category in the order you want them (usually alphabetical)
-6. Special characters such as á and é are allowed
-7. Save in CSV (DOS) format as categoryValues.csv
+  a. Make sure special characters such as á and é are in UTF-8 format
+6. Set the img value for each nominee
+  a. Right-click on image in Google Form and select: Copy image address
+  b. Paste into img attribute
 
 Delete this file if it exists:
 File: categoryMaps.xml

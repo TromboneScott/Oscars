@@ -101,10 +101,12 @@ public final class Standings {
                 .setAttribute("chart", category.chartName(winners.get(category)))
                 .addContent(new Element("name").addContent(category.name))
                 .addContent(category.nominees.stream().map(nominee -> new Element("nominee")
-                        .addContent(nominee.name).setAttribute("status",
+                        .addContent(nominee.name)
+                        .setAttribute("status",
                                 winners.get(category).isEmpty() ? "unannounced"
                                         : winners.get(category).contains(nominee.name) ? "correct"
-                                                : "incorrect"))
+                                                : "incorrect")
+                        .setAttribute("img", nominee.img))
                         .reduce(new Element("nominees"), Element::addContent)))
                 .reduce(new Element("categories"), Element::addContent);
     }
