@@ -44,6 +44,18 @@
             <br />
           </td>
         </tr>
+        <tr>
+          <td colspan="5">
+            <xsl:variable name="categories" select="document('../categoryDefinitions.xml')/categories" />
+            <xsl:for-each select="$categories/category[./name = 'Best Picture']/nominees/nominee">
+              <img width = "50">
+                <xsl:attribute name="src">
+                  <xsl:value-of select="./@img" />
+                </xsl:attribute>
+              </img>
+            </xsl:for-each>
+          </td>
+        </tr>
       </table>
     </a>
     <xsl:if test="not(string($results/showTime/end))">
