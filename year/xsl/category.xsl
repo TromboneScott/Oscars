@@ -48,16 +48,16 @@
                 <th class="header">
                   <xsl:value-of select="$categoryName" />
                 </th>
+                <xsl:variable name="categoryMaps" select="document('../categoryMaps.xml')/categories" />
                 <xsl:for-each select="$categoryResults/nominees/nominee">
                   <th>
                     <xsl:attribute name="class">
                       <xsl:value-of select="./@status" />
                     </xsl:attribute>
-                    <img>
-                      <xsl:attribute name="src">
-                        <xsl:value-of select="./@img" />
-                      </xsl:attribute>
-                    </img>
+                    <xsl:call-template name="poster">
+                      <xsl:with-param name="category" select="$categoryName" />
+                      <xsl:with-param name="nominee" select="." />
+                    </xsl:call-template>
                     <br />
                     <xsl:value-of select="." />
                   </th>

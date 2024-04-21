@@ -107,10 +107,9 @@ public final class CategoryMapper {
                 .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().entrySet()
                         .stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
         ballotReader.categoryDefinitions.values().stream()
-                .filter(category -> !category.nominees.isEmpty())
-                .forEach(category -> Category.define(category,
-                        category.nominees.stream()
-                                .map(nominee -> new Nominee(nominee.name, nominee.img,
+                .filter(category -> !category.nominees.isEmpty()).forEach(
+                        category -> new Category(category.name, category.tieBreaker,
+                                category.nominees.stream().map(nominee -> new Nominee(nominee.name,
                                         nomineeMaps.get(category.name).get(nominee.name),
                                         ballots.stream()
                                                 .map(ballot -> categoryMaps.get(category.name)

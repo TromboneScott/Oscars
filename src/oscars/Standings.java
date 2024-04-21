@@ -101,19 +101,17 @@ public final class Standings {
                 .setAttribute("chart", category.chartName(winners.get(category)))
                 .addContent(new Element("name").addContent(category.name))
                 .addContent(category.nominees.stream().map(nominee -> new Element("nominee")
-                        .addContent(nominee.name)
-                        .setAttribute("status",
+                        .addContent(nominee.name).setAttribute("status",
                                 winners.get(category).isEmpty() ? "unannounced"
                                         : winners.get(category).contains(nominee.name) ? "correct"
-                                                : "incorrect")
-                        .setAttribute("img", nominee.img))
+                                                : "incorrect"))
                         .reduce(new Element("nominees"), Element::addContent)))
                 .reduce(new Element("categories"), Element::addContent);
     }
 
     public Element resultsPlayerDOM(List<Player> inPlayers) {
         int tieBreakers = (int) inPlayers.iterator().next().picks.keySet().stream()
-                .filter(category -> !category.tieBreakerValue.isEmpty()).count();
+                .filter(category -> !category.tieBreaker.isEmpty()).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
                 .addContent(rankDOM(rank(inPlayers.get(playerNum))))

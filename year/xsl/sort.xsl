@@ -109,6 +109,22 @@
               </xsl:if>
             </xsl:when>
             <xsl:otherwise>
+              <a href="../category/all.xml">
+                <h2>OSCAR WINNERS</h2>
+              </a>
+              <table>
+                <xsl:call-template name="winners">
+                  <xsl:with-param name="categories" select="$results/categories/category[position() &lt;= 6]" />
+                </xsl:call-template>
+                <xsl:call-template name="winners">
+                  <xsl:with-param name="categories" select="$results/categories/category[position() &gt; 6 and position() &lt;= 12]" />
+                </xsl:call-template>
+                <xsl:call-template name="winners">
+                  <xsl:with-param name="categories" select="$results/categories/category[position() &gt; 12]" />
+                </xsl:call-template>
+              </table>
+              <br />
+              <br />
               <div class="info">
                 <xsl:if test="not(string($results/showTime/end))">
                   <u>BPR / WPR</u>
@@ -497,5 +513,38 @@
         <xsl:value-of select="round($score * 10) mod 2 * $value + $tieBreakers" />
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <xsl:template name="winners">
+    <xsl:param name="categories" />
+    <tr>
+      <xsl:for-each select="$categories">
+        <td style="text-align: center">
+          <a>
+            <xsl:attribute name="id">
+              <xsl:value-of select="name" />
+            </xsl:attribute>
+            <xsl:attribute name="href">
+              <xsl:value-of select="concat('../category/', name, '.xml')" />
+            </xsl:attribute>
+            <xsl:choose>
+              <xsl:when test="nominees/nominee[@status = 'correct']">
+                <xsl:variable name="categoryName" select="name" />
+                <xsl:for-each select="nominees/nominee[@status = 'correct']">
+                  <xsl:call-template name="poster">
+                    <xsl:with-param name="category" select="$categoryName" />
+                    <xsl:with-param name="nominee" select="." />
+                  </xsl:call-template>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <img src="http://oscars.site44.com/trophy_poster.png" title="Not Yet Announced" />
+              </xsl:otherwise>
+            </xsl:choose>
+            <br />
+            <xsl:value-of select="name" />
+          </a>
+        </td>
+      </xsl:for-each>
+    </tr>
   </xsl:template>
 </xsl:stylesheet>

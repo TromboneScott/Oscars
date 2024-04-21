@@ -28,21 +28,21 @@ public final class Category implements ChartColor {
 
     private static final Map<String, Category> INSTANCES = new HashMap<>();
 
-    public static final Category TIMESTAMP = of("Timestamp");
+    public static final Category TIMESTAMP = new Category("Timestamp", null, null);
 
-    public static final Category FIRST_NAME = of("First");
+    public static final Category FIRST_NAME = new Category("First", null, null);
 
-    public static final Category LAST_NAME = of("Last");
+    public static final Category LAST_NAME = new Category("Last", null, null);
 
-    public static final Category TIME = of("Time");
+    public static final Category TIME = new Category("Time", null, null);
 
-    public static final Category EMAIL = of("EMail");
+    public static final Category EMAIL = new Category("EMail", null, null);
 
     /** Category name */
     public final String name;
 
     /** TieBreaker value */
-    public final String tieBreakerValue;
+    public final String tieBreaker;
 
     /** Scoring value */
     public final BigDecimal value;
@@ -50,40 +50,27 @@ public final class Category implements ChartColor {
     /** Nominees in display order */
     public final List<Nominee> nominees;
 
-    private Category(String inName) {
+    public Category(String inName, String inTieBreakerValue, Stream<Nominee> inNominees) {
         name = inName;
-        tieBreakerValue = "";
-        value = BigDecimal.ZERO;
-        nominees = Collections.emptyList();
+        tieBreaker = Optional.ofNullable(inTieBreakerValue).orElse("");
+        value = BigDecimal.ONE.add(tieBreaker.isEmpty() ? BigDecimal.ZERO
+                : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)));
+        nominees = inNominees == null ? Collections.emptyList()
+                : Collections.unmodifiableList(inNominees.collect(Collectors.toList()));
+        INSTANCES.put(inName, this);
+    }
+
+    public static Category of(Element inCategoryDOM) {
+        String name = inCategoryDOM.getChildText("name").trim();
+        return INSTANCES.computeIfAbsent(name,
+                k -> new Category(name, inCategoryDOM.getAttributeValue("tieBreaker"),
+                        inCategoryDOM.getChildren("nominees").stream()
+                                .flatMap(nominees -> nominees.getChildren("nominee").stream())
+                                .map(nominee -> new Nominee(nominee.getValue().trim(), null, 0))));
     }
 
     public static Category of(String inName) {
-        return INSTANCES.computeIfAbsent(inName, k -> new Category(inName));
-    }
-
-    public Category(Element inCategoryDOM) {
-        name = inCategoryDOM.getChildText("name").trim();
-        tieBreakerValue = Optional.ofNullable(inCategoryDOM.getAttributeValue("tieBreaker"))
-                .orElse("");
-        value = BigDecimal.ONE.add(tieBreakerValue.isEmpty() ? BigDecimal.ZERO
-                : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreakerValue)));
-        nominees = Collections
-                .unmodifiableList(inCategoryDOM.getChildren("nominees").stream()
-                        .flatMap(nominees -> nominees.getChildren("nominee").stream())
-                        .map(nominee -> new Nominee(nominee.getValue().trim(),
-                                nominee.getAttributeValue("img"), null, 0))
-                        .collect(Collectors.toList()));
-    }
-
-    private Category(Category inCategory, Stream<Nominee> inNominees) {
-        name = inCategory.name;
-        tieBreakerValue = inCategory.tieBreakerValue;
-        value = inCategory.value;
-        nominees = Collections.unmodifiableList(inNominees.collect(Collectors.toList()));
-    }
-
-    public static void define(Category inCategory, Stream<Nominee> inNominees) {
-        INSTANCES.put(inCategory.name, new Category(inCategory, inNominees));
+        return INSTANCES.get(inName);
     }
 
     public String webPage() {
@@ -122,7 +109,7 @@ public final class Category implements ChartColor {
     }
 
     public Element toDOM(Collection<Player> inPlayers) {
-        return toDOM().addContent(new Element("tieBreaker").addContent(tieBreakerValue))
+        return toDOM().addContent(new Element("tieBreaker").addContent(tieBreaker))
                 .addContent(new Element("value").addContent(value.toString()))
                 .addContent(inPlayers.stream()
                         .map(player -> player.toDOM().addContent(

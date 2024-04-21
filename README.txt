@@ -1,6 +1,6 @@
 To start a new year:
 
-Download 100x180 pixel pictures for Google Form for these categories:
+Download 100x148 pixel pictures for Google Form for these categories:
 - Actor/Actress including Supporting
 - Best Picture
 - International Feature

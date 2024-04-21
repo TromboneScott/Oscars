@@ -33,7 +33,7 @@ public final class BallotReader {
     public BallotReader() throws IOException {
         try {
             categoryDefinitions = new SAXBuilder().build(CATEGORY_DEFINITIONS_FILE).getRootElement()
-                    .getChildren().stream().map(Category::new)
+                    .getChildren().stream().map(Category::of)
                     .collect(Collectors.toMap(category -> category.name, category -> category,
                             (list1, list2) -> list1, LinkedHashMap::new));
         } catch (JDOMException e) {

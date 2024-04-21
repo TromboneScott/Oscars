@@ -123,15 +123,15 @@
                 <xsl:value-of select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
+              <xsl:variable name="categoryName" select="name" />
               <xsl:for-each select="nominees/nominee">
                 <xsl:if test="(position() - 1) mod 5 = 0">
                   <br />
                 </xsl:if>
-                <img>
-                  <xsl:attribute name="src">
-                    <xsl:value-of select="./@img" />
-                  </xsl:attribute>
-                </img>
+                <xsl:call-template name="poster">
+                  <xsl:with-param name="category" select="$categoryName" />
+                  <xsl:with-param name="nominee" select="." />
+                </xsl:call-template>
               </xsl:for-each>
               <br />
               <xsl:call-template name="chart">
