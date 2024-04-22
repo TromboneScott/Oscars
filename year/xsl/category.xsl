@@ -6,9 +6,11 @@
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <xsl:variable name="categoryName" select="name" />
-      <xsl:variable name="categoryData" select="document('../category/all.xml')/categories/category[name = $categoryName]" />
+      <xsl:variable name="categoryData"
+        select="document('../category/all.xml')/categories/category[name = $categoryName]" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
-      <xsl:variable name="categoryResults" select="$results/categories/category[name = $categoryName]" />
+      <xsl:variable name="categoryResults"
+        select="$results/categories/category[name = $categoryName]" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
       </xsl:call-template>
@@ -17,26 +19,27 @@
           <xsl:call-template name="header">
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
-          <div id="name">
+          <div
+            id="name">
             <xsl:value-of select="$categoryName" />
-          </div>
-          Tie Breaker:
-          <xsl:value-of select="$categoryData/tieBreaker" />
-          <xsl:if test="$categoryData/tieBreaker = ''">
+          </div> Tie Breaker: <xsl:value-of
+            select="$categoryData/tieBreaker" />
+          <xsl:if
+            test="$categoryData/tieBreaker = ''">
             NO
           </xsl:if>
-          <br />
-          Point Value:
-          <xsl:value-of select="$categoryData/value" />
-          <xsl:if test="count($categoryResults/nominees/nominee[@status = 'correct']) &gt; 1">
+          <br /> Point Value: <xsl:value-of
+            select="$categoryData/value" />
+          <xsl:if
+            test="count($categoryResults/nominees/nominee[@status = 'correct']) &gt; 1">
             <br />
             <br />
-            <b>TIE</b>
-            - Everyone who selected one of the winners in this category get the points.
-          </xsl:if>
+            <b>TIE</b> - Everyone who selected one of the winners in
+          this category get the points. </xsl:if>
           <br />
           <br />
-          <xsl:call-template name="chart">
+          <xsl:call-template
+            name="chart">
             <xsl:with-param name="categoryResults" select="$categoryResults" />
           </xsl:call-template>
           <br />
@@ -48,7 +51,8 @@
                 <th class="header">
                   <xsl:value-of select="$categoryName" />
                 </th>
-                <xsl:variable name="categoryMaps" select="document('../categoryMaps.xml')/categories" />
+                <xsl:variable name="categoryMaps"
+                  select="document('../categoryMaps.xml')/categories" />
                 <xsl:for-each select="$categoryResults/nominees/nominee">
                   <th>
                     <xsl:attribute name="class">
@@ -78,7 +82,8 @@
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
-                    <xsl:value-of select="$categoryResults/nominees/nominee[. = $guess]/@status" />
+                    <xsl:value-of
+                      select="$categoryResults/nominees/nominee[. = $guess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -107,20 +112,24 @@
                       <xsl:value-of select="./@status" />
                     </xsl:attribute>
                     <xsl:variable name="name" select="." />
-                    <xsl:value-of select="count($categoryData/players/player[guess=$name])" />
+                    <xsl:value-of
+                      select="count($categoryData/players/player[guess=$name])" />
                   </th>
                 </xsl:for-each>
               </tr>
             </tfoot>
           </table>
           <br />
-          <a href="all.xml" id="return">All Categories</a>
+          <a
+            href="all.xml" id="return">All Categories</a>
           <br />
           <br />
-          <a href=".." id="return">Return to Main Page</a>
+          <a
+            href=".." id="return">Return to Main Page</a>
           <br />
           <br />
-          <xsl:call-template name="updated">
+          <xsl:call-template
+            name="updated">
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
         </center>

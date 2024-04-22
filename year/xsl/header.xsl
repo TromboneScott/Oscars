@@ -4,20 +4,20 @@
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
-      <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+      <meta http-equiv="cache-control"
+        content="no-cache, no-store, must-revalidate" />
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
       <title>
-        <xsl:value-of select="$results/year" />
-        OSCARS
-      </title>
+        <xsl:value-of select="$results/year" /> OSCARS </title>
       <style>body {background-color: PaleGoldenrod}</style>
     </head>
   </xsl:template>
   <xsl:template name="header">
     <xsl:param name="results" />
     <a href="https://oscars.site44.com/{$results/year}" style="all: unset">
-      <table id="header" style="color:PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%;">
+      <table id="header"
+        style="color:PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%;">
         <tr>
           <td rowspan="3" />
           <td rowspan="3">
@@ -33,9 +33,7 @@
         </tr>
         <tr>
           <th style="background-color: transparent">
-            <xsl:value-of select="$results/year" />
-            OSCARS
-          </th>
+            <xsl:value-of select="$results/year" /> OSCARS </th>
         </tr>
         <tr>
           <td>
@@ -46,7 +44,8 @@
         </tr>
         <tr>
           <td colspan="5">
-            <xsl:for-each select="document('../categoryDefinitions.xml')/categories/category[./name = 'Best Picture']/nominees/nominee">
+            <xsl:for-each
+              select="document('../categoryDefinitions.xml')/categories/category[./name = 'Best Picture']/nominees/nominee">
               <img width="50">
                 <xsl:attribute name="src">
                   <xsl:value-of select="./@img" />
@@ -124,9 +123,7 @@
     <xsl:param name="results" />
     <table>
       <tr>
-        <td id="rank">
-          Last updated:
-          <xsl:value-of select="$results/updated" />
+        <td id="rank"> Last updated: <xsl:value-of select="$results/updated" />
         </td>
       </tr>
     </table>
@@ -136,12 +133,14 @@
     <xsl:param name="nominee" />
     <img>
       <xsl:attribute name="src">
-        <xsl:value-of select="document('../categoryDefinitions.xml')/categories/category[name = $category]/nominees/nominee[normalize-space(.) = $nominee]/@img" />
+        <xsl:value-of
+          select="document('../categoryDefinitions.xml')/categories/category[name = $category]/nominees/nominee[normalize-space(.) = $nominee]/@img" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
-      <xsl:variable name="description" select="document('../categoryMaps.xml')/categories/category[name = $category]/map[website = $nominee]/ballot" />
+      <xsl:variable name="description"
+        select="document('../categoryMaps.xml')/categories/category[name = $category]/map[website = $nominee]/ballot" />
       <xsl:attribute name="title">
         <xsl:choose>
           <xsl:when test="$description">

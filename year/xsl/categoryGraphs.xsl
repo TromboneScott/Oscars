@@ -19,7 +19,8 @@
             Category Results
           </div>
           <br />
-          <xsl:variable name="playerCount" select="count($results/players/player)" />
+          <xsl:variable name="playerCount"
+            select="count($results/players/player)" />
           <xsl:variable name="graphWidth" select="250" />
           <table>
             <thead>
@@ -50,18 +51,21 @@
                     </a>
                     <xsl:variable name="name" select="name" />
                     <xsl:call-template name="tieBreaker">
-                      <xsl:with-param name="tieBreaker" select="$categories/category[name = $name]/tieBreaker" />
+                      <xsl:with-param name="tieBreaker"
+                        select="$categories/category[name = $name]/tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <xsl:variable name="winners">
-                    <xsl:for-each select="nominees/nominee[./@status = 'correct']">
+                    <xsl:for-each
+                      select="nominees/nominee[./@status = 'correct']">
                       <xsl:value-of select="concat('|', ., '|')" />
                     </xsl:for-each>
                   </xsl:variable>
                   <xsl:choose>
                     <xsl:when test="string($winners)">
                       <xsl:variable name="name" select="name" />
-                      <xsl:variable name="correct" select="count($categories/category[name = $name]/players/player[contains($winners, concat('|', guess, '|'))])" />
+                      <xsl:variable name="correct"
+                        select="count($categories/category[name = $name]/players/player[contains($winners, concat('|', guess, '|'))])" />
                       <td class="correct">
                         <center>
                           <xsl:value-of select="$correct" />
@@ -73,7 +77,8 @@
                         </center>
                       </td>
                       <td>
-                        <xsl:variable name="greenWidth" select="$graphWidth * $correct div $playerCount" />
+                        <xsl:variable name="greenWidth"
+                          select="$graphWidth * $correct div $playerCount" />
                         <img src="../../bar_green.bmp" height="15">
                           <xsl:attribute name="width">
                             <xsl:value-of select="$greenWidth" />
@@ -118,9 +123,11 @@
                 <xsl:value-of select="name" />
               </b>
               <xsl:variable name="name" select="name" />
-              <xsl:variable name="tieBreaker" select="$categories/category[name = $name]/tieBreaker" />
+              <xsl:variable name="tieBreaker"
+                select="$categories/category[name = $name]/tieBreaker" />
               <xsl:if test="$tieBreaker != ''">
-                <xsl:value-of select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
+                <xsl:value-of
+                  select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
               <xsl:variable name="categoryName" select="name" />

@@ -6,7 +6,8 @@
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <xsl:variable name="player" select="." />
-      <xsl:variable name="categories" select="document('../category/all.xml')/categories" />
+      <xsl:variable name="categories"
+        select="document('../category/all.xml')/categories" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
@@ -16,42 +17,44 @@
           <xsl:call-template name="header">
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
-          <xsl:variable name="playerResults" select="$results/players/player[firstName = $player/firstName and lastName = $player/lastName]" />
-          <xsl:variable name="playerName" select="concat(firstName, ' ', lastName)" />
-          <div id="name">
+          <xsl:variable
+            name="playerResults"
+            select="$results/players/player[firstName = $player/firstName and lastName = $player/lastName]" />
+          <xsl:variable
+            name="playerName" select="concat(firstName, ' ', lastName)" />
+          <div
+            id="name">
             <xsl:value-of select="$playerName" />
           </div>
           <br />
           <table>
             <tr>
-              <td id="rank">
-                Rank
-                <div id="rank">
+              <td id="rank"> Rank <div id="rank">
                   <xsl:value-of select="$playerResults/rank" />
                 </div>
-                Out of
-                <xsl:value-of select="count($results/players/player)" />
+          Out of <xsl:value-of select="count($results/players/player)" />
               </td>
               <td class="header">
                 <img>
                   <xsl:attribute name="src">
-                    <xsl:value-of select="concat('../rank/', $playerResults/rank/@chart)" />
+                    <xsl:value-of
+                      select="concat('../rank/', $playerResults/rank/@chart)" />
                   </xsl:attribute>
                 </img>
               </td>
             </tr>
           </table>
-          <xsl:if test="not(string($results/showTime/end))">
-            <br />
-            Best Possible Rank (BPR):
-            <xsl:value-of select="$playerResults/bpr" />
-            <br />
-            Worst Possible Rank (WPR):
-            <xsl:value-of select="$playerResults/wpr" />
+          <xsl:if
+            test="not(string($results/showTime/end))">
+            <br /> Best Possible Rank (BPR): <xsl:value-of
+              select="$playerResults/bpr" />
+            <br /> Worst Possible Rank (WPR): <xsl:value-of
+              select="$playerResults/wpr" />
           </xsl:if>
           <br />
           <br />
-          <h3>Guesses</h3>
+          <h3>
+          Guesses</h3>
           <table>
             <thead>
               <tr>
@@ -66,8 +69,10 @@
             <tbody>
               <xsl:for-each select="$results/categories/category">
                 <xsl:variable name="categoryName" select="name" />
-                <xsl:variable name="categoryData" select="$categories/category[name = $categoryName]" />
-                <xsl:variable name="playerGuess" select="$categoryData/players/player[firstName = $player/firstName and lastName = $player/lastName]/guess" />
+                <xsl:variable name="categoryData"
+                  select="$categories/category[name = $categoryName]" />
+                <xsl:variable name="playerGuess"
+                  select="$categoryData/players/player[firstName = $player/firstName and lastName = $player/lastName]/guess" />
                 <xsl:variable name="winners">
                   <xsl:for-each select="nominees/nominee[./@status = 'correct']">
                     <xsl:value-of select="concat('|', ., '|')" />
@@ -75,7 +80,8 @@
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
-                    <xsl:value-of select="nominees/nominee[. = $playerGuess]/@status" />
+                    <xsl:value-of
+                      select="nominees/nominee[. = $playerGuess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -85,7 +91,8 @@
                       <xsl:value-of select="$categoryName" />
                     </a>
                     <xsl:call-template name="tieBreaker">
-                      <xsl:with-param name="tieBreaker" select="$categoryData/tieBreaker" />
+                      <xsl:with-param name="tieBreaker"
+                        select="$categoryData/tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <td>
@@ -93,7 +100,8 @@
                   </td>
                   <td>
                     <xsl:variable name="tempWinners">
-                      <xsl:for-each select="nominees/nominee[./@status = 'correct']">
+                      <xsl:for-each
+                        select="nominees/nominee[./@status = 'correct']">
                         <xsl:value-of select="', '" />
                         <xsl:value-of select="." />
                       </xsl:for-each>
@@ -103,11 +111,13 @@
                   <td>
                     <xsl:if test="$winners != ''">
                       <xsl:choose>
-                        <xsl:when test="contains($winners, concat('|', $playerGuess, '|'))">
+                        <xsl:when
+                          test="contains($winners, concat('|', $playerGuess, '|'))">
                           <xsl:value-of select="$categoryData/value" />
                         </xsl:when>
                         <xsl:otherwise>
-                          <xsl:value-of select="translate($categoryData/value, '1', '0')" />
+                          <xsl:value-of
+                            select="translate($categoryData/value, '1', '0')" />
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:if>
@@ -122,7 +132,8 @@
                   <xsl:value-of select="floor($playerResults/score)" />
                 </th>
                 <th>
-                  <xsl:value-of select="count($results/categories/category/nominees[nominee/@status = 'correct'])" />
+                  <xsl:value-of
+                    select="count($results/categories/category/nominees[nominee/@status = 'correct'])" />
                 </th>
                 <th>
                   <xsl:value-of select="$playerResults/score" />
@@ -163,24 +174,28 @@
           </table>
           <br />
           <br />
-          <h3>Rankings</h3>
-          Names in green can no longer pass or be passed by
-          <xsl:value-of select="$playerName" />
+          <h3>
+          Rankings</h3> Names in green can no longer pass or be passed by <xsl:value-of
+            select="$playerName" />
           <br />
           <br />
-          <xsl:call-template name="player-table">
+          <xsl:call-template
+            name="player-table">
             <xsl:with-param name="results" select="$results" />
             <xsl:with-param name="sort" select="'rank'" />
             <xsl:with-param name="inPlayer" select="$playerResults" />
           </xsl:call-template>
           <br />
-          <a href="../category/all.xml" id="return">All Categories</a>
+          <a
+            href="../category/all.xml" id="return">All Categories</a>
           <br />
           <br />
-          <a href=".." id="return">Return to Main Page</a>
+          <a
+            href=".." id="return">Return to Main Page</a>
           <br />
           <br />
-          <xsl:call-template name="updated">
+          <xsl:call-template
+            name="updated">
             <xsl:with-param name="results" select="$results" />
           </xsl:call-template>
         </center>

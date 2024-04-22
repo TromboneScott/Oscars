@@ -24,15 +24,14 @@
                       <b>BALLOTS ARE BEING COLLECTED</b>
                       <br />
                       <br />
-                      &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
+                      &#9993; - &#9993; - &#9993; - &#9993; - &#9993; <br />
                       <br />
+                      Ballot names will appear here a few minutes after being
+                      cast. <br /> The "votes" will be loaded after all ballots
+                      have been collected. <br />
                       <br />
-                      Ballot names will appear here a few minutes after being cast.
-                      <br />
-                      The "votes" will be loaded after all ballots have been collected.
-                      <br />
-                      <br />
-                      <i>Check here for live results during the Oscars broadcast.</i>
+                      <i>Check here for live
+                      results during the Oscars broadcast.</i>
                       <br />
                       <br />
                     </td>
@@ -42,9 +41,8 @@
               <xsl:if test="count($results/ballots/ballot) > 0">
                 <br />
                 <br />
-                <h3>
-                  Ballots Received:
-                  <xsl:value-of select="count($results/ballots/ballot)" />
+                <h3> Ballots Received: <xsl:value-of
+                    select="count($results/ballots/ballot)" />
                 </h3>
                 <table>
                   <tr>
@@ -53,7 +51,8 @@
                         <xsl:when test=". = 'rank'">
                           <xsl:call-template name="player-table-column-header">
                             <xsl:with-param name="text" select="'Timestamp'" />
-                            <xsl:with-param name="link" select="'rankReverse.xml'" />
+                            <xsl:with-param name="link"
+                              select="'rankReverse.xml'" />
                           </xsl:call-template>
                         </xsl:when>
                         <xsl:otherwise>
@@ -69,7 +68,8 @@
                         <xsl:when test=". = 'name'">
                           <xsl:call-template name="player-table-column-header">
                             <xsl:with-param name="text" select="'Name'" />
-                            <xsl:with-param name="link" select="'nameReverse.xml'" />
+                            <xsl:with-param name="link"
+                              select="'nameReverse.xml'" />
                           </xsl:call-template>
                         </xsl:when>
                         <xsl:otherwise>
@@ -114,31 +114,31 @@
               </a>
               <table>
                 <xsl:call-template name="winners">
-                  <xsl:with-param name="categories" select="$results/categories/category[position() &lt;= 6]" />
+                  <xsl:with-param name="categories"
+                    select="$results/categories/category[position() &lt;= 6]" />
                 </xsl:call-template>
                 <xsl:call-template name="winners">
-                  <xsl:with-param name="categories" select="$results/categories/category[position() &gt; 6 and position() &lt;= 12]" />
+                  <xsl:with-param name="categories"
+                    select="$results/categories/category[position() &gt; 6 and position() &lt;= 12]" />
                 </xsl:call-template>
                 <xsl:call-template name="winners">
-                  <xsl:with-param name="categories" select="$results/categories/category[position() &gt; 12]" />
+                  <xsl:with-param name="categories"
+                    select="$results/categories/category[position() &gt; 12]" />
                 </xsl:call-template>
               </table>
               <br />
               <br />
               <div class="info">
                 <xsl:if test="not(string($results/showTime/end))">
-                  <u>BPR / WPR</u>
-                  - Best Possible Rank / Worst Possible Rank: If guesses for all remaining
-                  <a href="../category/all.xml">categories</a>
-                  turn out to be correct / incorrect.
-                  <br />
+                  <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
+                If guesses for all remaining <a href="../category/all.xml">
+                categories</a> turn out to be correct / incorrect. <br />
                   <br />
                 </xsl:if>
-                <u>Score</u>
-                - One point for each correct
-                <a href="../category/all.xml">category</a>
-                plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc.
-              </div>
+                <u>
+                Score</u> - One point for each correct <a
+                  href="../category/all.xml">category</a> plus .1 for tie
+                breaker #1, .01 for #2, .001 for #3, etc. </div>
               <br />
               <br />
               <xsl:call-template name="player-table">
@@ -419,15 +419,14 @@
     <xsl:variable name="id" select="@id" />
     <tr>
       <td>
-        <xsl:attribute name="class">
-          header
-          <xsl:if test="$inPlayer">
+        <xsl:attribute name="class"> header <xsl:if test="$inPlayer">
             <xsl:choose>
               <xsl:when test="@id = $inPlayer/@id">
                 unannounced
               </xsl:when>
-              <xsl:when test="$inPlayer/opponents/player[number($id)] = 'BETTER' or $inPlayer/opponents/player[number($id)] = 'WORSE'">
-                correct
+              <xsl:when
+                test="$inPlayer/opponents/player[number($id)] = 'BETTER' or $inPlayer/opponents/player[number($id)] = 'WORSE'">
+          correct
               </xsl:when>
             </xsl:choose>
           </xsl:if>
@@ -448,18 +447,14 @@
       </td>
       <xsl:if test="$inProgress">
         <td>
-          <xsl:attribute name="class">
-            rank
-            <xsl:if test="bpr = wpr">
+          <xsl:attribute name="class"> rank <xsl:if test="bpr = wpr">
               unannounced
             </xsl:if>
           </xsl:attribute>
           <xsl:value-of select="bpr" />
         </td>
         <td>
-          <xsl:attribute name="class">
-            rank
-            <xsl:if test="bpr = wpr">
+          <xsl:attribute name="class"> rank <xsl:if test="bpr = wpr">
               unannounced
             </xsl:if>
           </xsl:attribute>
@@ -467,21 +462,22 @@
         </td>
       </xsl:if>
       <td class="rank">
-        <xsl:value-of select="score" />
-        --
-        <xsl:variable name="scoreTieBreakers">
+        <xsl:value-of select="score" /> -- <xsl:variable name="scoreTieBreakers">
           <xsl:call-template name="tieBreakers">
             <xsl:with-param name="score" select="score" />
             <xsl:with-param name="value" select="8" />
           </xsl:call-template>
         </xsl:variable>
-        <xsl:variable name="scoreWidth" select="round(score) * 16 + $scoreTieBreakers" />
-        <img src="../../bar_green.bmp" height="15">
+        <xsl:variable
+          name="scoreWidth" select="round(score) * 16 + $scoreTieBreakers" />
+        <img
+          src="../../bar_green.bmp" height="15">
           <xsl:attribute name="width">
             <xsl:value-of select="$scoreWidth" />
           </xsl:attribute>
         </img>
-        <img src="../../bar_grey.bmp" height="15">
+        <img
+          src="../../bar_grey.bmp" height="15">
           <xsl:attribute name="width">
             <xsl:value-of select="16 * 19 - 1 - $scoreWidth" />
           </xsl:attribute>
@@ -489,9 +485,7 @@
       </td>
       <td>
         <xsl:attribute name="class">
-          <xsl:value-of select="time/@status" />
-          time
-        </xsl:attribute>
+          <xsl:value-of select="time/@status" /> time </xsl:attribute>
         <xsl:value-of select="time" />
       </td>
     </tr>
@@ -537,7 +531,8 @@
                 </xsl:for-each>
               </xsl:when>
               <xsl:otherwise>
-                <img src="http://oscars.site44.com/trophy_poster.png" title="Not Yet Announced" />
+                <img src="http://oscars.site44.com/trophy_poster.png"
+                  title="Not Yet Announced" />
               </xsl:otherwise>
             </xsl:choose>
             <br />

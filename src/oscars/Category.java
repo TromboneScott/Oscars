@@ -62,8 +62,8 @@ public final class Category implements ChartColor {
 
     public static Category of(Element inCategoryDOM) {
         String name = inCategoryDOM.getChildText("name").trim();
-        return INSTANCES.computeIfAbsent(name,
-                k -> new Category(name, inCategoryDOM.getAttributeValue("tieBreaker"),
+        return Optional.ofNullable(of(name))
+                .orElseGet(() -> new Category(name, inCategoryDOM.getAttributeValue("tieBreaker"),
                         inCategoryDOM.getChildren("nominees").stream()
                                 .flatMap(nominees -> nominees.getChildren("nominee").stream())
                                 .map(nominee -> new Nominee(nominee.getValue().trim(), null, 0))));
