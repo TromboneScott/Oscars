@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,8 +23,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
 public final class Category implements ChartColor {
-    private static final Pattern TIE_BREAKER_PATTERN = Pattern.compile(" *\\((\\d+)\\)$");
-
     private static final Map<String, Category> INSTANCES = new HashMap<>();
 
     public static final Category TIMESTAMP = new Category("Timestamp", null, null);
