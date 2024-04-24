@@ -45,7 +45,7 @@
         <tr>
           <td colspan="5">
             <xsl:for-each
-              select="document('../categoryDefinitions.xml')/categories/category[./name = 'Best Picture']/nominees/nominee">
+              select="document('../categoryDefinitions.xml')/categories/category[./name = 'Best Picture']/nominee">
               <img width="50">
                 <xsl:attribute name="src">
                   <xsl:value-of select="./@img" />
@@ -134,7 +134,7 @@
     <img>
       <xsl:attribute name="src">
         <xsl:value-of
-          select="document('../categoryDefinitions.xml')/categories/category[name = $category]/nominees/nominee[normalize-space(.) = $nominee]/@img" />
+          select="document('../categoryDefinitions.xml')/categories/category[name = $category]/nominee[normalize-space(.) = $nominee]/@img" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="$nominee" />

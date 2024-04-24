@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,10 @@ public final class BallotReader {
     /** Prepare to read ballots by reading the ballot definition */
     public BallotReader() throws IOException {
         try {
-            categoryDefinitions = new SAXBuilder().build(CATEGORY_DEFINITIONS_FILE).getRootElement()
-                    .getChildren().stream().map(Category::of)
-                    .collect(Collectors.toMap(category -> category.name, category -> category,
-                            (list1, list2) -> list1, LinkedHashMap::new));
+            categoryDefinitions = Collections.unmodifiableMap(new SAXBuilder()
+                    .build(CATEGORY_DEFINITIONS_FILE).getRootElement().getChildren("category")
+                    .stream().map(Category::of).collect(Collectors.toMap(category -> category.name,
+                            category -> category, (list1, list2) -> list1, LinkedHashMap::new)));
         } catch (JDOMException e) {
             throw new IOException(
                     "ERROR: Unable to read category definitions file: " + CATEGORY_DEFINITIONS_FILE,

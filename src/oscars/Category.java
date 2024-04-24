@@ -57,12 +57,11 @@ public final class Category implements ChartColor {
         INSTANCES.put(inName, this);
     }
 
-    public static Category of(Element inCategoryDOM) {
-        String name = inCategoryDOM.getChildText("name").trim();
+    public static Category of(Element inCategory) {
+        String name = inCategory.getChildText("name").trim();
         return Optional.ofNullable(of(name))
-                .orElseGet(() -> new Category(name, inCategoryDOM.getAttributeValue("tieBreaker"),
-                        inCategoryDOM.getChildren("nominees").stream()
-                                .flatMap(nominees -> nominees.getChildren("nominee").stream())
+                .orElseGet(() -> new Category(name, inCategory.getAttributeValue("tieBreaker"),
+                        inCategory.getChildren("nominee").stream()
                                 .map(nominee -> new Nominee(nominee.getValue().trim(), null, 0))));
     }
 
