@@ -1,12 +1,6 @@
 To start a new year:
 
-Download 100x148 pixel pictures for Google Form for these categories:
-- Actor/Actress including Supporting
-- Best Picture
-- International Feature
-- Animated Short
-- Documentary Feature
-- Animated Feature
+Download 100x148 pixel pictures for Google Form for all categories
 1. Go to imdb.com
 2. Use the search window to search for the movie or actor
 3. Right-click on the little image of the correct movie or actor that appears in the search drop down and select Save image as...
@@ -53,9 +47,10 @@ Edit categoryDefinitions.xml
 Delete this file if it exists:
 File: categoryMaps.xml
 
-From the new year folder run oscars.bat or ./oscars.sh
-
-Update the link in ../index.html to point to current year.
+Proof read the website:
+1. From the new year folder run oscars.bat or ./oscars.sh
+2. Verify that all nominee names are short enough to be displayed
+3. Verify that nominees with special characters are displayed correctly
 
 
 -- While ballots are being collected
@@ -64,7 +59,10 @@ From the new year folder run the batch:
   oscars.bat Ballot (or ./oscars.sh -b)
 Leave it running so it can continuosly download the ballots as they're entered
 
-Check the ballots and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered.
+Update the link in ../index.html to point to current year
+
+Check the ballots as the come in and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered
+
 
 --- After contest deadline for entering guesses
 
