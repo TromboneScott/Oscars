@@ -103,18 +103,17 @@ public final class CategoryMapper {
     }
 
     private void defineCategories() {
-        Map<String, Map<String, String>> nomineeMaps = categoryMaps.entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().entrySet()
-                        .stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
         ballotReader.categoryDefinitions.values().stream()
-                .filter(category -> !category.nominees.isEmpty()).forEach(
-                        category -> new Category(category.name, category.tieBreaker,
-                                category.nominees.stream().map(nominee -> new Nominee(nominee.name,
-                                        nomineeMaps.get(category.name).get(nominee.name),
-                                        ballots.stream()
-                                                .map(ballot -> categoryMaps.get(category.name)
-                                                        .get(ballot.get(category.name)))
-                                                .filter(nominee.name::equals).count()))));
+                .filter(category -> !category.nominees.isEmpty())
+                .forEach(category -> new Category(category.name, category.tieBreaker,
+                        category.nominees.stream().map(nominee -> new Nominee(nominee.name,
+                                categoryMaps.get(category.name).entrySet().stream()
+                                        .filter(entry -> entry.getValue().equals(nominee.name))
+                                        .map(Entry::getKey).findAny().orElse(null),
+                                ballots.stream()
+                                        .map(ballot -> categoryMaps.get(category.name)
+                                                .get(ballot.get(category.name)))
+                                        .filter(nominee.name::equals).count()))));
     }
 
     private void writeCategoryMaps() throws IOException {

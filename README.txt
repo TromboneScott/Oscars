@@ -14,7 +14,7 @@ Create Google Form:
     i. Even years: 3 = Actress, 4 = Supporting Actor
     ii. Odd years: 3 = Actor, 4 = Supporting Actress
   b. Update the broadcast date
-  c. Update nominees
+  c. Update nominees - Can be copied from oscars.org and include special characters
 4. Set up data export
   a. Click Responses tab
   b. Click the green spreadsheet button to Create Spreadsheet
@@ -33,13 +33,13 @@ Update any code and files as needed
 
 Copy year folder to oscars site and rename to current year.
 
-Edit categoryDefinitions.xml
+Edit categoryDefinitions.xml using NOTEPAD
 1. Update the categories as a few change each year
 2. Make sure the categories are in the same order as the Google Form
 3. Update the tieBreaker values
 4. These categories have to have these exact names: Timestamp, First, Last, Time, EMail
 5. Add all the nominees under each category in the order you want them (usually alphabetical)
-  a. Make sure special characters such as á and é are in UTF-8 format
+  a. Be sure to use NOTEPAD so all special characters such as á and é are in UTF-8 format
 6. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
@@ -47,10 +47,11 @@ Edit categoryDefinitions.xml
 Delete this file if it exists:
 File: categoryMaps.xml
 
-Proof read the website:
+Proofread the website:
 1. From the new year folder run oscars.bat or ./oscars.sh
 2. Verify that all nominee names are short enough to be displayed
 3. Verify that nominees with special characters are displayed correctly
+4. Verify that all nominee images are correct
 
 
 -- While ballots are being collected
@@ -75,5 +76,14 @@ From the new year folder run the batch:
 You will be prompted on how to map survey answers to nominees for each category where it can't be done automatically.
 This will be saved so you only have to do this for new survey answers.
 If any mistakes are made you must edit (or delete) categoryMaps.xml and start oscars.bat or oscars.sh over again.
+
+Edit categoryMaps.xml in NOTEPAD
+1. Add a duplicate entry above any entry with garbled characters in the "ballot" entry
+  a. Copy the correct characters from the Google form to replace the garbled ones in "ballot"
+  b. Leave the original mapping below it so it can be used the next time ballots are downloaded
+  c. The website will use the the first entry it sees for the "ballot" as the pop-up text for the nominee
+2. Add a new entry for any nominee that was not selected
+  a. Copy the text from the Google form to use as the "ballot" value
+  b. The website will default to the "website" value for the nominee pop-up if there's no mapping
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.
