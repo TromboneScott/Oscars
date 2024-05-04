@@ -65,6 +65,9 @@ public final class CategoryMapper {
                                 : prompt(categoryEntry.getKey(), guess, nominees));
                     }
                 }
+            for (String nominee : nominees)
+                if (!categoryMap.containsValue(nominee))
+                    categoryMap.put(promptDescription(categoryEntry.getKey(), nominee), nominee);
         }
         return categoryMaps;
     }
@@ -81,6 +84,12 @@ public final class CategoryMapper {
             System.out.println("\nInvalid Input: " + input);
             return prompt(inCategoryName, inGuess, inNominees);
         }
+    }
+
+    private static String promptDescription(String inCategory, String inNominee) {
+        System.out.println(
+                "\nEnter description for CATEGORY: " + inCategory + " - NOMINEE: " + inNominee);
+        return Results.STDIN.nextLine();
     }
 
     private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {

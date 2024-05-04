@@ -82,8 +82,5 @@ Edit categoryMaps.xml in NOTEPAD
   a. Copy the correct characters from the Google form to replace the garbled ones in "ballot"
   b. Leave the original mapping below it so it can be used the next time ballots are downloaded
   c. The website will use the the first entry it sees for the "ballot" as the pop-up text for the nominee
-2. Add a new entry for any nominee that was not selected
-  a. Copy the text from the Google form to use as the "ballot" value
-  b. The website will default to the "website" value for the nominee pop-up if there's no mapping
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.
