@@ -61,8 +61,10 @@ public final class CategoryMapper {
                         List<String> mappings = nominees.stream().filter(
                                 nominee -> guess.toUpperCase().contains(nominee.toUpperCase()))
                                 .collect(Collectors.toList());
-                        categoryMap.put(guess, mappings.size() == 1 ? mappings.get(0)
-                                : prompt(categoryEntry.getKey(), guess, nominees));
+                        categoryMap.put(guess,
+                                mappings.size() == 1 ? mappings.get(0)
+                                        : prompt(categoryEntry.getKey(), guess,
+                                                mappings.isEmpty() ? nominees : mappings));
                     }
                 }
             for (String nominee : nominees)
