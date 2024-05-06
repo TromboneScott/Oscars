@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public final class BallotReader {
             URL url = new URL(lines.iterator().next());
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReaderHeaderAware(
-                    new InputStreamReader(url.openStream()))) {
+                    new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 return reader.readAll().stream().peek(ballot -> {
                     if (ballot.length != categoryNames.size())
                         throw new RuntimeException("Ballot length: " + ballot.length

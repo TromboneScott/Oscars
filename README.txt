@@ -62,7 +62,7 @@ Leave it running so it can continuosly download the ballots as they're entered
 
 Update the link in ../index.html to point to current year
 
-Check the ballots as the come in and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered
+Check the ballots as they come in and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered
 
 
 --- After contest deadline for entering guesses
@@ -76,11 +76,5 @@ From the new year folder run the batch:
 You will be prompted on how to map survey answers to nominees for each category where it can't be done automatically.
 This will be saved so you only have to do this for new survey answers.
 If any mistakes are made you must edit (or delete) categoryMaps.xml and start oscars.bat or oscars.sh over again.
-
-Edit categoryMaps.xml in NOTEPAD
-1. Add a duplicate entry above any entry with garbled characters in the "ballot" entry
-  a. Copy the correct characters from the Google form to replace the garbled ones in "ballot"
-  b. Leave the original mapping below it so it can be used the next time ballots are downloaded
-  c. The website will use the the first entry it sees for the "ballot" as the pop-up text for the nominee
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.

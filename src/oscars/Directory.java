@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
@@ -47,8 +48,8 @@ public class Directory extends File {
                     new String[][] { { "type", "text/xsl" }, { "href", "../xsl/" + inXSLFile } })
                     .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
         document.addContent(new Comment("OSCARS website created by Scott McDonald"));
-        try (Writer writer = new PrintWriter(
-                new OutputStreamWriter(new FileOutputStream(this + "/" + inXMLFile), "UTF-8"))) {
+        try (Writer writer = new PrintWriter(new OutputStreamWriter(
+                new FileOutputStream(this + "/" + inXMLFile), StandardCharsets.UTF_8))) {
             new XMLOutputter(Format.getPrettyFormat()).output(document.addContent(inElement),
                     writer);
         }
