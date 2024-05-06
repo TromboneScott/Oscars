@@ -68,8 +68,13 @@ public final class CategoryMapper {
                     }
                 }
             for (String nominee : nominees)
-                if (!categoryMap.containsValue(nominee))
-                    categoryMap.put(promptDescription(categoryEntry.getKey(), nominee), nominee);
+                if (!categoryMap.containsValue(nominee)) {
+                    System.out.println("\n--Nominee not chosen on any Ballots--");
+                    System.out.println("CATEGORY: " + categoryEntry.getKey());
+                    System.out.println("NOMINEE: " + nominee);
+                    System.out.print("Enter Ballot Description: ");
+                    categoryMap.put(Results.STDIN.nextLine(), nominee);
+                }
         }
         return categoryMaps;
     }
@@ -86,12 +91,6 @@ public final class CategoryMapper {
             System.out.println("\nInvalid Input: " + input);
             return prompt(inCategoryName, inGuess, inNominees);
         }
-    }
-
-    private static String promptDescription(String inCategory, String inNominee) {
-        System.out.println(
-                "\nEnter description for CATEGORY: " + inCategory + " - NOMINEE: " + inNominee);
-        return Results.STDIN.nextLine();
     }
 
     private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {
