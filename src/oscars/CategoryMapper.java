@@ -49,28 +49,28 @@ public final class CategoryMapper {
 
     private Map<String, Map<String, String>> categoryMaps() throws IOException {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
-        for (Entry<String, Category> categoryEntry : ballotReader.categoryDefinitions.entrySet()) {
-            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(categoryEntry.getKey(),
+        for (Category category : ballotReader.categoryDefinitions.values()) {
+            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new HashMap<>());
-            List<String> nominees = categoryEntry.getValue().nominees.stream()
-                    .map(nominee -> nominee.name).collect(Collectors.toList());
+            List<String> nominees = category.nominees.stream().map(nominee -> nominee.name)
+                    .collect(Collectors.toList());
             if (!nominees.isEmpty())
                 for (Ballot ballot : ballots) {
-                    String guess = ballot.get(categoryEntry.getKey());
+                    String guess = ballot.get(category.name);
                     if (!categoryMap.containsKey(guess)) {
                         List<String> mappings = nominees.stream().filter(
                                 nominee -> guess.toUpperCase().contains(nominee.toUpperCase()))
                                 .collect(Collectors.toList());
                         categoryMap.put(guess,
                                 mappings.size() == 1 ? mappings.get(0)
-                                        : prompt(categoryEntry.getKey(), guess,
+                                        : prompt(category.name, guess,
                                                 mappings.isEmpty() ? nominees : mappings));
                     }
                 }
             for (String nominee : nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
-                    System.out.println("CATEGORY: " + categoryEntry.getKey());
+                    System.out.println("CATEGORY: " + category.name);
                     System.out.println("NOMINEE: " + nominee);
                     System.out.print("Enter Ballot Description: ");
                     categoryMap.put(Results.STDIN.nextLine(), nominee);
