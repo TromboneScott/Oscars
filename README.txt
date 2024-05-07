@@ -1,11 +1,5 @@
 To start a new year:
 
-Download 100x148 pixel pictures for Google Form for all categories
-1. Go to imdb.com
-2. Use the search window to search for the movie or actor
-3. Right-click on the little image of the correct movie or actor that appears in the search drop down and select Save image as...
-4. Save the ~5Kb JPG file for use in the Google Form
-
 Create Google Form:
 1. Open last year's form at forms.google.com
 2. Select the dots menu at top right and click "Make a copy"
@@ -24,6 +18,14 @@ Create Google Form:
   f. Check box for "Automatically rebulish when changes are made"
   g. Click "Publish"
   h. Copy the URL it generates and paste it as the only line in the file: ResponsesURL.txt
+
+Download 100x148 pixel pictures for Google Form for all categories
+1. Go to imdb.com
+2. Use the search window to search for the movie or actor
+3. Replace image on Google Form
+  a. Click the X to remove existing image
+  b. Click the "Add Image" icon that appears on the nominee
+  c. Drag and drop the thumbnail image from the IMDB search
 
 Update any code and files as needed
 1. git add <file> (for each <file>)
