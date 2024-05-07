@@ -68,13 +68,16 @@ Check the ballots as they come in and fix any names where they didn't capitalize
 --- After contest deadline for entering guesses
 
 From the new year folder run the batch:
-  emails.bat (or ./emails.sh)
+  oscars.bat Ballot emails (or ./emails.sh)
 Send the list of names and emails to Scott Takeda.
 
 From the new year folder run the batch:
-  oscars.bat (or ./oscars.sh)
+  oscars.bat Oscars (or ./oscars.sh)
 You will be prompted on how to map survey answers to nominees for each category where it can't be done automatically.
 This will be saved so you only have to do this for new survey answers.
-If any mistakes are made you must edit (or delete) categoryMaps.xml and start oscars.bat or oscars.sh over again.
+Edit (or delete and start over) the file categoryMaps.xml
+- Fix any mistakes
+- Fix any special characters that were copied/pasted (use NOTEPAD so characters will be in UTF-8)
+- Start oscars.bat or oscars.sh over again if any changes were made
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.
