@@ -1,452 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--OSCARS website created by Scott McDonald-->
 <categories>
-  <category>
-    <name>Timestamp</name>
+  <category name="Timestamp" />
+  <category name="First" />
+  <category name="Last" />
+  <category name="Best Picture" tieBreaker="1">
+    <nominee name="American Fiction"
+      img="https://lh7-us.googleusercontent.com/AzCPj1MBzkt1wYGnV9G20nQmoghbOxH7_nZgjac8iTQ-Zj-oFuEm5PaKsBuozejc62wP8YUN9eGSAdhPW_hpResNjPZJCEgvdXk4heREvZb-9hhJRhzeknAp3l47feFMAlCXfQsFR-1ybfDF7Zai5dEvHUblrg" />
+    <nominee name="Anatomy of a Fall"
+      img="https://lh7-us.googleusercontent.com/dp_4Ecngh9Bzdv65l8B0Edq5_maKWypxHPq_fQqviIzitp8zUcqarTy5VfRevLvMgTu743cvkDa2UJw2W7Ey0ZGBzloMSviDS5apAI4BWfr0LURGwFloD_0faygmpXhpKWLvJyuGPb5CrVnRwjKJyY--7RoPGw" />
+    <nominee name="Barbie"
+      img="https://lh7-us.googleusercontent.com/TSLLSsnvLbbQEGMGpLLuOBPyCHo26MqdYRF6Lr9iH1ZunIClcmYXvjPkCEO3ShL2CFJLd6pe58IzXQB-Mfaxta4190dJ7nIdhWeDaHunLBs9QgKSxU7STlZCbPnRJnM_o_CIMKymyudBRtCqBSHubkwFIDNoUw" />
+    <nominee name="Holdovers"
+      img="https://lh7-us.googleusercontent.com/LGsd_bKK0pcIiCPHP4VNpmzw9XSQi6P9YzHs_KCexMGxaSW9qXDTu99Zrp1cPDzQNXGHMQHj97GfFdW2dMJX5Jf7KqnCfgdLhn2SYtO8jkeVlFBeoQRszv5jWnHkRuDuT7Q4uChqatdi16I5U0C1JiHTP7Bl2Q" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/BqWkndejw2YEHUulpQRDqXhq_t5i7zbeVfaJAVvEojWlckyTza7sA_Kwn00HF1xYrSMgeh_mB4CZnucMjh1_WRjn6_lHu-EZJ5_8qJiWmxac_VeQghg2XorPVdzO89tebO1Qil55G6YnxUOQM97TSQlEz9Vdcw" />
+    <nominee name="Maestro"
+      img="https://lh7-us.googleusercontent.com/Z-zQTqCuT4A8wyCCk6-9Im7To2vgg0E-C8qq1F4SUr2lVnuhRQrTWOctkd5IY2r3-NpTfzH7PCcZVUbLVY4WBBVF5RKWn95sbok6mPaqG6JtFSKRLqzVQ8_9vSZjHDmjbz8JsiOuvD0-46rS40gw-laJOOh92g" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/4L8a3mEWjk-iBiWiinWhcqNmnPj7jE7bWn7x4bXULCVhPH7NoO2beetX7sZLuAJDx1YH9Z8Z0ainzef9gKMrAkyTg0NpZ-cet2NcND2BH3zB4bAS1rDT92s2Nbm4w4mh3Ab3Za4T_Uuqcq7N2lnnLwugO7Wlmg" />
+    <nominee name="Past Lives"
+      img="https://lh7-us.googleusercontent.com/cHXLcU3Oht3ztaiY9pzzKoqDhm-zRolMlaVcvLixTk_4HEjgEhSSNBwZZ2fNclyaD1UbRDOEKwrxAKZeQsOKp-a8jxVloL8tM8ndZ-wa8vp5vPBl1hfz0wBZRx5xW4N3a-uzwuYtG6MzM0qjRqZuGr2I2RoIUA" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/dOGpRvBnTLTeN25B5RspnnNZkNz5YtNwWrMxXU797TYGCrkBmA_SJQgZViFUTs4mgkM8Go_hyjQCELjiB9rrqY3vciHCRlQu1-Imxeyg2qmQRbtnkMA2W4jMJHjX8mx0pfNUsLq9GDg9SJemYKWkyhXeY9lcZw" />
+    <nominee name="Zone of Interest"
+      img="https://lh7-us.googleusercontent.com/iNR-9zn1F5Ip1zuN-qQ-IUYKmsC0-1Hy2Eqv7LKPfRRMluMxMgAR4OMmhJGw56niP8CilOtr1QIzbmHIMA7F4aNf1S87nnwf2Aebri2imPaG7ge5X3ZYbeQSNveSz-M919bhasYVhR8pG7J7ce1s10FmzMRWRQ" />
   </category>
-  <category>
-    <name>First</name>
+  <category name="Leading Actress" tieBreaker="3">
+    <nominee name="Bening"
+      img="https://lh7-us.googleusercontent.com/jcdfOCdBpRVvgj26Q5DY_-5y7CQjox4UWtB5LIQmjJgXu3jSAbcm6-6M4Duc7TZKZCXYwB4U0fmFoHC5ZVQnpXAfJ7sI8InM26-Ajs-A3oxBLFC7Nu2PatHPDh_odpo1116kshtUPD8BElChgqrdMeyDn80unw" />
+    <nominee name="Gladstone"
+      img="https://lh7-us.googleusercontent.com/Zd3GZVdlA2DgGtrtX9bkREGCZ0hZ6mgms9tRTKX4_Z7stW7AtyCF8f8pXiauROeKHPqB3vup25BmA5ymrln7COFxhn0zsA46wRqfQpujDiIdfysiiJgtdUUmblRTsv8KQHtrG5QpCuEGLhgpvUQwpLlsk70SWw" />
+    <nominee name="Hüller"
+      img="https://lh7-us.googleusercontent.com/1j51dnRLkMLlb9uh3TZPZX9fhKP-BsMnnyp-wbCPKzzN16c2OCn26IcEcPJGzO4qwgN_9lgiJp3fqWMPEguA0FLZ33QTlLfGo-iphx_27a0e5Y6oVsP1bs8cdNDlKz3GAgTK5Uafr0aSXz3o700I3JNGSyQRcw" />
+    <nominee name="Mulligan"
+      img="https://lh7-us.googleusercontent.com/TVxJYnaksqE_SuCtm0hgEF-0YqIFkRY6IkYFZ1HvbvoOGEMUcWLeqS2xzRaqsqNN9vkqTRMYyVVQDvAmIBmrE_lZ1q2IinSsMvBp-Dv4ihd-hlsMqARrW7ZM-ehkqh5gjaJ82QHsjZErlfv8DNQhwbOzxcYJsg" />
+    <nominee name="Stone"
+      img="https://lh7-us.googleusercontent.com/WQ2rwA-N-i_52IhywTfwKS7wuAoRXrQRC41aOAmyULn3gutNxvPVp8rX07Y2nhqxX9FN68G3s2Ia9r7SqGkvXazZPuIue25Ig3m48JlwwAyGicSIcfkq4gRt-SQOruBB_LqsEnVvlFR04a1bRh9VpbGTs6Ck-w" />
   </category>
-  <category>
-    <name>Last</name>
+  <category name="Leading Actor">
+    <nominee name="Cooper"
+      img="https://lh7-us.googleusercontent.com/7uiktl_AIrq_aTT5Une79gossemcdR4WzJJ7p-KUmIArY7E3uddaDrmAftZ9DyrLePuIxDIjULLGg_QYSKtZAm7nQVUhc3r61-256m0yRc3RkLbCmyrNGHg-i7J6QH64IP_Gjv6cmwRk1blyqZejkXUCapU6yg" />
+    <nominee name="Domingo"
+      img="https://lh7-us.googleusercontent.com/-SoAK1fQdo6FTQ7SM3pTgCCxBAk4ZZ6Ebrb_MjIUvJ-Xoh2lX7yC0FV6QA2KSBR_DCKeF6s3CQ3WF1PSIXxOWfAss1TNt-eL9ZnYxwOpiVwGdbSYoU9x2qbGh9HN_slrG0RCG84DoYCApXmzcf19YgfurxxKQQ" />
+    <nominee name="Giamatti"
+      img="https://lh7-us.googleusercontent.com/aWU8QZ94wy-WcJ8E6uCywAABdtDXKbfa2wGKHptQqLNg5FZnb5mtRuILvAnGoibnH70sPY5eMRnNsJlM1NsS15hj7rz3si_3XjKgUE1UFV1yCHpQdPpJIYjEn83MMnYUOdVLe_LqIxeIed60H0nJ_ZtXfrCHLA" />
+    <nominee name="Murphy"
+      img="https://lh7-us.googleusercontent.com/6Hd1PRdD--WOEKKqASOvz9yPoTrbpB9IYfvH1CG6t3YW8seAlhpLYHhoCNSCX6aicaahA74Bx-gQlqzUj22CglIfxYeWif1yQGOyiw57qIoOuCKk5K7ZqfCaZnpYtgm8FLvL1mQIkLtpUR5-HX9tgIv76xi6WQ" />
+    <nominee name="Wright"
+      img="https://lh7-us.googleusercontent.com/cjAvBpVLM97I0BZ9NrwGj1A8L3aBmDv3GJ38dWhp148LXC4AIwIGqLCFqAsuONTX7kKvilUbd6ZYtLohIOrFxQqnMavaGIBoFGjK8BUU8V3-41p2Zu57tGeR0SSHvRJZXvZ0SCiNAyXabe-K5j8db_FytK88Rg" />
   </category>
-  <category tieBreaker="1">
-    <name>Best Picture</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/AzCPj1MBzkt1wYGnV9G20nQmoghbOxH7_nZgjac8iTQ-Zj-oFuEm5PaKsBuozejc62wP8YUN9eGSAdhPW_hpResNjPZJCEgvdXk4heREvZb-9hhJRhzeknAp3l47feFMAlCXfQsFR-1ybfDF7Zai5dEvHUblrg">
-      American Fiction
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/dp_4Ecngh9Bzdv65l8B0Edq5_maKWypxHPq_fQqviIzitp8zUcqarTy5VfRevLvMgTu743cvkDa2UJw2W7Ey0ZGBzloMSviDS5apAI4BWfr0LURGwFloD_0faygmpXhpKWLvJyuGPb5CrVnRwjKJyY--7RoPGw">
-      Anatomy of a Fall
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/TSLLSsnvLbbQEGMGpLLuOBPyCHo26MqdYRF6Lr9iH1ZunIClcmYXvjPkCEO3ShL2CFJLd6pe58IzXQB-Mfaxta4190dJ7nIdhWeDaHunLBs9QgKSxU7STlZCbPnRJnM_o_CIMKymyudBRtCqBSHubkwFIDNoUw">
-      Barbie
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/LGsd_bKK0pcIiCPHP4VNpmzw9XSQi6P9YzHs_KCexMGxaSW9qXDTu99Zrp1cPDzQNXGHMQHj97GfFdW2dMJX5Jf7KqnCfgdLhn2SYtO8jkeVlFBeoQRszv5jWnHkRuDuT7Q4uChqatdi16I5U0C1JiHTP7Bl2Q">
-      Holdovers
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/BqWkndejw2YEHUulpQRDqXhq_t5i7zbeVfaJAVvEojWlckyTza7sA_Kwn00HF1xYrSMgeh_mB4CZnucMjh1_WRjn6_lHu-EZJ5_8qJiWmxac_VeQghg2XorPVdzO89tebO1Qil55G6YnxUOQM97TSQlEz9Vdcw">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Z-zQTqCuT4A8wyCCk6-9Im7To2vgg0E-C8qq1F4SUr2lVnuhRQrTWOctkd5IY2r3-NpTfzH7PCcZVUbLVY4WBBVF5RKWn95sbok6mPaqG6JtFSKRLqzVQ8_9vSZjHDmjbz8JsiOuvD0-46rS40gw-laJOOh92g">
-      Maestro
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/4L8a3mEWjk-iBiWiinWhcqNmnPj7jE7bWn7x4bXULCVhPH7NoO2beetX7sZLuAJDx1YH9Z8Z0ainzef9gKMrAkyTg0NpZ-cet2NcND2BH3zB4bAS1rDT92s2Nbm4w4mh3Ab3Za4T_Uuqcq7N2lnnLwugO7Wlmg">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/cHXLcU3Oht3ztaiY9pzzKoqDhm-zRolMlaVcvLixTk_4HEjgEhSSNBwZZ2fNclyaD1UbRDOEKwrxAKZeQsOKp-a8jxVloL8tM8ndZ-wa8vp5vPBl1hfz0wBZRx5xW4N3a-uzwuYtG6MzM0qjRqZuGr2I2RoIUA">
-      Past Lives
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/dOGpRvBnTLTeN25B5RspnnNZkNz5YtNwWrMxXU797TYGCrkBmA_SJQgZViFUTs4mgkM8Go_hyjQCELjiB9rrqY3vciHCRlQu1-Imxeyg2qmQRbtnkMA2W4jMJHjX8mx0pfNUsLq9GDg9SJemYKWkyhXeY9lcZw">
-      Poor Things
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/iNR-9zn1F5Ip1zuN-qQ-IUYKmsC0-1Hy2Eqv7LKPfRRMluMxMgAR4OMmhJGw56niP8CilOtr1QIzbmHIMA7F4aNf1S87nnwf2Aebri2imPaG7ge5X3ZYbeQSNveSz-M919bhasYVhR8pG7J7ce1s10FmzMRWRQ">
-      Zone of Interest
-    </nominee>
+  <category name="Supporting Actress">
+    <nominee name="Blunt"
+      img="https://lh7-us.googleusercontent.com/lHfWFt-QW8jYG9DjtYbJEcfBhiSkHwN3-oY15oPu7ZQ6KSgSgw0RoDn6SPsyHgJQY8QJcMDJ5jluOtSSNMOJ1lrXCwzcvArb7Ncnfn4OAPAi0YajzcOaAHRwP1_V9kLjrd0N_JHVOjx414t_UH99xBRmkkcEFw" />
+    <nominee name="Brooks"
+      img="https://lh7-us.googleusercontent.com/Oqp_yRyqYrTrJQtAdQ6mAB9O89MREV6jalwYY-BAPFkn2JcRyNnXd-Dt6vifUGRI12RLPj8aOlLAIILIUbJvA8xh4OBT6uSRr6BLouK1A0L38rro6JMUoOD8fjnn1g6T0qeO8joVAipGYuQ4q2DBYDss61Wz3A" />
+    <nominee name="Ferrera"
+      img="https://lh7-us.googleusercontent.com/F6v_jKW7gdukrH0z7SNgMAl6fN3XQ-FR0RHI6E2P9Y5jJsEyRVYGV9TIWx7UQ03RldQ7srq0AD0C_byqTQ48fyoIS2G42EGyTD97faG6OkYp_A3Z7TFbcvtoalYdgyOnSLyp3AyAEasl4TLlon3HtpAs_VIDoA" />
+    <nominee name="Foster"
+      img="https://lh7-us.googleusercontent.com/NMkQqv-UoMZmLXX5tsb5Jv_idFdONJmVRvWNLTzXeuKb-NZxaF4ufLUM-LDjCX41w6ggQnxwoWCqwNBG_VnejP5Je23CkOGJYu2FaZtjUY0-8r_MmxekkVnG7j3fyyEY6Rjs74QVmKNZJrOpB4ckQRt6KS-NDQ" />
+    <nominee name="Randolph"
+      img="https://lh7-us.googleusercontent.com/s49w_LNFe3PQ0tJucIK1-XxBHjSxl7Ei3vBPeQz5xOkwPn1HaVRq9eDOV4axhG_aykHPIq9YhUgjyqmF7DBUUjjloBzTFalesv955FjCMZaXiG_O-E1JJ7Vd5hzEeHsFWlLpQMozss4W3230hHtlSLiInbj4cg" />
   </category>
-  <category tieBreaker="3">
-    <name>Leading Actress</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/jcdfOCdBpRVvgj26Q5DY_-5y7CQjox4UWtB5LIQmjJgXu3jSAbcm6-6M4Duc7TZKZCXYwB4U0fmFoHC5ZVQnpXAfJ7sI8InM26-Ajs-A3oxBLFC7Nu2PatHPDh_odpo1116kshtUPD8BElChgqrdMeyDn80unw">
-      Bening
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Zd3GZVdlA2DgGtrtX9bkREGCZ0hZ6mgms9tRTKX4_Z7stW7AtyCF8f8pXiauROeKHPqB3vup25BmA5ymrln7COFxhn0zsA46wRqfQpujDiIdfysiiJgtdUUmblRTsv8KQHtrG5QpCuEGLhgpvUQwpLlsk70SWw">
-      Gladstone
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/1j51dnRLkMLlb9uh3TZPZX9fhKP-BsMnnyp-wbCPKzzN16c2OCn26IcEcPJGzO4qwgN_9lgiJp3fqWMPEguA0FLZ33QTlLfGo-iphx_27a0e5Y6oVsP1bs8cdNDlKz3GAgTK5Uafr0aSXz3o700I3JNGSyQRcw">
-      Hüller
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/TVxJYnaksqE_SuCtm0hgEF-0YqIFkRY6IkYFZ1HvbvoOGEMUcWLeqS2xzRaqsqNN9vkqTRMYyVVQDvAmIBmrE_lZ1q2IinSsMvBp-Dv4ihd-hlsMqARrW7ZM-ehkqh5gjaJ82QHsjZErlfv8DNQhwbOzxcYJsg">
-      Mulligan
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/WQ2rwA-N-i_52IhywTfwKS7wuAoRXrQRC41aOAmyULn3gutNxvPVp8rX07Y2nhqxX9FN68G3s2Ia9r7SqGkvXazZPuIue25Ig3m48JlwwAyGicSIcfkq4gRt-SQOruBB_LqsEnVvlFR04a1bRh9VpbGTs6Ck-w">
-      Stone
-    </nominee>
+  <category name="Supporting Actor" tieBreaker="4">
+    <nominee name="Brown"
+      img="https://lh7-us.googleusercontent.com/U5bdAIZMk2yoZIs03saFi0FuBpdRWJs0A8HNNUrBXwfEv3xmX92eHWUZEL7xjYUWETFjIkZfJPnHITUxshNmygpn0xufeOr6hAWbq37lAwwB3PRlvLevsI-drPkVvSUbFut1G7Gjj4yF-UKC6QbOdSqDpfp1ow" />
+    <nominee name="De Niro"
+      img="https://lh7-us.googleusercontent.com/MzFQ0YJHbkskRyydLmVqN_nZnZnOXYmhZ2MbZam9B6u773pTGUZFT8UHfwb4beMIiNE2kt5hNa9MoOpwK1rmI0AjXpo-wDdhATMVyhbd2kC3uZlL0XkZcZV0sosULjj-1WDryvM1_Y3cDoBRbxvkGCLwVxRbJg" />
+    <nominee name="Downey"
+      img="https://lh7-us.googleusercontent.com/IPYMWbKWhwgoWUnoLj5j3lIkaxlmJR14sVACo9GT7vFKEsuxz43BYbvhrHstpgs5FnTlzP-Xwta9Iqk51zMxjn5ulDG7nVLpcdRwbML2YnaCSjrIjz8PF2NuGOvK_douqsiNnPz-xsp9a5L1yZ3csEOVW3BSGg" />
+    <nominee name="Gosling"
+      img="https://lh7-us.googleusercontent.com/hzk7MRNG0lD-3VqghmzBGch8a3svxEqQDpRXy1XCxZqQp8HIun-s7f_ajLD5f7ycoXJsF2oOyyV1k5ipPcnxlzO_bJp1xuRCGk7rMK7AIGky2CCw1I-jD_LckjaFfC4ClFHbOJOzhUJujR-gUVSnShUntZRCAQ" />
+    <nominee name="Ruffalo"
+      img="https://lh7-us.googleusercontent.com/8PMbw4aG1sMnE9TneFiWbeC_xxOQPX4E7HZP9Z7H8BupP41lhXky5sKXC17TFJNFBGYhRJ2oRgRpQYxoFUDo8lLvaYH5PAI0IPy9N5n2hNNLUmIDomuwh3DZ0NX_iH0zf-f9dceKpQKT_L2DKdLDEuG9--Bt0g" />
   </category>
-  <category>
-    <name>Leading Actor</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/7uiktl_AIrq_aTT5Une79gossemcdR4WzJJ7p-KUmIArY7E3uddaDrmAftZ9DyrLePuIxDIjULLGg_QYSKtZAm7nQVUhc3r61-256m0yRc3RkLbCmyrNGHg-i7J6QH64IP_Gjv6cmwRk1blyqZejkXUCapU6yg">
-      Cooper
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/-SoAK1fQdo6FTQ7SM3pTgCCxBAk4ZZ6Ebrb_MjIUvJ-Xoh2lX7yC0FV6QA2KSBR_DCKeF6s3CQ3WF1PSIXxOWfAss1TNt-eL9ZnYxwOpiVwGdbSYoU9x2qbGh9HN_slrG0RCG84DoYCApXmzcf19YgfurxxKQQ">
-      Domingo
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/aWU8QZ94wy-WcJ8E6uCywAABdtDXKbfa2wGKHptQqLNg5FZnb5mtRuILvAnGoibnH70sPY5eMRnNsJlM1NsS15hj7rz3si_3XjKgUE1UFV1yCHpQdPpJIYjEn83MMnYUOdVLe_LqIxeIed60H0nJ_ZtXfrCHLA">
-      Giamatti
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/6Hd1PRdD--WOEKKqASOvz9yPoTrbpB9IYfvH1CG6t3YW8seAlhpLYHhoCNSCX6aicaahA74Bx-gQlqzUj22CglIfxYeWif1yQGOyiw57qIoOuCKk5K7ZqfCaZnpYtgm8FLvL1mQIkLtpUR5-HX9tgIv76xi6WQ">
-      Murphy
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/cjAvBpVLM97I0BZ9NrwGj1A8L3aBmDv3GJ38dWhp148LXC4AIwIGqLCFqAsuONTX7kKvilUbd6ZYtLohIOrFxQqnMavaGIBoFGjK8BUU8V3-41p2Zu57tGeR0SSHvRJZXvZ0SCiNAyXabe-K5j8db_FytK88Rg">
-      Wright
-    </nominee>
+  <category name="Directing">
+    <nominee name="Anatomy of a Fall"
+      img="https://lh7-us.googleusercontent.com/53Iy_3t1VuEM2Ghly9bIdxxLIQIjGWMhDJUTvsH8Io0t9tKCQ2Si5qxmAlV9bwOanRbgeMmv410T__8ps2t4HIEybi7IiZaiRKX19L1LCcs0ROxl-HGHX5YrlIsz8IxVz9HbKnZtQeuVgIsv0RalRdgzfBBAMQ" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/xjI3rB0amsGmsIODUVsWjlv8Y4ldMOXKptDbMBAefR4qRXoQIqvpMACmAGF2Blwi8SIvFoNDR78oe57zJNh7ZVrNbHvzWh9Qfdii-6rVrrQcoC6fNyAL57rSdyiTduW3Y4EHoAj3LIYjNVI-pf2hrL9dtO-PGw" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/ODewS2dsztff2OGqS_G4xtLsJLLUCmtNCgiheE1B0kKBGd7JX5WR--15OKqZNWUYJwyld_ABKMDqzV2yahx9j_9hS3t_-Ivo5_Ymmp9nv5iz3vN2OtdQIFgdKa39lVnVMMTyUpKLtRhw72ZQE-SGUWjiMa6SNg" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/yl9yXnYegXVNgXSHR_fa1urds5QoCjYwW3pgHIftgxNKIzYdFLlDtkCwr13uoLnHYjHngFLtzXO71P5kpnhOH_74NjtaxsPLSMPTEf_yxfg4MEsgRR9cH1OEa8elof7Lfc7jtWGWST23Sh49a022IuNbI6BBRg" />
+    <nominee name="Zone of Interest"
+      img="https://lh7-us.googleusercontent.com/rg2a69ryzxtgHeN2dEdtEMfLA00UUXeC0ECTT5EmvtFWzmyetixPgDETEJWbCJte9eWlWLsVNJ0iLt9RQ1Jol9KdQlX1QnA7GmRL6vmmm5RhPc8LT8l7L2lQFMmUIklHm3u5t5DULIVTF-szp1iqkPHNWo-t6A" />
   </category>
-  <category>
-    <name>Supporting Actress</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/lHfWFt-QW8jYG9DjtYbJEcfBhiSkHwN3-oY15oPu7ZQ6KSgSgw0RoDn6SPsyHgJQY8QJcMDJ5jluOtSSNMOJ1lrXCwzcvArb7Ncnfn4OAPAi0YajzcOaAHRwP1_V9kLjrd0N_JHVOjx414t_UH99xBRmkkcEFw">
-      Blunt
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Oqp_yRyqYrTrJQtAdQ6mAB9O89MREV6jalwYY-BAPFkn2JcRyNnXd-Dt6vifUGRI12RLPj8aOlLAIILIUbJvA8xh4OBT6uSRr6BLouK1A0L38rro6JMUoOD8fjnn1g6T0qeO8joVAipGYuQ4q2DBYDss61Wz3A">
-      Brooks
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/F6v_jKW7gdukrH0z7SNgMAl6fN3XQ-FR0RHI6E2P9Y5jJsEyRVYGV9TIWx7UQ03RldQ7srq0AD0C_byqTQ48fyoIS2G42EGyTD97faG6OkYp_A3Z7TFbcvtoalYdgyOnSLyp3AyAEasl4TLlon3HtpAs_VIDoA">
-      Ferrera
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/NMkQqv-UoMZmLXX5tsb5Jv_idFdONJmVRvWNLTzXeuKb-NZxaF4ufLUM-LDjCX41w6ggQnxwoWCqwNBG_VnejP5Je23CkOGJYu2FaZtjUY0-8r_MmxekkVnG7j3fyyEY6Rjs74QVmKNZJrOpB4ckQRt6KS-NDQ">
-      Foster
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/s49w_LNFe3PQ0tJucIK1-XxBHjSxl7Ei3vBPeQz5xOkwPn1HaVRq9eDOV4axhG_aykHPIq9YhUgjyqmF7DBUUjjloBzTFalesv955FjCMZaXiG_O-E1JJ7Vd5hzEeHsFWlLpQMozss4W3230hHtlSLiInbj4cg">
-      Randolph
-    </nominee>
+  <category name="Production Design">
+    <nominee name="Barbie"
+      img="https://lh7-us.googleusercontent.com/F--cCAKiJezz1zkxkNB_z7Kx0HHxNQ2Apke76QzhqNJev3VG-ilvfU3jQVcfeGuOkjsqbCN_LVv60IX76WyjQpNAD-Nru0kbYhcSvKmSBr4vU_FZlvN4V1ZcNC1jLp4M7O1aQQMM8VmsH9G_Q_j1i-0I_3svSA" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/YfMheX89fjTwubwp43m6aodpnaO6Zd8sOQkbGwnuMUE0yHu9NxBR7kIoWwibxdl2CZN_jBAGv8U8qcrWJ7ATkN1-ibeMC8I6fdzb4Lu0CuFBTi2tHd3q9Yd7iOv4sDzd3oKQ6UWF4MYBzDKK29ZTM20teTjOdA" />
+    <nominee name="Napoleon"
+      img="https://lh7-us.googleusercontent.com/z7Xjh16pxVEb_z6ghRVYw1OFuQDEQf5vKn9d-XjmhREDsEK6T1TD193Ao4Hc6e4JqzzePKg1QjtZa0X2xv7bTRyR4YVymZqPi89zR-fQV2dskyMYxfx8NhV2fX3Z02SZqmEKHnHhDHNuXdMzAMIPBsphyxtfcg" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/H6CVtpkOKYFwGBy-an6WvulaJgXlWYedPfldcKPr7fpSiXCqtolWJb2mVf1UmDyuw-XaoDnlK5xHwzIfU2MOJc9ezBW7NCNBcXioL1hIExv39dSLHnST283JGifCnp0tsCPp5H0tp50KNuSnCGsX8s6EZ5UmvA" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/FjeUUkWzK1_jyxYW-4KDAxnrfTmV-R6zWxGefAGJtReTzIvUJMvvtwqwPxFWPyUIDjqrjfcLK2HX6W5iALowCkiemzSvD4FCPiBVkVHNLhjMe7hmghoNsMVG6EYI6updc5YqtayRlauFOo0G1UfH5gw21OucWg" />
   </category>
-  <category tieBreaker="4">
-    <name>Supporting Actor</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/U5bdAIZMk2yoZIs03saFi0FuBpdRWJs0A8HNNUrBXwfEv3xmX92eHWUZEL7xjYUWETFjIkZfJPnHITUxshNmygpn0xufeOr6hAWbq37lAwwB3PRlvLevsI-drPkVvSUbFut1G7Gjj4yF-UKC6QbOdSqDpfp1ow">
-      Brown
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/MzFQ0YJHbkskRyydLmVqN_nZnZnOXYmhZ2MbZam9B6u773pTGUZFT8UHfwb4beMIiNE2kt5hNa9MoOpwK1rmI0AjXpo-wDdhATMVyhbd2kC3uZlL0XkZcZV0sosULjj-1WDryvM1_Y3cDoBRbxvkGCLwVxRbJg">
-      De Niro
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/IPYMWbKWhwgoWUnoLj5j3lIkaxlmJR14sVACo9GT7vFKEsuxz43BYbvhrHstpgs5FnTlzP-Xwta9Iqk51zMxjn5ulDG7nVLpcdRwbML2YnaCSjrIjz8PF2NuGOvK_douqsiNnPz-xsp9a5L1yZ3csEOVW3BSGg">
-      Downey
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/hzk7MRNG0lD-3VqghmzBGch8a3svxEqQDpRXy1XCxZqQp8HIun-s7f_ajLD5f7ycoXJsF2oOyyV1k5ipPcnxlzO_bJp1xuRCGk7rMK7AIGky2CCw1I-jD_LckjaFfC4ClFHbOJOzhUJujR-gUVSnShUntZRCAQ">
-      Gosling
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/8PMbw4aG1sMnE9TneFiWbeC_xxOQPX4E7HZP9Z7H8BupP41lhXky5sKXC17TFJNFBGYhRJ2oRgRpQYxoFUDo8lLvaYH5PAI0IPy9N5n2hNNLUmIDomuwh3DZ0NX_iH0zf-f9dceKpQKT_L2DKdLDEuG9--Bt0g">
-      Ruffalo
-    </nominee>
+  <category name="Film Editing">
+    <nominee name="Anatomy of a Fall"
+      img="https://lh7-us.googleusercontent.com/k-m_riTnt1lP41BZSwf2saeLFe3RTcWYQ-V30v01fNFPV0Wx3te5L9NtHKae4948SNxYrUDhmz2zioHIhUMji_r7OyTfMCZSBGXXCX-IMQnpE0jHBi2reiM4lRExjJ4jAOzitFbSpJbVP_bmBxRyfEHETfLySw" />
+    <nominee name="Holdovers"
+      img="https://lh7-us.googleusercontent.com/p4yvWYeXaafAMxfn3bRJzBQyvDmFBq_8vKfAZXWW3sJREMe1dgvD2nV5rPjjsI64ncaHyEk7EwZvmhjbt-_h2OHA-EHv1dU5bo6P2gg-pbf_Q-gCKC4Hb2xYUJH5C4ulw-HBTq6L7IMKqa2WCH8K7v8ySq05XQ" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/g0N_7pPrKUXQzvdv8RIyp9BFQadaILgFeVmD5lXa1nnkO_uBVKeJz3psMaHQ6rAjeyNOeEuiB3K5jx3QkaoQ48_lRMeYLhlw_7wRyCvxLouBGi0AoOcOKgBUqag1gZ_jnKiWQ5FA_2uc-iCZ0Br43IjsAn2uFw" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/WHR6BHSp316bKPT8IeV2ClVMxJP6LEPrJ7raK01NgNUdnlZ9hXB5HAn3DNqfXjrNz1x5Lbf-FXIMDoEb0ah90v2TIWgSZjDiyIHl5pIPnNn2H6C5SFrVnm07JdXa76g9yyWG2kaSGba3b1IFaajCCjVBCWT7nw" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/N_25o3Uoim3wt80I1wGW6vaanbN0DUAQcu5DDLb5N2H2Qo_LZFONzvA7SjhZIZSsh5cCRZjfVlc3Hcx4-3b10nabObWrbjRve0U_-LzWneq8wMl06mAUnIZ5yjFNVpKUzrkVDT7n7UJdJvK5Cu_2p4mXQp7hZQ" />
   </category>
-  <category>
-    <name>Directing</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/53Iy_3t1VuEM2Ghly9bIdxxLIQIjGWMhDJUTvsH8Io0t9tKCQ2Si5qxmAlV9bwOanRbgeMmv410T__8ps2t4HIEybi7IiZaiRKX19L1LCcs0ROxl-HGHX5YrlIsz8IxVz9HbKnZtQeuVgIsv0RalRdgzfBBAMQ">
-      Anatomy of a Fall
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/xjI3rB0amsGmsIODUVsWjlv8Y4ldMOXKptDbMBAefR4qRXoQIqvpMACmAGF2Blwi8SIvFoNDR78oe57zJNh7ZVrNbHvzWh9Qfdii-6rVrrQcoC6fNyAL57rSdyiTduW3Y4EHoAj3LIYjNVI-pf2hrL9dtO-PGw">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/ODewS2dsztff2OGqS_G4xtLsJLLUCmtNCgiheE1B0kKBGd7JX5WR--15OKqZNWUYJwyld_ABKMDqzV2yahx9j_9hS3t_-Ivo5_Ymmp9nv5iz3vN2OtdQIFgdKa39lVnVMMTyUpKLtRhw72ZQE-SGUWjiMa6SNg">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/yl9yXnYegXVNgXSHR_fa1urds5QoCjYwW3pgHIftgxNKIzYdFLlDtkCwr13uoLnHYjHngFLtzXO71P5kpnhOH_74NjtaxsPLSMPTEf_yxfg4MEsgRR9cH1OEa8elof7Lfc7jtWGWST23Sh49a022IuNbI6BBRg">
-      Poor Things
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/rg2a69ryzxtgHeN2dEdtEMfLA00UUXeC0ECTT5EmvtFWzmyetixPgDETEJWbCJte9eWlWLsVNJ0iLt9RQ1Jol9KdQlX1QnA7GmRL6vmmm5RhPc8LT8l7L2lQFMmUIklHm3u5t5DULIVTF-szp1iqkPHNWo-t6A">
-      Zone of Interest
-    </nominee>
+  <category name="Sound">
+    <nominee name="Creator"
+      img="https://lh7-us.googleusercontent.com/V5mJMV8yknjLdwzJAB3tkeiCPAA3ZC5re2lckbKRbVGcGrMxTS9nul80BSeqgGLLFT1xithvNi916COlEbLHk8iyOmkR1PtrxEY2lWv7KXhKkbi8aRjMw3b0R0WS70m7B1GJkenxWL_27tMiKfViZIu7kh8Qog" />
+    <nominee name="Maestro"
+      img="https://lh7-us.googleusercontent.com/_3u7xASovXo38iM7zFUjZti4FMJx8KWMHA4-VqZ8qMmziFOzqlqWBgx59x6ksCkZY1_c2kX-JM0gk85Y3-_XPPgW7Y_XGbiVu-VH3hdlI4gwtKnoGkfV0OwbFqHUi81m5VMeMAUJzvzWVUDMFVMAU-qHkHU9SQ" />
+    <nominee name="Mission: Impossible 7"
+      img="https://lh7-us.googleusercontent.com/JK9W_L6L_q-U55U3_9rikNZGhw8-Tnd5fDDHHYEGFh3FXWEutyzNezgT0hvF8CLS54BB5OFNqkq2XFawoa7g49Seaod0X9Z0eXO11JmvsKBfacPImIXKMadGI5Vq-lGNXr0pCpnheLBuROHGW3FAgb9bgFfTgQ" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/_qMERcvjsaiwiW4MIGkYdteliJuL-B__fDMRyk-7Enyh7s0SB4zWslUprPLapsKJevtCGKaBfuQpWWOV7lC7cHvgyrNTjKEgZuNbomPV_VQwm5DfN2TSBAtW7x_yxdplbetASGNHnJ6BAKl_W4rnFM15X-ak4w" />
+    <nominee name="Zone of Interest"
+      img="https://lh7-us.googleusercontent.com/dPmWI3VYvyg0RYv0agtHkESFrIQT3Y9XE8KOzt4tggIEdhucWZPjjp2bjctXdEp3x2UdXu2Lct1O0oRrbFDliG2p5aA8ZRy4lauB5Ro4noyZ6XKCOji9SscSK5pWh8__hl5cSk-4l-N704ghz-VrCaE7ky8cIg" />
   </category>
-  <category>
-    <name>Production Design</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/F--cCAKiJezz1zkxkNB_z7Kx0HHxNQ2Apke76QzhqNJev3VG-ilvfU3jQVcfeGuOkjsqbCN_LVv60IX76WyjQpNAD-Nru0kbYhcSvKmSBr4vU_FZlvN4V1ZcNC1jLp4M7O1aQQMM8VmsH9G_Q_j1i-0I_3svSA">
-      Barbie
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/YfMheX89fjTwubwp43m6aodpnaO6Zd8sOQkbGwnuMUE0yHu9NxBR7kIoWwibxdl2CZN_jBAGv8U8qcrWJ7ATkN1-ibeMC8I6fdzb4Lu0CuFBTi2tHd3q9Yd7iOv4sDzd3oKQ6UWF4MYBzDKK29ZTM20teTjOdA">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/z7Xjh16pxVEb_z6ghRVYw1OFuQDEQf5vKn9d-XjmhREDsEK6T1TD193Ao4Hc6e4JqzzePKg1QjtZa0X2xv7bTRyR4YVymZqPi89zR-fQV2dskyMYxfx8NhV2fX3Z02SZqmEKHnHhDHNuXdMzAMIPBsphyxtfcg">
-      Napoleon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/H6CVtpkOKYFwGBy-an6WvulaJgXlWYedPfldcKPr7fpSiXCqtolWJb2mVf1UmDyuw-XaoDnlK5xHwzIfU2MOJc9ezBW7NCNBcXioL1hIExv39dSLHnST283JGifCnp0tsCPp5H0tp50KNuSnCGsX8s6EZ5UmvA">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/FjeUUkWzK1_jyxYW-4KDAxnrfTmV-R6zWxGefAGJtReTzIvUJMvvtwqwPxFWPyUIDjqrjfcLK2HX6W5iALowCkiemzSvD4FCPiBVkVHNLhjMe7hmghoNsMVG6EYI6updc5YqtayRlauFOo0G1UfH5gw21OucWg">
-      Poor Things
-    </nominee>
+  <category name="Original Score">
+    <nominee name="American Fiction"
+      img="https://lh7-us.googleusercontent.com/ZeR9oapJlGX_pQLe6spP8ys49lLW7LNohKSFjXDPXeAro1LlulJoCjdCoedZ5wXSQjFRpo8IwBPs_EwLA23EVywpGtW4MCYX5m-eMRD12RkKpAT1VFX9U5NCd9WbdOVbo2tSfcsP3PJVYvO3iMbhrB37ouJEWQ" />
+    <nominee name="Indiana Jones 5"
+      img="https://lh7-us.googleusercontent.com/x92tl-0-pLsCzTMQYs7KpxkjRNM_nn32fqrTtxvPYF5YDPZFLtXnZfiu6hl0wS13I3_pMLtZr4uMAsGcHXB9g4Q9miLbFHozv3ofp0WzLN6yHVZje66Q2XNgzV3kdawiiaSlG0DEC1NjhtlonpD-9DSVqaDDtg" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/NGUbOLhb6XpKIx5wRrWPXCE_MqGnqM59LAI0uK0pgNuLahm7NRd7dM_MDb4vyh6f2uMjLINZgTxapchiqlTZNgORiWyT3Cd8SxgBs4KfhM4Vv3QYHhtpX88W_-dwvrSnmxAOd9oypm9DLNR_V4nQw4te9j6Esg" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/0FEy1aBzCvqTN-3cgNwfzBPn6Kx7waaIW5z_aV448-CA5znsq918We5ZP8A0V1h0xWORVUL5VyqOnnAWRui35XkKOexCxChQ8_KsumgN1kwBPzKFUvmpNadJzT0ZFAnk4tGEsEAlTjNcyqxVfJ1rqy6u5lbGgQ" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/2iaoRcu9G5ZsQdqRZ5ELMcaz_9L2CIQMAwAjABgLCEw2ZutlmAOr65MsMNRFffjpEf18YoVt2gWuoyvBD_QeyMZZ838ZapSorzWlG0lbXAPm9hWkqQtf4eZ7SXgWHdfWglgFlD4uNcIslbnjNNv3RqYP_VYXBA" />
   </category>
-  <category>
-    <name>Film Editing</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/k-m_riTnt1lP41BZSwf2saeLFe3RTcWYQ-V30v01fNFPV0Wx3te5L9NtHKae4948SNxYrUDhmz2zioHIhUMji_r7OyTfMCZSBGXXCX-IMQnpE0jHBi2reiM4lRExjJ4jAOzitFbSpJbVP_bmBxRyfEHETfLySw">
-      Anatomy of a Fall
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/p4yvWYeXaafAMxfn3bRJzBQyvDmFBq_8vKfAZXWW3sJREMe1dgvD2nV5rPjjsI64ncaHyEk7EwZvmhjbt-_h2OHA-EHv1dU5bo6P2gg-pbf_Q-gCKC4Hb2xYUJH5C4ulw-HBTq6L7IMKqa2WCH8K7v8ySq05XQ">
-      Holdovers
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/g0N_7pPrKUXQzvdv8RIyp9BFQadaILgFeVmD5lXa1nnkO_uBVKeJz3psMaHQ6rAjeyNOeEuiB3K5jx3QkaoQ48_lRMeYLhlw_7wRyCvxLouBGi0AoOcOKgBUqag1gZ_jnKiWQ5FA_2uc-iCZ0Br43IjsAn2uFw">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/WHR6BHSp316bKPT8IeV2ClVMxJP6LEPrJ7raK01NgNUdnlZ9hXB5HAn3DNqfXjrNz1x5Lbf-FXIMDoEb0ah90v2TIWgSZjDiyIHl5pIPnNn2H6C5SFrVnm07JdXa76g9yyWG2kaSGba3b1IFaajCCjVBCWT7nw">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/N_25o3Uoim3wt80I1wGW6vaanbN0DUAQcu5DDLb5N2H2Qo_LZFONzvA7SjhZIZSsh5cCRZjfVlc3Hcx4-3b10nabObWrbjRve0U_-LzWneq8wMl06mAUnIZ5yjFNVpKUzrkVDT7n7UJdJvK5Cu_2p4mXQp7hZQ">
-      Poor Things
-    </nominee>
+  <category name="International Feature">
+    <nominee name="Io Capitano"
+      img="https://lh7-us.googleusercontent.com/y48vlEFW54OEMMZP2-P4ojdzC1254J3dRMmoOzTtMRLnp1UBWlTGmy6h2h70VRCD7R16lcr4Kghqw90NNL6o5NHtNqhmf8e23N6C6Ke_P9ibFKaQClfMk7mITeX4SdDjXB6QJt4S_EWvXFoJeu1epJ1t768YZQ" />
+    <nominee name="Perfect Days"
+      img="https://lh7-us.googleusercontent.com/XdP5iiUdaGsBVfNmtOijjCcuIOyRM4haSb54FS2EWYHn5S8wdIaQsxMha9LDTdZIt-ldmqNNfapYvFJI0_IqlQ0zgS1vBtoF9ZV0TLv-Aq3VVvSANOVso8b8543xTklpumfoyZDeHy5CK1hqUN6euGFJrCYJpw" />
+    <nominee name="Society of the Snow"
+      img="https://lh7-us.googleusercontent.com/Y5tiY-f4WRgx5m-JqGlVKBfANgs1LfCKo6VVKFDBxA6jIemifDXcVLTp39ntvnvUQCwWYIZPSaojzJ9AQ71IZyPw73N_TASAaZTgOjHi3k3MGopzinAN6Jn-r-xDFzUgBIlTpiQjQeCXM3v68rKiKI6elS-9rQ" />
+    <nominee name="Teachers' Lounge"
+      img="https://lh7-us.googleusercontent.com/gE2agbYUOgiNgT6Z1l1zlVeSRLoiN2I_EEGT585q8Y46jiRPDxkZSmsTFoWC_q0EfcAhF9XrhOjllfnIFXRJTQKuHmaOKWFsLdCmvM1pwbqXbhbyCAQQYCiHcmX1PH-c5v5tVkIRGDM_6PfEmrT9BSyOOwSclQ" />
+    <nominee name="Zone of Interest"
+      img="https://lh7-us.googleusercontent.com/Stz0UHbbdcvhitdCixq9x2P2Nw3tTvDEMxLwwl4v7dXuhWWHO8lDW8fh5IaiFZn3o06q_LE5APaZcFXtROtNO_i1XcXF9AIAGZq4YPL_A3xFy7ofoFB1kdVncyEnTYsBNC7EPoU-PWFV5hOYKAsm6xiDne0yWw" />
   </category>
-  <category>
-    <name>Sound</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/V5mJMV8yknjLdwzJAB3tkeiCPAA3ZC5re2lckbKRbVGcGrMxTS9nul80BSeqgGLLFT1xithvNi916COlEbLHk8iyOmkR1PtrxEY2lWv7KXhKkbi8aRjMw3b0R0WS70m7B1GJkenxWL_27tMiKfViZIu7kh8Qog">
-      Creator
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/_3u7xASovXo38iM7zFUjZti4FMJx8KWMHA4-VqZ8qMmziFOzqlqWBgx59x6ksCkZY1_c2kX-JM0gk85Y3-_XPPgW7Y_XGbiVu-VH3hdlI4gwtKnoGkfV0OwbFqHUi81m5VMeMAUJzvzWVUDMFVMAU-qHkHU9SQ">
-      Maestro
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/JK9W_L6L_q-U55U3_9rikNZGhw8-Tnd5fDDHHYEGFh3FXWEutyzNezgT0hvF8CLS54BB5OFNqkq2XFawoa7g49Seaod0X9Z0eXO11JmvsKBfacPImIXKMadGI5Vq-lGNXr0pCpnheLBuROHGW3FAgb9bgFfTgQ">
-      Mission: Impossible 7
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/_qMERcvjsaiwiW4MIGkYdteliJuL-B__fDMRyk-7Enyh7s0SB4zWslUprPLapsKJevtCGKaBfuQpWWOV7lC7cHvgyrNTjKEgZuNbomPV_VQwm5DfN2TSBAtW7x_yxdplbetASGNHnJ6BAKl_W4rnFM15X-ak4w">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/dPmWI3VYvyg0RYv0agtHkESFrIQT3Y9XE8KOzt4tggIEdhucWZPjjp2bjctXdEp3x2UdXu2Lct1O0oRrbFDliG2p5aA8ZRy4lauB5Ro4noyZ6XKCOji9SscSK5pWh8__hl5cSk-4l-N704ghz-VrCaE7ky8cIg">
-      Zone of Interest
-    </nominee>
+  <category name="Adapted Screenplay">
+    <nominee name="American Fiction"
+      img="https://lh7-us.googleusercontent.com/e-xefXQMKAmEuMiK8Z3CBPKBaktGUCUAACc-3nyH0ZHRH6t351xBPfcA93HevmpqhkqMXm1oM0WLI9C3kzGB7rKpsx7jazReppZW4wGDs9EBR8Tn1v3tBFWLqmQk4bFM0FCVxbDDLbB5H3W9uu5KJ1f51J0a-Q" />
+    <nominee name="Barbie"
+      img="https://lh7-us.googleusercontent.com/hgDg8yvHgHbpdZ5YXGlRhTvam1qOQ3DVXVTF7l5WBzPZNiSUGykPKfbsaDDM3AiupWYIQ4B_Df79sljALS8E7bfP36cNogbtL4XMVBnKA3qo_VTxSM5mVUsHIpt70hJgkbZQqWD_WXqCnURheqXMuTeyUTaQoA" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/_QLNBmIAMNRncBwnCSKTJvFt1VdYG71mdZbe9I8LHHObky7g2Vu9yxrFPUALLuZbyw1-0fqjcrDnwWYNxadpIoP6mw08USBWIkru-YqhX-MWo7WJ3hFQR-aeSs6I1UHwotpxGDospftY_ut5_M15mJaAnHTwow" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/6LLEPZHbRHhGIpDZCgnMW5zq4_uTRcJ2QLzAur1-aPsdatxifJCIgvA60NzhQlZLO9IrQN1Oytbkz1NKvstIw6O8DuMqPBXGg9PoLEpM5iNvsEnp2Zta6m-p9JR6D9ddz-4UcFK53odyTaOOnenhjmGlZ2Opgw" />
+    <nominee name="Zone of Interest"
+      img="https://lh7-us.googleusercontent.com/sq4dZO5_2O6PzJSrPd26eppuq0NY55dtHzIS9jFSs3OmzrhtLALJfJZGP7wC2DRZbB8-_bVBV5-4HyIfKHsXIxOyfCphQWDoEJcn5VWfmD_pwOaZuE6SsoS_JHoNcQVOOKj6pTt8E30FHr1KVpmmUGj5_uSyKg" />
   </category>
-  <category>
-    <name>Original Score</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/ZeR9oapJlGX_pQLe6spP8ys49lLW7LNohKSFjXDPXeAro1LlulJoCjdCoedZ5wXSQjFRpo8IwBPs_EwLA23EVywpGtW4MCYX5m-eMRD12RkKpAT1VFX9U5NCd9WbdOVbo2tSfcsP3PJVYvO3iMbhrB37ouJEWQ">
-      American Fiction
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/x92tl-0-pLsCzTMQYs7KpxkjRNM_nn32fqrTtxvPYF5YDPZFLtXnZfiu6hl0wS13I3_pMLtZr4uMAsGcHXB9g4Q9miLbFHozv3ofp0WzLN6yHVZje66Q2XNgzV3kdawiiaSlG0DEC1NjhtlonpD-9DSVqaDDtg">
-      Indiana Jones 5
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/NGUbOLhb6XpKIx5wRrWPXCE_MqGnqM59LAI0uK0pgNuLahm7NRd7dM_MDb4vyh6f2uMjLINZgTxapchiqlTZNgORiWyT3Cd8SxgBs4KfhM4Vv3QYHhtpX88W_-dwvrSnmxAOd9oypm9DLNR_V4nQw4te9j6Esg">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/0FEy1aBzCvqTN-3cgNwfzBPn6Kx7waaIW5z_aV448-CA5znsq918We5ZP8A0V1h0xWORVUL5VyqOnnAWRui35XkKOexCxChQ8_KsumgN1kwBPzKFUvmpNadJzT0ZFAnk4tGEsEAlTjNcyqxVfJ1rqy6u5lbGgQ">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/2iaoRcu9G5ZsQdqRZ5ELMcaz_9L2CIQMAwAjABgLCEw2ZutlmAOr65MsMNRFffjpEf18YoVt2gWuoyvBD_QeyMZZ838ZapSorzWlG0lbXAPm9hWkqQtf4eZ7SXgWHdfWglgFlD4uNcIslbnjNNv3RqYP_VYXBA">
-      Poor Things
-    </nominee>
+  <category name="Cinematography">
+    <nominee name="El Conde"
+      img="https://lh7-us.googleusercontent.com/5of8FNMIsDTsCfj_WiG_oVSkbec3W6F5xGAxxbyWjJayTDZ7xLZI6fxX-g193T_BnbCVhvrH3OSlsMsS7MWvEYRIs2FcNOnIHumDInrUDAQvoxFVRIbRPAH8Q4FjL-zCtDYJeaAFwmEUf6gNFTqyWtasu_9icg" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/tcVqqjH5m-kn7Kzsmwyk5FPh1I4AB4Z-aAg9iudNr4-LydkGfjTya3nLok8qzL7Co213kvThN2-mklceseujh-zPEfwXiLZitV7Acxg2u7f_t_dPojN-LtYp9rb53vcJdNiltgQ2S-Q9xjNjjAiIi37cgeKJzA" />
+    <nominee name="Maestro"
+      img="https://lh7-us.googleusercontent.com/OiiK-J4mikoh7aKVTKdNjKfCyCLHePvuyxs3OSKNdo-avWe2aRUFoXNuXPW3t6yRFxbVdorIcC_IqrUiqdnBTdrYMEiGKRaZL_DNp8U9kie6MkiKCT8sbXQN6_mH9HCDNMbdJEmwMPgaSdHZOy9EiLMKugum4Q" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/s0xi8iXP4PrpVKaJE_ntN1GfHfo8t9v8u39WbvaLxkewPc_bDQyMUN3vki_Hy8sH15MXMMdnYshbvVIfu-MGb-FgisQdF3eXdWPblM0r2QqyLcY9HjTokpZLnNvlPX-quGbxgJYuSP22m6I_uRZAg0zXUzA0ew" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/drFeeEkoTuFCvV_R_BGUImMFhENCe2FYVrltr3SlspOJPqYOHthnzLW9YP0HREmvY7gkOu3GHdSatEdj3Oxs-TPdM5_gG5DFp91YCxPLRTU-YATHTCMqQNmWqMvq0D60Pwj41U8BZAePWDvGIsKjR56_69jcmw" />
   </category>
-  <category>
-    <name>International Feature</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/y48vlEFW54OEMMZP2-P4ojdzC1254J3dRMmoOzTtMRLnp1UBWlTGmy6h2h70VRCD7R16lcr4Kghqw90NNL6o5NHtNqhmf8e23N6C6Ke_P9ibFKaQClfMk7mITeX4SdDjXB6QJt4S_EWvXFoJeu1epJ1t768YZQ">
-      Io Capitano
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/XdP5iiUdaGsBVfNmtOijjCcuIOyRM4haSb54FS2EWYHn5S8wdIaQsxMha9LDTdZIt-ldmqNNfapYvFJI0_IqlQ0zgS1vBtoF9ZV0TLv-Aq3VVvSANOVso8b8543xTklpumfoyZDeHy5CK1hqUN6euGFJrCYJpw">
-      Perfect Days
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Y5tiY-f4WRgx5m-JqGlVKBfANgs1LfCKo6VVKFDBxA6jIemifDXcVLTp39ntvnvUQCwWYIZPSaojzJ9AQ71IZyPw73N_TASAaZTgOjHi3k3MGopzinAN6Jn-r-xDFzUgBIlTpiQjQeCXM3v68rKiKI6elS-9rQ">
-      Society of the Snow
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/gE2agbYUOgiNgT6Z1l1zlVeSRLoiN2I_EEGT585q8Y46jiRPDxkZSmsTFoWC_q0EfcAhF9XrhOjllfnIFXRJTQKuHmaOKWFsLdCmvM1pwbqXbhbyCAQQYCiHcmX1PH-c5v5tVkIRGDM_6PfEmrT9BSyOOwSclQ">
-      Teachers' Lounge
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Stz0UHbbdcvhitdCixq9x2P2Nw3tTvDEMxLwwl4v7dXuhWWHO8lDW8fh5IaiFZn3o06q_LE5APaZcFXtROtNO_i1XcXF9AIAGZq4YPL_A3xFy7ofoFB1kdVncyEnTYsBNC7EPoU-PWFV5hOYKAsm6xiDne0yWw">
-      Zone of Interest
-    </nominee>
+  <category name="Animated Short">
+    <nominee name="Letter to a Pig"
+      img="https://lh7-us.googleusercontent.com/6hWtT3Eoe8uRqWOjeyo5g4TM0GP26R3f_fzhFcIvj_xrgfJLbGEut675DaE8bHWd8scx81ei3JI_DGRnUK2XXorexFwoL2BZOc3ZT70JyXlzJb0vmdICEOrlVocXymaEkpMJjLE28aPZ8kTMuA3AqRKXPzXwLg" />
+    <nominee name="Ninety-Five Senses"
+      img="https://lh7-us.googleusercontent.com/UL3BtorDqlAlAuhLCTz0lduCMPKMtruJRi3vwZQ5-hQ0C4zsN8LsVNHDOd90PbWobdj7ral0QvPtKtNWVdzzrcAAUqLaGVJAZ-4m96po09CzuDHnKrkC5sDqKAsKESew-b1WZbwzeJxbnysvYax1mUVzvrnzdA" />
+    <nominee name="Our Uniform"
+      img="https://lh7-us.googleusercontent.com/2BoyZdHSLWOqAMjwaQfEIHrJiZVc09CfDQcf8O2ivFVgsRl8QyU-plZpJoAKXmXIpbvAZYeQokbfLcE2HCgvSe2TvT6pe6lU4Gol6d5siiDnQ3rah5t8f487wSFoS9uB0VOK97jiLCvZOCQqOt6xNyb3Yea8ew" />
+    <nominee name="Pachyderme"
+      img="https://lh7-us.googleusercontent.com/HRwE_ncThZdymP_AnY244AIIxcBFWU_-ablWHhskTRPTXDu4y48w6fVFokyI6_l2JZAFDR9QiqgERUTpZ0Bp3SYZDboEX4gk7Aakn2VAx8UPBT4iyUAlXtMcb0bognb-Ovtpzp--cuOZoMo6c8THQuPsNXEAuQ" />
+    <nominee name="WAR IS OVER!"
+      img="https://lh7-us.googleusercontent.com/JxTk38SPjcB-71Ov4YcnQYXJ0QhDfk6VMMDKUGyAGZ8svUyHe_KvWe9bNCjcJnvYgxlItQXhw46bU06qHZyP_gVuHcpcIJ556bVtkujz5XmQEClGY_gShwv1e-YfuG18iDTbgO24TXzHzMYwRsKFzCpYebjOjA" />
   </category>
-  <category>
-    <name>Adapted Screenplay</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/e-xefXQMKAmEuMiK8Z3CBPKBaktGUCUAACc-3nyH0ZHRH6t351xBPfcA93HevmpqhkqMXm1oM0WLI9C3kzGB7rKpsx7jazReppZW4wGDs9EBR8Tn1v3tBFWLqmQk4bFM0FCVxbDDLbB5H3W9uu5KJ1f51J0a-Q">
-      American Fiction
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/hgDg8yvHgHbpdZ5YXGlRhTvam1qOQ3DVXVTF7l5WBzPZNiSUGykPKfbsaDDM3AiupWYIQ4B_Df79sljALS8E7bfP36cNogbtL4XMVBnKA3qo_VTxSM5mVUsHIpt70hJgkbZQqWD_WXqCnURheqXMuTeyUTaQoA">
-      Barbie
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/_QLNBmIAMNRncBwnCSKTJvFt1VdYG71mdZbe9I8LHHObky7g2Vu9yxrFPUALLuZbyw1-0fqjcrDnwWYNxadpIoP6mw08USBWIkru-YqhX-MWo7WJ3hFQR-aeSs6I1UHwotpxGDospftY_ut5_M15mJaAnHTwow">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/6LLEPZHbRHhGIpDZCgnMW5zq4_uTRcJ2QLzAur1-aPsdatxifJCIgvA60NzhQlZLO9IrQN1Oytbkz1NKvstIw6O8DuMqPBXGg9PoLEpM5iNvsEnp2Zta6m-p9JR6D9ddz-4UcFK53odyTaOOnenhjmGlZ2Opgw">
-      Poor Things
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/sq4dZO5_2O6PzJSrPd26eppuq0NY55dtHzIS9jFSs3OmzrhtLALJfJZGP7wC2DRZbB8-_bVBV5-4HyIfKHsXIxOyfCphQWDoEJcn5VWfmD_pwOaZuE6SsoS_JHoNcQVOOKj6pTt8E30FHr1KVpmmUGj5_uSyKg">
-      Zone of Interest
-    </nominee>
+  <category name="Costume Design" tieBreaker="6">
+    <nominee name="Barbie"
+      img="https://lh7-us.googleusercontent.com/JEeOMRGw_hIms8jFcnpnn_dyyYbt3uIRpQjS2m13JrbJy29vM4zB4NJprg2_Ja-RecCEnC5IzzNywBr8TdW6vTyTks3aGkYy-RVePHHOC6LGb3wW6gKoeP5Rppp-w_gtnBsGS959i2UWcM1JR2LGxgwU2NWGZw" />
+    <nominee name="Killers/Flower Moon"
+      img="https://lh7-us.googleusercontent.com/27J7BfEGO55z9L1X65e2RLSSgqunWwRtCM7V0PLMHOYKsrqEiLDf7mIv9MDdkzHh2EtUAxGNUf8caBy65_GKvinAvWzMEyY-tGPSG5d1085COhoWSX45ytO0c-TRg7w9JoR-atkLZ0moZVpTwYuyqKDB-STiOQ" />
+    <nominee name="Napoleon"
+      img="https://lh7-us.googleusercontent.com/hw7fMIH0vwBH-sPJz6aMcHsQxaXY29ycnloP40KBr_Lo16PBrpEwiU_RR3AFqtt5ACVjaCOdTl8RA0I7Ez1J-98At71RHCrz8ezm_zR86GGhE16wqLuGyBWWwoO6brxd56WQj0j1VOU6b8uYZnvicGnQpMTymA" />
+    <nominee name="Oppenheimer"
+      img="https://lh7-us.googleusercontent.com/Wqk-1FPScw8hnpXKh0h2qf5I_pb1TPObdRKAfY4ESoW0FoXmoEf_htUlXrgfuIAr_odzwV9shGhFBTfUmsbkLZ-QUwSaur4x03WEIyeZhv21M7yhC_B7PSAyur6M8eJ6teLMzPViQE-R61JQiYi8gXbmFfCihg" />
+    <nominee name="Poor Things"
+      img="https://lh7-us.googleusercontent.com/umkgHtEy_qrdcUYA4TAAZp0jEAuSu2uGf5lgxlhnNvp2DsOI-ZvdD-YXp_4qM8GIk02wwyeRke6luka5HY3NMy2ANPjjFqs83P9TfdRYyN4nPJEmJjuWMbGLC08xnhciR78VM4dKPiNCvxzMoha8Rsa_RCiGfw" />
   </category>
-  <category>
-    <name>Cinematography</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/5of8FNMIsDTsCfj_WiG_oVSkbec3W6F5xGAxxbyWjJayTDZ7xLZI6fxX-g193T_BnbCVhvrH3OSlsMsS7MWvEYRIs2FcNOnIHumDInrUDAQvoxFVRIbRPAH8Q4FjL-zCtDYJeaAFwmEUf6gNFTqyWtasu_9icg">
-      El Conde
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/tcVqqjH5m-kn7Kzsmwyk5FPh1I4AB4Z-aAg9iudNr4-LydkGfjTya3nLok8qzL7Co213kvThN2-mklceseujh-zPEfwXiLZitV7Acxg2u7f_t_dPojN-LtYp9rb53vcJdNiltgQ2S-Q9xjNjjAiIi37cgeKJzA">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/OiiK-J4mikoh7aKVTKdNjKfCyCLHePvuyxs3OSKNdo-avWe2aRUFoXNuXPW3t6yRFxbVdorIcC_IqrUiqdnBTdrYMEiGKRaZL_DNp8U9kie6MkiKCT8sbXQN6_mH9HCDNMbdJEmwMPgaSdHZOy9EiLMKugum4Q">
-      Maestro
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/s0xi8iXP4PrpVKaJE_ntN1GfHfo8t9v8u39WbvaLxkewPc_bDQyMUN3vki_Hy8sH15MXMMdnYshbvVIfu-MGb-FgisQdF3eXdWPblM0r2QqyLcY9HjTokpZLnNvlPX-quGbxgJYuSP22m6I_uRZAg0zXUzA0ew">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/drFeeEkoTuFCvV_R_BGUImMFhENCe2FYVrltr3SlspOJPqYOHthnzLW9YP0HREmvY7gkOu3GHdSatEdj3Oxs-TPdM5_gG5DFp91YCxPLRTU-YATHTCMqQNmWqMvq0D60Pwj41U8BZAePWDvGIsKjR56_69jcmw">
-      Poor Things
-    </nominee>
+  <category name="Documentary Feature" tieBreaker="5">
+    <nominee name="Bobi Wine"
+      img="https://lh7-us.googleusercontent.com/Y0Z35iuhAnRzmI1XoOco6wCBnUaBSvEfi1nDGs5MjWqmBmf1nLdmVUsdMIiOMPsPgiOdRUirNeY-jZhNG8G-uMJCygZ3pbIXc5Ns_AM0h4df1wzHKh3d_qbW7n1zdVv-J0H-A_XDjvr5SUWuKbe0g850dmDLUA" />
+    <nominee name="Eternal Memory"
+      img="https://lh7-us.googleusercontent.com/OpCFK5ms8H_Kx7VGNkNR3cj_2eea3dVXxD3yMdWCXtlecuP6S90SrPsYfawMfU0rGmUfRKdK5xJWfAEBF_tZUFue9I111qsvkPJhrSPtkkyPr-qfd2UAFkKk5wGlqsYTzqwFvkAmrbxYHtef71SFggB6Zci4Qw" />
+    <nominee name="Four Daughters"
+      img="https://lh7-us.googleusercontent.com/AbOpB7BXMmw-ejXWLMuQavRKMBoQ7cItvtbZ6J3Y7LIkClESu4xbGZBhG_1qAphHpcVPEIFLlG9KLZacGk6lRXFmPkWgdkRvNCqFECcZM4E8EsE7uSI36d4Q2Ewj3saMo-AsgH6PtMBIdtuPDZkNHHq365zDoQ" />
+    <nominee name="To Kill a Tiger"
+      img="https://lh7-us.googleusercontent.com/WSnpE3ThZQFTTRrCT4CXIB7OnofTNVW0XAUjVi4HAD2mdlKIImViJpXomAEot6FGCi0FB82eUWEGzYp1a6FqwKAM00LLvWLTyauCPPPJ_jADKTfXlliZE7cZJ4b-PvQVXSAqXQw6y8dRyyR_Bs5dBxkwjYQ4yg" />
+    <nominee name="20 Days in Mariupol"
+      img="https://lh7-us.googleusercontent.com/2sQnrNI2o-mVcFSmDkbuBnDpuemXjoZSq1dKlP4OEKvqv9K3DBShoYM4lJNgRioxhhONXZ4ov6LcIkxsNmZn0l_9q7m8mTBRERSF2_LipxZA2dYDC3sqpv0SdIz10gztV7GpL-AdCzy7I8JHHPVwgIBmxDEmQA" />
   </category>
-  <category>
-    <name>Animated Short</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/6hWtT3Eoe8uRqWOjeyo5g4TM0GP26R3f_fzhFcIvj_xrgfJLbGEut675DaE8bHWd8scx81ei3JI_DGRnUK2XXorexFwoL2BZOc3ZT70JyXlzJb0vmdICEOrlVocXymaEkpMJjLE28aPZ8kTMuA3AqRKXPzXwLg">
-      Letter to a Pig
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/UL3BtorDqlAlAuhLCTz0lduCMPKMtruJRi3vwZQ5-hQ0C4zsN8LsVNHDOd90PbWobdj7ral0QvPtKtNWVdzzrcAAUqLaGVJAZ-4m96po09CzuDHnKrkC5sDqKAsKESew-b1WZbwzeJxbnysvYax1mUVzvrnzdA">
-      Ninety-Five Senses
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/2BoyZdHSLWOqAMjwaQfEIHrJiZVc09CfDQcf8O2ivFVgsRl8QyU-plZpJoAKXmXIpbvAZYeQokbfLcE2HCgvSe2TvT6pe6lU4Gol6d5siiDnQ3rah5t8f487wSFoS9uB0VOK97jiLCvZOCQqOt6xNyb3Yea8ew">
-      Our Uniform
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/HRwE_ncThZdymP_AnY244AIIxcBFWU_-ablWHhskTRPTXDu4y48w6fVFokyI6_l2JZAFDR9QiqgERUTpZ0Bp3SYZDboEX4gk7Aakn2VAx8UPBT4iyUAlXtMcb0bognb-Ovtpzp--cuOZoMo6c8THQuPsNXEAuQ">
-      Pachyderme
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/JxTk38SPjcB-71Ov4YcnQYXJ0QhDfk6VMMDKUGyAGZ8svUyHe_KvWe9bNCjcJnvYgxlItQXhw46bU06qHZyP_gVuHcpcIJ556bVtkujz5XmQEClGY_gShwv1e-YfuG18iDTbgO24TXzHzMYwRsKFzCpYebjOjA">
-      WAR IS OVER!
-    </nominee>
+  <category name="Visual Effects">
+    <nominee name="Creator"
+      img="https://lh7-us.googleusercontent.com/vRetx432d6T7HhhhAvZ1i0F7ek2RpBTz7Xe9qvm8htqxFHMjcmUmOtFypeBYKQvy_l-RENsqyUn5-BVY9xWAwRIK3IDJYhWOrYkW3BoncNXkiftOutuAwpeANDZMmB__iMABFUuEtnI7vGPvKWbCVHYa_7V6Lw" />
+    <nominee name="Gozilla - 1"
+      img="https://lh7-us.googleusercontent.com/Ctp3Imxv7ik2SbliQyUvDs0CSQSuVTtm-ZNrjGKRXfp__H48cKzXQ6CBdBH6qB5xOrKV8v1YOOWRzWXjA8hTkA0QVeWNOUF6b-bmOm2cR20Gb9mqS8iAC3vp6UJirLEZ-_ESV0asmzJ76KGYHkfJU_wutBRrew" />
+    <nominee name="Guardians/Galaxy 3"
+      img="https://lh7-us.googleusercontent.com/aP8lkO2mBTUb3zMlPmfGoC_PpEmHqg0oXaJ_zEgnpRvT0gHFAg37hLTzg6XDb2zAj00O-M3XImXGGdP-_hoAf1TV1ZAHZQqzA2TkfoqaA9HCJ78j_QI-z225_-ZJYpQq2-aAg_pcN3DEzHPbpnk_W5wd_IkN7w" />
+    <nominee name="Mission: Impossible 7"
+      img="https://lh7-us.googleusercontent.com/RSQhGB564Wkk5gZB_-Z2xfVDFZe00dVpbRhF5xX2-_F41EPbTxtdUxyX9dxTWc4ALPMIAcQ6GDbVDsTebcwrUmF8lAIeOQOB0BBy2sbKDdLgBVmpfzp305DKmHLgwPf2cfv2E-BqpOa2QfDXj8x59Oj0iI1DEg" />
+    <nominee name="Napoleon"
+      img="https://lh7-us.googleusercontent.com/UKDRDFwPfEUY1WfT2R7wzb72aUqk8HwuAVb_WjNbvd_g4yXa0H3xTEEpxbGIXHqFGKWuD4sW8n-Zyr58gnWi2rGHxbOofwwRvTu4sDu1jrefaZRQb6HBfBtBubn_2I93uawJMujG6rSYfPSt7HyVtydR40aKgg" />
   </category>
-  <category tieBreaker="6">
-    <name>Costume Design</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/JEeOMRGw_hIms8jFcnpnn_dyyYbt3uIRpQjS2m13JrbJy29vM4zB4NJprg2_Ja-RecCEnC5IzzNywBr8TdW6vTyTks3aGkYy-RVePHHOC6LGb3wW6gKoeP5Rppp-w_gtnBsGS959i2UWcM1JR2LGxgwU2NWGZw">
-      Barbie
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/27J7BfEGO55z9L1X65e2RLSSgqunWwRtCM7V0PLMHOYKsrqEiLDf7mIv9MDdkzHh2EtUAxGNUf8caBy65_GKvinAvWzMEyY-tGPSG5d1085COhoWSX45ytO0c-TRg7w9JoR-atkLZ0moZVpTwYuyqKDB-STiOQ">
-      Killers/Flower Moon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/hw7fMIH0vwBH-sPJz6aMcHsQxaXY29ycnloP40KBr_Lo16PBrpEwiU_RR3AFqtt5ACVjaCOdTl8RA0I7Ez1J-98At71RHCrz8ezm_zR86GGhE16wqLuGyBWWwoO6brxd56WQj0j1VOU6b8uYZnvicGnQpMTymA">
-      Napoleon
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Wqk-1FPScw8hnpXKh0h2qf5I_pb1TPObdRKAfY4ESoW0FoXmoEf_htUlXrgfuIAr_odzwV9shGhFBTfUmsbkLZ-QUwSaur4x03WEIyeZhv21M7yhC_B7PSAyur6M8eJ6teLMzPViQE-R61JQiYi8gXbmFfCihg">
-      Oppenheimer
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/umkgHtEy_qrdcUYA4TAAZp0jEAuSu2uGf5lgxlhnNvp2DsOI-ZvdD-YXp_4qM8GIk02wwyeRke6luka5HY3NMy2ANPjjFqs83P9TfdRYyN4nPJEmJjuWMbGLC08xnhciR78VM4dKPiNCvxzMoha8Rsa_RCiGfw">
-      Poor Things
-    </nominee>
+  <category name="Animated Feature" tieBreaker="2">
+    <nominee name="Boy and the Heron"
+      img="https://lh7-us.googleusercontent.com/0ZpZu7kotvPOPuofrZPf102x4-J4O7dC9S6tjc0GGUu4itwxiXFzrHSOzU4XK_QnJlwZMWCQ7XLv-_WFiMBdtgoeuvdHwC2tfV87L6_s0SKnqsm1UTJ_PbbFsrr7xzsXLaa49MPc8G-CKgp3VU9x6a4fZFph7Q" />
+    <nominee name="Elemental"
+      img="https://lh7-us.googleusercontent.com/zjb0lbUjzws2MoGVjRwyp73EEVrwmrlDL5s-UJRUb-qwHmGdB51wMxZnxuYeWdD4embMMQ9-dJFyiz3pm9MrxT-ae8xeRZ9NfxFjIPWJt8J-Ntk4AiHMbKUNlAzhIRpA1j9oTuKYCIhHpIGsFIMG7zy9335PgA" />
+    <nominee name="Nimona"
+      img="https://lh7-us.googleusercontent.com/5jK80ZDMxHtY8UiSMTR-rbLT1CoVJo1dsK2W9w4cmOcZu_bOiA9iv3BMdgnp7Bs-iNC19ykGK074QJOxbpPUIdMcc5BXTFW7D2T4z2sBTebVY_pUNUVbDBM1s5A1rAIIiPeqex7fYlqxsZYTArIvNKM0AMeh1A" />
+    <nominee name="Robot Dreams"
+      img="https://lh7-us.googleusercontent.com/IsDKLiVT5yBaHaCRnBAcqyPFAh3dbieKEIJS9DcUoSjkbVrDAg5o_YI5_PHupFpvh2EqrE5JmZucA7rPNo24a6tiQdXElMujgbJe8IHB_IKIQsn31_kLC5UoEpbi-DDxWhm01XoJWJY0mXSOENoAbtqOGn-quw" />
+    <nominee name="Spider-Man: Across"
+      img="https://lh7-us.googleusercontent.com/gd2lkrwg7u2onAi8yS0MTH49Ztgx6bu1vzFE4H6E4gWOsFLrtdjCEMjWR7Zv7B-DT03ODNTlDLSZ23N7xl7WjiWfTyWSiEzNDZpgOktZtcRWR4zmxU34VT-mmoLyt9CQs5bDb9gW5CswMZRzdNKN6UExPhxjTA" />
   </category>
-  <category tieBreaker="5">
-    <name>Documentary Feature</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Y0Z35iuhAnRzmI1XoOco6wCBnUaBSvEfi1nDGs5MjWqmBmf1nLdmVUsdMIiOMPsPgiOdRUirNeY-jZhNG8G-uMJCygZ3pbIXc5Ns_AM0h4df1wzHKh3d_qbW7n1zdVv-J0H-A_XDjvr5SUWuKbe0g850dmDLUA">
-      Bobi Wine
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/OpCFK5ms8H_Kx7VGNkNR3cj_2eea3dVXxD3yMdWCXtlecuP6S90SrPsYfawMfU0rGmUfRKdK5xJWfAEBF_tZUFue9I111qsvkPJhrSPtkkyPr-qfd2UAFkKk5wGlqsYTzqwFvkAmrbxYHtef71SFggB6Zci4Qw">
-      Eternal Memory
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/AbOpB7BXMmw-ejXWLMuQavRKMBoQ7cItvtbZ6J3Y7LIkClESu4xbGZBhG_1qAphHpcVPEIFLlG9KLZacGk6lRXFmPkWgdkRvNCqFECcZM4E8EsE7uSI36d4Q2Ewj3saMo-AsgH6PtMBIdtuPDZkNHHq365zDoQ">
-      Four Daughters
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/WSnpE3ThZQFTTRrCT4CXIB7OnofTNVW0XAUjVi4HAD2mdlKIImViJpXomAEot6FGCi0FB82eUWEGzYp1a6FqwKAM00LLvWLTyauCPPPJ_jADKTfXlliZE7cZJ4b-PvQVXSAqXQw6y8dRyyR_Bs5dBxkwjYQ4yg">
-      To Kill a Tiger
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/2sQnrNI2o-mVcFSmDkbuBnDpuemXjoZSq1dKlP4OEKvqv9K3DBShoYM4lJNgRioxhhONXZ4ov6LcIkxsNmZn0l_9q7m8mTBRERSF2_LipxZA2dYDC3sqpv0SdIz10gztV7GpL-AdCzy7I8JHHPVwgIBmxDEmQA">
-      20 Days in Mariupol
-    </nominee>
-  </category>
-  <category>
-    <name>Visual Effects</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/vRetx432d6T7HhhhAvZ1i0F7ek2RpBTz7Xe9qvm8htqxFHMjcmUmOtFypeBYKQvy_l-RENsqyUn5-BVY9xWAwRIK3IDJYhWOrYkW3BoncNXkiftOutuAwpeANDZMmB__iMABFUuEtnI7vGPvKWbCVHYa_7V6Lw">
-      Creator
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/Ctp3Imxv7ik2SbliQyUvDs0CSQSuVTtm-ZNrjGKRXfp__H48cKzXQ6CBdBH6qB5xOrKV8v1YOOWRzWXjA8hTkA0QVeWNOUF6b-bmOm2cR20Gb9mqS8iAC3vp6UJirLEZ-_ESV0asmzJ76KGYHkfJU_wutBRrew">
-      Gozilla - 1
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/aP8lkO2mBTUb3zMlPmfGoC_PpEmHqg0oXaJ_zEgnpRvT0gHFAg37hLTzg6XDb2zAj00O-M3XImXGGdP-_hoAf1TV1ZAHZQqzA2TkfoqaA9HCJ78j_QI-z225_-ZJYpQq2-aAg_pcN3DEzHPbpnk_W5wd_IkN7w">
-      Guardians/Galaxy 3
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/RSQhGB564Wkk5gZB_-Z2xfVDFZe00dVpbRhF5xX2-_F41EPbTxtdUxyX9dxTWc4ALPMIAcQ6GDbVDsTebcwrUmF8lAIeOQOB0BBy2sbKDdLgBVmpfzp305DKmHLgwPf2cfv2E-BqpOa2QfDXj8x59Oj0iI1DEg">
-      Mission: Impossible 7
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/UKDRDFwPfEUY1WfT2R7wzb72aUqk8HwuAVb_WjNbvd_g4yXa0H3xTEEpxbGIXHqFGKWuD4sW8n-Zyr58gnWi2rGHxbOofwwRvTu4sDu1jrefaZRQb6HBfBtBubn_2I93uawJMujG6rSYfPSt7HyVtydR40aKgg">
-      Napoleon
-    </nominee>
-  </category>
-  <category tieBreaker="2">
-    <name>Animated Feature</name>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/0ZpZu7kotvPOPuofrZPf102x4-J4O7dC9S6tjc0GGUu4itwxiXFzrHSOzU4XK_QnJlwZMWCQ7XLv-_WFiMBdtgoeuvdHwC2tfV87L6_s0SKnqsm1UTJ_PbbFsrr7xzsXLaa49MPc8G-CKgp3VU9x6a4fZFph7Q">
-      Boy and the Heron
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/zjb0lbUjzws2MoGVjRwyp73EEVrwmrlDL5s-UJRUb-qwHmGdB51wMxZnxuYeWdD4embMMQ9-dJFyiz3pm9MrxT-ae8xeRZ9NfxFjIPWJt8J-Ntk4AiHMbKUNlAzhIRpA1j9oTuKYCIhHpIGsFIMG7zy9335PgA">
-      Elemental
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/5jK80ZDMxHtY8UiSMTR-rbLT1CoVJo1dsK2W9w4cmOcZu_bOiA9iv3BMdgnp7Bs-iNC19ykGK074QJOxbpPUIdMcc5BXTFW7D2T4z2sBTebVY_pUNUVbDBM1s5A1rAIIiPeqex7fYlqxsZYTArIvNKM0AMeh1A">
-      Nimona
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/IsDKLiVT5yBaHaCRnBAcqyPFAh3dbieKEIJS9DcUoSjkbVrDAg5o_YI5_PHupFpvh2EqrE5JmZucA7rPNo24a6tiQdXElMujgbJe8IHB_IKIQsn31_kLC5UoEpbi-DDxWhm01XoJWJY0mXSOENoAbtqOGn-quw">
-      Robot Dreams
-    </nominee>
-    <nominee
-      img="https://lh7-us.googleusercontent.com/gd2lkrwg7u2onAi8yS0MTH49Ztgx6bu1vzFE4H6E4gWOsFLrtdjCEMjWR7Zv7B-DT03ODNTlDLSZ23N7xl7WjiWfTyWSiEzNDZpgOktZtcRWR4zmxU34VT-mmoLyt9CQs5bDb9gW5CswMZRzdNKN6UExPhxjTA">
-      Spider-Man: Across
-    </nominee>
-  </category>
-  <category>
-    <name>Time</name>
-  </category>
-  <category>
-    <name>EMail</name>
-  </category>
+  <category name="Time" />
+  <category name="EMail" />
 </categories>

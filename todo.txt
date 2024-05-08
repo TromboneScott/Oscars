@@ -1,0 +1,1 @@
+Combine categoryDefinitions.xml, categoryMaps.xml and category/all.xml into categories.xml
