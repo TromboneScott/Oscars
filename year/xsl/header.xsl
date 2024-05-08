@@ -45,16 +45,16 @@
         <tr>
           <td colspan="5">
             <xsl:for-each
-              select="document('../categoryDefinitions.xml')/categories/category[./name = 'Best Picture']/nominee">
+              select="document('../categoryDefinitions.xml')/categories/category[@name = 'Best Picture']/nominee">
               <img width="50">
                 <xsl:attribute name="src">
                   <xsl:value-of select="./@img" />
                 </xsl:attribute>
                 <xsl:attribute name="alt">
-                  <xsl:value-of select="." />
+                  <xsl:value-of select="./@name" />
                 </xsl:attribute>
                 <xsl:attribute name="title">
-                  <xsl:value-of select="." />
+                  <xsl:value-of select="./@name" />
                 </xsl:attribute>
               </img>
             </xsl:for-each>
@@ -134,13 +134,13 @@
     <img>
       <xsl:attribute name="src">
         <xsl:value-of
-          select="document('../categoryDefinitions.xml')/categories/category[name = $category]/nominee[normalize-space(.) = $nominee]/@img" />
+          select="document('../categoryDefinitions.xml')/categories/category[@name = $category]/nominee[@name = $nominee]/@img" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="document('../categoryMaps.xml')/categories/category[name = $category]/map[website = $nominee]/ballot" />
+        select="document('../categoryMaps.xml')/categories/category[@name = $category]/map[@website = $nominee]/@ballot" />
       <xsl:attribute name="title">
         <xsl:choose>
           <xsl:when test="$description">

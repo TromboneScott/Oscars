@@ -51,8 +51,6 @@
                 <th class="header">
                   <xsl:value-of select="$categoryName" />
                 </th>
-                <xsl:variable name="categoryMaps"
-                  select="document('../categoryMaps.xml')/categories" />
                 <xsl:for-each select="$categoryResults/nominees/nominee">
                   <th>
                     <xsl:attribute name="class">

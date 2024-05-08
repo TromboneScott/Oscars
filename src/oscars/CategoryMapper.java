@@ -99,11 +99,12 @@ public final class CategoryMapper {
             try {
                 return new SAXBuilder().build(categoryMapsFile).getRootElement()
                         .getChildren("category").stream()
-                        .collect(Collectors.toMap(categoryDOM -> categoryDOM.getChildText("name"),
+                        .collect(Collectors.toMap(
+                                categoryDOM -> categoryDOM.getAttributeValue("name"),
                                 categoryDOM -> categoryDOM.getChildren("map").stream()
                                         .collect(Collectors.toMap(
-                                                mapDOM -> mapDOM.getChildText("ballot"),
-                                                mapDOM -> mapDOM.getChildText("website")))));
+                                                mapDOM -> mapDOM.getAttributeValue("ballot"),
+                                                mapDOM -> mapDOM.getAttributeValue("website")))));
             } catch (JDOMException e) {
                 throw new IOException(
                         "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
@@ -130,11 +131,10 @@ public final class CategoryMapper {
         Directory.CURRENT.write(ballotReader.categoryDefinitions.keySet().stream()
                 .map(category -> categoryMaps.get(category).entrySet().stream()
                         .sorted(Comparator.comparing(Entry::getKey, String::compareToIgnoreCase))
-                        .map(map -> new Element("map")
-                                .addContent(new Element("ballot").addContent(map.getKey()))
-                                .addContent(new Element("website").addContent(map.getValue())))
-                        .reduce(new Element("category").addContent(
-                                new Element("name").addContent(category)), Element::addContent))
+                        .map(map -> new Element("map").setAttribute("website", map.getValue())
+                                .setAttribute("ballot", map.getKey()))
+                        .reduce(new Element("category").setAttribute("name", category),
+                                Element::addContent))
                 .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
     }
 }
