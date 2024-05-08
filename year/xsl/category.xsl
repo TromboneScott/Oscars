@@ -5,9 +5,9 @@
   <xsl:template match="/category">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
-      <xsl:variable name="categoryName" select="name" />
+      <xsl:variable name="categoryName" select="@name" />
       <xsl:variable name="categoryData"
-        select="document('../category/all.xml')/categories/category[name = $categoryName]" />
+        select="document('../category/all.xml')/categories/category[@name = $categoryName]" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:variable name="categoryResults"
         select="$results/categories/category[name = $categoryName]" />

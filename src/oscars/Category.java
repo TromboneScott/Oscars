@@ -101,7 +101,7 @@ public final class Category implements ChartColor {
     }
 
     public Element toDOM() {
-        return new Element("category").addContent(new Element("name").addContent(name));
+        return new Element("category").setAttribute("name", name);
     }
 
     public Element toDOM(Collection<Player> inPlayers) {

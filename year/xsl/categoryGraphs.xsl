@@ -52,7 +52,7 @@
                     <xsl:variable name="name" select="name" />
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
-                        select="$categories/category[name = $name]/tieBreaker" />
+                        select="$categories/category[@name = $name]/tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <xsl:variable name="winners">
@@ -65,7 +65,7 @@
                     <xsl:when test="string($winners)">
                       <xsl:variable name="name" select="name" />
                       <xsl:variable name="correct"
-                        select="count($categories/category[name = $name]/players/player[contains($winners, concat('|', guess, '|'))])" />
+                        select="count($categories/category[@name = $name]/players/player[contains($winners, concat('|', guess, '|'))])" />
                       <td class="correct">
                         <center>
                           <xsl:value-of select="$correct" />
