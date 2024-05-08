@@ -19,9 +19,9 @@
           </xsl:call-template>
           <xsl:variable
             name="playerResults"
-            select="$results/players/player[firstName = $player/firstName and lastName = $player/lastName]" />
+            select="$results/players/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
           <xsl:variable
-            name="playerName" select="concat(firstName, ' ', lastName)" />
+            name="playerName" select="concat(@firstName, ' ', @lastName)" />
           <div
             id="name">
             <xsl:value-of select="$playerName" />
@@ -72,7 +72,7 @@
                 <xsl:variable name="categoryData"
                   select="$categories/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
-                  select="$categoryData/players/player[firstName = $player/firstName and lastName = $player/lastName]/@guess" />
+                  select="$categoryData/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@guess" />
                 <xsl:variable name="winners">
                   <xsl:for-each select="nominees/nominee[./@status = 'correct']">
                     <xsl:value-of select="concat('|', ., '|')" />

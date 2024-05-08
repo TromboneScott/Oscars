@@ -52,8 +52,7 @@ public final class Player {
     }
 
     public Element toDOM() {
-        return new Element("player").setAttribute("webPage", webPage())
-                .addContent(new Element("firstName").addContent(firstName))
-                .addContent(new Element("lastName").addContent(lastName));
+        return new Element("player").setAttribute("firstName", firstName)
+                .setAttribute("lastName", lastName).setAttribute("webPage", webPage());
     }
 }

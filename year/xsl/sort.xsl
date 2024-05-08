@@ -295,16 +295,16 @@
         <xsl:choose>
           <xsl:when test="$sort = 'name'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'nameReverse'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="lastName" order="descending" />
-              <xsl:sort select="firstName" order="descending" />
+              <xsl:sort select="@lastName" order="descending" />
+              <xsl:sort select="@firstName" order="descending" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -314,8 +314,8 @@
               <xsl:sort select="rank" data-type="number" />
               <xsl:sort select="bpr" data-type="number" />
               <xsl:sort select="wpr" data-type="number" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -326,8 +326,8 @@
               <xsl:sort select="rank" data-type="number" order="descending" />
               <xsl:sort select="bpr" data-type="number" order="descending" />
               <xsl:sort select="wpr" data-type="number" order="descending" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -337,8 +337,8 @@
               select="$results/players/player">
               <xsl:sort select="bpr" data-type="number" />
               <xsl:sort select="rank" data-type="number" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -347,8 +347,8 @@
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="bpr" data-type="number" order="descending" />
               <xsl:sort select="rank" data-type="number" order="descending" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -357,8 +357,8 @@
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="wpr" data-type="number" />
               <xsl:sort select="rank" data-type="number" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -367,8 +367,8 @@
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="wpr" data-type="number" order="descending" />
               <xsl:sort select="rank" data-type="number" order="descending" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -376,8 +376,8 @@
           <xsl:when test="$sort = 'time'">
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="time" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -385,8 +385,8 @@
           <xsl:when test="$sort = 'timeReverse'">
             <xsl:apply-templates select="$results/players/player">
               <xsl:sort select="time" order="descending" />
-              <xsl:sort select="lastName" />
-              <xsl:sort select="firstName" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
               <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
@@ -435,11 +435,11 @@
           <xsl:attribute name="href">
             <xsl:value-of select="concat('../player/', @webPage)" />
           </xsl:attribute>
-          <xsl:value-of select="lastName" />
-          <xsl:if test="firstName != '' and lastName != ''">
+          <xsl:value-of select="@lastName" />
+          <xsl:if test="@firstName != '' and @lastName != ''">
             <xsl:value-of select="', '" />
           </xsl:if>
-          <xsl:value-of select="firstName" />
+          <xsl:value-of select="@firstName" />
         </a>
       </td>
       <td class="rank">

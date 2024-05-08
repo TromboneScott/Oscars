@@ -65,7 +65,7 @@
                     <xsl:when test="string($winners)">
                       <xsl:variable name="name" select="name" />
                       <xsl:variable name="correct"
-                        select="count($categories/category[@name = $name]/players/player[contains($winners, concat('|', @guess, '|'))])" />
+                        select="count($categories/category[@name = $name]/player[contains($winners, concat('|', @guess, '|'))])" />
                       <td class="correct">
                         <center>
                           <xsl:value-of select="$correct" />

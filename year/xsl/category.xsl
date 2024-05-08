@@ -67,16 +67,16 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$categoryData/players/player">
-                <xsl:sort select="lastName" />
-                <xsl:sort select="firstName" />
+              <xsl:for-each select="$categoryData/player">
+                <xsl:sort select="@lastName" />
+                <xsl:sort select="@firstName" />
                 <xsl:variable name="guess" select="@guess" />
                 <xsl:variable name="playerDisplayName">
-                  <xsl:value-of select="lastName" />
-                  <xsl:if test="firstName != '' and lastName != ''">
+                  <xsl:value-of select="@lastName" />
+                  <xsl:if test="@firstName != '' and @lastName != ''">
                     <xsl:value-of select="', '" />
                   </xsl:if>
-                  <xsl:value-of select="firstName" />
+                  <xsl:value-of select="@firstName" />
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
@@ -111,7 +111,7 @@
                     </xsl:attribute>
                     <xsl:variable name="name" select="." />
                     <xsl:value-of
-                      select="count($categoryData/players/player[@guess=$name])" />
+                      select="count($categoryData/player[@guess=$name])" />
                   </th>
                 </xsl:for-each>
               </tr>
