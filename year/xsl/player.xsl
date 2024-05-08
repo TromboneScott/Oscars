@@ -70,9 +70,9 @@
               <xsl:for-each select="$results/categories/category">
                 <xsl:variable name="categoryName" select="name" />
                 <xsl:variable name="categoryData"
-                  select="$categories/category[name = $categoryName]" />
+                  select="$categories/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
-                  select="$categoryData/players/player[firstName = $player/firstName and lastName = $player/lastName]/guess" />
+                  select="$categoryData/players/player[firstName = $player/firstName and lastName = $player/lastName]/@guess" />
                 <xsl:variable name="winners">
                   <xsl:for-each select="nominees/nominee[./@status = 'correct']">
                     <xsl:value-of select="concat('|', ., '|')" />
@@ -92,7 +92,7 @@
                     </a>
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
-                        select="$categoryData/tieBreaker" />
+                        select="$categoryData/@tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <td>
@@ -145,7 +145,7 @@
                 </xsl:attribute>
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
-                  <xsl:for-each select="$categories/category/tieBreaker">
+                  <xsl:for-each select="$categories/category/@tieBreaker">
                     <xsl:sort select="." data-type="number" />
                     <xsl:if test="position()=last()">
                       <xsl:call-template name="tieBreaker">

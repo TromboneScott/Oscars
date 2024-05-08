@@ -23,13 +23,13 @@
             id="name">
             <xsl:value-of select="$categoryName" />
           </div> Tie Breaker: <xsl:value-of
-            select="$categoryData/tieBreaker" />
+            select="$categoryData/@tieBreaker" />
           <xsl:if
-            test="$categoryData/tieBreaker = ''">
+            test="$categoryData/@tieBreaker = ''">
             NO
           </xsl:if>
           <br /> Point Value: <xsl:value-of
-            select="$categoryData/value" />
+            select="$categoryData/@value" />
           <xsl:if
             test="count($categoryResults/nominees/nominee[@status = 'correct']) &gt; 1">
             <br />
@@ -70,7 +70,7 @@
               <xsl:for-each select="$categoryData/players/player">
                 <xsl:sort select="lastName" />
                 <xsl:sort select="firstName" />
-                <xsl:variable name="guess" select="guess" />
+                <xsl:variable name="guess" select="@guess" />
                 <xsl:variable name="playerDisplayName">
                   <xsl:value-of select="lastName" />
                   <xsl:if test="firstName != '' and lastName != ''">
@@ -111,7 +111,7 @@
                     </xsl:attribute>
                     <xsl:variable name="name" select="." />
                     <xsl:value-of
-                      select="count($categoryData/players/player[guess=$name])" />
+                      select="count($categoryData/players/player[@guess=$name])" />
                   </th>
                 </xsl:for-each>
               </tr>

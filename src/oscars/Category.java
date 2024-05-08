@@ -105,11 +105,10 @@ public final class Category implements ChartColor {
     }
 
     public Element toDOM(Collection<Player> inPlayers) {
-        return toDOM().addContent(new Element("tieBreaker").addContent(tieBreaker))
-                .addContent(new Element("value").addContent(value.toString()))
+        return toDOM().setAttribute("tieBreaker", tieBreaker)
+                .setAttribute("value", value.toString())
                 .addContent(inPlayers.stream()
-                        .map(player -> player.toDOM().addContent(
-                                new Element("guess").addContent(player.picks.get(this))))
+                        .map(player -> player.toDOM().setAttribute("guess", player.picks.get(this)))
                         .reduce(new Element("players"), Element::addContent));
     }
 }
