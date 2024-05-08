@@ -85,23 +85,23 @@
                     <xsl:when test=". = 'rank'">
                       <xsl:apply-templates select="$results/ballots/ballot">
                         <xsl:sort select="timestamp/@raw" />
-                        <xsl:sort select="name" />
+                        <xsl:sort select="@name" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'rankReverse'">
                       <xsl:apply-templates select="$results/ballots/ballot">
                         <xsl:sort select="timestamp/@raw" order="descending" />
-                        <xsl:sort select="name" />
+                        <xsl:sort select="@name" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'name'">
                       <xsl:apply-templates select="$results/ballots/ballot">
-                        <xsl:sort select="name" />
+                        <xsl:sort select="@name" />
                       </xsl:apply-templates>
                     </xsl:when>
                     <xsl:when test=". = 'nameReverse'">
                       <xsl:apply-templates select="$results/ballots/ballot">
-                        <xsl:sort select="name" order="descending" />
+                        <xsl:sort select="@name" order="descending" />
                       </xsl:apply-templates>
                     </xsl:when>
                   </xsl:choose>
@@ -167,7 +167,7 @@
         <xsl:value-of select="timestamp" />
       </td>
       <td>
-        <xsl:value-of select="name" />
+        <xsl:value-of select="@name" />
       </td>
     </tr>
   </xsl:template>
@@ -515,18 +515,18 @@
         <td style="text-align: center">
           <a>
             <xsl:attribute name="id">
-              <xsl:value-of select="name" />
+              <xsl:value-of select="@name" />
             </xsl:attribute>
             <xsl:attribute name="href">
-              <xsl:value-of select="concat('../category/', name, '.xml')" />
+              <xsl:value-of select="concat('../category/', @name, '.xml')" />
             </xsl:attribute>
             <xsl:choose>
-              <xsl:when test="nominees/nominee[@status = 'correct']">
-                <xsl:variable name="categoryName" select="name" />
-                <xsl:for-each select="nominees/nominee[@status = 'correct']">
+              <xsl:when test="nominee[@status = 'correct']">
+                <xsl:variable name="categoryName" select="@name" />
+                <xsl:for-each select="nominee[@status = 'correct']">
                   <xsl:call-template name="poster">
                     <xsl:with-param name="category" select="$categoryName" />
-                    <xsl:with-param name="nominee" select="." />
+                    <xsl:with-param name="nominee" select="@name" />
                   </xsl:call-template>
                 </xsl:for-each>
               </xsl:when>
@@ -536,7 +536,7 @@
               </xsl:otherwise>
             </xsl:choose>
             <br />
-            <xsl:value-of select="name" />
+            <xsl:value-of select="@name" />
           </a>
         </td>
       </xsl:for-each>

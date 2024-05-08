@@ -10,7 +10,7 @@
         select="document('../category/all.xml')/categories/category[@name = $categoryName]" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:variable name="categoryResults"
-        select="$results/categories/category[name = $categoryName]" />
+        select="$results/categories/category[@name = $categoryName]" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
       </xsl:call-template>
@@ -31,15 +31,14 @@
           <br /> Point Value: <xsl:value-of
             select="$categoryData/@value" />
           <xsl:if
-            test="count($categoryResults/nominees/nominee[@status = 'correct']) &gt; 1">
+            test="count($categoryResults/nominee[@status = 'correct']) &gt; 1">
             <br />
             <br />
             <b>TIE</b> - Everyone who selected one of the winners in
           this category get the points. </xsl:if>
           <br />
           <br />
-          <xsl:call-template
-            name="chart">
+          <xsl:call-template name="chart">
             <xsl:with-param name="categoryResults" select="$categoryResults" />
           </xsl:call-template>
           <br />
@@ -51,14 +50,14 @@
                 <th class="header">
                   <xsl:value-of select="$categoryName" />
                 </th>
-                <xsl:for-each select="$categoryResults/nominees/nominee">
+                <xsl:for-each select="$categoryResults/nominee">
                   <th>
                     <xsl:attribute name="class">
                       <xsl:value-of select="./@status" />
                     </xsl:attribute>
                     <xsl:call-template name="poster">
                       <xsl:with-param name="category" select="$categoryName" />
-                      <xsl:with-param name="nominee" select="." />
+                      <xsl:with-param name="nominee" select="@name" />
                     </xsl:call-template>
                     <br />
                     <xsl:value-of select="." />
@@ -80,8 +79,7 @@
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
-                    <xsl:value-of
-                      select="$categoryResults/nominees/nominee[. = $guess]/@status" />
+                    <xsl:value-of select="$categoryResults/nominee[@name = $guess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -91,9 +89,9 @@
                       <xsl:value-of select="$playerDisplayName" />
                     </a>
                   </td>
-                  <xsl:for-each select="$categoryResults/nominees/nominee">
+                  <xsl:for-each select="$categoryResults/nominee">
                     <td id="selection">
-                      <xsl:if test=". = $guess">
+                      <xsl:if test="@name = $guess">
                         &#10004;
                       </xsl:if>
                     </td>
@@ -104,12 +102,12 @@
             <tfoot>
               <tr>
                 <th class="header">Total</th>
-                <xsl:for-each select="$categoryResults/nominees/nominee">
+                <xsl:for-each select="$categoryResults/nominee">
                   <th>
                     <xsl:attribute name="class">
                       <xsl:value-of select="./@status" />
                     </xsl:attribute>
-                    <xsl:variable name="name" select="." />
+                    <xsl:variable name="name" select="@name" />
                     <xsl:value-of
                       select="count($categoryData/player[@guess=$name])" />
                   </th>

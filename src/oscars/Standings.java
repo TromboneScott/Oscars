@@ -96,16 +96,16 @@ public final class Standings {
     }
 
     public Element resultsCategoryDOM(List<Category> inCategories) {
-        return inCategories.stream().map(category -> new Element("category")
-                .setAttribute("webPage", category.webPage())
-                .setAttribute("chart", category.chartName(winners.get(category)))
-                .addContent(new Element("name").addContent(category.name))
-                .addContent(category.nominees.stream().map(nominee -> new Element("nominee")
-                        .addContent(nominee.name).setAttribute("status",
+        return inCategories.stream()
+                .map(category -> category.nominees.stream().map(nominee -> new Element("nominee")
+                        .setAttribute("name", nominee.name).setAttribute("status",
                                 winners.get(category).isEmpty() ? "unannounced"
                                         : winners.get(category).contains(nominee.name) ? "correct"
                                                 : "incorrect"))
-                        .reduce(new Element("nominees"), Element::addContent)))
+                        .reduce(new Element("category").setAttribute("name", category.name)
+                                .setAttribute("webPage", category.webPage())
+                                .setAttribute("chart", category.chartName(winners.get(category))),
+                                Element::addContent))
                 .reduce(new Element("categories"), Element::addContent);
     }
 
@@ -175,13 +175,14 @@ public final class Standings {
             Map<String, Category> inCategoryMap) {
         return Optional.ofNullable(inResultsDOM.getChild("categories"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
-                .collect(Collectors
-                        .toMap(categoryDOM -> inCategoryMap.get(categoryDOM.getChildText("name")),
-                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
-                                        .getChild("nominees").getChildren("nominee").stream()
+                .collect(Collectors.toMap(
+                        categoryDOM -> inCategoryMap.get(categoryDOM.getAttributeValue("name")),
+                        categoryDOM -> Collections
+                                .unmodifiableSet(categoryDOM.getChildren("nominee").stream()
                                         .filter(nominee -> "correct"
                                                 .equals(nominee.getAttributeValue("status")))
-                                        .map(Element::getText).collect(Collectors.toSet()))));
+                                        .map(element -> element.getAttributeValue("name"))
+                                        .collect(Collectors.toSet()))));
     }
 
     public static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {

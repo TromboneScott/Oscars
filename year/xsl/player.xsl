@@ -68,20 +68,20 @@
             </thead>
             <tbody>
               <xsl:for-each select="$results/categories/category">
-                <xsl:variable name="categoryName" select="name" />
+                <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryData"
                   select="$categories/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
                   select="$categoryData/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@guess" />
                 <xsl:variable name="winners">
-                  <xsl:for-each select="nominees/nominee[./@status = 'correct']">
+                  <xsl:for-each select="nominee[./@status = 'correct']">
                     <xsl:value-of select="concat('|', ., '|')" />
                   </xsl:for-each>
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
                     <xsl:value-of
-                      select="nominees/nominee[. = $playerGuess]/@status" />
+                      select="nominee[@name = $playerGuess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -101,7 +101,7 @@
                   <td>
                     <xsl:variable name="tempWinners">
                       <xsl:for-each
-                        select="nominees/nominee[./@status = 'correct']">
+                        select="nominee[./@status = 'correct']">
                         <xsl:value-of select="', '" />
                         <xsl:value-of select="." />
                       </xsl:for-each>
@@ -133,7 +133,7 @@
                 </th>
                 <th>
                   <xsl:value-of
-                    select="count($results/categories/category/nominees[nominee/@status = 'correct'])" />
+                    select="count($results/categories/category[nominee/@status = 'correct'])" />
                 </th>
                 <th>
                   <xsl:value-of select="$playerResults/score" />

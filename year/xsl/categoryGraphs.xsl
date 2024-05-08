@@ -45,25 +45,24 @@
                   <td class="header">
                     <a>
                       <xsl:attribute name="href">
-                        <xsl:value-of select="concat('#', name)" />
+                        <xsl:value-of select="concat('#', @name)" />
                       </xsl:attribute>
-                      <xsl:value-of select="name" />
+                      <xsl:value-of select="@name" />
                     </a>
-                    <xsl:variable name="name" select="name" />
+                    <xsl:variable name="name" select="@name" />
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
                         select="$categories/category[@name = $name]/@tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <xsl:variable name="winners">
-                    <xsl:for-each
-                      select="nominees/nominee[./@status = 'correct']">
-                      <xsl:value-of select="concat('|', ., '|')" />
+                    <xsl:for-each select="nominee[./@status = 'correct']">
+                      <xsl:value-of select="concat('|', @name, '|')" />
                     </xsl:for-each>
                   </xsl:variable>
                   <xsl:choose>
                     <xsl:when test="string($winners)">
-                      <xsl:variable name="name" select="name" />
+                      <xsl:variable name="name" select="@name" />
                       <xsl:variable name="correct"
                         select="count($categories/category[@name = $name]/player[contains($winners, concat('|', @guess, '|'))])" />
                       <td class="correct">
@@ -114,15 +113,15 @@
             <br />
             <a>
               <xsl:attribute name="id">
-                <xsl:value-of select="name" />
+                <xsl:value-of select="@name" />
               </xsl:attribute>
               <xsl:attribute name="href">
-                <xsl:value-of select="concat(name, '.xml')" />
+                <xsl:value-of select="concat(@name, '.xml')" />
               </xsl:attribute>
               <b>
-                <xsl:value-of select="name" />
+                <xsl:value-of select="@name" />
               </b>
-              <xsl:variable name="name" select="name" />
+              <xsl:variable name="name" select="@name" />
               <xsl:variable name="tieBreaker"
                 select="$categories/category[@name = $name]/@tieBreaker" />
               <xsl:if test="$tieBreaker != ''">
@@ -130,14 +129,14 @@
                   select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
-              <xsl:variable name="categoryName" select="name" />
-              <xsl:for-each select="nominees/nominee">
+              <xsl:variable name="categoryName" select="@name" />
+              <xsl:for-each select="nominee">
                 <xsl:if test="(position() - 1) mod 5 = 0">
                   <br />
                 </xsl:if>
                 <xsl:call-template name="poster">
                   <xsl:with-param name="category" select="$categoryName" />
-                  <xsl:with-param name="nominee" select="." />
+                  <xsl:with-param name="nominee" select="@name" />
                 </xsl:call-template>
               </xsl:for-each>
               <br />
