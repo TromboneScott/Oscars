@@ -28,8 +28,21 @@
             test="$categoryData/@tieBreaker = ''">
             NO
           </xsl:if>
-          <br /> Point Value: <xsl:value-of
-            select="$categoryData/@value" />
+          <br />
+          <xsl:variable name="zeros">
+            <xsl:call-template name="zeros">
+              <xsl:with-param name="remaining"
+                select="$categoryData/@tieBreaker" />
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:variable
+            name="decimals">
+            <xsl:if test="$zeros != ''">
+              <xsl:value-of select="concat('.', $zeros, '1')" />
+            </xsl:if>
+          </xsl:variable>
+          <xsl:value-of
+            select="concat('Point Value: 1', $decimals)" />
           <xsl:if
             test="count($categoryResults/nominee[@status = 'correct']) &gt; 1">
             <br />
@@ -38,7 +51,8 @@
           this category get the points. </xsl:if>
           <br />
           <br />
-          <xsl:call-template name="chart">
+          <xsl:call-template
+            name="chart">
             <xsl:with-param name="categoryResults" select="$categoryResults" />
           </xsl:call-template>
           <br />
@@ -79,7 +93,8 @@
                 </xsl:variable>
                 <tr>
                   <xsl:attribute name="class">
-                    <xsl:value-of select="$categoryResults/nominee[@name = $guess]/@status" />
+                    <xsl:value-of
+                      select="$categoryResults/nominee[@name = $guess]/@status" />
                   </xsl:attribute>
                   <td class="header">
                     <a>
@@ -131,5 +146,14 @@
         </center>
       </body>
     </html>
+  </xsl:template>
+  <xsl:template name="zeros">
+    <xsl:param name="remaining" />
+    <xsl:if test="$remaining &gt; 1">
+      <xsl:value-of select="0" />
+      <xsl:call-template name="zeros">
+        <xsl:with-param name="remaining" select="$remaining - 1" />
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
