@@ -425,7 +425,7 @@
                 unannounced
               </xsl:when>
               <xsl:when
-                test="$inPlayer/opponents/player[number($id)] = 'BETTER' or $inPlayer/opponents/player[number($id)] = 'WORSE'">
+                test="substring($inPlayer/opponents/@decided, number($id), 1) = 'Y'">
           correct
               </xsl:when>
             </xsl:choose>

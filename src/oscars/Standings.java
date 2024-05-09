@@ -132,12 +132,11 @@ public final class Standings {
                                         inPlayers.get(playerNum).time <= elapsedTime ? "correct"
                                                 : showEnded() ? "incorrect" : "unannounced")
                                 .addContent(formatTime(inPlayers.get(playerNum).time)))
-                .addContent(inPlayers.stream().map(opponent -> new Element("player").addContent(
-                        lostToMap.get(inPlayers.get(playerNum)).contains(opponent) ? "BETTER"
-                                : lostToMap.get(opponent).contains(inPlayers.get(playerNum))
-                                        || tied(inPlayers.get(playerNum), opponent) ? "WORSE"
-                                                : "TBD"))
-                        .reduce(new Element("opponents"), Element::addContent)))
+                .addContent(new Element("opponents").setAttribute("decided", inPlayers.stream()
+                        .map(opponent -> lostToMap.get(inPlayers.get(playerNum)).contains(opponent)
+                                || lostToMap.get(opponent).contains(inPlayers.get(playerNum))
+                                || tied(inPlayers.get(playerNum), opponent) ? "Y" : "N")
+                        .collect(Collectors.joining()))))
                 .reduce(new Element("players"), Element::addContent);
     }
 
