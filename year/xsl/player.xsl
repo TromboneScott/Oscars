@@ -75,7 +75,7 @@
                   select="$categoryData/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@guess" />
                 <xsl:variable name="winners">
                   <xsl:for-each select="nominee[./@status = 'correct']">
-                    <xsl:value-of select="concat('|', ., '|')" />
+                    <xsl:value-of select="concat('|', @name, '|')" />
                   </xsl:for-each>
                 </xsl:variable>
                 <tr>
@@ -100,10 +100,9 @@
                   </td>
                   <td>
                     <xsl:variable name="tempWinners">
-                      <xsl:for-each
-                        select="nominee[./@status = 'correct']">
+                      <xsl:for-each select="nominee[./@status = 'correct']">
                         <xsl:value-of select="', '" />
-                        <xsl:value-of select="." />
+                        <xsl:value-of select="@name" />
                       </xsl:for-each>
                     </xsl:variable>
                     <xsl:value-of select="substring-after($tempWinners, ', ')" />
@@ -113,11 +112,11 @@
                       <xsl:choose>
                         <xsl:when
                           test="contains($winners, concat('|', $playerGuess, '|'))">
-                          <xsl:value-of select="$categoryData/value" />
+                          <xsl:value-of select="$categoryData/@value" />
                         </xsl:when>
                         <xsl:otherwise>
                           <xsl:value-of
-                            select="translate($categoryData/value, '1', '0')" />
+                            select="translate($categoryData/@value, '1', '0')" />
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:if>
