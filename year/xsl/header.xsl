@@ -79,6 +79,12 @@
       <xsl:attribute name="src">
         <xsl:value-of select="$categoryResults/@chart" />
       </xsl:attribute>
+      <xsl:attribute name="alt">
+        <xsl:value-of select="$categoryResults/@name" />
+      </xsl:attribute>
+      <xsl:attribute name="title">
+        <xsl:value-of select="$categoryResults/@name" />
+      </xsl:attribute>
     </img>
   </xsl:template>
   <xsl:template name="tieBreaker">

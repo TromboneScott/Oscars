@@ -40,6 +40,14 @@
                     <xsl:value-of
                       select="concat('../rank/', $playerResults/rank/@chart)" />
                   </xsl:attribute>
+                  <xsl:attribute name="alt">
+                    <xsl:value-of select="$playerResults/rank" /> out of <xsl:value-of
+                      select="count($results/players/player)" />
+                  </xsl:attribute>
+                  <xsl:attribute name="title">
+                    <xsl:value-of select="$playerResults/rank" /> out of <xsl:value-of
+                      select="count($results/players/player)" />
+                  </xsl:attribute>
                 </img>
               </td>
             </tr>
