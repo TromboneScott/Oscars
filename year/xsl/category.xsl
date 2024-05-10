@@ -27,7 +27,7 @@
           </div> Tie Breaker: <xsl:value-of
             select="$categoryDefinition/@tieBreaker" />
           <xsl:if
-            test="$categoryDefinition/@tieBreaker = ''">
+            test="normalize-space($categoryDefinition/@tieBreaker) = ''">
             NO
           </xsl:if>
           <br /> Point Value: <xsl:value-of

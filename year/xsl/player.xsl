@@ -95,7 +95,7 @@
                     </a>
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
-                        select="$categoryData/@tieBreaker" />
+                        select="document('../categoryDefinitions.xml')/categories/category[@name = $categoryName]/@tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <td>
