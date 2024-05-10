@@ -173,10 +173,8 @@ public final class Standings {
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
                 .collect(Collectors.toMap(
                         categoryDOM -> inCategoryMap.get(categoryDOM.getAttributeValue("name")),
-                        categoryDOM -> Collections
-                                .unmodifiableSet(categoryDOM.getChildren("nominee").stream()
-                                        .filter(nominee -> "correct"
-                                                .equals(nominee.getAttributeValue("status")))
+                        categoryDOM -> Collections.unmodifiableSet(
+                                categoryDOM.getChild("winners").getChildren("nominee").stream()
                                         .map(element -> element.getAttributeValue("name"))
                                         .collect(Collectors.toSet()))));
     }
