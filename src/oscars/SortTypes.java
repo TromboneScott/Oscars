@@ -9,13 +9,9 @@ public final class SortTypes {
 
     public static void writePages() throws IOException {
         for (String column : COLUMNS)
-            for (String suffix : new String[] { "", "Reverse" })
-                writePage(column + suffix);
+            for (String type : new String[] { column, column + "Reverse" })
+                Directory.SORT.write(new Element("sort").addContent(type), type + ".xml",
+                        "sort.xsl");
         Directory.SORT.cleanUp();
-    }
-
-    private static void writePage(String inSortType) throws IOException {
-        Directory.SORT.write(new Element("sort").addContent(inSortType), inSortType + ".xml",
-                "sort.xsl");
     }
 }
