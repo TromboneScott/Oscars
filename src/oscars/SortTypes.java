@@ -8,10 +8,9 @@ public final class SortTypes {
     private static final String[] COLUMNS = { "name", "rank", "bpr", "wpr", "score", "time" };
 
     public static void writePages() throws IOException {
-        for (String column : COLUMNS) {
-            writePage(column);
-            writePage(column + "Reverse");
-        }
+        for (String column : COLUMNS)
+            for (String suffix : new String[] { "", "Reverse" })
+                writePage(column + suffix);
         Directory.SORT.cleanUp();
     }
 
