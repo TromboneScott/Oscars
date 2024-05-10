@@ -128,6 +128,23 @@
       </tr>
     </table>
   </xsl:template>
+  <xsl:template name="status">
+    <xsl:param name="nominee" />
+    <xsl:param name="winners" />
+    <xsl:attribute name="class">
+      <xsl:choose>
+        <xsl:when test="$winners/nominee/@name = $nominee">
+          correct
+        </xsl:when>
+        <xsl:when test="$winners/nominee">
+          incorrect
+        </xsl:when>
+        <xsl:otherwise>
+          unannounced
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:template>
   <xsl:template name="poster">
     <xsl:param name="category" />
     <xsl:param name="nominee" />

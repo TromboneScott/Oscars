@@ -6,6 +6,8 @@
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <xsl:variable name="categoryName" select="@name" />
+      <xsl:variable name="categoryDefinition"
+        select="document('../categoryDefinitions.xml')/categories/category[@name = $categoryName]" />
       <xsl:variable name="categoryData"
         select="document('../category/all.xml')/categories/category[@name = $categoryName]" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
@@ -23,19 +25,19 @@
             id="name">
             <xsl:value-of select="$categoryName" />
           </div> Tie Breaker: <xsl:value-of
-            select="$categoryData/@tieBreaker" />
+            select="$categoryDefinition/@tieBreaker" />
           <xsl:if
-            test="$categoryData/@tieBreaker = ''">
+            test="$categoryDefinition/@tieBreaker = ''">
             NO
           </xsl:if>
           <br /> Point Value: <xsl:value-of
             select="$categoryData/@value" />
           <xsl:if
-            test="count($categoryResults/nominee[@status = 'correct']) &gt; 1">
+            test="count($categoryResults/winners/nominee) &gt; 1">
             <br />
             <br />
             <b>TIE</b> - Everyone who selected one of the winners in
-          this category get the points. </xsl:if>
+          this category gets the points. </xsl:if>
           <br />
           <br />
           <xsl:call-template
@@ -51,11 +53,13 @@
                 <th class="header">
                   <xsl:value-of select="$categoryName" />
                 </th>
-                <xsl:for-each select="$categoryResults/nominee">
+                <xsl:for-each select="$categoryDefinition/nominee">
                   <th>
-                    <xsl:attribute name="class">
-                      <xsl:value-of select="./@status" />
-                    </xsl:attribute>
+                    <xsl:call-template name="status">
+                      <xsl:with-param name="nominee" select="@name" />
+                      <xsl:with-param name="winners"
+                        select="$categoryResults/winners" />
+                    </xsl:call-template>
                     <xsl:call-template name="poster">
                       <xsl:with-param name="category" select="$categoryName" />
                       <xsl:with-param name="nominee" select="@name" />
@@ -79,10 +83,11 @@
                   <xsl:value-of select="@firstName" />
                 </xsl:variable>
                 <tr>
-                  <xsl:attribute name="class">
-                    <xsl:value-of
-                      select="$categoryResults/nominee[@name = $guess]/@status" />
-                  </xsl:attribute>
+                  <xsl:call-template name="status">
+                    <xsl:with-param name="nominee" select="$guess" />
+                    <xsl:with-param name="winners"
+                      select="$categoryResults/winners" />
+                  </xsl:call-template>
                   <td class="header">
                     <a>
                       <xsl:attribute name="href">
@@ -91,7 +96,7 @@
                       <xsl:value-of select="$playerDisplayName" />
                     </a>
                   </td>
-                  <xsl:for-each select="$categoryResults/nominee">
+                  <xsl:for-each select="$categoryDefinition/nominee">
                     <td id="selection">
                       <xsl:if test="@name = $guess">
                         &#10004;
@@ -104,11 +109,13 @@
             <tfoot>
               <tr>
                 <th class="header">Total</th>
-                <xsl:for-each select="$categoryResults/nominee">
+                <xsl:for-each select="$categoryDefinition/nominee">
                   <th>
-                    <xsl:attribute name="class">
-                      <xsl:value-of select="./@status" />
-                    </xsl:attribute>
+                    <xsl:call-template name="status">
+                      <xsl:with-param name="nominee" select="@name" />
+                      <xsl:with-param name="winners"
+                        select="$categoryResults/winners" />
+                    </xsl:call-template>
                     <xsl:variable name="name" select="@name" />
                     <xsl:value-of
                       select="count($categoryData/player[@guess=$name])" />

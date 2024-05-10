@@ -97,15 +97,12 @@ public final class Standings {
 
     public Element resultsCategoryDOM(List<Category> inCategories) {
         return inCategories.stream()
-                .map(category -> category.nominees.stream().map(nominee -> new Element("nominee")
-                        .setAttribute("name", nominee.name).setAttribute("status",
-                                winners.get(category).isEmpty() ? "unannounced"
-                                        : winners.get(category).contains(nominee.name) ? "correct"
-                                                : "incorrect"))
-                        .reduce(new Element("category").setAttribute("name", category.name)
-                                .setAttribute("webPage", category.webPage())
-                                .setAttribute("chart", category.chartName(winners.get(category))),
-                                Element::addContent))
+                .map(category -> new Element("category").setAttribute("name", category.name)
+                        .setAttribute("webPage", category.webPage())
+                        .setAttribute("chart", category.chartName(winners.get(category)))
+                        .addContent(winners.get(category).stream()
+                                .map(winner -> new Element("nominee").setAttribute("name", winner))
+                                .reduce(new Element("winners"), Element::addContent)))
                 .reduce(new Element("categories"), Element::addContent);
     }
 

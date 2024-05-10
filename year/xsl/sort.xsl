@@ -521,9 +521,9 @@
               <xsl:value-of select="concat('../category/', @name, '.xml')" />
             </xsl:attribute>
             <xsl:choose>
-              <xsl:when test="nominee[@status = 'correct']">
+              <xsl:when test="winners/nominee">
                 <xsl:variable name="categoryName" select="@name" />
-                <xsl:for-each select="nominee[@status = 'correct']">
+                <xsl:for-each select="winners/nominee">
                   <xsl:call-template name="poster">
                     <xsl:with-param name="category" select="$categoryName" />
                     <xsl:with-param name="nominee" select="@name" />

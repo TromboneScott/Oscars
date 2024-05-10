@@ -6,6 +6,8 @@
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <xsl:variable name="categories" select="." />
+      <xsl:variable name="categoryDefinitions"
+        select="document('../categoryDefinitions.xml')" />
       <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:call-template name="init">
         <xsl:with-param name="results" select="$results" />
@@ -56,7 +58,7 @@
                     </xsl:call-template>
                   </td>
                   <xsl:variable name="winners">
-                    <xsl:for-each select="nominee[./@status = 'correct']">
+                    <xsl:for-each select="winners/nominee">
                       <xsl:value-of select="concat('|', @name, '|')" />
                     </xsl:for-each>
                   </xsl:variable>
@@ -130,7 +132,8 @@
               </xsl:if>
               <br />
               <xsl:variable name="categoryName" select="@name" />
-              <xsl:for-each select="nominee">
+              <xsl:for-each
+                select="$categoryDefinitions/categories/category[@name = $categoryName]/nominee">
                 <xsl:if test="(position() - 1) mod 5 = 0">
                   <br />
                 </xsl:if>
