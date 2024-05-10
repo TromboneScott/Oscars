@@ -30,6 +30,8 @@ public class Directory extends File {
 
     public static final Directory PLAYER = new Directory("player");
 
+    public static final Directory SORT = new Directory("sort");
+
     public static final Directory RANK = new Directory("rank");
 
     private static final Instant START = Instant.now();
