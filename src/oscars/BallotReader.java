@@ -43,6 +43,7 @@ public final class BallotReader {
                     "ERROR: Unable to read category definitions file: " + CATEGORY_DEFINITIONS_FILE,
                     e);
         }
+        SortTypes.writePages();
     }
 
     public Stream<Ballot> readBallots() throws IOException {

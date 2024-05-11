@@ -61,7 +61,6 @@ public class Oscars implements Runnable {
         System.out.print("Step 4 of 4: Writing web pages... ");
         writeCategoryPages();
         writePlayerPages();
-        SortTypes.writePages();
         System.out.println("DONE");
     }
 
