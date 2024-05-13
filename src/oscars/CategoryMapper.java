@@ -23,7 +23,7 @@ public final class CategoryMapper {
 
     private final Collection<Ballot> ballots;
 
-    private final Map<String, Map<String, String>> categoryMaps;
+    private final Map<String, LinkedHashMap<String, String>> categoryMaps;
 
     public CategoryMapper() throws IOException {
         ballotReader = new BallotReader();
@@ -48,8 +48,8 @@ public final class CategoryMapper {
                 .map(category -> Category.of(category.name)).collect(Collectors.toList());
     }
 
-    private Map<String, Map<String, String>> categoryMaps() throws IOException {
-        Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
+    private Map<String, LinkedHashMap<String, String>> categoryMaps() throws IOException {
+        Map<String, LinkedHashMap<String, String>> categoryMaps = readCategoryMaps();
         for (Category category : ballotReader.categoryDefinitions.values()) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
@@ -95,7 +95,8 @@ public final class CategoryMapper {
         }
     }
 
-    private static Map<String, Map<String, String>> readCategoryMaps() throws IOException {
+    private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
+            throws IOException {
         File categoryMapsFile = new File(CATEGORY_MAPS_FILE);
         if (categoryMapsFile.exists())
             try {
