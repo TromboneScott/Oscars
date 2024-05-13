@@ -61,7 +61,7 @@ public final class Ballot {
         return get(Category.LAST_NAME.name) + ", " + get(Category.FIRST_NAME.name);
     }
 
-    private LocalDateTime getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return LocalDateTime.parse(get(Category.TIMESTAMP.name),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }

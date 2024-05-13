@@ -46,14 +46,14 @@ Edit categoryDefinitions.xml using NOTEPAD
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
 
-Delete this file if it exists:
-File: categoryMaps.xml
-
 Proofread the website:
 1. From the new year folder run oscars.bat or ./oscars.sh
+  a. Just hit return for nominee descriptions (for now)
 2. Verify that all nominee names are short enough to be displayed
 3. Verify that nominees with special characters are displayed correctly
 4. Verify that all nominee images are correct
+
+Reset nominee descriptions by deleting this file: categoryMaps.xml
 
 
 -- While ballots are being collected
@@ -80,6 +80,7 @@ This will be saved so you only have to do this for new survey answers.
 Edit (or delete and start over) the file categoryMaps.xml
 - Fix any mistakes
 - Fix any special characters that were copied/pasted (use NOTEPAD so characters will be in UTF-8)
+- If any duplicates are found for the website mapping the last one will be used
 - Start oscars.bat or oscars.sh over again if any changes were made
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.

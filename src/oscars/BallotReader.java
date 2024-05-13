@@ -57,7 +57,7 @@ public final class BallotReader {
                 return reader.readAll().stream().peek(ballot -> {
                     if (ballot.length != categoryNames.size())
                         throw new RuntimeException("Ballot length: " + ballot.length
-                                + " does not match category values: " + categoryNames.size());
+                                + " does not match category definitions: " + categoryNames.size());
                 }).map(ballot -> IntStream.range(0, ballot.length).boxed().collect(
                         Ballot.toBallot(categoryNames::get, column -> ballot[column].trim())));
             }

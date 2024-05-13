@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,18 +56,11 @@ public final class CategoryMapper {
             List<String> nominees = category.nominees.stream().map(nominee -> nominee.name)
                     .collect(Collectors.toList());
             if (!nominees.isEmpty())
-                for (Ballot ballot : ballots) {
-                    String guess = ballot.get(category.name);
-                    if (!categoryMap.containsKey(guess)) {
-                        List<String> mappings = nominees.stream().filter(
-                                nominee -> guess.toUpperCase().contains(nominee.toUpperCase()))
-                                .collect(Collectors.toList());
-                        categoryMap.put(guess,
-                                mappings.size() == 1 ? mappings.get(0)
-                                        : prompt(category.name, guess,
-                                                mappings.isEmpty() ? nominees : mappings));
-                    }
-                }
+                ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
+                        .map(ballot -> ballot.get(category.name))
+                        .filter(guess -> !categoryMap.containsKey(guess))
+                        .forEach(guess -> categoryMap.put(guess,
+                                mapping(category, guess, nominees)));
             for (String nominee : nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
@@ -79,8 +73,16 @@ public final class CategoryMapper {
         return categoryMaps;
     }
 
-    private static String prompt(String inCategoryName, String inGuess, List<String> inNominees) {
-        System.out.println("\nCATEGORY: " + inCategoryName);
+    private static String mapping(Category inCategory, String inGuess, List<String> inNominees) {
+        List<String> mappings = inNominees.stream()
+                .filter(nominee -> inGuess.toUpperCase().contains(nominee.toUpperCase()))
+                .collect(Collectors.toList());
+        return mappings.size() == 1 ? mappings.get(0)
+                : prompt(inCategory, inGuess, mappings.isEmpty() ? inNominees : mappings);
+    }
+
+    private static String prompt(Category inCategory, String inGuess, List<String> inNominees) {
+        System.out.println("\nCATEGORY: " + inCategory.name);
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");
@@ -89,7 +91,7 @@ public final class CategoryMapper {
             return inNominees.get(Integer.parseInt(input) - 1);
         } catch (Exception e) {
             System.out.println("\nInvalid Input: " + input);
-            return prompt(inCategoryName, inGuess, inNominees);
+            return prompt(inCategory, inGuess, inNominees);
         }
     }
 
@@ -104,7 +106,8 @@ public final class CategoryMapper {
                                 categoryDOM -> categoryDOM.getChildren("map").stream()
                                         .collect(Collectors.toMap(
                                                 mapDOM -> mapDOM.getAttributeValue("ballot"),
-                                                mapDOM -> mapDOM.getAttributeValue("website")))));
+                                                mapDOM -> mapDOM.getAttributeValue("website"),
+                                                (list1, list2) -> list1, LinkedHashMap::new))));
             } catch (JDOMException e) {
                 throw new IOException(
                         "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
@@ -128,12 +131,11 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.write(ballotReader.categoryDefinitions.keySet().stream()
-                .map(category -> categoryMaps.get(category).entrySet().stream()
-                        .sorted(Comparator.comparing(Entry::getKey, String::compareToIgnoreCase))
+        Directory.CURRENT.write(categoryMaps.entrySet().stream()
+                .map(entry -> entry.getValue().entrySet().stream()
                         .map(map -> new Element("map").setAttribute("website", map.getValue())
                                 .setAttribute("ballot", map.getKey()))
-                        .reduce(new Element("category").setAttribute("name", category),
+                        .reduce(new Element("category").setAttribute("name", entry.getKey()),
                                 Element::addContent))
                 .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
     }

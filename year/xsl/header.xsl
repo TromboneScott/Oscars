@@ -163,7 +163,7 @@
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="document('../categoryMaps.xml')/categories/category[@name = $category]/map[@website = $nominee]/@ballot" />
+        select="document('../categoryMaps.xml')/categories/category[@name = $category]/map[@website = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
         <xsl:choose>
           <xsl:when test="$description">
