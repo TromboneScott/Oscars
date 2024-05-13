@@ -52,7 +52,7 @@ public final class CategoryMapper {
         Map<String, Map<String, String>> categoryMaps = readCategoryMaps();
         for (Category category : ballotReader.categoryDefinitions.values()) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
-                    k -> new HashMap<>());
+                    k -> new LinkedHashMap<>());
             List<String> nominees = category.nominees.stream().map(nominee -> nominee.name)
                     .collect(Collectors.toList());
             if (!nominees.isEmpty())
