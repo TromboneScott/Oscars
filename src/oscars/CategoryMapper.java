@@ -113,11 +113,11 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.write(categoryMaps.entrySet().stream()
-                .map(entry -> entry.getValue().entrySet().stream()
+        Directory.CURRENT.write(Category.stream().map(category -> category.name)
+                .map(category -> categoryMaps.get(category).entrySet().stream()
                         .map(map -> new Element("map").setAttribute("website", map.getValue())
                                 .setAttribute("ballot", map.getKey()))
-                        .reduce(new Element("category").setAttribute("name", entry.getKey()),
+                        .reduce(new Element("category").setAttribute("name", category),
                                 Element::addContent))
                 .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
     }
