@@ -97,7 +97,7 @@ public final class Standings {
     public Element resultsCategoryDOM() {
         return Category.stream()
                 .map(category -> new Element("category").setAttribute("name", category.name)
-                        .setAttribute("webPage", category.webPage())
+                        .setAttribute("webPage", category.webPage)
                         .setAttribute("chart", category.chartName(winners.get(category.name)))
                         .addContent(winners.get(category.name).stream()
                                 .map(winner -> new Element("nominee").setAttribute("name", winner))
@@ -106,8 +106,8 @@ public final class Standings {
     }
 
     public Element resultsPlayerDOM(List<Player> inPlayers) {
-        int tieBreakers = (int) Category.stream().filter(category -> !category.tieBreaker.isEmpty())
-                .count();
+        int tieBreakers = (int) Category.stream()
+                .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
                 .addContent(rankDOM(rank(inPlayers.get(playerNum))))

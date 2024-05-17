@@ -26,7 +26,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public final class Category implements ChartColor {
     private static final File CATEGORY_DEFINITIONS_FILE = new File("categoryDefinitions.xml");
 
-    /** Categories (in order) with their nominees (also in order) */
+    /** Categories in display order */
     public static final List<Category> ALL = Collections.unmodifiableList(all());
 
     public static final String TIMESTAMP = "Timestamp";
@@ -42,27 +42,27 @@ public final class Category implements ChartColor {
     /** Category name */
     public final String name;
 
-    /** TieBreaker value */
-    public final String tieBreaker;
-
     /** Scoring value */
     public final BigDecimal value;
 
     /** Nominees in display order */
     public final List<String> nominees;
 
+    /** The XML web page for this category */
+    public final String webPage;
+
     private Category(Element inCategory) {
         name = inCategory.getAttributeValue("name");
-        tieBreaker = Optional.ofNullable(inCategory.getAttributeValue("tieBreaker")).orElse("");
-        value = BigDecimal.ONE.add(tieBreaker.isEmpty() ? BigDecimal.ZERO
-                : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)));
+        value = Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
+                .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
+                .orElse(BigDecimal.ZERO).add(BigDecimal.ONE);
         nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
+        webPage = name + ".xml";
     }
 
     private static List<Category> all() {
         try {
-            SortTypes.writePages();
             return new SAXBuilder().build(CATEGORY_DEFINITIONS_FILE).getRootElement()
                     .getChildren("category").stream().map(Category::new)
                     .collect(Collectors.toList());
@@ -75,10 +75,6 @@ public final class Category implements ChartColor {
     /** Stream of categories (in order) that have nominees */
     public static Stream<Category> stream() {
         return ALL.stream().filter(category -> !category.nominees.isEmpty());
-    }
-
-    public String webPage() {
-        return name + ".xml";
     }
 
     public String chartName(Set<String> inWinners) {

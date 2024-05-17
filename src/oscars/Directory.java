@@ -30,11 +30,22 @@ public class Directory extends File {
 
     public static final Directory PLAYER = new Directory("player");
 
-    public static final Directory SORT = new Directory("sort");
-
     public static final Directory RANK = new Directory("rank");
 
     private static final Instant START = Instant.now();
+
+    /* Write out the sort XML web pages */
+    static {
+        Directory sort = new Directory("sort");
+        try {
+            for (String column : new String[] { "name", "rank", "bpr", "wpr", "score", "time" })
+                for (String type : new String[] { column, column + "Reverse" })
+                    sort.write(new Element("sort").addContent(type), type + ".xml", "sort.xsl");
+            sort.cleanUp();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create sort XML web pages", e);
+        }
+    }
 
     private Directory(String inPathname) {
         super(inPathname);
