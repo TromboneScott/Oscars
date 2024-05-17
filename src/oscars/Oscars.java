@@ -2,9 +2,9 @@ package oscars;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.jdom2.Element;
 
@@ -22,8 +22,6 @@ import org.jdom2.Element;
  */
 public class Oscars implements Runnable {
     private final List<Player> players;
-
-    private final List<Category> categories;
 
     private final Results results;
 
@@ -49,9 +47,8 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
 
         System.out.print("Step 2 of 4: Reading any existing results... ");
-        players = Collections.unmodifiableList(categoryMapper.getPlayers());
-        categories = Collections.unmodifiableList(categoryMapper.getCategories());
-        results = new Results(categories);
+        players = categoryMapper.getPlayers();
+        results = new Results(categoryMapper.getNomineeDescriptions());
         System.out.println("DONE");
 
         System.out.print("Step 3 of 4: Writing rank images... ");
@@ -71,8 +68,8 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        Directory.CATEGORY.cleanUpCharts(
-                categories.stream().map(category -> category.chartName(results.winners(category))));
+        Directory.CATEGORY.cleanUpCharts(Category.stream()
+                .map(category -> category.chartName(results.winners(category.name))));
         Directory.RANK.cleanUpCharts(
                 players.stream().mapToLong(standings::rank).mapToObj(RankChart::name));
         System.out.println("DONE");
@@ -83,7 +80,7 @@ public class Oscars implements Runnable {
         Thread thread = new Thread(this);
         try {
             thread.start();
-            return results.prompt(categories);
+            return results.prompt(players);
         } finally {
             thread.interrupt(); // Stop file I/O thread
             thread.join(); // Wait for it to finish
@@ -124,14 +121,14 @@ public class Oscars implements Runnable {
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
-        Results.write(updated, standings.resultsCategoryDOM(categories),
-                standings.resultsPlayerDOM(players), standings.resultsShowTimeDOM());
+        Results.write(updated, standings.resultsCategoryDOM(), standings.resultsPlayerDOM(players),
+                standings.resultsShowTimeDOM());
     }
 
     private void writeCategoryPages() throws IOException {
         Element all = new Element("categories");
-        for (Category category : categories) {
-            category.writeChart(results);
+        for (Category category : Category.stream().collect(Collectors.toList())) {
+            category.writeChart(results, players);
             Directory.CATEGORY.write(category.toDOM(), category.webPage(), "category.xsl");
             all.addContent(category.toDOM(players));
         }
@@ -141,7 +138,7 @@ public class Oscars implements Runnable {
 
     private void writePlayerPages() throws IOException {
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(), player.webPage(), "player.xsl");
+            Directory.PLAYER.write(player.toDOM(), player.webPage, "player.xsl");
         Directory.PLAYER.cleanUp();
     }
 }

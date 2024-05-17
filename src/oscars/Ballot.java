@@ -1,6 +1,11 @@
 package oscars;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -11,14 +16,20 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderHeaderAware;
+
 /** Entries on a player's ballot - Immutable */
 public final class Ballot {
+    private static final String URL_FILE = "ResponsesURL.txt";
+
     /** Provides the latest Ballot for each player */
     public static final Collector<Ballot, ?, Collection<Ballot>> LATEST = Collectors
             .collectingAndThen(
@@ -33,23 +44,34 @@ public final class Ballot {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new BallotReader().readBallots()
-                    .filter(ballot -> !ballot.get(Category.EMAIL.name).isEmpty())
+            readBallots().filter(ballot -> !ballot.get(Category.EMAIL).isEmpty())
                     .forEach(ballot -> System.out
-                            .println(ballot.getName() + " = " + ballot.get(Category.EMAIL.name)));
+                            .println(ballot.getName() + " = " + ballot.get(Category.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
 
-    /** Build a Ballot */
-    public static <T> Collector<T, ?, Ballot> toBallot(Function<T, String> inCategoryMapper,
-            Function<T, String> inValueMapper) {
-        return Collectors.collectingAndThen(Collectors.toMap(inCategoryMapper, inValueMapper),
-                Ballot::new);
+    private Ballot(String[] inValues) {
+        if (inValues.length != Category.ALL.size())
+            throw new RuntimeException("Ballot length: " + inValues.length
+                    + " does not match category definitions: " + Category.ALL.size());
+        values = Collections.unmodifiableMap(
+                IntStream.range(0, inValues.length).boxed().collect(Collectors.toMap(
+                        column -> Category.ALL.get(column).name, column -> inValues[column])));
     }
 
-    private Ballot(Map<String, String> inValues) {
-        values = Collections.unmodifiableMap(inValues);
+    public static Stream<Ballot> readBallots() throws IOException {
+        try (Stream<String> lines = Files
+                .lines(Paths.get(Ballot.class.getClassLoader().getResource(URL_FILE).toURI()))) {
+            URL url = new URL(lines.iterator().next());
+            url.openConnection().setDefaultUseCaches(false);
+            try (CSVReader reader = new CSVReaderHeaderAware(
+                    new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
+                return reader.readAll().stream().map(Ballot::new);
+            }
+        } catch (Exception e) {
+            throw new IOException("Error reading ballots using URL from: " + URL_FILE, e);
+        }
     }
 
     /** Get value from Ballot for given category */
@@ -58,19 +80,18 @@ public final class Ballot {
     }
 
     private String getName() {
-        return get(Category.LAST_NAME.name) + ", " + get(Category.FIRST_NAME.name);
+        return get(Category.LAST_NAME) + ", " + get(Category.FIRST_NAME);
     }
 
     public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(get(Category.TIMESTAMP.name),
+        return LocalDateTime.parse(get(Category.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     private static void writeNewBallots() throws Exception {
-        BallotReader ballotReader = new BallotReader();
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Ballot> ballots = ballotReader.readBallots().collect(LATEST);
+                Collection<Ballot> ballots = readBallots().collect(LATEST);
                 LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {

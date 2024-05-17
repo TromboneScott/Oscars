@@ -26,14 +26,14 @@ public final class Standings {
 
     private final Map<Player, Set<Player>> lostToMap;
 
-    private final Map<Category, Set<String>> winners;
+    private final Map<String, Set<String>> winners;
 
     private final Map<ShowTimeType, String> showTimes;
 
     public final long elapsedTime;
 
     public Standings(Collection<Player> inPlayers, Results inResults) {
-        winners = Collections.unmodifiableMap(inPlayers.iterator().next().picks.keySet().stream()
+        winners = Collections.unmodifiableMap(Category.stream().map(category -> category.name)
                 .collect(Collectors.toMap(category -> category, category -> Collections
                         .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
         showTimes = Collections.unmodifiableMap(Stream.of(ShowTimeType.values())
@@ -51,10 +51,9 @@ public final class Standings {
     }
 
     private BigDecimal score(Player inPlayer) {
-        return inPlayer.picks.entrySet().stream()
-                .filter(pickEntry -> winners.get(pickEntry.getKey()).contains(pickEntry.getValue()))
-                .map(pickEntry -> pickEntry.getKey().value)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return Category.stream().filter(
+                category -> winners.get(category.name).contains(inPlayer.picks.get(category.name)))
+                .map(category -> category.value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public long rank(Player inPlayer) {
@@ -87,28 +86,28 @@ public final class Standings {
             Map<Player, BigDecimal> inScoreMap, boolean inBest) {
         return inScoreMap.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
-                        scoreEntry -> inPlayer.picks.keySet().stream()
-                                .filter(category -> winners.get(category).isEmpty()
-                                        && inBest == scoreEntry.getKey().picks.get(category)
-                                                .equals(inPlayer.picks.get(category)))
+                        scoreEntry -> Category.stream()
+                                .filter(category -> winners.get(category.name).isEmpty()
+                                        && inBest == scoreEntry.getKey().picks.get(category.name)
+                                                .equals(inPlayer.picks.get(category.name)))
                                 .map(category -> category.value)
                                 .reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
-    public Element resultsCategoryDOM(List<Category> inCategories) {
-        return inCategories.stream()
+    public Element resultsCategoryDOM() {
+        return Category.stream()
                 .map(category -> new Element("category").setAttribute("name", category.name)
                         .setAttribute("webPage", category.webPage())
-                        .setAttribute("chart", category.chartName(winners.get(category)))
-                        .addContent(winners.get(category).stream()
+                        .setAttribute("chart", category.chartName(winners.get(category.name)))
+                        .addContent(winners.get(category.name).stream()
                                 .map(winner -> new Element("nominee").setAttribute("name", winner))
                                 .reduce(new Element("winners"), Element::addContent)))
                 .reduce(new Element("categories"), Element::addContent);
     }
 
     public Element resultsPlayerDOM(List<Player> inPlayers) {
-        int tieBreakers = (int) inPlayers.iterator().next().picks.keySet().stream()
-                .filter(category -> !category.tieBreaker.isEmpty()).count();
+        int tieBreakers = (int) Category.stream().filter(category -> !category.tieBreaker.isEmpty())
+                .count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
                 .addContent(rankDOM(rank(inPlayers.get(playerNum))))
@@ -147,7 +146,7 @@ public final class Standings {
         return (inPlayer.time == inOpponent.time
                 || inPlayer.time > elapsedTime && inOpponent.time > elapsedTime && showEnded())
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
-                && inPlayer.picks.keySet().stream()
+                && Category.stream().map(category -> category.name)
                         .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
                                 .get(category).equals(inOpponent.picks.get(category)));
     }
@@ -167,14 +166,13 @@ public final class Standings {
         return inTime < 0 ? "" : LocalTime.ofSecondOfDay(inTime).format(Player.TIME_FORMAT);
     }
 
-    public static Map<Category, Set<String>> winners(Element inResultsDOM,
-            Map<String, Category> inCategoryMap) {
+    public static Map<String, Set<String>> winners(Element inResultsDOM) {
         return Optional.ofNullable(inResultsDOM.getChild("categories"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
-                .collect(Collectors.toMap(
-                        categoryDOM -> inCategoryMap.get(categoryDOM.getAttributeValue("name")),
-                        categoryDOM -> Collections.unmodifiableSet(
-                                categoryDOM.getChild("winners").getChildren("nominee").stream()
+                .collect(
+                        Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
+                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
+                                        .getChild("winners").getChildren("nominee").stream()
                                         .map(element -> element.getAttributeValue("name"))
                                         .collect(Collectors.toSet()))));
     }

@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,17 +35,19 @@ public class Results {
     private static final String YEAR = Paths.get(".").toAbsolutePath().normalize().getFileName()
             .toString();
 
-    private final Map<Category, Set<String>> winners;
+    private final Map<String, Map<String, String>> nomineeDescriptions;
+
+    private final Map<String, Set<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
-    public Results(Collection<Category> inCategories) throws IOException {
+    public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
+        nomineeDescriptions = inNomineeDescriptions;
         File resultsFile = new File(RESULTS_FILE);
         if (resultsFile.exists())
             try {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
-                winners = Standings.winners(resultsDOM, inCategories.stream().collect(
-                        Collectors.toMap(category -> category.name, category -> category)));
+                winners = Standings.winners(resultsDOM);
                 showTimes = Standings.showTimes(resultsDOM);
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
@@ -60,20 +61,19 @@ public class Results {
 
     /**
      * Prompt for results
-     *
-     * @param inCategories
-     *            Categories to prompt for
+     * 
      * @param inPlayers
-     *            Players whose picks we can choose from
+     *            Players whose picks we can count
      * @return true unless user wants to exit the program
      */
-    public boolean prompt(List<Category> inCategories) throws IOException {
+    public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        for (int resultNum = 0; resultNum < inCategories.size()
+        Category[] categories = Category.stream().toArray(Category[]::new);
+        for (int resultNum = 0; resultNum < categories.length
                 + ShowTimeType.values().length; resultNum++)
             System.out.println((resultNum + 1) + ": "
-                    + (resultNum < inCategories.size() ? toString(inCategories.get(resultNum))
-                            : toString(ShowTimeType.values()[resultNum - inCategories.size()])));
+                    + (resultNum < categories.length ? toString(categories[resultNum].name)
+                            : toString(ShowTimeType.values()[resultNum - categories.length])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
         String input = STDIN.nextLine();
@@ -81,45 +81,46 @@ public class Results {
             return false;
         try {
             int resultNum = Integer.parseInt(input) - 1;
-            if (resultNum < 0 || resultNum >= inCategories.size() + ShowTimeType.values().length)
+            if (resultNum < 0 || resultNum >= categories.length + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum < inCategories.size())
-                promptWinner(inCategories.get(resultNum));
+            if (resultNum < categories.length)
+                promptWinner(categories[resultNum], inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - inCategories.size()]);
+                promptTime(ShowTimeType.values()[resultNum - categories.length]);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
         return true;
     }
 
-    private String toString(Category inCategory) {
-        return inCategory.name + " = " + String.join(", ", winners(inCategory));
+    private String toString(String inCategory) {
+        return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
     private String toString(ShowTimeType inShowTimeType) {
         return inShowTimeType + " = " + get(inShowTimeType);
     }
 
-    private void promptWinner(Category inCategory) throws IOException {
-        System.out.println("\n" + toString(inCategory));
+    private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
+        System.out.println("\n" + toString(inCategory.name));
 
         for (int x = 0; x < inCategory.nominees.size(); x++)
-            System.out.println((x + 1) + ": " + inCategory.nominees.get(x).description);
+            System.out.println((x + 1) + ": "
+                    + nomineeDescriptions.get(inCategory.name).get(inCategory.nominees.get(x)));
 
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
         try {
-            winners.put(inCategory,
+            winners.put(inCategory.name,
                     Collections.unmodifiableSet(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
                                         if (number > inCategory.nominees.size() || number < 1)
                                             throw new NumberFormatException();
-                                    }).mapToObj(number -> inCategory.nominees.get(number - 1).name)
+                                    }).mapToObj(number -> inCategory.nominees.get(number - 1))
                                     .collect(Collectors.toSet())));
-            inCategory.writeChart(this);
+            inCategory.writeChart(this, inPlayers);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -168,7 +169,7 @@ public class Results {
      *            The category to get the winner(s) for
      * @return All the winners that have been entered for this category
      */
-    public Set<String> winners(Category inCategory) {
+    public Set<String> winners(String inCategory) {
         return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 

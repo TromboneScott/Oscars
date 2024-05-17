@@ -3,6 +3,7 @@ package oscars;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,49 +20,43 @@ import org.jdom2.input.SAXBuilder;
 public final class CategoryMapper {
     private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
 
-    private final BallotReader ballotReader;
-
     private final Collection<Ballot> ballots;
 
     private final Map<String, LinkedHashMap<String, String>> categoryMaps;
 
     public CategoryMapper() throws IOException {
-        ballotReader = new BallotReader();
-        ballots = ballotReader.readBallots().collect(Ballot.LATEST);
+        ballots = Ballot.readBallots().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
-        defineCategories();
         writeCategoryMaps();
     }
 
     public List<Player> getPlayers() {
-        return ballots.stream()
+        return Collections.unmodifiableList(ballots.stream()
                 .map(ballot -> new Player(categoryMaps.entrySet().stream()
-                        .collect(Collectors.toMap(entry -> Category.of(entry.getKey()),
+                        .collect(Collectors.toMap(Entry::getKey,
                                 entry -> entry.getValue().isEmpty() ? ballot.get(entry.getKey())
                                         : entry.getValue().get(ballot.get(entry.getKey()))))))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
-    public List<Category> getCategories() {
-        return ballotReader.categoryDefinitions.values().stream()
-                .filter(category -> !category.nominees.isEmpty())
-                .map(category -> Category.of(category.name)).collect(Collectors.toList());
+    public Map<String, Map<String, String>> getNomineeDescriptions() {
+        return Collections.unmodifiableMap(categoryMaps.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey,
+                        entry -> Collections.unmodifiableMap(entry.getValue().entrySet().stream()
+                                .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))));
     }
 
     private Map<String, LinkedHashMap<String, String>> categoryMaps() throws IOException {
         Map<String, LinkedHashMap<String, String>> categoryMaps = readCategoryMaps();
-        for (Category category : ballotReader.categoryDefinitions.values()) {
+        for (Category category : Category.ALL) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
-            List<String> nominees = category.nominees.stream().map(nominee -> nominee.name)
-                    .collect(Collectors.toList());
-            if (!nominees.isEmpty())
+            if (!category.nominees.isEmpty())
                 ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
                         .map(ballot -> ballot.get(category.name))
                         .filter(guess -> !categoryMap.containsKey(guess))
-                        .forEach(guess -> categoryMap.put(guess,
-                                mapping(category, guess, nominees)));
-            for (String nominee : nominees)
+                        .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
+            for (String nominee : category.nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
                     System.out.println("CATEGORY: " + category.name);
@@ -73,12 +68,12 @@ public final class CategoryMapper {
         return categoryMaps;
     }
 
-    private static String mapping(Category inCategory, String inGuess, List<String> inNominees) {
-        List<String> mappings = inNominees.stream()
+    private static String mapping(Category inCategory, String inGuess) {
+        List<String> mappings = inCategory.nominees.stream()
                 .filter(nominee -> inGuess.toUpperCase().contains(nominee.toUpperCase()))
                 .collect(Collectors.toList());
         return mappings.size() == 1 ? mappings.get(0)
-                : prompt(inCategory, inGuess, mappings.isEmpty() ? inNominees : mappings);
+                : prompt(inCategory, inGuess, mappings.isEmpty() ? inCategory.nominees : mappings);
     }
 
     private static String prompt(Category inCategory, String inGuess, List<String> inNominees) {
@@ -115,20 +110,6 @@ public final class CategoryMapper {
             }
         System.out.println("\nStarting new category maps file: " + CATEGORY_MAPS_FILE);
         return new HashMap<>();
-    }
-
-    private void defineCategories() {
-        ballotReader.categoryDefinitions.values().stream()
-                .filter(category -> !category.nominees.isEmpty())
-                .forEach(category -> new Category(category.name, category.tieBreaker,
-                        category.nominees.stream().map(nominee -> new Nominee(nominee.name,
-                                categoryMaps.get(category.name).entrySet().stream()
-                                        .filter(entry -> entry.getValue().equals(nominee.name))
-                                        .map(Entry::getKey).findAny().orElse(null),
-                                ballots.stream()
-                                        .map(ballot -> categoryMaps.get(category.name)
-                                                .get(ballot.get(category.name)))
-                                        .filter(nominee.name::equals).count()))));
     }
 
     private void writeCategoryMaps() throws IOException {

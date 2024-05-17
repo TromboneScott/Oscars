@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +13,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -23,17 +24,20 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
 public final class Category implements ChartColor {
-    private static final Map<String, Category> INSTANCES = new HashMap<>();
+    private static final File CATEGORY_DEFINITIONS_FILE = new File("categoryDefinitions.xml");
 
-    public static final Category TIMESTAMP = new Category("Timestamp", null, null);
+    /** Categories (in order) with their nominees (also in order) */
+    public static final List<Category> ALL = Collections.unmodifiableList(all());
 
-    public static final Category FIRST_NAME = new Category("First", null, null);
+    public static final String TIMESTAMP = "Timestamp";
 
-    public static final Category LAST_NAME = new Category("Last", null, null);
+    public static final String FIRST_NAME = "First";
 
-    public static final Category TIME = new Category("Time", null, null);
+    public static final String LAST_NAME = "Last";
 
-    public static final Category EMAIL = new Category("EMail", null, null);
+    public static final String TIME = "Time";
+
+    public static final String EMAIL = "EMail";
 
     /** Category name */
     public final String name;
@@ -45,28 +49,32 @@ public final class Category implements ChartColor {
     public final BigDecimal value;
 
     /** Nominees in display order */
-    public final List<Nominee> nominees;
+    public final List<String> nominees;
 
-    public Category(String inName, String inTieBreakerValue, Stream<Nominee> inNominees) {
-        name = inName;
-        tieBreaker = Optional.ofNullable(inTieBreakerValue).orElse("");
+    private Category(Element inCategory) {
+        name = inCategory.getAttributeValue("name");
+        tieBreaker = Optional.ofNullable(inCategory.getAttributeValue("tieBreaker")).orElse("");
         value = BigDecimal.ONE.add(tieBreaker.isEmpty() ? BigDecimal.ZERO
                 : BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)));
-        nominees = inNominees == null ? Collections.emptyList()
-                : Collections.unmodifiableList(inNominees.collect(Collectors.toList()));
-        INSTANCES.put(inName, this);
+        nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
+                .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
     }
 
-    public static Category of(Element inCategory) {
-        String name = inCategory.getAttributeValue("name");
-        return Optional.ofNullable(of(name)).orElseGet(() -> new Category(name,
-                inCategory.getAttributeValue("tieBreaker"),
-                inCategory.getChildren("nominee").stream()
-                        .map(nominee -> new Nominee(nominee.getAttributeValue("name"), null, 0))));
+    private static List<Category> all() {
+        try {
+            SortTypes.writePages();
+            return new SAXBuilder().build(CATEGORY_DEFINITIONS_FILE).getRootElement()
+                    .getChildren("category").stream().map(Category::new)
+                    .collect(Collectors.toList());
+        } catch (IOException | JDOMException e) {
+            throw new RuntimeException(
+                    "Error reading category definitions file: " + CATEGORY_DEFINITIONS_FILE, e);
+        }
     }
 
-    public static Category of(String inName) {
-        return INSTANCES.get(inName);
+    /** Stream of categories (in order) that have nominees */
+    public static Stream<Category> stream() {
+        return ALL.stream().filter(category -> !category.nominees.isEmpty());
     }
 
     public String webPage() {
@@ -74,27 +82,30 @@ public final class Category implements ChartColor {
     }
 
     public String chartName(Set<String> inWinners) {
-        return name + nominees.stream().map(nominee -> inWinners.contains(nominee.name) ? "1" : "0")
+        return name + nominees.stream().map(nominee -> inWinners.contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
 
-    public void writeChart(Results inResults) throws IOException {
-        Set<String> winners = inResults.winners(this);
+    public void writeChart(Results inResults, List<Player> inPlayers) throws IOException {
+        Set<String> winners = inResults.winners(name);
+
+        Map<String, Long> counts = nominees.stream()
+                .collect(Collectors.toMap(nominee -> nominee, nominee -> inPlayers.stream()
+                        .filter(player -> nominee.equals(player.picks.get(name))).count()));
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        nominees.forEach(nominee -> dataset.addValue(nominee.count, "nominee", nominee.name));
+        nominees.forEach(nominee -> dataset.addValue(counts.get(nominee), "nominee", nominee));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(0,
-                nominees.stream().mapToLong(nominee -> nominee.count).sum() * 1.15);
+                counts.values().stream().mapToLong(Long::longValue).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND);
-        plot.setRenderer(
-                new NomineeRenderer(nominees.stream().map(nominee -> winners.isEmpty() ? GRAY
-                        : winners.contains(nominee.name) ? GREEN : RED)));
+        plot.setRenderer(new NomineeRenderer(nominees.stream().map(
+                nominee -> winners.isEmpty() ? GRAY : winners.contains(nominee) ? GREEN : RED)));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(winners)), chart, 500,
                 300);
@@ -106,7 +117,7 @@ public final class Category implements ChartColor {
 
     public Element toDOM(Collection<Player> inPlayers) {
         return inPlayers.stream()
-                .map(player -> player.toDOM().setAttribute("guess", player.picks.get(this)))
+                .map(player -> player.toDOM().setAttribute("guess", player.picks.get(name)))
                 .reduce(toDOM().setAttribute("value", value.toString()), Element::addContent);
     }
 }
