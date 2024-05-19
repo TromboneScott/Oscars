@@ -10,15 +10,12 @@ import org.jdom2.Element;
 
 /**
  * This program will allow Oscars winners to be entered and it will update the results on the web
- * site. Ballots with each player's guesses are downloaded from the web. A comma delimited file
- * indicates the categories on the ballot and all nominees for each category as they should be
- * displayed on the web site. The column name can include a tie breaker number inside parentheses
- * like this: Director(1) to indicate that Director is the first tie breaker. The players' names
- * must be in the columns named "First" and "Last" and their time estimate must be in the column
- * named "Time" in the format "H:MM" or "H:MM:SS.D".
- *
+ * site. Ballots with each player's guesses are downloaded from the web in comma-delimited format.
+ * The columns are defined in an XML file that defines each category and its nominees. The order of
+ * the categories on the website will be the same as the order on the ballot.
+ * 
  * @author Scott McDonald
- * @version 5.0
+ * @version 6.0
  */
 public class Oscars implements Runnable {
     private final List<Player> players;
