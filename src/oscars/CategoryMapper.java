@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jdom2.Element;
@@ -32,10 +33,11 @@ public final class CategoryMapper {
 
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(ballots.stream()
-                .map(ballot -> new Player(categoryMaps.entrySet().stream()
+                .map(ballot -> new Player(ballot.values.entrySet().stream()
                         .collect(Collectors.toMap(Entry::getKey,
-                                entry -> entry.getValue().isEmpty() ? ballot.get(entry.getKey())
-                                        : entry.getValue().get(ballot.get(entry.getKey()))))))
+                                entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
+                                        .map(map -> map.get(entry.getValue()))
+                                        .orElseGet(() -> entry.getValue())))))
                 .collect(Collectors.toList()));
     }
 
@@ -48,14 +50,13 @@ public final class CategoryMapper {
 
     private Map<String, LinkedHashMap<String, String>> categoryMaps() throws IOException {
         Map<String, LinkedHashMap<String, String>> categoryMaps = readCategoryMaps();
-        for (Category category : Category.ALL) {
+        Category.stream().forEach(category -> {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
-            if (!category.nominees.isEmpty())
-                ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
-                        .map(ballot -> ballot.get(category.name))
-                        .filter(guess -> !categoryMap.containsKey(guess))
-                        .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
+            ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
+                    .map(ballot -> ballot.values.get(category.name))
+                    .filter(guess -> !categoryMap.containsKey(guess))
+                    .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
             for (String nominee : category.nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
@@ -64,7 +65,7 @@ public final class CategoryMapper {
                     System.out.print("Enter Ballot Description: ");
                     categoryMap.put(Results.STDIN.nextLine(), nominee);
                 }
-        }
+        });
         return categoryMaps;
     }
 

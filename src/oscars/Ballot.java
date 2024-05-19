@@ -37,16 +37,16 @@ public final class Ballot {
                             BinaryOperator.maxBy(Comparator.comparing(Ballot::getTimestamp))),
                     Map::values);
 
-    private final Map<String, String> values;
+    public final Map<String, String> values;
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            readBallots().filter(ballot -> !ballot.get(Category.EMAIL).isEmpty())
+            readBallots().filter(ballot -> !ballot.values.get(Category.EMAIL).isEmpty())
                     .forEach(ballot -> System.out
-                            .println(ballot.getName() + " = " + ballot.get(Category.EMAIL)));
+                            .println(ballot.getName() + " = " + ballot.values.get(Category.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
@@ -74,17 +74,12 @@ public final class Ballot {
         }
     }
 
-    /** Get value from Ballot for given category */
-    public String get(String inCategory) {
-        return values.get(inCategory);
-    }
-
     private String getName() {
-        return get(Category.LAST_NAME) + ", " + get(Category.FIRST_NAME);
+        return values.get(Category.LAST_NAME) + ", " + values.get(Category.FIRST_NAME);
     }
 
     public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(get(Category.TIMESTAMP),
+        return LocalDateTime.parse(values.get(Category.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
