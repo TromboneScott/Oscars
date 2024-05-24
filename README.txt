@@ -46,14 +46,12 @@ Edit categoryDefinitions.xml using NOTEPAD
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
 
-Proofread the website:
-1. From the new year folder run oscars.bat or ./oscars.sh
-  a. Just hit return for nominee descriptions (for now)
-2. Verify that all nominee names are short enough to be displayed
-3. Verify that nominees with special characters are displayed correctly
-4. Verify that all nominee images are correct
-
-Reset nominee descriptions by deleting this file: categoryMaps.xml
+Proofread the nominees:
+1. Open the web page: oscars.site44.com/<year>/categoryDefinitions.xml
+2. Verify that images for the Best Picture nominees show up in the banner at the top
+3. Verify that all nominee images match their names
+4. Verify that all nominee names are short enough to be displayed
+5. Verify that any special characters in nominee names are displayed correctly
 
 
 -- While ballots are being collected
@@ -64,7 +62,14 @@ Leave it running so it can continuosly download the ballots as they're entered
 
 Update the link in ../index.html to point to current year
 
-Check the ballots as they come in and fix any names where they didn't capitalize properly direclty in the Google Sheet that the Google Form is using to collect the data.  Either restart the batch or just wait until a new ballot is entered
+Check the ballots as they come in and fix any names where they didn't capitalize properly
+1. Fix names direclty in the Google Sheet that the Google Form is using to collect the data
+2. Either restart the batch or just wait until a new ballot is entered
+
+Proofread the category mapping:
+1. Open the web page: oscars.site44.com/<year>/categoryDefinitions.xml
+2. Verify that the year now shows up in the banner title (20xx OSCARS)
+2. Verify that each category (in bold) is mapped to the correct question on the ballot
 
 
 --- After contest deadline for entering guesses
@@ -77,6 +82,12 @@ From the new year folder run the batch:
   oscars.bat Oscars (or ./oscars.sh)
 You will be prompted on how to map survey answers to nominees for each category where it can't be done automatically.
 This will be saved so you only have to do this for new survey answers.
+
+Proofread the nominee mapping:
+1. Open the web page: oscars.site44.com/<year>/categoryDefinitions.xml
+2. Verify that each nominee (in bold) is mapped to the correct response(s) from the ballot
+3. Verify that any special characters in ballot responses are displayed correctly
+
 Edit (or delete and start over) the file categoryMaps.xml
 - Fix any mistakes
 - Fix any special characters that were copied/pasted (use NOTEPAD so characters will be in UTF-8)

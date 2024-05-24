@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 import org.jdom2.Element;
 
 import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderHeaderAware;
 
 /** Entries on a player's ballot - Immutable */
 public final class Ballot {
@@ -65,8 +64,9 @@ public final class Ballot {
                 .lines(Paths.get(Ballot.class.getClassLoader().getResource(URL_FILE).toURI()))) {
             URL url = new URL(lines.iterator().next());
             url.openConnection().setDefaultUseCaches(false);
-            try (CSVReader reader = new CSVReaderHeaderAware(
+            try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
+                CategoryMapper.setHeaders(reader.readNext());
                 return reader.readAll().stream().map(Ballot::new);
             }
         } catch (Exception e) {

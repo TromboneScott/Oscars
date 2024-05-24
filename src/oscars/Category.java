@@ -77,6 +77,7 @@ public final class Category implements ChartColor {
         return ALL.stream().filter(category -> !category.nominees.isEmpty());
     }
 
+    /** Use a unique filename for each generated chart in case any browsers cache images */
     public String chartName(Set<String> inWinners) {
         return name + nominees.stream().map(nominee -> inWinners.contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";

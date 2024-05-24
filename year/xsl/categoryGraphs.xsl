@@ -3,6 +3,7 @@
   <xsl:output method="html" encoding="utf-8" indent="yes" />
   <xsl:include href="header.xsl" />
   <xsl:template match="/categories">
+    <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <xsl:variable name="categories" select="." />

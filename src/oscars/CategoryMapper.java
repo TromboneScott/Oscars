@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -28,7 +30,17 @@ public final class CategoryMapper {
     public CategoryMapper() throws IOException {
         ballots = Ballot.readBallots().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
-        writeCategoryMaps();
+        writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps);
+    }
+
+    public static void setHeaders(String[] inHeaders) throws IOException {
+        if (inHeaders.length != Category.ALL.size())
+            throw new IOException("Ballot headers: " + inHeaders.length
+                    + " does not match defined categories: " + Category.ALL.size());
+        writeCategoryMaps(
+                IntStream.range(0, inHeaders.length).boxed().collect(Collectors.toMap(
+                        column -> Category.ALL.get(column).name, column -> inHeaders[column])),
+                readCategoryMaps());
     }
 
     public List<Player> getPlayers() {
@@ -91,8 +103,7 @@ public final class CategoryMapper {
         }
     }
 
-    private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
-            throws IOException {
+    private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
         File categoryMapsFile = new File(CATEGORY_MAPS_FILE);
         if (categoryMapsFile.exists())
             try {
@@ -100,11 +111,7 @@ public final class CategoryMapper {
                         .getChildren("category").stream()
                         .collect(Collectors.toMap(
                                 categoryDOM -> categoryDOM.getAttributeValue("name"),
-                                categoryDOM -> categoryDOM.getChildren("map").stream()
-                                        .collect(Collectors.toMap(
-                                                mapDOM -> mapDOM.getAttributeValue("ballot"),
-                                                mapDOM -> mapDOM.getAttributeValue("website"),
-                                                (list1, list2) -> list1, LinkedHashMap::new))));
+                                inFunction::apply));
             } catch (JDOMException e) {
                 throw new IOException(
                         "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
@@ -113,13 +120,23 @@ public final class CategoryMapper {
         return new HashMap<>();
     }
 
-    private void writeCategoryMaps() throws IOException {
-        Directory.CURRENT.write(Category.stream().map(category -> category.name)
-                .map(category -> categoryMaps.get(category).entrySet().stream()
+    private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
+            throws IOException {
+        return readFile(element -> element.getChildren("map").stream()
+                .collect(Collectors.toMap(mapDOM -> mapDOM.getAttributeValue("ballot"),
+                        mapDOM -> mapDOM.getAttributeValue("website"), (list1, list2) -> list1,
+                        LinkedHashMap::new)));
+    }
+
+    private static void writeCategoryMaps(Map<String, String> inHeaderMap,
+            Map<String, LinkedHashMap<String, String>> inCategoryMaps) throws IOException {
+        Directory.CURRENT.write(Category.ALL.stream().map(category -> category.name)
+                .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
+                        .orElseGet(() -> new LinkedHashMap<>()).entrySet().stream()
                         .map(map -> new Element("map").setAttribute("website", map.getValue())
                                 .setAttribute("ballot", map.getKey()))
-                        .reduce(new Element("category").setAttribute("name", category),
-                                Element::addContent))
+                        .reduce(new Element("category").setAttribute("name", category).setAttribute(
+                                "ballot", inHeaderMap.get(category)), Element::addContent))
                 .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
     }
 }
