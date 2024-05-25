@@ -147,14 +147,10 @@
                 </xsl:attribute>
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
-                  <xsl:for-each select="$categories/category/@tieBreaker">
-                    <xsl:sort select="." data-type="number" />
-                    <xsl:if test="position()=last()">
-                      <xsl:call-template name="tieBreaker">
-                        <xsl:with-param name="tieBreaker" select=". + 1" />
-                      </xsl:call-template>
-                    </xsl:if>
-                  </xsl:for-each>
+                  <xsl:call-template name="tieBreaker">
+                    <xsl:with-param name="tieBreaker"
+                      select="document('../categoryDefinitions.xml')/categories/category[@name = 'Time']/@tieBreaker" />
+                  </xsl:call-template>
                 </td>
                 <td>
                   <center>
