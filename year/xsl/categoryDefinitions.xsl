@@ -18,13 +18,52 @@
           <div id="name">
             Category Definitions
           </div>
-          <xsl:variable name="mapping" select="document('../categoryMaps.xml')/categories" />
+          <br />
+          <h2>
+            Tie Breakers
+          </h2>
+          <table>
+            <tbody>
+              <tr>
+                <th>
+                  #
+                </th>
+                <th>
+                  Category
+                </th>
+              </tr>
+              <xsl:for-each select="category[@tieBreaker]">
+                <xsl:sort select="./@tieBreaker" />
+                <tr>
+                  <td class="unannounced">
+                    <xsl:value-of select="./@tieBreaker" />
+                  </td>
+                  <td class="unannounced">
+                    <xsl:value-of select="./@name" />
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </tbody>
+          </table>
+
+          <br />
+          <br />
+          <hr />
+          <h2>
+            Categories
+          </h2>
+          <i> Values for this website are in <b>bold</b>
+          </i>
+          <xsl:variable name="mapping"
+            select="document('../categoryMaps.xml')/categories" />
           <xsl:for-each select="category">
             <br />
             <br />
-            <hr />
+            <hr align="center" width="50%" />
             <br />
-            <b><xsl:value-of select="@name" /></b>
+            <b>
+              <xsl:value-of select="@name" />
+            </b>
             <br />
             <xsl:variable name="name" select="@name" />
             <xsl:value-of select="$mapping/category[@name=$name]/@ballot" />
@@ -40,9 +79,12 @@
                         </xsl:call-template>
                       </td>
                       <td>
-                        <b><xsl:value-of select="@name" /></b>
+                        <b>
+                          <xsl:value-of select="@name" />
+                        </b>
                         <xsl:variable name="website" select="@name" />
-                        <xsl:for-each select="$mapping/category[@name=$name]/map[@website=$website]">
+                        <xsl:for-each
+                          select="$mapping/category[@name=$name]/map[@website=$website]">
                           <br />
                           <xsl:value-of select="@ballot" />
                         </xsl:for-each>

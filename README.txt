@@ -46,12 +46,13 @@ Edit categoryDefinitions.xml using NOTEPAD
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
 
-Proofread the nominees:
+Proofread the category definitions:
 1. Open the web page: oscars.site44.com/<year>/categoryDefinitions.xml
-2. Verify that images for the Best Picture nominees show up in the banner at the top
-3. Verify that all nominee images match their names
-4. Verify that all nominee names are short enough to be displayed
-5. Verify that any special characters in nominee names are displayed correctly
+2. Verify that the tie breakers are correct (including Time as the final tie breaker)
+3. Verify that images for the Best Picture nominees show up in the banner at the top
+4. Verify that all nominee images match their names
+5. Verify that all nominee names are short enough to be displayed
+6. Verify that any special characters in nominee names are displayed correctly
 
 
 -- While ballots are being collected

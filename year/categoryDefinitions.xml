@@ -231,6 +231,6 @@
     <nominee name="Spider-Man: Across"
       img="https://lh7-us.googleusercontent.com/gd2lkrwg7u2onAi8yS0MTH49Ztgx6bu1vzFE4H6E4gWOsFLrtdjCEMjWR7Zv7B-DT03ODNTlDLSZ23N7xl7WjiWfTyWSiEzNDZpgOktZtcRWR4zmxU34VT-mmoLyt9CQs5bDb9gW5CswMZRzdNKN6UExPhxjTA" />
   </category>
-  <category name="Time" />
+  <category name="Time" tieBreaker="7" />
   <category name="EMail" />
 </categories>
