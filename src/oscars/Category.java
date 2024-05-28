@@ -101,8 +101,8 @@ public final class Category implements ChartColor {
                 counts.values().stream().mapToLong(Long::longValue).sum() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND);
-        plot.setRenderer(new NomineeRenderer(nominees.stream().map(
-                nominee -> winners.isEmpty() ? GRAY : winners.contains(nominee) ? GREEN : RED)));
+        plot.setRenderer(new NomineeRenderer(winners.isEmpty() ? nominee -> GRAY
+                : nominee -> winners.contains(nominees.get(nominee)) ? GREEN : RED));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(winners)), chart, 500,
                 300);
