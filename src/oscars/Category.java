@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,19 +85,15 @@ public final class Category implements ChartColor {
     public void writeChart(Results inResults, List<Player> inPlayers) throws IOException {
         Set<String> winners = inResults.winners(name);
 
-        Map<String, Long> counts = nominees.stream()
-                .collect(Collectors.toMap(nominee -> nominee, nominee -> inPlayers.stream()
-                        .filter(player -> nominee.equals(player.picks.get(name))).count()));
-
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        nominees.forEach(nominee -> dataset.addValue(counts.get(nominee), "nominee", nominee));
+        nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
+        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.picks.get(name)));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
 
         CategoryPlot plot = chart.getCategoryPlot();
-        plot.getRangeAxis().setRange(0,
-                counts.values().stream().mapToLong(Long::longValue).sum() * 1.15);
+        plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND);
         plot.setRenderer(new NomineeRenderer(winners.isEmpty() ? nominee -> GRAY
