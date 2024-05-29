@@ -52,9 +52,9 @@ public final class Category implements ChartColor {
 
     private Category(Element inCategory) {
         name = inCategory.getAttributeValue("name");
-        value = Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
+        value = BigDecimal.ONE.add(Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
                 .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
-                .orElse(BigDecimal.ZERO).add(BigDecimal.ONE);
+                .orElse(BigDecimal.ZERO));
         nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
         webPage = name + ".xml";
@@ -77,14 +77,13 @@ public final class Category implements ChartColor {
     }
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
-    public String chartName(Set<String> inWinners) {
-        return name + nominees.stream().map(nominee -> inWinners.contains(nominee) ? "1" : "0")
+    public String chartName(Results inResults) {
+        Set<String> winners = inResults.winners(name);
+        return name + nominees.stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
 
     public void writeChart(Results inResults, List<Player> inPlayers) throws IOException {
-        Set<String> winners = inResults.winners(name);
-
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
         inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.picks.get(name)));
@@ -96,10 +95,12 @@ public final class Category implements ChartColor {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND);
+
+        Set<String> winners = inResults.winners(name);
         plot.setRenderer(new NomineeRenderer(winners.isEmpty() ? nominee -> GRAY
                 : nominee -> winners.contains(nominees.get(nominee)) ? GREEN : RED));
 
-        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(winners)), chart, 500,
+        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);
     }
 

@@ -65,8 +65,8 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        Directory.CATEGORY.cleanUpCharts(Category.stream()
-                .map(category -> category.chartName(results.winners(category.name))));
+        Directory.CATEGORY
+                .cleanUpCharts(Category.stream().map(category -> category.chartName(results)));
         Directory.RANK.cleanUpCharts(
                 players.stream().mapToLong(standings::rank).mapToObj(RankChart::name));
         System.out.println("DONE");
@@ -118,7 +118,7 @@ public class Oscars implements Runnable {
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
-        Results.write(updated, standings.resultsCategoryDOM(), standings.resultsPlayerDOM(players),
+        Results.write(updated, results.categoryDOM(), standings.playerDOM(players),
                 standings.resultsShowTimeDOM());
     }
 

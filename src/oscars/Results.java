@@ -9,11 +9,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -47,8 +49,8 @@ public class Results {
         if (resultsFile.exists())
             try {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
-                winners = Standings.winners(resultsDOM);
-                showTimes = Standings.showTimes(resultsDOM);
+                winners = winners(resultsDOM);
+                showTimes = showTimes(resultsDOM);
             } catch (JDOMException e) {
                 throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
             }
@@ -179,5 +181,37 @@ public class Results {
                 .addContent(new Element("updated").addContent(
                         inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"))))
                 .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
+    }
+
+    public Element categoryDOM() {
+        return Category.stream()
+                .map(category -> new Element("category").setAttribute("name", category.name)
+                        .setAttribute("webPage", category.webPage)
+                        .setAttribute("chart", category.chartName(this))
+                        .addContent(winners.get(category.name).stream()
+                                .map(winner -> new Element("nominee").setAttribute("name", winner))
+                                .reduce(new Element("winners"), Element::addContent)))
+                .reduce(new Element("categories"), Element::addContent);
+    }
+
+    private static Map<String, Set<String>> winners(Element inResultsDOM) {
+        return Optional.ofNullable(inResultsDOM.getChild("categories"))
+                .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
+                .collect(
+                        Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
+                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
+                                        .getChild("winners").getChildren("nominee").stream()
+                                        .map(element -> element.getAttributeValue("name"))
+                                        .collect(Collectors.toSet()))));
+    }
+
+    private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {
+        return Optional.ofNullable(inResultsDOM.getChild("showTime"))
+                .map(element -> Stream.of(ShowTimeType.values())
+                        .map(type -> new SimpleEntry<>(type,
+                                element.getChildText(type.name().toLowerCase()))))
+                .orElseGet(Stream::empty).filter(entry -> !entry.getValue().isEmpty())
+                .collect(Collectors.toMap(Entry::getKey,
+                        entry -> ZonedDateTime.parse(entry.getValue())));
     }
 }

@@ -2,16 +2,12 @@ package oscars;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -94,18 +90,7 @@ public final class Standings {
                                 .reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
-    public Element resultsCategoryDOM() {
-        return Category.stream()
-                .map(category -> new Element("category").setAttribute("name", category.name)
-                        .setAttribute("webPage", category.webPage)
-                        .setAttribute("chart", category.chartName(winners.get(category.name)))
-                        .addContent(winners.get(category.name).stream()
-                                .map(winner -> new Element("nominee").setAttribute("name", winner))
-                                .reduce(new Element("winners"), Element::addContent)))
-                .reduce(new Element("categories"), Element::addContent);
-    }
-
-    public Element resultsPlayerDOM(List<Player> inPlayers) {
+    public Element playerDOM(List<Player> inPlayers) {
         int tieBreakers = (int) Category.stream()
                 .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
@@ -153,37 +138,16 @@ public final class Standings {
 
     public Element resultsShowTimeDOM() {
         String timeString = formatTime(elapsedTime);
-        return Arrays.stream(ShowTimeType.values())
-                .map(showTimeType -> new Element(showTimeType.name().toLowerCase())
-                        .addContent(showTimes.get(showTimeType)))
+        return showTimes.entrySet().stream()
+                .map(entry -> new Element(entry.getKey().name().toLowerCase())
+                        .addContent(entry.getValue()))
                 .reduce(new Element("showTime"), Element::addContent)
                 .addContent(new Element("length").addContent(timeString))
                 .addContent(new Element("header")
                         .addContent("Time" + (showEnded() ? "=" : ">") + timeString));
     }
 
-    private String formatTime(long inTime) {
+    private static String formatTime(long inTime) {
         return inTime < 0 ? "" : LocalTime.ofSecondOfDay(inTime).format(Player.TIME_FORMAT);
-    }
-
-    public static Map<String, Set<String>> winners(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM.getChild("categories"))
-                .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
-                .collect(
-                        Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
-                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
-                                        .getChild("winners").getChildren("nominee").stream()
-                                        .map(element -> element.getAttributeValue("name"))
-                                        .collect(Collectors.toSet()))));
-    }
-
-    public static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {
-        return Stream.of(ShowTimeType.values())
-                .map(showTimeType -> new SimpleEntry<>(showTimeType,
-                        Optional.ofNullable(inResultsDOM.getChild("showTime")).map(
-                                element -> element.getChildText(showTimeType.name().toLowerCase()))
-                                .orElse("")))
-                .filter(entry -> !entry.getValue().isEmpty()).collect(Collectors.toMap(
-                        entry -> entry.getKey(), entry -> ZonedDateTime.parse(entry.getValue())));
     }
 }
