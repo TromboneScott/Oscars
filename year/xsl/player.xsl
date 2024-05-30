@@ -159,7 +159,7 @@
                 </td>
                 <td>
                   <center>
-                    <xsl:value-of select="$results/showTime/length" />
+                    <xsl:value-of select="$results/showTime/@length" />
                   </center>
                 </td>
                 <td>

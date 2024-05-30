@@ -273,17 +273,29 @@
             </xsl:choose>
           </th>
           <th>
+            <xsl:variable name="timeHeader">
+              <xsl:value-of select="'Time'" />
+              <xsl:choose>
+                <xsl:when test="$inProgress">
+                  <xsl:value-of select="'&gt;'" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="'='" />
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:value-of select="$results/showTime/@length" />
+            </xsl:variable>
             <xsl:choose>
               <xsl:when test="$sort = 'time'">
                 <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="$results/showTime/header" />
+                  <xsl:with-param name="text" select="$timeHeader" />
                   <xsl:with-param name="link" select="'timeReverse.xml'" />
                   <xsl:with-param name="inPlayer" select="$inPlayer" />
                 </xsl:call-template>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="$results/showTime/header" />
+                  <xsl:with-param name="text" select="$timeHeader" />
                   <xsl:with-param name="link" select="'time.xml'" />
                   <xsl:with-param name="inPlayer" select="$inPlayer" />
                 </xsl:call-template>

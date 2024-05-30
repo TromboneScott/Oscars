@@ -137,14 +137,11 @@ public final class Standings {
     }
 
     public Element resultsShowTimeDOM() {
-        String timeString = formatTime(elapsedTime);
         return showTimes.entrySet().stream()
                 .map(entry -> new Element(entry.getKey().name().toLowerCase())
                         .addContent(entry.getValue()))
                 .reduce(new Element("showTime"), Element::addContent)
-                .addContent(new Element("length").addContent(timeString))
-                .addContent(new Element("header")
-                        .addContent("Time" + (showEnded() ? "=" : ">") + timeString));
+                .setAttribute("length", formatTime(elapsedTime));
     }
 
     private static String formatTime(long inTime) {
