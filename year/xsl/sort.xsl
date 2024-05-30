@@ -48,38 +48,18 @@
                 <table>
                   <tr>
                     <th>
-                      <xsl:choose>
-                        <xsl:when test=". = 'rank'">
-                          <xsl:call-template name="player-table-column-header">
-                            <xsl:with-param name="text" select="'Timestamp'" />
-                            <xsl:with-param name="link"
-                              select="'rankReverse.xml'" />
-                          </xsl:call-template>
-                        </xsl:when>
-                        <xsl:otherwise>
-                          <xsl:call-template name="player-table-column-header">
-                            <xsl:with-param name="text" select="'Timestamp'" />
-                            <xsl:with-param name="link" select="'rank.xml'" />
-                          </xsl:call-template>
-                        </xsl:otherwise>
-                      </xsl:choose>
+                      <xsl:call-template name="player-table-column-header">
+                        <xsl:with-param name="text" select="'Timestamp'" />
+                        <xsl:with-param name="type" select="'rank'" />
+                        <xsl:with-param name="sort" select="." />
+                      </xsl:call-template>
                     </th>
                     <th>
-                      <xsl:choose>
-                        <xsl:when test=". = 'name'">
-                          <xsl:call-template name="player-table-column-header">
-                            <xsl:with-param name="text" select="'Name'" />
-                            <xsl:with-param name="link"
-                              select="'nameReverse.xml'" />
-                          </xsl:call-template>
-                        </xsl:when>
-                        <xsl:otherwise>
-                          <xsl:call-template name="player-table-column-header">
-                            <xsl:with-param name="text" select="'Name'" />
-                            <xsl:with-param name="link" select="'name.xml'" />
-                          </xsl:call-template>
-                        </xsl:otherwise>
-                      </xsl:choose>
+                      <xsl:call-template name="player-table-column-header">
+                        <xsl:with-param name="text" select="'Name'" />
+                        <xsl:with-param name="type" select="'name'" />
+                        <xsl:with-param name="sort" select="." />
+                      </xsl:call-template>
                     </th>
                   </tr>
                   <xsl:choose>
@@ -181,96 +161,46 @@
       <thead>
         <tr>
           <th class="header">
-            <xsl:choose>
-              <xsl:when test="$sort = 'name'">
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="'Name'" />
-                  <xsl:with-param name="link" select="'nameReverse.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="'Name'" />
-                  <xsl:with-param name="link" select="'name.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'Name'" />
+              <xsl:with-param name="type" select="'name'" />
+              <xsl:with-param name="sort" select="$sort" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
           </th>
           <th>
-            <xsl:choose>
-              <xsl:when test="$sort = 'rank'">
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="'Rank'" />
-                  <xsl:with-param name="link" select="'rankReverse.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="'Rank'" />
-                  <xsl:with-param name="link" select="'rank.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'Rank'" />
+              <xsl:with-param name="type" select="'rank'" />
+              <xsl:with-param name="sort" select="$sort" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
           </th>
           <xsl:if test="$inProgress">
             <th>
-              <xsl:choose>
-                <xsl:when test="$sort = 'bpr'">
-                  <xsl:call-template name="player-table-column-header">
-                    <xsl:with-param name="text" select="'BPR'" />
-                    <xsl:with-param name="link" select="'bprReverse.xml'" />
-                    <xsl:with-param name="inPlayer" select="$inPlayer" />
-                  </xsl:call-template>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:call-template name="player-table-column-header">
-                    <xsl:with-param name="text" select="'BPR'" />
-                    <xsl:with-param name="link" select="'bpr.xml'" />
-                    <xsl:with-param name="inPlayer" select="$inPlayer" />
-                  </xsl:call-template>
-                </xsl:otherwise>
-              </xsl:choose>
+              <xsl:call-template name="player-table-column-header">
+                <xsl:with-param name="text" select="'BPR'" />
+                <xsl:with-param name="type" select="'bpr'" />
+                <xsl:with-param name="sort" select="$sort" />
+                <xsl:with-param name="inPlayer" select="$inPlayer" />
+              </xsl:call-template>
             </th>
             <th>
-              <xsl:choose>
-                <xsl:when test="$sort = 'wpr'">
-                  <xsl:call-template name="player-table-column-header">
-                    <xsl:with-param name="text" select="'WPR'" />
-                    <xsl:with-param name="link" select="'wprReverse.xml'" />
-                    <xsl:with-param name="inPlayer" select="$inPlayer" />
-                  </xsl:call-template>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:call-template name="player-table-column-header">
-                    <xsl:with-param name="text" select="'WPR'" />
-                    <xsl:with-param name="link" select="'wpr.xml'" />
-                    <xsl:with-param name="inPlayer" select="$inPlayer" />
-                  </xsl:call-template>
-                </xsl:otherwise>
-              </xsl:choose>
+              <xsl:call-template name="player-table-column-header">
+                <xsl:with-param name="text" select="'WPR'" />
+                <xsl:with-param name="type" select="'wpr'" />
+                <xsl:with-param name="sort" select="$sort" />
+                <xsl:with-param name="inPlayer" select="$inPlayer" />
+              </xsl:call-template>
             </th>
           </xsl:if>
           <th>
-            <xsl:choose>
-              <xsl:when test="$sort = 'score'">
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="'Score'" />
-                  <xsl:with-param name="link" select="'scoreReverse.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="'Score'" />
-                  <xsl:with-param name="link" select="'score.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="'Score'" />
+              <xsl:with-param name="type" select="'score'" />
+              <xsl:with-param name="sort" select="$sort" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
           </th>
           <th>
             <xsl:variable name="timeHeader">
@@ -285,22 +215,12 @@
               </xsl:choose>
               <xsl:value-of select="$results/showTime/@length" />
             </xsl:variable>
-            <xsl:choose>
-              <xsl:when test="$sort = 'time'">
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="$timeHeader" />
-                  <xsl:with-param name="link" select="'timeReverse.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:call-template name="player-table-column-header">
-                  <xsl:with-param name="text" select="$timeHeader" />
-                  <xsl:with-param name="link" select="'time.xml'" />
-                  <xsl:with-param name="inPlayer" select="$inPlayer" />
-                </xsl:call-template>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="player-table-column-header">
+              <xsl:with-param name="text" select="$timeHeader" />
+              <xsl:with-param name="type" select="'time'" />
+              <xsl:with-param name="sort" select="$sort" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:call-template>
           </th>
         </tr>
       </thead>
@@ -410,7 +330,8 @@
   </xsl:template>
   <xsl:template name="player-table-column-header">
     <xsl:param name="text" />
-    <xsl:param name="link" />
+    <xsl:param name="type" />
+    <xsl:param name="sort" />
     <xsl:param name="inPlayer" />
     <xsl:choose>
       <xsl:when test="$inPlayer">
@@ -419,7 +340,11 @@
       <xsl:otherwise>
         <A>
           <xsl:attribute name="href">
-            <xsl:value-of select="$link" />
+            <xsl:value-of select="$type" />
+            <xsl:if test="$type = $sort">
+              <xsl:value-of select="'Reverse'" />
+            </xsl:if>
+            <xsl:value-of select="'.xml'" />
           </xsl:attribute>
           <xsl:value-of select="$text" />
         </A>
