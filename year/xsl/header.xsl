@@ -149,4 +149,17 @@
       </xsl:attribute>
     </img>
   </xsl:template>
+  <xsl:template name="playerLink">
+    <xsl:param name="player" />
+    <a>
+      <xsl:attribute name="href">
+        <xsl:value-of select="concat('../player/', $player/@webPage)" />
+      </xsl:attribute>
+      <xsl:value-of select="$player/@lastName" />
+      <xsl:if test="$player/@firstName != '' and $player/@lastName != ''">
+        <xsl:value-of select="', '" />
+      </xsl:if>
+      <xsl:value-of select="$player/@firstName" />
+    </a>
+  </xsl:template>
 </xsl:stylesheet>

@@ -369,16 +369,9 @@
             </xsl:choose>
           </xsl:if>
         </xsl:attribute>
-        <a>
-          <xsl:attribute name="href">
-            <xsl:value-of select="concat('../player/', @webPage)" />
-          </xsl:attribute>
-          <xsl:value-of select="@lastName" />
-          <xsl:if test="@firstName != '' and @lastName != ''">
-            <xsl:value-of select="', '" />
-          </xsl:if>
-          <xsl:value-of select="@firstName" />
-        </a>
+        <xsl:call-template name="playerLink">
+          <xsl:with-param name="player" select="." />
+        </xsl:call-template>
       </td>
       <td class="rank">
         <xsl:value-of select="rank" />

@@ -76,13 +76,6 @@
                 <xsl:sort select="@lastName" />
                 <xsl:sort select="@firstName" />
                 <xsl:variable name="guess" select="@guess" />
-                <xsl:variable name="playerDisplayName">
-                  <xsl:value-of select="@lastName" />
-                  <xsl:if test="@firstName != '' and @lastName != ''">
-                    <xsl:value-of select="', '" />
-                  </xsl:if>
-                  <xsl:value-of select="@firstName" />
-                </xsl:variable>
                 <tr>
                   <xsl:call-template name="status">
                     <xsl:with-param name="nominee" select="$guess" />
@@ -90,17 +83,14 @@
                       select="$categoryResults/winners" />
                   </xsl:call-template>
                   <td class="header">
-                    <a>
-                      <xsl:attribute name="href">
-                        <xsl:value-of select="concat('../player/', @webPage)" />
-                      </xsl:attribute>
-                      <xsl:value-of select="$playerDisplayName" />
-                    </a>
+                    <xsl:call-template name="playerLink">
+                      <xsl:with-param name="player" select="." />
+                    </xsl:call-template>
                   </td>
                   <xsl:for-each select="$categoryDefinition/nominee">
                     <td id="selection">
                       <xsl:if test="@name = $guess">
-                        &#10004;
+                        ✔
                       </xsl:if>
                     </td>
                   </xsl:for-each>
