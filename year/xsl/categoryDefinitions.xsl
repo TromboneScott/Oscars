@@ -45,7 +45,6 @@
               </xsl:for-each>
             </tbody>
           </table>
-
           <br />
           <br />
           <hr />
@@ -65,16 +64,21 @@
               <xsl:value-of select="@name" />
             </b>
             <br />
-            <xsl:variable name="name" select="@name" />
-            <xsl:value-of select="$mapping/category[@name=$name]/@ballot" />
+            <xsl:variable name="category" select="@name" />
+            <xsl:value-of select="$mapping/category[@name=$category]/@ballot" />
             <xsl:if test="nominee">
               <table>
                 <tbody>
                   <xsl:for-each select="nominee">
                     <tr>
+                      <xsl:call-template name="status">
+                        <xsl:with-param name="nominee" select="@name" />
+                        <xsl:with-param name="winners"
+                          select="$results/categories/category[@name = $category]/winners" />
+                      </xsl:call-template>
                       <td>
                         <xsl:call-template name="poster">
-                          <xsl:with-param name="category" select="$name" />
+                          <xsl:with-param name="category" select="$category" />
                           <xsl:with-param name="nominee" select="@name" />
                         </xsl:call-template>
                       </td>
@@ -84,7 +88,7 @@
                         </b>
                         <xsl:variable name="website" select="@name" />
                         <xsl:for-each
-                          select="$mapping/category[@name=$name]/map[@website=$website]">
+                          select="$mapping/category[@name=$category]/map[@website=$website]">
                           <br />
                           <xsl:value-of select="@ballot" />
                         </xsl:for-each>
