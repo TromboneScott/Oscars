@@ -90,37 +90,10 @@
   <xsl:template name="tieBreaker">
     <xsl:param name="tieBreaker" />
     <xsl:choose>
-      <xsl:when test="$tieBreaker=1">
-        <xsl:value-of select="'&#10112;'" />
+      <xsl:when test="$tieBreaker &gt;= 1 and $tieBreaker &lt;= 10">
+        <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', $tieBreaker, 1)" />
       </xsl:when>
-      <xsl:when test="$tieBreaker=2">
-        <xsl:value-of select="'&#10113;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=3">
-        <xsl:value-of select="'&#10114;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=4">
-        <xsl:value-of select="'&#10115;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=5">
-        <xsl:value-of select="'&#10116;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=6">
-        <xsl:value-of select="'&#10117;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=7">
-        <xsl:value-of select="'&#10118;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=8">
-        <xsl:value-of select="'&#10119;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=9">
-        <xsl:value-of select="'&#10120;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker=10">
-        <xsl:value-of select="'&#10121;'" />
-      </xsl:when>
-      <xsl:when test="$tieBreaker != ''">
+      <xsl:when test="$tieBreaker">
         <xsl:value-of select="concat('(', $tieBreaker, ')')" />
       </xsl:when>
     </xsl:choose>
