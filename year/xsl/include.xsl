@@ -1,7 +1,9 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="html" encoding="utf-8" indent="yes" />
   <xsl:variable name="results" select="document('../results.xml')/results" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
+    <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
       <meta http-equiv="cache-control"
