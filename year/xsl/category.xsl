@@ -6,22 +6,17 @@
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
+      <xsl:call-template name="init" />
       <xsl:variable name="categoryName" select="@name" />
       <xsl:variable name="categoryDefinition"
         select="document('../categoryDefinitions.xml')/categories/category[@name = $categoryName]" />
       <xsl:variable name="categoryData"
         select="document('../category/all.xml')/categories/category[@name = $categoryName]" />
-      <xsl:variable name="results" select="document('../results.xml')/results" />
       <xsl:variable name="categoryResults"
         select="$results/categories/category[@name = $categoryName]" />
-      <xsl:call-template name="init">
-        <xsl:with-param name="results" select="$results" />
-      </xsl:call-template>
       <body>
         <center>
-          <xsl:call-template name="header">
-            <xsl:with-param name="results" select="$results" />
-          </xsl:call-template>
+          <xsl:call-template name="header" />
           <div
             id="name">
             <xsl:value-of select="$categoryName" />
@@ -125,9 +120,7 @@
           <br />
           <br />
           <xsl:call-template
-            name="updated">
-            <xsl:with-param name="results" select="$results" />
-          </xsl:call-template>
+            name="updated" />
         </center>
       </body>
     </html>

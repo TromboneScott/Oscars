@@ -6,18 +6,13 @@
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
+      <xsl:call-template name="init" />
       <xsl:variable name="categories" select="." />
       <xsl:variable name="categoryDefinitions"
         select="document('../categoryDefinitions.xml')" />
-      <xsl:variable name="results" select="document('../results.xml')/results" />
-      <xsl:call-template name="init">
-        <xsl:with-param name="results" select="$results" />
-      </xsl:call-template>
       <body>
         <center>
-          <xsl:call-template name="header">
-            <xsl:with-param name="results" select="$results" />
-          </xsl:call-template>
+          <xsl:call-template name="header" />
           <div id="name">
             Category Results
           </div>
@@ -155,9 +150,7 @@
           <a href=".." id="return">Return to Main Page</a>
           <br />
           <br />
-          <xsl:call-template name="updated">
-            <xsl:with-param name="results" select="$results" />
-          </xsl:call-template>
+          <xsl:call-template name="updated" />
         </center>
       </body>
     </html>

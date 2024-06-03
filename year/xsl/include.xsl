@@ -1,6 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:variable name="results" select="document('../results.xml')/results" />
   <xsl:template name="init">
-    <xsl:param name="results" />
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
@@ -14,7 +14,6 @@
     </head>
   </xsl:template>
   <xsl:template name="header">
-    <xsl:param name="results" />
     <a href="https://oscars.site44.com/{$results/@year}" style="all: unset">
       <table id="header"
         style="color:PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%;">
@@ -99,7 +98,6 @@
     </xsl:choose>
   </xsl:template>
   <xsl:template name="updated">
-    <xsl:param name="results" />
     <table>
       <tr>
         <td id="rank"> Last updated: <xsl:value-of select="$results/@updated" />

@@ -6,15 +6,10 @@
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
-      <xsl:variable name="results" select="document('../results.xml')/results" />
-      <xsl:call-template name="init">
-        <xsl:with-param name="results" select="$results" />
-      </xsl:call-template>
+      <xsl:call-template name="init" />
       <body>
         <center>
-          <xsl:call-template name="header">
-            <xsl:with-param name="results" select="$results" />
-          </xsl:call-template>
+          <xsl:call-template name="header" />
           <xsl:choose>
             <xsl:when test="count($results/players/player)=0">
               <a href="javascript:history.go(0)" style="all: unset">
@@ -123,7 +118,6 @@
               <br />
               <br />
               <xsl:call-template name="player-table">
-                <xsl:with-param name="results" select="$results" />
                 <xsl:with-param name="sort" select="." />
               </xsl:call-template>
               <br />
@@ -135,9 +129,7 @@
           <a href="../../history">Oscars History</a>
           <br />
           <br />
-          <xsl:call-template name="updated">
-            <xsl:with-param name="results" select="$results" />
-          </xsl:call-template>
+          <xsl:call-template name="updated" />
         </center>
       </body>
     </html>
@@ -153,7 +145,6 @@
     </tr>
   </xsl:template>
   <xsl:template name="player-table">
-    <xsl:param name="results" />
     <xsl:param name="sort" />
     <xsl:param name="inPlayer" />
     <xsl:variable name="inProgress" select="not(string($results/showTime/end))" />
