@@ -6,8 +6,6 @@
     <html>
       <xsl:call-template name="init" />
       <xsl:variable name="player" select="." />
-      <xsl:variable name="categories"
-        select="document('../category/all.xml')/categories" />
       <body>
         <center>
           <xsl:call-template name="header" />
@@ -72,7 +70,7 @@
               <xsl:for-each select="$results/categories/category">
                 <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryData"
-                  select="$categories/category[@name = $categoryName]" />
+                  select="$categoryAll/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
                   select="$categoryData/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@guess" />
                 <tr>
@@ -89,7 +87,7 @@
                     </a>
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
-                        select="document('../categoryDefinitions.xml')/categories/category[@name = $categoryName]/@tieBreaker" />
+                        select="$categoryDefinitions/category[@name = $categoryName]/@tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <td>
@@ -142,7 +140,7 @@
                   <xsl:value-of select="'Show Running Time'" />
                   <xsl:call-template name="tieBreaker">
                     <xsl:with-param name="tieBreaker"
-                      select="document('../categoryDefinitions.xml')/categories/category[@name = 'Time']/@tieBreaker" />
+                      select="$categoryDefinitions/category[@name = 'Time']/@tieBreaker" />
                   </xsl:call-template>
                 </td>
                 <td>

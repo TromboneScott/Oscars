@@ -6,8 +6,6 @@
     <html>
       <xsl:call-template name="init" />
       <xsl:variable name="categories" select="." />
-      <xsl:variable name="categoryDefinitions"
-        select="document('../categoryDefinitions.xml')" />
       <body>
         <center>
           <xsl:call-template name="header" />

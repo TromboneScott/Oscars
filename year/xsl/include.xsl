@@ -2,6 +2,12 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="html" encoding="utf-8" indent="yes" />
   <xsl:variable name="results" select="document('../results.xml')/results" />
+  <xsl:variable name="categoryDefinitions"
+    select="document('../categoryDefinitions.xml')/categories" />
+  <xsl:variable name="categoryMaps"
+    select="document('../categoryMaps.xml')/categories" />
+  <xsl:variable name="categoryAll"
+    select="document('../category/all.xml')/categories" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
@@ -47,7 +53,7 @@
         <tr>
           <td colspan="5">
             <xsl:for-each
-              select="document('../categoryDefinitions.xml')/categories/category[@name = 'Best Picture']/nominee">
+              select="$categoryDefinitions/category[@name = 'Best Picture']/nominee">
               <img width="50">
                 <xsl:attribute name="src">
                   <xsl:value-of select="./@img" />
@@ -131,22 +137,18 @@
     <img>
       <xsl:attribute name="src">
         <xsl:value-of
-          select="document('../categoryDefinitions.xml')/categories/category[@name = $category]/nominee[@name = $nominee]/@img" />
+          select="$categoryDefinitions/category[@name = $category]/nominee[@name = $nominee]/@img" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="document('../categoryMaps.xml')/categories/category[@name = $category]/map[@website = $nominee][last()]/@ballot" />
+        select="$categoryMaps/category[@name = $category]/map[@website = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
-        <xsl:choose>
-          <xsl:when test="$description">
-            <xsl:value-of select="$description" />
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$nominee" />
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:value-of select="$description" />
+        <xsl:if test="not($description)">
+          <xsl:value-of select="$nominee" />
+        </xsl:if>
       </xsl:attribute>
     </img>
   </xsl:template>

@@ -46,8 +46,6 @@
           </h2>
           <i> Values for this website are in <b>bold</b>
           </i>
-          <xsl:variable name="mapping"
-            select="document('../categoryMaps.xml')/categories" />
           <xsl:for-each select="category">
             <br />
             <br />
@@ -58,7 +56,8 @@
             </b>
             <br />
             <xsl:variable name="category" select="@name" />
-            <xsl:value-of select="$mapping/category[@name=$category]/@ballot" />
+            <xsl:value-of
+              select="$categoryMaps/category[@name=$category]/@ballot" />
             <xsl:if test="nominee">
               <table>
                 <tbody>
@@ -81,7 +80,7 @@
                         </b>
                         <xsl:variable name="website" select="@name" />
                         <xsl:for-each
-                          select="$mapping/category[@name=$category]/map[@website=$website]">
+                          select="$categoryMaps/category[@name=$category]/map[@website=$website]">
                           <br />
                           <xsl:value-of select="@ballot" />
                         </xsl:for-each>

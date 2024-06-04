@@ -7,9 +7,9 @@
       <xsl:call-template name="init" />
       <xsl:variable name="categoryName" select="@name" />
       <xsl:variable name="categoryDefinition"
-        select="document('../categoryDefinitions.xml')/categories/category[@name = $categoryName]" />
+        select="$categoryDefinitions/category[@name = $categoryName]" />
       <xsl:variable name="categoryData"
-        select="document('../category/all.xml')/categories/category[@name = $categoryName]" />
+        select="$categoryAll/category[@name = $categoryName]" />
       <xsl:variable name="categoryResults"
         select="$results/categories/category[@name = $categoryName]" />
       <body>
@@ -21,7 +21,7 @@
           </div> Tie Breaker: <xsl:value-of
             select="$categoryDefinition/@tieBreaker" />
           <xsl:if
-            test="normalize-space($categoryDefinition/@tieBreaker) = ''">
+            test="not(normalize-space($categoryDefinition/@tieBreaker))">
             NO
           </xsl:if>
           <br /> Point Value: <xsl:value-of
