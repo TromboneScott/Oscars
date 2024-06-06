@@ -111,15 +111,14 @@
       </tr>
     </table>
   </xsl:template>
-  <xsl:template name="status">
+  <xsl:template match="results/categories/category/winners" mode="attribute">
     <xsl:param name="nominee" />
-    <xsl:param name="winners" />
     <xsl:attribute name="class">
       <xsl:choose>
-        <xsl:when test="$winners/nominee/@name = $nominee">
+        <xsl:when test="nominee/@name = $nominee">
           correct
         </xsl:when>
-        <xsl:when test="$winners/nominee">
+        <xsl:when test="nominee">
           incorrect
         </xsl:when>
         <xsl:otherwise>

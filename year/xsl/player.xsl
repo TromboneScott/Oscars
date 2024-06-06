@@ -74,10 +74,9 @@
                 <xsl:variable name="playerGuess"
                   select="$categoryData/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@guess" />
                 <tr>
-                  <xsl:call-template name="status">
+                  <xsl:apply-templates select="winners" mode="attribute">
                     <xsl:with-param name="nominee" select="$playerGuess" />
-                    <xsl:with-param name="winners" select="winners" />
-                  </xsl:call-template>
+                  </xsl:apply-templates>
                   <td class="header">
                     <a>
                       <xsl:attribute name="href">

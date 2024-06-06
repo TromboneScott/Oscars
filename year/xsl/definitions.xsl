@@ -63,11 +63,11 @@
                 <tbody>
                   <xsl:for-each select="nominee">
                     <tr>
-                      <xsl:call-template name="status">
+                      <xsl:apply-templates
+                        select="$results/categories/category[@name = $category]/winners"
+                        mode="attribute">
                         <xsl:with-param name="nominee" select="@name" />
-                        <xsl:with-param name="winners"
-                          select="$results/categories/category[@name = $category]/winners" />
-                      </xsl:call-template>
+                      </xsl:apply-templates>
                       <td>
                         <xsl:call-template name="poster">
                           <xsl:with-param name="category" select="$category" />
