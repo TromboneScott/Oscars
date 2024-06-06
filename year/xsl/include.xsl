@@ -81,17 +81,16 @@
     <br />
     <br />
   </xsl:template>
-  <xsl:template name="chart">
-    <xsl:param name="categoryResults" />
+  <xsl:template match="results/categories/category" mode="chart">
     <img>
       <xsl:attribute name="src">
-        <xsl:value-of select="$categoryResults/@chart" />
+        <xsl:value-of select="./@chart" />
       </xsl:attribute>
       <xsl:attribute name="alt">
-        <xsl:value-of select="$categoryResults/@name" />
+        <xsl:value-of select="./@name" />
       </xsl:attribute>
       <xsl:attribute name="title">
-        <xsl:value-of select="$categoryResults/@name" />
+        <xsl:value-of select="./@name" />
       </xsl:attribute>
     </img>
   </xsl:template>

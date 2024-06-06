@@ -135,9 +135,7 @@
                 </xsl:call-template>
               </xsl:for-each>
               <br />
-              <xsl:call-template name="chart">
-                <xsl:with-param name="categoryResults" select="." />
-              </xsl:call-template>
+              <xsl:apply-templates select="." mode="chart" />
             </a>
             <br />
           </xsl:for-each>

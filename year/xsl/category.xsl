@@ -34,10 +34,8 @@
           this category gets the points. </xsl:if>
           <br />
           <br />
-          <xsl:call-template
-            name="chart">
-            <xsl:with-param name="categoryResults" select="$categoryResults" />
-          </xsl:call-template>
+          <xsl:apply-templates
+            select="$categoryResults" mode="chart" />
           <br />
           <br />
           <br />
