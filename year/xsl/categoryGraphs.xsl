@@ -44,10 +44,9 @@
                       <xsl:value-of select="@name" />
                     </a>
                     <xsl:variable name="name" select="@name" />
-                    <xsl:call-template name="tieBreaker">
-                      <xsl:with-param name="tieBreaker"
-                        select="$definitions/category[@name = $name]/@tieBreaker" />
-                    </xsl:call-template>
+                    <xsl:apply-templates
+                      select="$definitions/category[@name = $name]"
+                      mode="tieBreaker" />
                   </td>
                   <xsl:variable name="winners">
                     <xsl:for-each select="winners/nominee">

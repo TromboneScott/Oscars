@@ -93,14 +93,13 @@
       </xsl:attribute>
     </img>
   </xsl:template>
-  <xsl:template name="tieBreaker">
-    <xsl:param name="tieBreaker" />
+  <xsl:template match="definitions/category" mode="tieBreaker">
     <xsl:choose>
-      <xsl:when test="$tieBreaker &gt;= 1 and $tieBreaker &lt;= 10">
-        <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', $tieBreaker, 1)" />
+      <xsl:when test="./@tieBreaker &gt;= 1 and ./@tieBreaker &lt;= 10">
+        <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', ./@tieBreaker, 1)" />
       </xsl:when>
-      <xsl:when test="$tieBreaker">
-        <xsl:value-of select="concat('(', $tieBreaker, ')')" />
+      <xsl:when test="./@tieBreaker">
+        <xsl:value-of select="concat('(', ./@tieBreaker, ')')" />
       </xsl:when>
     </xsl:choose>
   </xsl:template>

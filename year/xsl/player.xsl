@@ -85,10 +85,9 @@
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
                     </a>
-                    <xsl:call-template name="tieBreaker">
-                      <xsl:with-param name="tieBreaker"
-                        select="$definitions/category[@name = $categoryName]/@tieBreaker" />
-                    </xsl:call-template>
+                    <xsl:apply-templates
+                      select="$definitions/category[@name = $categoryName]"
+                      mode="tieBreaker" />
                   </td>
                   <td>
                     <xsl:value-of select="$playerGuess" />
@@ -138,10 +137,9 @@
                 </xsl:attribute>
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
-                  <xsl:call-template name="tieBreaker">
-                    <xsl:with-param name="tieBreaker"
-                      select="$definitions/category[@name = 'Time']/@tieBreaker" />
-                  </xsl:call-template>
+                  <xsl:apply-templates
+                    select="$definitions/category[@name = 'Time']"
+                    mode="tieBreaker" />
                 </td>
                 <td>
                   <center>
