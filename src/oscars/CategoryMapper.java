@@ -21,7 +21,7 @@ import org.jdom2.input.SAXBuilder;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final String CATEGORY_MAPS_FILE = "categoryMaps.xml";
+    private static final String MAPPINGS_FILE = "mappings.xml";
 
     private final Collection<Ballot> ballots;
 
@@ -104,7 +104,7 @@ public final class CategoryMapper {
     }
 
     private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
-        File categoryMapsFile = new File(CATEGORY_MAPS_FILE);
+        File categoryMapsFile = new File(MAPPINGS_FILE);
         if (categoryMapsFile.exists())
             try {
                 return new SAXBuilder().build(categoryMapsFile).getRootElement()
@@ -113,10 +113,10 @@ public final class CategoryMapper {
                                 categoryDOM -> categoryDOM.getAttributeValue("name"),
                                 inFunction::apply));
             } catch (JDOMException e) {
-                throw new IOException(
-                        "ERROR: Unable to read category maps file: " + CATEGORY_MAPS_FILE, e);
+                throw new IOException("ERROR: Unable to read category maps file: " + MAPPINGS_FILE,
+                        e);
             }
-        System.out.println("\nStarting new category maps file: " + CATEGORY_MAPS_FILE);
+        System.out.println("\nStarting new category maps file: " + MAPPINGS_FILE);
         return new HashMap<>();
     }
 
@@ -137,6 +137,6 @@ public final class CategoryMapper {
                                 .setAttribute("ballot", map.getKey()))
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
-                .reduce(new Element("categories"), Element::addContent), CATEGORY_MAPS_FILE, null);
+                .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 }

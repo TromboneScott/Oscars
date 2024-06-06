@@ -4,8 +4,7 @@
   <xsl:variable name="results" select="document('../results.xml')/results" />
   <xsl:variable name="definitions"
     select="document('../definitions.xml')/definitions" />
-  <xsl:variable name="categoryMaps"
-    select="document('../categoryMaps.xml')/categories" />
+  <xsl:variable name="mappings" select="document('../mappings.xml')/mappings" />
   <xsl:variable name="categoryAll"
     select="document('../category/all.xml')/categories" />
   <xsl:template name="init">
@@ -142,7 +141,7 @@
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="$categoryMaps/category[@name = $category]/map[@website = $nominee][last()]/@ballot" />
+        select="$mappings/category[@name = $category]/map[@website = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
         <xsl:value-of select="$description" />
         <xsl:if test="not($description)">
