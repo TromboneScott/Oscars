@@ -88,16 +88,7 @@
               </a>
               <table>
                 <xsl:call-template name="winners">
-                  <xsl:with-param name="categories"
-                    select="$results/categories/category[position() &lt;= 6]" />
-                </xsl:call-template>
-                <xsl:call-template name="winners">
-                  <xsl:with-param name="categories"
-                    select="$results/categories/category[position() &gt; 6 and position() &lt;= 12]" />
-                </xsl:call-template>
-                <xsl:call-template name="winners">
-                  <xsl:with-param name="categories"
-                    select="$results/categories/category[position() &gt; 12]" />
+                  <xsl:with-param name="start" select="0" />
                 </xsl:call-template>
               </table>
               <br />
@@ -427,37 +418,43 @@
     </xsl:choose>
   </xsl:template>
   <xsl:template name="winners">
-    <xsl:param name="categories" />
-    <tr>
-      <xsl:for-each select="$categories">
-        <td style="text-align: center">
-          <a>
-            <xsl:attribute name="id">
+    <xsl:param name="start" />
+    <xsl:if test="$start &lt; count($results/categories/category)">
+      <tr>
+        <xsl:for-each
+          select="$results/categories/category[position() &gt; $start and position() &lt;= $start + 6]">
+          <td style="text-align: center">
+            <a>
+              <xsl:attribute name="id">
+                <xsl:value-of select="@name" />
+              </xsl:attribute>
+              <xsl:attribute name="href">
+                <xsl:value-of select="concat('../category/', @name, '.xml')" />
+              </xsl:attribute>
+              <xsl:choose>
+                <xsl:when test="winners/nominee">
+                  <xsl:variable name="categoryName" select="@name" />
+                  <xsl:for-each select="winners/nominee">
+                    <xsl:call-template name="poster">
+                      <xsl:with-param name="category" select="$categoryName" />
+                      <xsl:with-param name="nominee" select="@name" />
+                    </xsl:call-template>
+                  </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                  <img src="http://oscars.site44.com/trophy_poster.png"
+                    title="Not Yet Announced" />
+                </xsl:otherwise>
+              </xsl:choose>
+              <br />
               <xsl:value-of select="@name" />
-            </xsl:attribute>
-            <xsl:attribute name="href">
-              <xsl:value-of select="concat('../category/', @name, '.xml')" />
-            </xsl:attribute>
-            <xsl:choose>
-              <xsl:when test="winners/nominee">
-                <xsl:variable name="categoryName" select="@name" />
-                <xsl:for-each select="winners/nominee">
-                  <xsl:call-template name="poster">
-                    <xsl:with-param name="category" select="$categoryName" />
-                    <xsl:with-param name="nominee" select="@name" />
-                  </xsl:call-template>
-                </xsl:for-each>
-              </xsl:when>
-              <xsl:otherwise>
-                <img src="http://oscars.site44.com/trophy_poster.png"
-                  title="Not Yet Announced" />
-              </xsl:otherwise>
-            </xsl:choose>
-            <br />
-            <xsl:value-of select="@name" />
-          </a>
-        </td>
-      </xsl:for-each>
-    </tr>
+            </a>
+          </td>
+        </xsl:for-each>
+      </tr>
+      <xsl:call-template name="winners">
+        <xsl:with-param name="start" select="$start + 6" />
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
