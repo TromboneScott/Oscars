@@ -420,9 +420,10 @@
   <xsl:template name="winners">
     <xsl:param name="start" />
     <xsl:if test="$start &lt; count($results/categories/category)">
+      <xsl:variable name="end" select="$start + 6" />
       <tr>
         <xsl:for-each
-          select="$results/categories/category[position() &gt; $start and position() &lt;= $start + 6]">
+          select="$results/categories/category[position() &gt; $start and position() &lt;= $end]">
           <td style="text-align: center">
             <a>
               <xsl:attribute name="id">
@@ -453,7 +454,7 @@
         </xsl:for-each>
       </tr>
       <xsl:call-template name="winners">
-        <xsl:with-param name="start" select="$start + 6" />
+        <xsl:with-param name="start" select="$end" />
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
