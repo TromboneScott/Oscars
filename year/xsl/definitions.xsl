@@ -26,13 +26,13 @@
                 </th>
               </tr>
               <xsl:for-each select="category[@tieBreaker]">
-                <xsl:sort select="./@tieBreaker" />
+                <xsl:sort select="@tieBreaker" />
                 <tr>
                   <td class="unannounced">
-                    <xsl:value-of select="./@tieBreaker" />
+                    <xsl:value-of select="@tieBreaker" />
                   </td>
                   <td class="unannounced">
-                    <xsl:value-of select="./@name" />
+                    <xsl:value-of select="@name" />
                   </td>
                 </tr>
               </xsl:for-each>

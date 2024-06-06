@@ -132,7 +132,7 @@
       </body>
     </html>
   </xsl:template>
-  <xsl:template match="ballot">
+  <xsl:template match="/results/ballots/ballot">
     <tr>
       <td>
         <xsl:value-of select="timestamp" />
@@ -340,7 +340,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="player">
+  <xsl:template match="/results/players/player">
     <xsl:param name="inPlayer" />
     <xsl:param name="inProgress" />
     <xsl:variable name="id" select="@id" />
@@ -358,9 +358,7 @@
             </xsl:choose>
           </xsl:if>
         </xsl:attribute>
-        <xsl:call-template name="playerLink">
-          <xsl:with-param name="player" select="." />
-        </xsl:call-template>
+        <xsl:apply-templates select="." mode="playerLink" />
       </td>
       <td class="rank">
         <xsl:value-of select="rank" />

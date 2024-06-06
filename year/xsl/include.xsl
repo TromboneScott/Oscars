@@ -55,13 +55,13 @@
               select="$definitions/category[@name = 'Best Picture']/nominee">
               <img width="50">
                 <xsl:attribute name="src">
-                  <xsl:value-of select="./@img" />
+                  <xsl:value-of select="@img" />
                 </xsl:attribute>
                 <xsl:attribute name="alt">
-                  <xsl:value-of select="./@name" />
+                  <xsl:value-of select="@name" />
                 </xsl:attribute>
                 <xsl:attribute name="title">
-                  <xsl:value-of select="./@name" />
+                  <xsl:value-of select="@name" />
                 </xsl:attribute>
               </img>
             </xsl:for-each>
@@ -80,26 +80,26 @@
     <br />
     <br />
   </xsl:template>
-  <xsl:template match="results/categories/category" mode="chart">
+  <xsl:template match="/results/categories/category" mode="chart">
     <img>
       <xsl:attribute name="src">
-        <xsl:value-of select="./@chart" />
+        <xsl:value-of select="@chart" />
       </xsl:attribute>
       <xsl:attribute name="alt">
-        <xsl:value-of select="./@name" />
+        <xsl:value-of select="@name" />
       </xsl:attribute>
       <xsl:attribute name="title">
-        <xsl:value-of select="./@name" />
+        <xsl:value-of select="@name" />
       </xsl:attribute>
     </img>
   </xsl:template>
-  <xsl:template match="definitions/category" mode="tieBreaker">
+  <xsl:template match="/definitions/category" mode="tieBreaker">
     <xsl:choose>
-      <xsl:when test="./@tieBreaker &gt;= 1 and ./@tieBreaker &lt;= 10">
-        <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', ./@tieBreaker, 1)" />
+      <xsl:when test="@tieBreaker &gt;= 1 and @tieBreaker &lt;= 10">
+        <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', @tieBreaker, 1)" />
       </xsl:when>
-      <xsl:when test="./@tieBreaker">
-        <xsl:value-of select="concat('(', ./@tieBreaker, ')')" />
+      <xsl:when test="@tieBreaker">
+        <xsl:value-of select="concat('(', @tieBreaker, ')')" />
       </xsl:when>
     </xsl:choose>
   </xsl:template>
@@ -111,7 +111,7 @@
       </tr>
     </table>
   </xsl:template>
-  <xsl:template match="results/categories/category/winners" mode="attribute">
+  <xsl:template match="/results/categories/category/winners" mode="attribute">
     <xsl:param name="nominee" />
     <xsl:attribute name="class">
       <xsl:choose>
@@ -148,17 +148,16 @@
       </xsl:attribute>
     </img>
   </xsl:template>
-  <xsl:template name="playerLink">
-    <xsl:param name="player" />
+  <xsl:template match="player" mode="playerLink">
     <a>
       <xsl:attribute name="href">
-        <xsl:value-of select="concat('../player/', $player/@webPage)" />
+        <xsl:value-of select="concat('../player/', @webPage)" />
       </xsl:attribute>
-      <xsl:value-of select="$player/@lastName" />
-      <xsl:if test="$player/@firstName and $player/@lastName">
+      <xsl:value-of select="@lastName" />
+      <xsl:if test="@firstName and @lastName">
         <xsl:value-of select="', '" />
       </xsl:if>
-      <xsl:value-of select="$player/@firstName" />
+      <xsl:value-of select="@firstName" />
     </a>
   </xsl:template>
 </xsl:stylesheet>

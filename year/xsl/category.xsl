@@ -72,9 +72,7 @@
                     <xsl:with-param name="nominee" select="$guess" />
                   </xsl:apply-templates>
                   <td class="header">
-                    <xsl:call-template name="playerLink">
-                      <xsl:with-param name="player" select="." />
-                    </xsl:call-template>
+                    <xsl:apply-templates select="." mode="playerLink" />
                   </td>
                   <xsl:for-each select="$categoryDefinition/nominee">
                     <td id="selection">
