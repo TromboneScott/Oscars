@@ -46,7 +46,7 @@
                     <xsl:variable name="name" select="@name" />
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
-                        select="$categoryDefinitions/category[@name = $name]/@tieBreaker" />
+                        select="$definitions/category[@name = $name]/@tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <xsl:variable name="winners">
@@ -117,7 +117,7 @@
               </b>
               <xsl:variable name="name" select="@name" />
               <xsl:variable name="tieBreaker"
-                select="$categoryDefinitions/category[@name = $name]/@tieBreaker" />
+                select="$definitions/category[@name = $name]/@tieBreaker" />
               <xsl:if test="$tieBreaker">
                 <xsl:value-of
                   select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
@@ -125,7 +125,7 @@
               <br />
               <xsl:variable name="categoryName" select="@name" />
               <xsl:for-each
-                select="$categoryDefinitions/category[@name = $categoryName]/nominee">
+                select="$definitions/category[@name = $categoryName]/nominee">
                 <xsl:if test="(position() - 1) mod 5 = 0">
                   <br />
                 </xsl:if>

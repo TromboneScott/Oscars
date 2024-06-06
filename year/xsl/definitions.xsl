@@ -2,14 +2,14 @@
 <!-- OSCARS website created by Scott McDonald -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="include.xsl" />
-  <xsl:template match="/categories">
+  <xsl:template match="/definitions">
     <html>
       <xsl:call-template name="init" />
       <body>
         <center>
           <xsl:call-template name="header" />
           <div id="name">
-            Category Definitions
+            Definitions
           </div>
           <br />
           <h2>

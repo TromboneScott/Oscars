@@ -7,7 +7,7 @@
       <xsl:call-template name="init" />
       <xsl:variable name="categoryName" select="@name" />
       <xsl:variable name="categoryDefinition"
-        select="$categoryDefinitions/category[@name = $categoryName]" />
+        select="$definitions/category[@name = $categoryName]" />
       <xsl:variable name="categoryData"
         select="$categoryAll/category[@name = $categoryName]" />
       <xsl:variable name="categoryResults"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet href="xsl/categoryDefinitions.xsl" type="text/xsl"?>
+<?xml-stylesheet href="xsl/definitions.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<categories>
+<definitions>
   <category name="Timestamp" />
   <category name="First" />
   <category name="Last" />
@@ -233,4 +233,4 @@
   </category>
   <category name="Time" tieBreaker="7" />
   <category name="EMail" />
-</categories>
+</definitions>

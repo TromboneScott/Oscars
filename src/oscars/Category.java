@@ -23,7 +23,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
 public final class Category implements ChartColor {
-    private static final File CATEGORY_DEFINITIONS_FILE = new File("categoryDefinitions.xml");
+    private static final File DEFINITIONS_FILE = new File("definitions.xml");
 
     /** Categories in display order */
     public static final List<Category> ALL = Collections.unmodifiableList(all());
@@ -62,12 +62,10 @@ public final class Category implements ChartColor {
 
     private static List<Category> all() {
         try {
-            return new SAXBuilder().build(CATEGORY_DEFINITIONS_FILE).getRootElement()
-                    .getChildren("category").stream().map(Category::new)
-                    .collect(Collectors.toList());
+            return new SAXBuilder().build(DEFINITIONS_FILE).getRootElement().getChildren("category")
+                    .stream().map(Category::new).collect(Collectors.toList());
         } catch (IOException | JDOMException e) {
-            throw new RuntimeException(
-                    "Error reading category definitions file: " + CATEGORY_DEFINITIONS_FILE, e);
+            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
         }
     }
 

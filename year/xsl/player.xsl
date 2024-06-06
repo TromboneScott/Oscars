@@ -87,7 +87,7 @@
                     </a>
                     <xsl:call-template name="tieBreaker">
                       <xsl:with-param name="tieBreaker"
-                        select="$categoryDefinitions/category[@name = $categoryName]/@tieBreaker" />
+                        select="$definitions/category[@name = $categoryName]/@tieBreaker" />
                     </xsl:call-template>
                   </td>
                   <td>
@@ -140,7 +140,7 @@
                   <xsl:value-of select="'Show Running Time'" />
                   <xsl:call-template name="tieBreaker">
                     <xsl:with-param name="tieBreaker"
-                      select="$categoryDefinitions/category[@name = 'Time']/@tieBreaker" />
+                      select="$definitions/category[@name = 'Time']/@tieBreaker" />
                   </xsl:call-template>
                 </td>
                 <td>
