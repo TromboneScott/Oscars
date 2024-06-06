@@ -104,19 +104,18 @@ public final class CategoryMapper {
     }
 
     private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
-        File categoryMapsFile = new File(MAPPINGS_FILE);
-        if (categoryMapsFile.exists())
+        File mappingsFile = new File(MAPPINGS_FILE);
+        if (mappingsFile.exists())
             try {
-                return new SAXBuilder().build(categoryMapsFile).getRootElement()
-                        .getChildren("category").stream()
+                return new SAXBuilder().build(mappingsFile).getRootElement().getChildren("category")
+                        .stream()
                         .collect(Collectors.toMap(
                                 categoryDOM -> categoryDOM.getAttributeValue("name"),
                                 inFunction::apply));
             } catch (JDOMException e) {
-                throw new IOException("ERROR: Unable to read category maps file: " + MAPPINGS_FILE,
-                        e);
+                throw new IOException("ERROR: Unable to read mappings file: " + MAPPINGS_FILE, e);
             }
-        System.out.println("\nStarting new category maps file: " + MAPPINGS_FILE);
+        System.out.println("\nStarting new mappings file: " + MAPPINGS_FILE);
         return new HashMap<>();
     }
 
