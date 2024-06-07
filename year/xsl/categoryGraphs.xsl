@@ -114,15 +114,14 @@
               <b>
                 <xsl:value-of select="@name" />
               </b>
-              <xsl:variable name="name" select="@name" />
+              <xsl:variable name="categoryName" select="@name" />
               <xsl:variable name="tieBreaker"
-                select="$definitions/category[@name = $name]/@tieBreaker" />
+                select="$definitions/category[@name = $categoryName]/@tieBreaker" />
               <xsl:if test="$tieBreaker">
                 <xsl:value-of
                   select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
-              <xsl:variable name="categoryName" select="@name" />
               <xsl:for-each
                 select="$definitions/category[@name = $categoryName]/nominee">
                 <xsl:if test="(position() - 1) mod 5 = 0">
