@@ -54,9 +54,9 @@ public final class Ballot {
         if (inValues.length != Category.ALL.size())
             throw new RuntimeException("Ballot length: " + inValues.length
                     + " does not match category definitions: " + Category.ALL.size());
-        values = Collections.unmodifiableMap(
-                IntStream.range(0, inValues.length).boxed().collect(Collectors.toMap(
-                        column -> Category.ALL.get(column).name, column -> inValues[column])));
+        values = Collections.unmodifiableMap(IntStream.range(0, inValues.length).boxed()
+                .collect(Collectors.toMap(column -> Category.ALL.get(column).name,
+                        column -> inValues[column].trim())));
     }
 
     public static Stream<Ballot> readBallots() throws IOException {

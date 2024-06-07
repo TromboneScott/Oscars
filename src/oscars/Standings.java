@@ -95,13 +95,13 @@ public final class Standings {
                 .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
-                .addContent(rankDOM(rank(inPlayers.get(playerNum))))
-                .addContent(new Element("bpr").addContent(
-                        String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1)))
-                .addContent(new Element("wpr").addContent(
-                        String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap))))
-                .addContent(new Element("score").addContent(scoreMap.get(inPlayers.get(playerNum))
-                        .setScale(tieBreakers).toString()))
+                .setAttribute("rank", String.valueOf(rank(inPlayers.get(playerNum))))
+                .setAttribute("bpr",
+                        String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1))
+                .setAttribute("wpr",
+                        String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap)))
+                .setAttribute("score", scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers)
+                        .toString())
                 .addContent(
                         new Element("time")
                                 .setAttribute("delta", inPlayers.get(playerNum).time <= elapsedTime
@@ -119,11 +119,6 @@ public final class Standings {
                                 || tied(inPlayers.get(playerNum), opponent) ? "Y" : "N")
                         .collect(Collectors.joining()))))
                 .reduce(new Element("players"), Element::addContent);
-    }
-
-    private Element rankDOM(long inRank) {
-        return new Element("rank").setAttribute("chart", RankChart.name(inRank))
-                .addContent(String.valueOf(inRank));
     }
 
     /** Determine if the player and opponent will be tied at the end of the game */

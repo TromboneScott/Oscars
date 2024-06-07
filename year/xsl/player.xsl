@@ -22,7 +22,7 @@
           <table>
             <tr>
               <td id="rank"> Rank <div id="rank">
-                  <xsl:value-of select="$playerResults/rank" />
+                  <xsl:value-of select="$playerResults/@rank" />
                 </div>
           Out of <xsl:value-of select="count($results/players/player)" />
               </td>
@@ -30,14 +30,14 @@
                 <img>
                   <xsl:attribute name="src">
                     <xsl:value-of
-                      select="concat('../rank/', $playerResults/rank/@chart)" />
+                      select="concat('../rank/rank_', $playerResults/@rank, '.png')" />
                   </xsl:attribute>
                   <xsl:attribute name="alt">
-                    <xsl:value-of select="$playerResults/rank" /> out of <xsl:value-of
+                    <xsl:value-of select="$playerResults/@rank" /> out of <xsl:value-of
                       select="count($results/players/player)" />
                   </xsl:attribute>
                   <xsl:attribute name="title">
-                    <xsl:value-of select="$playerResults/rank" /> out of <xsl:value-of
+                    <xsl:value-of select="$playerResults/@rank" /> out of <xsl:value-of
                       select="count($results/players/player)" />
                   </xsl:attribute>
                 </img>
@@ -47,9 +47,9 @@
           <xsl:if
             test="not(string($results/showTime/end))">
             <br /> Best Possible Rank (BPR): <xsl:value-of
-              select="$playerResults/bpr" />
+              select="$playerResults/@bpr" />
             <br /> Worst Possible Rank (WPR): <xsl:value-of
-              select="$playerResults/wpr" />
+              select="$playerResults/@wpr" />
           </xsl:if>
           <br />
           <br />
@@ -80,7 +80,8 @@
                   <td class="header">
                     <a>
                       <xsl:attribute name="href">
-                        <xsl:value-of select="concat('../category/', @name, '.xml')" />
+                        <xsl:value-of
+                          select="concat('../category/', @name, '.xml')" />
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
                     </a>
@@ -120,14 +121,14 @@
               <tr>
                 <th class="header">Total</th>
                 <th>
-                  <xsl:value-of select="floor($playerResults/score)" />
+                  <xsl:value-of select="floor($playerResults/@score)" />
                 </th>
                 <th>
                   <xsl:value-of
                     select="count($results/categories/category/winners[count(nominee) &gt; 0])" />
                 </th>
                 <th>
-                  <xsl:value-of select="$playerResults/score" />
+                  <xsl:value-of select="$playerResults/@score" />
                 </th>
               </tr>
               <tr>

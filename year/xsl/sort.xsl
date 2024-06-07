@@ -224,9 +224,9 @@
           </xsl:when>
           <xsl:when test="$sort = 'rank' or $sort = 'score'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="rank" data-type="number" />
-              <xsl:sort select="bpr" data-type="number" />
-              <xsl:sort select="wpr" data-type="number" />
+              <xsl:sort select="@rank" data-type="number" />
+              <xsl:sort select="@bpr" data-type="number" />
+              <xsl:sort select="@wpr" data-type="number" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -236,9 +236,9 @@
           <xsl:when
             test="$sort = 'rankReverse' or $sort = 'scoreReverse'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="rank" data-type="number" order="descending" />
-              <xsl:sort select="bpr" data-type="number" order="descending" />
-              <xsl:sort select="wpr" data-type="number" order="descending" />
+              <xsl:sort select="@rank" data-type="number" order="descending" />
+              <xsl:sort select="@bpr" data-type="number" order="descending" />
+              <xsl:sort select="@wpr" data-type="number" order="descending" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -248,8 +248,8 @@
           <xsl:when test="$sort = 'bpr'">
             <xsl:apply-templates
               select="$results/players/player">
-              <xsl:sort select="bpr" data-type="number" />
-              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="@bpr" data-type="number" />
+              <xsl:sort select="@rank" data-type="number" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -258,8 +258,8 @@
           </xsl:when>
           <xsl:when test="$sort = 'bprReverse'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="bpr" data-type="number" order="descending" />
-              <xsl:sort select="rank" data-type="number" order="descending" />
+              <xsl:sort select="@bpr" data-type="number" order="descending" />
+              <xsl:sort select="@rank" data-type="number" order="descending" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -268,8 +268,8 @@
           </xsl:when>
           <xsl:when test="$sort = 'wpr'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="wpr" data-type="number" />
-              <xsl:sort select="rank" data-type="number" />
+              <xsl:sort select="@wpr" data-type="number" />
+              <xsl:sort select="@rank" data-type="number" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -278,8 +278,8 @@
           </xsl:when>
           <xsl:when test="$sort = 'wprReverse'">
             <xsl:apply-templates select="$results/players/player">
-              <xsl:sort select="wpr" data-type="number" order="descending" />
-              <xsl:sort select="rank" data-type="number" order="descending" />
+              <xsl:sort select="@wpr" data-type="number" order="descending" />
+              <xsl:sort select="@rank" data-type="number" order="descending" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
@@ -351,33 +351,33 @@
         <xsl:apply-templates select="." mode="playerLink" />
       </td>
       <td class="rank">
-        <xsl:value-of select="rank" />
+        <xsl:value-of select="@rank" />
       </td>
       <xsl:if test="$inProgress">
         <td>
-          <xsl:attribute name="class"> rank <xsl:if test="bpr = wpr">
+          <xsl:attribute name="class"> rank <xsl:if test="@bpr = @wpr">
               unannounced
             </xsl:if>
           </xsl:attribute>
-          <xsl:value-of select="bpr" />
+          <xsl:value-of select="@bpr" />
         </td>
         <td>
-          <xsl:attribute name="class"> rank <xsl:if test="bpr = wpr">
+          <xsl:attribute name="class"> rank <xsl:if test="@bpr = @wpr">
               unannounced
             </xsl:if>
           </xsl:attribute>
-          <xsl:value-of select="wpr" />
+          <xsl:value-of select="@wpr" />
         </td>
       </xsl:if>
       <td class="rank">
-        <xsl:value-of select="score" /> -- <xsl:variable name="scoreTieBreakers">
+        <xsl:value-of select="@score" /> -- <xsl:variable name="scoreTieBreakers">
           <xsl:call-template name="tieBreakers">
-            <xsl:with-param name="score" select="score" />
+            <xsl:with-param name="score" select="@score" />
             <xsl:with-param name="value" select="8" />
           </xsl:call-template>
         </xsl:variable>
         <xsl:variable
-          name="scoreWidth" select="round(score) * 16 + $scoreTieBreakers" />
+          name="scoreWidth" select="round(@score) * 16 + $scoreTieBreakers" />
         <img
           src="../../bar_green.bmp" height="15">
           <xsl:attribute name="width">
