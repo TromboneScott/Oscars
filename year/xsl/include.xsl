@@ -83,7 +83,21 @@
   <xsl:template match="/results/categories/category" mode="chart">
     <img>
       <xsl:attribute name="src">
-        <xsl:value-of select="@chart" />
+        <xsl:value-of select="@name" />
+        <xsl:variable name="category" select="@name" />
+        <xsl:variable name="winners" select="winners" />
+        <xsl:for-each select="$definitions/category[@name = $category]/nominee">
+          <xsl:variable name="nominee" select="@name" />
+          <xsl:choose>
+            <xsl:when test="$winners/nominee[@name = $nominee]">
+              <xsl:value-of select="'1'" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="'0'" />
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
+        <xsl:value-of select="'.png'" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="@name" />

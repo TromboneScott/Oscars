@@ -184,7 +184,6 @@ public class Results {
     public Element categoryDOM() {
         return Category.stream()
                 .map(category -> new Element("category").setAttribute("name", category.name)
-                        .setAttribute("chart", category.chartName(this))
                         .addContent(winners.get(category.name).stream()
                                 .map(winner -> new Element("nominee").setAttribute("name", winner))
                                 .reduce(new Element("winners"), Element::addContent)))
