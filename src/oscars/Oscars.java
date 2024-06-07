@@ -126,7 +126,7 @@ public class Oscars implements Runnable {
         Element all = new Element("categories");
         for (Category category : Category.stream().collect(Collectors.toList())) {
             category.writeChart(results, players);
-            Directory.CATEGORY.write(category.toDOM(), category.webPage, "category.xsl");
+            Directory.CATEGORY.write(category.toDOM(), category.name + ".xml", "category.xsl");
             all.addContent(category.toDOM(players));
         }
         Directory.CATEGORY.write(all, "all.xml", "categoryGraphs.xsl");
@@ -135,7 +135,8 @@ public class Oscars implements Runnable {
 
     private void writePlayerPages() throws IOException {
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(), player.webPage, "player.xsl");
+            Directory.PLAYER.write(player.toDOM(),
+                    player.firstName + "_" + player.lastName + ".xml", "player.xsl");
         Directory.PLAYER.cleanUp();
     }
 }

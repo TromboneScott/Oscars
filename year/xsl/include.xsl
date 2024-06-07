@@ -151,7 +151,8 @@
   <xsl:template match="player" mode="playerLink">
     <a>
       <xsl:attribute name="href">
-        <xsl:value-of select="concat('../player/', @webPage)" />
+        <xsl:value-of
+          select="concat('../player/', @firstName, '_', @lastName, '.xml')" />
       </xsl:attribute>
       <xsl:value-of select="@lastName" />
       <xsl:if test="@firstName and @lastName">

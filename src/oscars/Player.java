@@ -17,13 +17,10 @@ public final class Player {
     public final Map<String, String> picks;
 
     /** Player's first name */
-    private final String firstName;
+    public final String firstName;
 
     /** Player's last name */
-    private final String lastName;
-
-    /** The XML web page for this player */
-    public final String webPage;
+    public final String lastName;
 
     /** Player's guessed time in seconds */
     public final int time;
@@ -39,7 +36,6 @@ public final class Player {
         firstName = picks.get(Category.LAST_NAME).isEmpty() ? "" : picks.get(Category.FIRST_NAME);
         lastName = picks.get(Category.LAST_NAME).isEmpty() ? picks.get(Category.FIRST_NAME)
                 : picks.get(Category.LAST_NAME);
-        webPage = firstName + "_" + lastName + ".xml";
         try {
             time = LocalTime.parse(picks.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
         } catch (DateTimeParseException e) {
@@ -49,7 +45,7 @@ public final class Player {
     }
 
     public Element toDOM() {
-        return new Element("player").setAttribute("firstName", firstName)
-                .setAttribute("lastName", lastName).setAttribute("webPage", webPage);
+        return new Element("player").setAttribute("firstName", firstName).setAttribute("lastName",
+                lastName);
     }
 }

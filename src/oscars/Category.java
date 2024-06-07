@@ -47,9 +47,6 @@ public final class Category implements ChartColor {
     /** Nominees in display order */
     public final List<String> nominees;
 
-    /** The XML web page for this category */
-    public final String webPage;
-
     private Category(Element inCategory) {
         name = inCategory.getAttributeValue("name");
         value = BigDecimal.ONE.add(Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
@@ -57,7 +54,6 @@ public final class Category implements ChartColor {
                 .orElse(BigDecimal.ZERO));
         nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
-        webPage = name + ".xml";
     }
 
     private static List<Category> all() {

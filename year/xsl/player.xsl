@@ -80,7 +80,7 @@
                   <td class="header">
                     <a>
                       <xsl:attribute name="href">
-                        <xsl:value-of select="concat('../category/', @webPage)" />
+                        <xsl:value-of select="concat('../category/', @name, '.xml')" />
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
                     </a>
