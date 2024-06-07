@@ -334,7 +334,6 @@
   <xsl:template match="/results/players/player">
     <xsl:param name="inPlayer" />
     <xsl:param name="inProgress" />
-    <xsl:variable name="id" select="@id" />
     <tr>
       <td>
         <xsl:attribute name="class"> header <xsl:if test="$inPlayer">
@@ -343,7 +342,7 @@
                 unannounced
               </xsl:when>
               <xsl:when
-                test="substring($inPlayer/opponents/@decided, number($id), 1) = 'Y'">
+                test="substring($inPlayer/opponents/@decided, number(@id), 1) = 'Y'">
           correct
               </xsl:when>
             </xsl:choose>
