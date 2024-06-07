@@ -127,9 +127,9 @@
       </xsl:choose>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template name="poster">
+  <xsl:template match="nominee" mode="poster">
     <xsl:param name="category" />
-    <xsl:param name="nominee" />
+    <xsl:variable name="nominee" select="@name" />
     <img>
       <xsl:attribute name="src">
         <xsl:value-of

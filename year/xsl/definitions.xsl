@@ -69,10 +69,9 @@
                         <xsl:with-param name="nominee" select="@name" />
                       </xsl:apply-templates>
                       <td>
-                        <xsl:call-template name="poster">
+                        <xsl:apply-templates select="." mode="poster">
                           <xsl:with-param name="category" select="$category" />
-                          <xsl:with-param name="nominee" select="@name" />
-                        </xsl:call-template>
+                        </xsl:apply-templates>
                       </td>
                       <td>
                         <b>

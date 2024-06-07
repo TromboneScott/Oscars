@@ -51,10 +51,9 @@
                       mode="attribute">
                       <xsl:with-param name="nominee" select="@name" />
                     </xsl:apply-templates>
-                    <xsl:call-template name="poster">
+                    <xsl:apply-templates select="." mode="poster">
                       <xsl:with-param name="category" select="$categoryName" />
-                      <xsl:with-param name="nominee" select="@name" />
-                    </xsl:call-template>
+                    </xsl:apply-templates>
                     <br />
                     <xsl:value-of select="." />
                   </th>

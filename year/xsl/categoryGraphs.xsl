@@ -128,10 +128,9 @@
                 <xsl:if test="(position() - 1) mod 5 = 0">
                   <br />
                 </xsl:if>
-                <xsl:call-template name="poster">
+                <xsl:apply-templates select="." mode="poster">
                   <xsl:with-param name="category" select="$categoryName" />
-                  <xsl:with-param name="nominee" select="@name" />
-                </xsl:call-template>
+                </xsl:apply-templates>
               </xsl:for-each>
               <br />
               <xsl:apply-templates select="." mode="chart" />

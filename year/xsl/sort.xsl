@@ -432,21 +432,13 @@
               <xsl:attribute name="href">
                 <xsl:value-of select="concat('../category/', @name, '.xml')" />
               </xsl:attribute>
-              <xsl:choose>
-                <xsl:when test="winners/nominee">
-                  <xsl:variable name="categoryName" select="@name" />
-                  <xsl:for-each select="winners/nominee">
-                    <xsl:call-template name="poster">
-                      <xsl:with-param name="category" select="$categoryName" />
-                      <xsl:with-param name="nominee" select="@name" />
-                    </xsl:call-template>
-                  </xsl:for-each>
-                </xsl:when>
-                <xsl:otherwise>
-                  <img src="http://oscars.site44.com/trophy_poster.png"
-                    title="Not Yet Announced" />
-                </xsl:otherwise>
-              </xsl:choose>
+              <xsl:apply-templates select="winners/nominee" mode="poster">
+                <xsl:with-param name="category" select="@name" />
+              </xsl:apply-templates>
+              <xsl:if test="not(winners/nominee)">
+                <img src="http://oscars.site44.com/trophy_poster.png"
+                  title="Not Yet Announced" />
+              </xsl:if>
               <br />
               <xsl:value-of select="@name" />
             </a>
