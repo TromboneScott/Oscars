@@ -2,6 +2,9 @@
 <!-- OSCARS website created by Scott McDonald -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="include.xsl" />
+  <xsl:variable name="categoryCount"
+    select="count($definitions/category/nominee[position() = 1])" />
+  <xsl:variable name="pointWidth" select="16" />
   <xsl:template match="/sort">
     <html>
       <xsl:call-template name="init" />
@@ -356,28 +359,30 @@
       <xsl:if test="$inProgress">
         <td>
           <xsl:attribute name="class"> rank <xsl:if test="@bpr = @wpr">
-              unannounced
+            unannounced
             </xsl:if>
           </xsl:attribute>
           <xsl:value-of select="@bpr" />
         </td>
         <td>
           <xsl:attribute name="class"> rank <xsl:if test="@bpr = @wpr">
-              unannounced
+            unannounced
             </xsl:if>
           </xsl:attribute>
           <xsl:value-of select="@wpr" />
         </td>
       </xsl:if>
       <td class="rank">
-        <xsl:value-of select="@score" /> -- <xsl:variable name="scoreTieBreakers">
-          <xsl:call-template name="tieBreakers">
+        <xsl:value-of select="@score" /> -- <xsl:variable
+          name="tieBreakersWidth">
+          <xsl:call-template name="tieBreakersWidth">
             <xsl:with-param name="score" select="@score" />
-            <xsl:with-param name="value" select="8" />
+            <xsl:with-param name="width" select="$pointWidth div 2" />
           </xsl:call-template>
         </xsl:variable>
         <xsl:variable
-          name="scoreWidth" select="round(@score) * 16 + $scoreTieBreakers" />
+          name="scoreWidth"
+          select="round(@score) * $pointWidth + $tieBreakersWidth" />
         <img
           src="../../bar_green.bmp" height="15">
           <xsl:attribute name="width">
@@ -387,7 +392,8 @@
         <img
           src="../../bar_grey.bmp" height="15">
           <xsl:attribute name="width">
-            <xsl:value-of select="16 * 19 - 1 - $scoreWidth" />
+            <xsl:value-of
+              select="$pointWidth * ($categoryCount + 1) - 1 - $scoreWidth" />
           </xsl:attribute>
         </img>
       </td>
@@ -398,21 +404,22 @@
       </td>
     </tr>
   </xsl:template>
-  <xsl:template name="tieBreakers">
+  <xsl:template name="tieBreakersWidth">
     <xsl:param name="score" />
-    <xsl:param name="value" />
+    <xsl:param name="width" />
     <xsl:choose>
-      <xsl:when test="$value &lt; 1">
+      <xsl:when test="$width &lt; 1">
         0
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="tieBreakers">
-          <xsl:call-template name="tieBreakers">
+        <xsl:variable name="tieBreakersWidth">
+          <xsl:call-template name="tieBreakersWidth">
             <xsl:with-param name="score" select="$score * 10" />
-            <xsl:with-param name="value" select="$value div 2" />
+            <xsl:with-param name="width" select="$width div 2" />
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="round($score * 10) mod 2 * $value + $tieBreakers" />
+        <xsl:value-of
+          select="round($score * 10) mod 2 * $width + $tieBreakersWidth" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
