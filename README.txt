@@ -35,7 +35,7 @@ Update any code and files as needed
 
 Copy year folder to oscars site and rename to current year.
 
-Edit definitions.xml using NOTEPAD
+Edit data/definitions.xml using NOTEPAD
 1. Update the categories as a few change each year
 2. Make sure the categories are in the same order as the Google Form
 3. Update the tieBreaker values
@@ -47,7 +47,7 @@ Edit definitions.xml using NOTEPAD
   b. Paste into img attribute
 
 Proofread the category definitions:
-1. Open the web page: oscars.site44.com/<year>/definitions.xml
+1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
 2. Verify that the tie breakers are correct (including Time as the final tie breaker)
 3. Verify that images for the Best Picture nominees show up in the banner at the top
 4. Verify that all nominee images match their names
@@ -68,7 +68,7 @@ Check the ballots as they come in and fix any names where they didn't capitalize
 2. Either restart the batch or just wait until a new ballot is entered
 
 Proofread the category mapping:
-1. Open the web page: oscars.site44.com/<year>/definitions.xml
+1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
 2. Verify that the year now shows up in the banner title (20xx OSCARS)
 2. Verify that each category (in bold) is mapped to the correct question on the ballot
 
@@ -85,11 +85,11 @@ You will be prompted on how to map survey answers to nominees for each category 
 This will be saved so you only have to do this for new survey answers.
 
 Proofread the nominee mapping:
-1. Open the web page: oscars.site44.com/<year>/definitions.xml
+1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
 2. Verify that each nominee (in bold) is mapped to the correct response(s) from the ballot
 3. Verify that any special characters in ballot responses are displayed correctly
 
-Edit (or delete and start over) the file data.xml
+Edit (or delete and start over) the file data/responses.xml
 - Fix any mistakes
 - Fix any special characters that were copied/pasted (use NOTEPAD so characters will be in UTF-8)
 - If any duplicates are found for the website mapping the last one will be used
