@@ -2,6 +2,7 @@ package oscars;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,8 +34,8 @@ public class Results {
 
     private static final String WINNER_DELIMITER = ",";
 
-    private static final String YEAR = Directory.CURRENT.toPath().toAbsolutePath().normalize()
-            .getFileName().toString();
+    private static final String YEAR = Paths.get("").toAbsolutePath().normalize().getFileName()
+            .toString();
 
     private final Map<String, Map<String, String>> nomineeDescriptions;
 
@@ -44,7 +45,7 @@ public class Results {
 
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
-        File resultsFile = new File(RESULTS_FILE);
+        File resultsFile = new File(Directory.DATA, RESULTS_FILE);
         if (resultsFile.exists())
             try {
                 Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
@@ -175,7 +176,7 @@ public class Results {
     }
 
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        Directory.CURRENT.write(new Element("results").setAttribute("year", YEAR)
+        Directory.DATA.write(new Element("results").setAttribute("year", YEAR)
                 .setAttribute("updated",
                         inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")))
                 .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);

@@ -5,7 +5,6 @@
   <xsl:template match="/all">
     <html>
       <xsl:call-template name="init" />
-      <xsl:variable name="categories" select="." />
       <body>
         <center>
           <xsl:call-template name="header" />
@@ -57,7 +56,7 @@
                     <xsl:when test="string($winners)">
                       <xsl:variable name="name" select="@name" />
                       <xsl:variable name="correct"
-                        select="count($categories/category[@name = $name]/player[contains($winners, concat('|', @guess, '|'))])" />
+                        select="count($responses/category[@name = $name]/nominee[contains($winners, concat('|', @name, '|'))]/player)" />
                       <td class="correct">
                         <center>
                           <xsl:value-of select="$correct" />

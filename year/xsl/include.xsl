@@ -1,10 +1,11 @@
 <!-- OSCARS website created by Scott McDonald -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="html" encoding="utf-8" indent="yes" />
-  <xsl:variable name="results" select="document('../results.xml')/results" />
+  <xsl:variable name="results" select="document('../data/results.xml')/results" />
   <xsl:variable name="definitions"
-    select="document('../definitions.xml')/definitions" />
-  <xsl:variable name="responses" select="document('../responses.xml')/responses" />
+    select="document('../data/definitions.xml')/definitions" />
+  <xsl:variable name="responses"
+    select="document('../data/responses.xml')/responses" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>

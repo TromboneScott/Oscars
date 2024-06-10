@@ -22,7 +22,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
 public final class Category implements ChartColor {
-    private static final File DEFINITIONS_FILE = new File("definitions.xml");
+    private static final File DEFINITIONS_FILE = new File("data/definitions.xml");
 
     /** Categories in display order */
     public static final List<Category> ALL = Collections.unmodifiableList(all());

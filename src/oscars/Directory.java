@@ -24,7 +24,7 @@ import org.jdom2.output.XMLOutputter;
 /** Define the directories to be used and how to write and clean up those directories */
 @SuppressWarnings("serial")
 public class Directory extends File {
-    public static final Directory CURRENT = new Directory(".");
+    public static final Directory DATA = new Directory("data");
 
     public static final Directory CATEGORY = new Directory("category");
 

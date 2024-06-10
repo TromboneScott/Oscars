@@ -106,7 +106,7 @@ public final class CategoryMapper {
     }
 
     private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
-        File mappingsFile = new File(RESPONSES_FILE);
+        File mappingsFile = new File(Directory.DATA, RESPONSES_FILE);
         if (mappingsFile.exists())
             try {
                 return new SAXBuilder().build(mappingsFile).getRootElement().getChildren("category")
@@ -132,7 +132,7 @@ public final class CategoryMapper {
     private static void writeCategoryMaps(Map<String, String> inHeaderMap,
             Map<String, LinkedHashMap<String, String>> inCategoryMaps, List<Player> inPlayerGuesses)
             throws IOException {
-        Directory.CURRENT.write(Category.ALL.stream().map(category -> category.name)
+        Directory.DATA.write(Category.ALL.stream().map(category -> category.name)
                 .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
                         .orElseGet(() -> new LinkedHashMap<>()).entrySet().stream()
                         .map(map -> Optional.ofNullable(inPlayerGuesses).map(List::stream)
@@ -143,6 +143,6 @@ public final class CategoryMapper {
                                         .setAttribute("ballot", map.getKey()), Element::addContent))
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
-                .reduce(new Element("data"), Element::addContent), RESPONSES_FILE, null);
+                .reduce(new Element("responses"), Element::addContent), RESPONSES_FILE, null);
     }
 }
