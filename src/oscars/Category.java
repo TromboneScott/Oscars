@@ -98,13 +98,10 @@ public final class Category implements ChartColor {
                 300);
     }
 
-    public Element toDOM() {
-        return new Element("category").setAttribute("name", name);
-    }
-
     public Element toDOM(Collection<Player> inPlayers) {
         return inPlayers.stream()
                 .map(player -> player.toDOM().setAttribute("guess", player.picks.get(name)))
-                .reduce(toDOM().setAttribute("value", value.toString()), Element::addContent);
+                .reduce(new Element("category").setAttribute("name", name).setAttribute("value",
+                        value.toString()), Element::addContent);
     }
 }

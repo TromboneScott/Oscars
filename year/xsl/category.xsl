@@ -8,8 +8,6 @@
       <xsl:variable name="categoryName" select="@name" />
       <xsl:variable name="categoryDefinition"
         select="$definitions/category[@name = $categoryName]" />
-      <xsl:variable name="categoryData"
-        select="$categoryAll/category[@name = $categoryName]" />
       <xsl:variable name="categoryResults"
         select="$results/categories/category[@name = $categoryName]" />
       <body>
@@ -25,7 +23,7 @@
             NO
           </xsl:if>
           <br /> Point Value: <xsl:value-of
-            select="$categoryData/@value" />
+            select="@value" />
           <xsl:if
             test="count($categoryResults/winners/nominee) &gt; 1">
             <br />
@@ -61,7 +59,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$categoryData/player">
+              <xsl:for-each select="player">
                 <xsl:sort select="@lastName" />
                 <xsl:sort select="@firstName" />
                 <xsl:variable name="guess" select="@guess" />
@@ -86,6 +84,7 @@
             <tfoot>
               <tr>
                 <th class="header">Total</th>
+                <xsl:variable name="categoryData" select="." />
                 <xsl:for-each select="$categoryDefinition/nominee">
                   <th>
                     <xsl:apply-templates select="$categoryResults/winners"

@@ -436,7 +436,8 @@
                 <xsl:value-of select="@name" />
               </xsl:attribute>
               <xsl:attribute name="href">
-                <xsl:value-of select="concat('../category/', @name, '.xml')" />
+                <xsl:value-of
+                  select="concat('../category/', translate(@name, ' ', '_'), '.xml')" />
               </xsl:attribute>
               <xsl:apply-templates select="winners/nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />

@@ -123,13 +123,12 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        Element all = new Element("categories");
         for (Category category : Category.stream().collect(Collectors.toList())) {
             category.writeChart(results, players);
-            Directory.CATEGORY.write(category.toDOM(), category.name + ".xml", "category.xsl");
-            all.addContent(category.toDOM(players));
+            Directory.CATEGORY.write(category.toDOM(players),
+                    category.name.replace(' ', '_') + ".xml", "category.xsl");
         }
-        Directory.CATEGORY.write(all, "all.xml", "categoryGraphs.xsl");
+        Directory.CATEGORY.write(new Element("all"), "all.xml", "categoryGraphs.xsl");
         Directory.CATEGORY.cleanUp();
     }
 

@@ -5,8 +5,6 @@
   <xsl:variable name="definitions"
     select="document('../definitions.xml')/definitions" />
   <xsl:variable name="mappings" select="document('../mappings.xml')/mappings" />
-  <xsl:variable name="categoryAll"
-    select="document('../category/all.xml')/categories" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>

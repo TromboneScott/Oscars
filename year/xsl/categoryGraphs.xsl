@@ -2,7 +2,7 @@
 <!-- OSCARS website created by Scott McDonald -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="include.xsl" />
-  <xsl:template match="/categories">
+  <xsl:template match="/all">
     <html>
       <xsl:call-template name="init" />
       <xsl:variable name="categories" select="." />
@@ -55,9 +55,8 @@
                   </xsl:variable>
                   <xsl:choose>
                     <xsl:when test="string($winners)">
-                      <xsl:variable name="name" select="@name" />
                       <xsl:variable name="correct"
-                        select="count($categories/category[@name = $name]/player[contains($winners, concat('|', @guess, '|'))])" />
+                        select="count(document(concat('../category/', translate(@name, ' ', '_'), '.xml'))/category/player[contains($winners, concat('|', @guess, '|'))])" />
                       <td class="correct">
                         <center>
                           <xsl:value-of select="$correct" />
@@ -109,7 +108,8 @@
                 <xsl:value-of select="@name" />
               </xsl:attribute>
               <xsl:attribute name="href">
-                <xsl:value-of select="concat(@name, '.xml')" />
+                <xsl:value-of
+                  select="concat(translate(@name, ' ', '_'), '.xml')" />
               </xsl:attribute>
               <b>
                 <xsl:value-of select="@name" />
