@@ -9,7 +9,7 @@
       <xsl:variable name="categoryDefinition"
         select="$definitions/category[@name = $categoryName]" />
       <xsl:variable name="categoryData"
-        select="$data/category[@name = $categoryName]" />
+        select="$responses/category[@name = $categoryName]" />
       <xsl:variable name="categoryResults"
         select="$results/categories/category[@name = $categoryName]" />
       <body>

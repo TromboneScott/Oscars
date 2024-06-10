@@ -72,7 +72,7 @@
                 <xsl:variable name="categoryDefinition"
                   select="$definitions/category[@name = $categoryName]" />
                 <xsl:variable name="categoryData"
-                  select="$data/category[@name = $categoryName]" />
+                  select="$responses/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
                   select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@name" />
                 <tr>
