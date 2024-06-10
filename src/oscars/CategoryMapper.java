@@ -2,7 +2,6 @@ package oscars;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -21,16 +21,19 @@ import org.jdom2.input.SAXBuilder;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final String MAPPINGS_FILE = "mappings.xml";
+    private static final String MAPPINGS_FILE = "data.xml";
 
-    private final Collection<Ballot> ballots;
+    private final List<Player> playerGuesses;
 
     private final Map<String, LinkedHashMap<String, String>> categoryMaps;
 
     public CategoryMapper() throws IOException {
-        ballots = Ballot.readBallots().collect(Ballot.LATEST);
+        playerGuesses = Ballot.readBallots().collect(Ballot.LATEST).stream()
+                .sorted(Comparator.comparing(Ballot::getTimestamp))
+                .map(ballot -> new Player(ballot.values)).collect(Collectors.toList());
         categoryMaps = categoryMaps();
-        writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps);
+        writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps,
+                playerGuesses);
     }
 
     public static void setHeaders(String[] inHeaders) throws IOException {
@@ -40,12 +43,12 @@ public final class CategoryMapper {
         writeCategoryMaps(
                 IntStream.range(0, inHeaders.length).boxed().collect(Collectors.toMap(
                         column -> Category.ALL.get(column).name, column -> inHeaders[column])),
-                readCategoryMaps());
+                readCategoryMaps(), null);
     }
 
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(ballots.stream()
-                .map(ballot -> new Player(ballot.values.entrySet().stream()
+        return Collections.unmodifiableList(playerGuesses.stream()
+                .map(player -> new Player(player.picks.entrySet().stream()
                         .collect(Collectors.toMap(Entry::getKey,
                                 entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
                                         .map(map -> map.get(entry.getValue()))
@@ -65,8 +68,7 @@ public final class CategoryMapper {
         Category.stream().forEach(category -> {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
-            ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
-                    .map(ballot -> ballot.values.get(category.name))
+            playerGuesses.stream().map(player -> player.picks.get(category.name))
                     .filter(guess -> !categoryMap.containsKey(guess))
                     .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
             for (String nominee : category.nominees)
@@ -121,21 +123,27 @@ public final class CategoryMapper {
 
     private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
             throws IOException {
-        return readFile(element -> element.getChildren("map").stream()
+        return readFile(element -> element.getChildren("nominee").stream()
                 .collect(Collectors.toMap(mapDOM -> mapDOM.getAttributeValue("ballot"),
                         mapDOM -> mapDOM.getAttributeValue("website"), (list1, list2) -> list1,
                         LinkedHashMap::new)));
     }
 
     private static void writeCategoryMaps(Map<String, String> inHeaderMap,
-            Map<String, LinkedHashMap<String, String>> inCategoryMaps) throws IOException {
+            Map<String, LinkedHashMap<String, String>> inCategoryMaps, List<Player> inPlayerGuesses)
+            throws IOException {
         Directory.CURRENT.write(Category.ALL.stream().map(category -> category.name)
                 .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
                         .orElseGet(() -> new LinkedHashMap<>()).entrySet().stream()
-                        .map(map -> new Element("map").setAttribute("website", map.getValue())
-                                .setAttribute("ballot", map.getKey()))
+                        .map(map -> Optional.ofNullable(inPlayerGuesses).map(List::stream)
+                                .orElseGet(Stream::empty)
+                                .filter(player -> map.getKey().equals(player.picks.get(category)))
+                                .map(Player::toDOM)
+                                .reduce(new Element("nominee")
+                                        .setAttribute("website", map.getValue())
+                                        .setAttribute("ballot", map.getKey()), Element::addContent))
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
-                .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
+                .reduce(new Element("data"), Element::addContent), MAPPINGS_FILE, null);
     }
 }

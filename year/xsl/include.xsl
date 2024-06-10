@@ -4,7 +4,7 @@
   <xsl:variable name="results" select="document('../results.xml')/results" />
   <xsl:variable name="definitions"
     select="document('../definitions.xml')/definitions" />
-  <xsl:variable name="mappings" select="document('../mappings.xml')/mappings" />
+  <xsl:variable name="data" select="document('../data.xml')/data" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
@@ -151,7 +151,7 @@
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="$mappings/category[@name = $category]/map[@website = $nominee][last()]/@ballot" />
+        select="$data/category[@name = $category]/nominee[@website = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
         <xsl:value-of select="$description" />
         <xsl:if test="not($description)">

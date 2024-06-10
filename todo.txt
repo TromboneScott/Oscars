@@ -1,0 +1,5 @@
+1. Rename mappings.xml to data.xml
+2. Change <mappings> element to <data>
+3. Change <map> element name to <nominee>
+4. Add <player> elements as content to <nominee> elements to indicate which nomiee each player selected for each category
+5. Remove player info from cagetoryDOM
