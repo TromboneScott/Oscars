@@ -24,8 +24,8 @@
             test="not(normalize-space($categoryDefinition/@tieBreaker))">
             NO
           </xsl:if>
-          <br /> Point Value: <xsl:value-of
-            select="$categoryData/@value" />
+          <br /> Point Value: <xsl:apply-templates
+            select="$categoryDefinition" mode="value" />
           <xsl:if
             test="count($categoryResults/winners/nominee) &gt; 1">
             <br />
@@ -66,7 +66,7 @@
                 <xsl:sort select="@firstName" />
                 <xsl:variable name="player" select="." />
                 <xsl:variable name="guess"
-                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@website" />
+                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@name" />
                 <tr>
                   <xsl:apply-templates select="$categoryResults/winners"
                     mode="attribute">
@@ -96,7 +96,7 @@
                     </xsl:apply-templates>
                     <xsl:variable name="name" select="@name" />
                     <xsl:value-of
-                      select="count($categoryData/nominee[@website=$name]/player)" />
+                      select="count($categoryData/nominee[@name = $name]/player)" />
                   </th>
                 </xsl:for-each>
               </tr>

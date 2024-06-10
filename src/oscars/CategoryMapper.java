@@ -125,7 +125,7 @@ public final class CategoryMapper {
             throws IOException {
         return readFile(element -> element.getChildren("nominee").stream()
                 .collect(Collectors.toMap(mapDOM -> mapDOM.getAttributeValue("ballot"),
-                        mapDOM -> mapDOM.getAttributeValue("website"), (list1, list2) -> list1,
+                        mapDOM -> mapDOM.getAttributeValue("name"), (list1, list2) -> list1,
                         LinkedHashMap::new)));
     }
 
@@ -139,16 +139,10 @@ public final class CategoryMapper {
                                 .orElseGet(Stream::empty)
                                 .filter(player -> map.getKey().equals(player.picks.get(category)))
                                 .map(Player::toDOM)
-                                .reduce(new Element("nominee")
-                                        .setAttribute("website", map.getValue())
+                                .reduce(new Element("nominee").setAttribute("name", map.getValue())
                                         .setAttribute("ballot", map.getKey()), Element::addContent))
-                        .reduce(new Element("category").setAttribute("name", category)
-                                .setAttribute("ballot", inHeaderMap.get(category))
-                                .setAttribute("value", Category.stream()
-                                        .filter(definition -> definition.name.equals(category))
-                                        .findAny().map(definition -> definition.value.toString())
-                                        .orElse("0")),
-                                Element::addContent))
+                        .reduce(new Element("category").setAttribute("name", category).setAttribute(
+                                "ballot", inHeaderMap.get(category)), Element::addContent))
                 .reduce(new Element("data"), Element::addContent), MAPPINGS_FILE, null);
     }
 }

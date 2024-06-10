@@ -105,6 +105,24 @@
       </xsl:attribute>
     </img>
   </xsl:template>
+  <xsl:template match="/definitions/category" mode="value">
+    <xsl:if test="@tieBreaker">
+      <xsl:value-of select="'1.'" />
+      <xsl:call-template name="tieBreakerZeros">
+        <xsl:with-param name="decimals" select="@tieBreaker" />
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:value-of select="'1'" />
+  </xsl:template>
+  <xsl:template name="tieBreakerZeros">
+    <xsl:param name="decimals" />
+    <xsl:if test="$decimals &gt; 1">
+      <xsl:value-of select="'0'" />
+      <xsl:call-template name="tieBreakerZeros">
+        <xsl:with-param name="decimals" select="$decimals - 1" />
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
   <xsl:template match="/definitions/category" mode="tieBreaker">
     <xsl:choose>
       <xsl:when test="@tieBreaker &gt;= 1 and @tieBreaker &lt;= 10">
@@ -151,7 +169,7 @@
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="$data/category[@name = $category]/nominee[@website = $nominee][last()]/@ballot" />
+        select="$data/category[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
         <xsl:value-of select="$description" />
         <xsl:if test="not($description)">

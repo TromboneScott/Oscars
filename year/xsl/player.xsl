@@ -69,10 +69,12 @@
             <tbody>
               <xsl:for-each select="$results/categories/category">
                 <xsl:variable name="categoryName" select="@name" />
+                <xsl:variable name="categoryDefinition"
+                  select="$definitions/category[@name = $categoryName]" />
                 <xsl:variable name="categoryData"
                   select="$data/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
-                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@website" />
+                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@name" />
                 <tr>
                   <xsl:apply-templates select="winners" mode="attribute">
                     <xsl:with-param name="nominee" select="$playerGuess" />
@@ -85,8 +87,7 @@
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
                     </a>
-                    <xsl:apply-templates
-                      select="$definitions/category[@name = $categoryName]"
+                    <xsl:apply-templates select="$categoryDefinition"
                       mode="tieBreaker" />
                   </td>
                   <td>
@@ -103,13 +104,17 @@
                   </td>
                   <td>
                     <xsl:if test="winners/nominee">
+                      <xsl:variable name="value">
+                        <xsl:apply-templates select="$categoryDefinition"
+                          mode="value" />
+                      </xsl:variable>
                       <xsl:choose>
                         <xsl:when test="winners/nominee[@name = $playerGuess]">
-                          <xsl:value-of select="$categoryData/@value" />
+                          <xsl:value-of select="$value" />
                         </xsl:when>
                         <xsl:otherwise>
                           <xsl:value-of
-                            select="translate($categoryData/@value, '1', '0')" />
+                            select="translate($value, '1', '0')" />
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:if>
