@@ -142,8 +142,13 @@ public final class CategoryMapper {
                                 .reduce(new Element("nominee")
                                         .setAttribute("website", map.getValue())
                                         .setAttribute("ballot", map.getKey()), Element::addContent))
-                        .reduce(new Element("category").setAttribute("name", category).setAttribute(
-                                "ballot", inHeaderMap.get(category)), Element::addContent))
+                        .reduce(new Element("category").setAttribute("name", category)
+                                .setAttribute("ballot", inHeaderMap.get(category))
+                                .setAttribute("value", Category.stream()
+                                        .filter(definition -> definition.name.equals(category))
+                                        .findAny().map(definition -> definition.value.toString())
+                                        .orElse("0")),
+                                Element::addContent))
                 .reduce(new Element("data"), Element::addContent), MAPPINGS_FILE, null);
     }
 }

@@ -55,8 +55,9 @@
                   </xsl:variable>
                   <xsl:choose>
                     <xsl:when test="string($winners)">
+                      <xsl:variable name="name" select="@name" />
                       <xsl:variable name="correct"
-                        select="count(document(concat('../category/', translate(@name, ' ', '_'), '.xml'))/category/player[contains($winners, concat('|', @guess, '|'))])" />
+                        select="count($categories/category[@name = $name]/player[contains($winners, concat('|', @guess, '|'))])" />
                       <td class="correct">
                         <center>
                           <xsl:value-of select="$correct" />
@@ -108,8 +109,7 @@
                 <xsl:value-of select="@name" />
               </xsl:attribute>
               <xsl:attribute name="href">
-                <xsl:value-of
-                  select="concat(translate(@name, ' ', '_'), '.xml')" />
+                <xsl:value-of select="concat(@name, '.xml')" />
               </xsl:attribute>
               <b>
                 <xsl:value-of select="@name" />

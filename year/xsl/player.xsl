@@ -70,9 +70,9 @@
               <xsl:for-each select="$results/categories/category">
                 <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryData"
-                  select="document(concat('../category/', translate(@name, ' ', '_'), '.xml'))/category" />
+                  select="$data/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
-                  select="$categoryData/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@guess" />
+                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@website" />
                 <tr>
                   <xsl:apply-templates select="winners" mode="attribute">
                     <xsl:with-param name="nominee" select="$playerGuess" />
@@ -81,7 +81,7 @@
                     <a>
                       <xsl:attribute name="href">
                         <xsl:value-of
-                          select="concat('../category/', translate(@name, ' ', '_'), '.xml')" />
+                          select="concat('../category/', @name, '.xml')" />
                       </xsl:attribute>
                       <xsl:value-of select="$categoryName" />
                     </a>

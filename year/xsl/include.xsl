@@ -160,7 +160,7 @@
       </xsl:attribute>
     </img>
   </xsl:template>
-  <xsl:template match="player" mode="playerLink">
+  <xsl:template match="/results/players/player" mode="playerLink">
     <a>
       <xsl:attribute name="href">
         <xsl:value-of

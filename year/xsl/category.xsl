@@ -8,6 +8,8 @@
       <xsl:variable name="categoryName" select="@name" />
       <xsl:variable name="categoryDefinition"
         select="$definitions/category[@name = $categoryName]" />
+      <xsl:variable name="categoryData"
+        select="$data/category[@name = $categoryName]" />
       <xsl:variable name="categoryResults"
         select="$results/categories/category[@name = $categoryName]" />
       <body>
@@ -23,7 +25,7 @@
             NO
           </xsl:if>
           <br /> Point Value: <xsl:value-of
-            select="@value" />
+            select="$categoryData/@value" />
           <xsl:if
             test="count($categoryResults/winners/nominee) &gt; 1">
             <br />
@@ -59,10 +61,12 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="player">
+              <xsl:for-each select="$results/players/player">
                 <xsl:sort select="@lastName" />
                 <xsl:sort select="@firstName" />
-                <xsl:variable name="guess" select="@guess" />
+                <xsl:variable name="player" select="." />
+                <xsl:variable name="guess"
+                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@website" />
                 <tr>
                   <xsl:apply-templates select="$categoryResults/winners"
                     mode="attribute">
@@ -84,7 +88,6 @@
             <tfoot>
               <tr>
                 <th class="header">Total</th>
-                <xsl:variable name="categoryData" select="." />
                 <xsl:for-each select="$categoryDefinition/nominee">
                   <th>
                     <xsl:apply-templates select="$categoryResults/winners"
@@ -93,7 +96,7 @@
                     </xsl:apply-templates>
                     <xsl:variable name="name" select="@name" />
                     <xsl:value-of
-                      select="count($categoryData/player[@guess=$name])" />
+                      select="count($categoryData/nominee[@website=$name]/player)" />
                   </th>
                 </xsl:for-each>
               </tr>

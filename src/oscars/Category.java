@@ -3,7 +3,6 @@ package oscars;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -96,12 +95,5 @@ public final class Category implements ChartColor {
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);
-    }
-
-    public Element toDOM(Collection<Player> inPlayers) {
-        return inPlayers.stream()
-                .map(player -> player.toDOM().setAttribute("guess", player.picks.get(name)))
-                .reduce(new Element("category").setAttribute("name", name).setAttribute("value",
-                        value.toString()), Element::addContent);
     }
 }
