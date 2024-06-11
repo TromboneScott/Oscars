@@ -21,7 +21,7 @@ import org.jdom2.input.SAXBuilder;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final String RESPONSES_FILE = "responses.xml";
+    private static final File RESPONSES_FILE = new File(Directory.DATA, "responses.xml");
 
     private final List<Player> playerGuesses;
 
@@ -106,11 +106,10 @@ public final class CategoryMapper {
     }
 
     private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
-        File mappingsFile = new File(Directory.DATA, RESPONSES_FILE);
-        if (mappingsFile.exists())
+        if (RESPONSES_FILE.exists())
             try {
-                return new SAXBuilder().build(mappingsFile).getRootElement().getChildren("category")
-                        .stream()
+                return new SAXBuilder().build(RESPONSES_FILE).getRootElement()
+                        .getChildren("category").stream()
                         .collect(Collectors.toMap(
                                 categoryDOM -> categoryDOM.getAttributeValue("name"),
                                 inFunction::apply));
@@ -132,8 +131,9 @@ public final class CategoryMapper {
     private static void writeCategoryMaps(Map<String, String> inHeaderMap,
             Map<String, LinkedHashMap<String, String>> inCategoryMaps, List<Player> inPlayerGuesses)
             throws IOException {
-        Directory.DATA.write(Category.ALL.stream().map(category -> category.name)
-                .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
+        Directory.DATA.write(
+                Category.ALL.stream().map(category -> category.name).map(category -> Optional
+                        .ofNullable(inCategoryMaps.get(category))
                         .orElseGet(() -> new LinkedHashMap<>()).entrySet().stream()
                         .map(map -> Optional.ofNullable(inPlayerGuesses).map(List::stream)
                                 .orElseGet(Stream::empty)
@@ -143,6 +143,7 @@ public final class CategoryMapper {
                                         .setAttribute("ballot", map.getKey()), Element::addContent))
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
-                .reduce(new Element("responses"), Element::addContent), RESPONSES_FILE, null);
+                        .reduce(new Element("responses"), Element::addContent),
+                RESPONSES_FILE.getName(), null);
     }
 }

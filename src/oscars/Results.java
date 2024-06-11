@@ -31,7 +31,7 @@ import org.jdom2.input.SAXBuilder;
 public class Results {
     public static final Scanner STDIN = new Scanner(System.in);
 
-    private static final String RESULTS_FILE = "results.xml";
+    private static final File RESULTS_FILE = new File(Directory.DATA, "results.xml");
 
     private static final String WINNER_DELIMITER = ",";
 
@@ -46,10 +46,9 @@ public class Results {
 
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
-        File resultsFile = new File(Directory.DATA, RESULTS_FILE);
-        if (resultsFile.exists())
+        if (RESULTS_FILE.exists())
             try {
-                Element resultsDOM = new SAXBuilder().build(resultsFile).getRootElement();
+                Element resultsDOM = new SAXBuilder().build(RESULTS_FILE).getRootElement();
                 winners = winners(resultsDOM);
                 showTimes = showTimes(resultsDOM);
             } catch (JDOMException e) {
@@ -181,7 +180,7 @@ public class Results {
         Directory.DATA.write(new Element("results").setAttribute("year", YEAR)
                 .setAttribute("updated",
                         inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")))
-                .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
+                .addContent(Arrays.asList(inContent)), RESULTS_FILE.getName(), null);
     }
 
     public Element winnersDOM() {
