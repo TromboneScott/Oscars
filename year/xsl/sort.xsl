@@ -47,14 +47,14 @@
                       <xsl:call-template name="player-table-column-header">
                         <xsl:with-param name="text" select="'Timestamp'" />
                         <xsl:with-param name="type" select="'rank'" />
-                        <xsl:with-param name="sort" select="." />
+                        <xsl:with-param name="sort" select="@column" />
                       </xsl:call-template>
                     </th>
                     <th>
                       <xsl:call-template name="player-table-column-header">
                         <xsl:with-param name="text" select="'Name'" />
                         <xsl:with-param name="type" select="'name'" />
-                        <xsl:with-param name="sort" select="." />
+                        <xsl:with-param name="sort" select="@column" />
                       </xsl:call-template>
                     </th>
                   </tr>
@@ -110,7 +110,7 @@
               <br />
               <br />
               <xsl:call-template name="player-table">
-                <xsl:with-param name="sort" select="." />
+                <xsl:with-param name="sort" select="@column" />
               </xsl:call-template>
               <br />
               <a href="../category/all.xml" id="return">All Categories</a>

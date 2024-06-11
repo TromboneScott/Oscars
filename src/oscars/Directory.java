@@ -40,7 +40,8 @@ public class Directory extends File {
         try {
             for (String column : new String[] { "name", "rank", "bpr", "wpr", "score", "time" })
                 for (String type : new String[] { column, column + "Reverse" })
-                    sort.write(new Element("sort").addContent(type), type + ".xml", "sort.xsl");
+                    sort.write(new Element("sort").setAttribute("column", type), type + ".xml",
+                            "sort.xsl");
             sort.cleanUp();
         } catch (IOException e) {
             throw new RuntimeException("Failed to create sort XML web pages", e);
