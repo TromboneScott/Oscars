@@ -13,6 +13,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,13 +116,14 @@ public class Results {
         String input = STDIN.nextLine();
         try {
             winners.put(inCategory.name,
-                    Collections.unmodifiableSet(
+                    Collections.unmodifiableSet(new LinkedHashSet<>(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
                                         if (number > inCategory.nominees.size() || number < 1)
                                             throw new NumberFormatException();
-                                    }).mapToObj(number -> inCategory.nominees.get(number - 1))
-                                    .collect(Collectors.toSet())));
+                                    }).sorted()
+                                    .mapToObj(number -> inCategory.nominees.get(number - 1))
+                                    .collect(Collectors.toList()))));
             inCategory.writeChart(this, inPlayers);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
@@ -195,10 +197,10 @@ public class Results {
         return Optional.ofNullable(inResultsDOM.getChild("winners"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
                 .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
-                        categoryDOM -> Collections
-                                .unmodifiableSet(categoryDOM.getChildren("nominee").stream()
+                        categoryDOM -> Collections.unmodifiableSet(
+                                new LinkedHashSet<>(categoryDOM.getChildren("nominee").stream()
                                         .map(element -> element.getAttributeValue("name"))
-                                        .collect(Collectors.toSet()))));
+                                        .collect(Collectors.toList())))));
     }
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {

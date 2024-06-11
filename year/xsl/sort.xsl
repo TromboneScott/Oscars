@@ -127,7 +127,7 @@
     </html>
   </xsl:template>
   <xsl:template match="/results/ballots/ballot">
-    <tr>
+    <tr class="unannounced">
       <td>
         <xsl:value-of select="timestamp" />
       </td>
