@@ -33,7 +33,8 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$results/categories/category">
+              <xsl:for-each select="$results/winners/category">
+                <xsl:variable name="name" select="@name" />
                 <tr>
                   <td class="header">
                     <a>
@@ -42,19 +43,17 @@
                       </xsl:attribute>
                       <xsl:value-of select="@name" />
                     </a>
-                    <xsl:variable name="name" select="@name" />
                     <xsl:apply-templates
                       select="$definitions/category[@name = $name]"
                       mode="tieBreaker" />
                   </td>
                   <xsl:variable name="winners">
-                    <xsl:for-each select="winners/nominee">
+                    <xsl:for-each select="nominee">
                       <xsl:value-of select="concat('|', @name, '|')" />
                     </xsl:for-each>
                   </xsl:variable>
                   <xsl:choose>
                     <xsl:when test="string($winners)">
-                      <xsl:variable name="name" select="@name" />
                       <xsl:variable name="correct"
                         select="count($responses/category[@name = $name]/nominee[contains($winners, concat('|', @name, '|'))]/player)" />
                       <td class="correct">
@@ -99,7 +98,7 @@
             </tbody>
           </table>
           <br />
-          <xsl:for-each select="$results/categories/category">
+          <xsl:for-each select="$definitions/category[nominee]">
             <br />
             <br />
             <br />
@@ -114,15 +113,13 @@
                 <xsl:value-of select="@name" />
               </b>
               <xsl:variable name="categoryName" select="@name" />
-              <xsl:variable name="tieBreaker"
-                select="$definitions/category[@name = $categoryName]/@tieBreaker" />
+              <xsl:variable name="tieBreaker" select="@tieBreaker" />
               <xsl:if test="$tieBreaker">
                 <xsl:value-of
                   select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
               </xsl:if>
               <br />
-              <xsl:for-each
-                select="$definitions/category[@name = $categoryName]/nominee">
+              <xsl:for-each select="nominee">
                 <xsl:if test="(position() - 1) mod 5 = 0">
                   <br />
                 </xsl:if>

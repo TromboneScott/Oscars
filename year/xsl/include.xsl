@@ -79,13 +79,14 @@
     <br />
     <br />
   </xsl:template>
-  <xsl:template match="/results/categories/category" mode="chart">
+  <xsl:template match="/definitions/category" mode="chart">
     <img>
       <xsl:attribute name="src">
         <xsl:value-of select="@name" />
         <xsl:variable name="category" select="@name" />
-        <xsl:variable name="winners" select="winners" />
-        <xsl:for-each select="$definitions/category[@name = $category]/nominee">
+        <xsl:variable name="winners"
+          select="$results/winners/category[@name = $category]" />
+        <xsl:for-each select="nominee">
           <xsl:variable name="nominee" select="@name" />
           <xsl:choose>
             <xsl:when test="$winners/nominee[@name = $nominee]">
@@ -142,7 +143,7 @@
       </tr>
     </table>
   </xsl:template>
-  <xsl:template match="/results/categories/category/winners" mode="attribute">
+  <xsl:template match="/results/winners/category" mode="attribute">
     <xsl:param name="nominee" />
     <xsl:attribute name="class">
       <xsl:choose>

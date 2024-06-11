@@ -425,11 +425,11 @@
   </xsl:template>
   <xsl:template name="winners">
     <xsl:param name="start" />
-    <xsl:if test="$start &lt; count($results/categories/category)">
+    <xsl:if test="$start &lt; count($results/winners/category)">
       <xsl:variable name="end" select="$start + 6" />
       <tr>
         <xsl:for-each
-          select="$results/categories/category[position() &gt; $start and position() &lt;= $end]">
+          select="$results/winners/category[position() &gt; $start and position() &lt;= $end]">
           <td style="text-align: center">
             <a>
               <xsl:attribute name="id">
@@ -438,10 +438,10 @@
               <xsl:attribute name="href">
                 <xsl:value-of select="concat('../category/', @name, '.xml')" />
               </xsl:attribute>
-              <xsl:apply-templates select="winners/nominee" mode="poster">
+              <xsl:apply-templates select="nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />
               </xsl:apply-templates>
-              <xsl:if test="not(winners/nominee)">
+              <xsl:if test="not(nominee)">
                 <img src="http://oscars.site44.com/trophy_poster.png"
                   title="Not Yet Announced" />
               </xsl:if>

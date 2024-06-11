@@ -67,7 +67,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$results/categories/category">
+              <xsl:for-each select="$results/winners/category">
                 <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryDefinition"
                   select="$definitions/category[@name = $categoryName]" />
@@ -76,7 +76,7 @@
                 <xsl:variable name="playerGuess"
                   select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@name" />
                 <tr>
-                  <xsl:apply-templates select="winners" mode="attribute">
+                  <xsl:apply-templates select="." mode="attribute">
                     <xsl:with-param name="nominee" select="$playerGuess" />
                   </xsl:apply-templates>
                   <td class="header">
@@ -95,7 +95,7 @@
                   </td>
                   <td>
                     <xsl:variable name="tempWinners">
-                      <xsl:for-each select="winners/nominee">
+                      <xsl:for-each select="nominee">
                         <xsl:value-of select="', '" />
                         <xsl:value-of select="@name" />
                       </xsl:for-each>
@@ -103,13 +103,13 @@
                     <xsl:value-of select="substring-after($tempWinners, ', ')" />
                   </td>
                   <td>
-                    <xsl:if test="winners/nominee">
+                    <xsl:if test="nominee">
                       <xsl:variable name="value">
                         <xsl:apply-templates select="$categoryDefinition"
                           mode="value" />
                       </xsl:variable>
                       <xsl:choose>
-                        <xsl:when test="winners/nominee[@name = $playerGuess]">
+                        <xsl:when test="nominee[@name = $playerGuess]">
                           <xsl:value-of select="$value" />
                         </xsl:when>
                         <xsl:otherwise>
@@ -130,7 +130,7 @@
                 </th>
                 <th>
                   <xsl:value-of
-                    select="count($results/categories/category/winners[count(nominee) &gt; 0])" />
+                    select="count($results/winners/category[nominee])" />
                 </th>
                 <th>
                   <xsl:value-of select="$playerResults/@score" />

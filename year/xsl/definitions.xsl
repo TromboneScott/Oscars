@@ -64,7 +64,7 @@
                   <xsl:for-each select="nominee">
                     <tr>
                       <xsl:apply-templates
-                        select="$results/categories/category[@name = $category]/winners"
+                        select="$results/winners/category[@name = $category]"
                         mode="attribute">
                         <xsl:with-param name="nominee" select="@name" />
                       </xsl:apply-templates>

@@ -182,22 +182,21 @@ public class Results {
                 .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 
-    public Element categoryDOM() {
+    public Element winnersDOM() {
         return Category.stream()
-                .map(category -> new Element("category").setAttribute("name", category.name)
-                        .addContent(winners.get(category.name).stream()
-                                .map(winner -> new Element("nominee").setAttribute("name", winner))
-                                .reduce(new Element("winners"), Element::addContent)))
-                .reduce(new Element("categories"), Element::addContent);
+                .map(category -> winners.get(category.name).stream()
+                        .map(winner -> new Element("nominee").setAttribute("name", winner))
+                        .reduce(new Element("category").setAttribute("name", category.name),
+                                Element::addContent))
+                .reduce(new Element("winners"), Element::addContent);
     }
 
     private static Map<String, Set<String>> winners(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM.getChild("categories"))
+        return Optional.ofNullable(inResultsDOM.getChild("winners"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
-                .collect(
-                        Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
-                                categoryDOM -> Collections.unmodifiableSet(categoryDOM
-                                        .getChild("winners").getChildren("nominee").stream()
+                .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
+                        categoryDOM -> Collections
+                                .unmodifiableSet(categoryDOM.getChildren("nominee").stream()
                                         .map(element -> element.getAttributeValue("name"))
                                         .collect(Collectors.toSet()))));
     }

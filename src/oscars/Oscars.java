@@ -118,7 +118,7 @@ public class Oscars implements Runnable {
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
-        Results.write(updated, results.categoryDOM(), standings.playerDOM(players),
+        Results.write(updated, results.winnersDOM(), standings.playerDOM(players),
                 standings.resultsShowTimeDOM());
     }
 
