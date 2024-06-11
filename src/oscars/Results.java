@@ -1,6 +1,5 @@
 package oscars;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -12,7 +11,6 @@ import java.time.format.DateTimeParseException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +23,11 @@ import java.util.stream.Stream;
 
 import org.jdom2.Content;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 
 public class Results {
     public static final Scanner STDIN = new Scanner(System.in);
 
-    private static final File RESULTS_FILE = new File(Directory.DATA, "results.xml");
+    private static final String RESULTS_FILE = "results.xml";
 
     private static final String WINNER_DELIMITER = ",";
 
@@ -46,19 +42,11 @@ public class Results {
 
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
-        if (RESULTS_FILE.exists())
-            try {
-                Element resultsDOM = new SAXBuilder().build(RESULTS_FILE).getRootElement();
-                winners = winners(resultsDOM);
-                showTimes = showTimes(resultsDOM);
-            } catch (JDOMException e) {
-                throw new IOException("ERROR: Unable to read results file: " + RESULTS_FILE, e);
-            }
-        else {
+        Element resultsDOM = Directory.DATA.getRootElement(RESULTS_FILE);
+        if (resultsDOM == null)
             System.out.println("\nStarting new results file: " + RESULTS_FILE);
-            winners = new HashMap<>();
-            showTimes = new HashMap<>();
-        }
+        winners = winners(resultsDOM);
+        showTimes = showTimes(resultsDOM);
     }
 
     /**
@@ -180,7 +168,7 @@ public class Results {
         Directory.DATA.write(new Element("results").setAttribute("year", YEAR)
                 .setAttribute("updated",
                         inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")))
-                .addContent(Arrays.asList(inContent)), RESULTS_FILE.getName(), null);
+                .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 
     public Element winnersDOM() {
@@ -193,7 +181,7 @@ public class Results {
     }
 
     private static Map<String, Set<String>> winners(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM.getChild("winners"))
+        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("winners"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
                 .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
                         categoryDOM -> Collections.unmodifiableSet(
@@ -203,7 +191,7 @@ public class Results {
     }
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM.getChild("showTime"))
+        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("showTime"))
                 .map(element -> Stream.of(ShowTimeType.values())
                         .map(type -> new SimpleEntry<>(type,
                                 element.getChildText(type.name().toLowerCase()))))

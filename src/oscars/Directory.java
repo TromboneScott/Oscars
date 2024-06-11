@@ -15,7 +15,9 @@ import java.util.stream.Stream;
 import org.jdom2.Comment;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.ProcessingInstruction;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
@@ -50,6 +52,18 @@ public class Directory extends File {
         super(inPathname);
         if (!exists())
             mkdir();
+    }
+
+    /** Get the root element of the XML file or null if file doesn't exist */
+    public Element getRootElement(String inXMLFile) throws IOException {
+        File xmlFile = new File(this, inXMLFile);
+        if (!xmlFile.exists())
+            return null;
+        try {
+            return new SAXBuilder().build(xmlFile).getRootElement();
+        } catch (JDOMException e) {
+            throw new IOException("ERROR: Unable to read xml file: " + inXMLFile, e);
+        }
     }
 
     /** Write the Element to an XML file in this directory */

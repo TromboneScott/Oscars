@@ -1,6 +1,5 @@
 package oscars;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,12 +15,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final File RESPONSES_FILE = new File(Directory.DATA, "responses.xml");
+    private static final String RESPONSES_FILE = "responses.xml";
 
     private final List<Player> playerGuesses;
 
@@ -106,16 +103,10 @@ public final class CategoryMapper {
     }
 
     private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
-        if (RESPONSES_FILE.exists())
-            try {
-                return new SAXBuilder().build(RESPONSES_FILE).getRootElement()
-                        .getChildren("category").stream()
-                        .collect(Collectors.toMap(
-                                categoryDOM -> categoryDOM.getAttributeValue("name"),
-                                inFunction::apply));
-            } catch (JDOMException e) {
-                throw new IOException("ERROR: Unable to read responses file: " + RESPONSES_FILE, e);
-            }
+        Element responsesDOM = Directory.DATA.getRootElement(RESPONSES_FILE);
+        if (responsesDOM != null)
+            return responsesDOM.getChildren("category").stream().collect(Collectors.toMap(
+                    categoryDOM -> categoryDOM.getAttributeValue("name"), inFunction::apply));
         System.out.println("\nStarting new responses file: " + RESPONSES_FILE);
         return new HashMap<>();
     }
@@ -131,9 +122,8 @@ public final class CategoryMapper {
     private static void writeCategoryMaps(Map<String, String> inHeaderMap,
             Map<String, LinkedHashMap<String, String>> inCategoryMaps, List<Player> inPlayerGuesses)
             throws IOException {
-        Directory.DATA.write(
-                Category.ALL.stream().map(category -> category.name).map(category -> Optional
-                        .ofNullable(inCategoryMaps.get(category))
+        Directory.DATA.write(Category.ALL.stream().map(category -> category.name)
+                .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
                         .orElseGet(() -> new LinkedHashMap<>()).entrySet().stream()
                         .map(map -> Optional.ofNullable(inPlayerGuesses).map(List::stream)
                                 .orElseGet(Stream::empty)
@@ -143,7 +133,6 @@ public final class CategoryMapper {
                                         .setAttribute("ballot", map.getKey()), Element::addContent))
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
-                        .reduce(new Element("responses"), Element::addContent),
-                RESPONSES_FILE.getName(), null);
+                .reduce(new Element("responses"), Element::addContent), RESPONSES_FILE, null);
     }
 }
