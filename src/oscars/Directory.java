@@ -1,9 +1,7 @@
 package oscars;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -36,8 +34,8 @@ public class Directory extends File {
 
     /* Write out the sort XML web pages */
     static {
-        Directory sort = new Directory("sort");
         try {
+            Directory sort = new Directory("sort");
             for (String column : new String[] { "name", "rank", "bpr", "wpr", "score", "time" })
                 for (String type : new String[] { column, column + "Reverse" })
                     sort.write(new Element("sort").setAttribute("column", type), type + ".xml",
@@ -62,10 +60,10 @@ public class Directory extends File {
                     new String[][] { { "type", "text/xsl" }, { "href", "../xsl/" + inXSLFile } })
                     .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
         document.addContent(new Comment("OSCARS website created by Scott McDonald"));
-        try (Writer writer = new PrintWriter(new OutputStreamWriter(
-                new FileOutputStream(this + "/" + inXMLFile), StandardCharsets.UTF_8))) {
-            new XMLOutputter(Format.getPrettyFormat()).output(document.addContent(inElement),
-                    writer);
+        document.addContent(inElement);
+        try (Writer writer = new PrintWriter(new File(this, inXMLFile),
+                StandardCharsets.UTF_8.name())) {
+            new XMLOutputter(Format.getPrettyFormat()).output(document, writer);
         }
     }
 
