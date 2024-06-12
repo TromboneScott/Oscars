@@ -104,9 +104,7 @@ public final class Ballot {
     }
 
     private Element toDOM() {
-        LocalDateTime timestamp = getTimestamp();
-        return new Element("ballot").setAttribute("name", getName()).addContent(
-                new Element("timestamp").setAttribute("raw", timestamp.toString()).addContent(
-                        timestamp.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"))));
+        return new Element("ballot").setAttribute("name", getName()).setAttribute("timestamp",
+                getTimestamp().toString());
     }
 }

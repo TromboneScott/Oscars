@@ -59,24 +59,24 @@
                     </th>
                   </tr>
                   <xsl:choose>
-                    <xsl:when test=". = 'rank'">
+                    <xsl:when test="@column = 'rank'">
                       <xsl:apply-templates select="$results/ballots/ballot">
-                        <xsl:sort select="timestamp/@raw" />
+                        <xsl:sort select="@timestamp" />
                         <xsl:sort select="@name" />
                       </xsl:apply-templates>
                     </xsl:when>
-                    <xsl:when test=". = 'rankReverse'">
+                    <xsl:when test="@column = 'rankReverse'">
                       <xsl:apply-templates select="$results/ballots/ballot">
-                        <xsl:sort select="timestamp/@raw" order="descending" />
+                        <xsl:sort select="@timestamp" order="descending" />
                         <xsl:sort select="@name" />
                       </xsl:apply-templates>
                     </xsl:when>
-                    <xsl:when test=". = 'name'">
+                    <xsl:when test="@column = 'name'">
                       <xsl:apply-templates select="$results/ballots/ballot">
                         <xsl:sort select="@name" />
                       </xsl:apply-templates>
                     </xsl:when>
-                    <xsl:when test=". = 'nameReverse'">
+                    <xsl:when test="@column = 'nameReverse'">
                       <xsl:apply-templates select="$results/ballots/ballot">
                         <xsl:sort select="@name" order="descending" />
                       </xsl:apply-templates>
@@ -129,7 +129,12 @@
   <xsl:template match="/results/ballots/ballot">
     <tr class="unannounced">
       <td>
-        <xsl:value-of select="timestamp" />
+        <xsl:value-of
+          select="concat(translate(substring(@timestamp, 6, 5), '-', '/'), '/', substring(@timestamp, 1, 4), ' ')" />
+        <xsl:value-of
+          select="concat(format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'), substring(@timestamp, 14, 6))" />
+        <xsl:value-of
+          select="concat(' ', substring('AP', floor(substring(@timestamp, 12, 2) div 12) + 1, 1), 'M')" />
       </td>
       <td>
         <xsl:value-of select="@name" />
