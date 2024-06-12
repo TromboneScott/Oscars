@@ -67,7 +67,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$results/winners/category">
+              <xsl:for-each select="$results/awards/category">
                 <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryDefinition"
                   select="$definitions/category[@name = $categoryName]" />
@@ -94,13 +94,13 @@
                     <xsl:value-of select="$playerGuess" />
                   </td>
                   <td>
-                    <xsl:variable name="tempWinners">
+                    <xsl:variable name="winners">
                       <xsl:for-each select="nominee">
                         <xsl:value-of select="', '" />
                         <xsl:value-of select="@name" />
                       </xsl:for-each>
                     </xsl:variable>
-                    <xsl:value-of select="substring-after($tempWinners, ', ')" />
+                    <xsl:value-of select="substring-after($winners, ', ')" />
                   </td>
                   <td>
                     <xsl:if test="nominee">
@@ -130,7 +130,7 @@
                 </th>
                 <th>
                   <xsl:value-of
-                    select="count($results/winners/category[nominee])" />
+                    select="count($results/awards/category[nominee])" />
                 </th>
                 <th>
                   <xsl:value-of select="$playerResults/@score" />
@@ -153,7 +153,7 @@
                 </td>
                 <td>
                   <center>
-                    <xsl:value-of select="$results/showTime/@length" />
+                    <xsl:value-of select="$results/awards/@length" />
                   </center>
                 </td>
                 <td>

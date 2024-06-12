@@ -62,12 +62,7 @@
               <table>
                 <tbody>
                   <xsl:for-each select="nominee">
-                    <tr>
-                      <xsl:apply-templates
-                        select="$results/winners/category[@name = $category]"
-                        mode="attribute">
-                        <xsl:with-param name="nominee" select="@name" />
-                      </xsl:apply-templates>
+                    <tr class="unannounced">
                       <td>
                         <xsl:apply-templates select="." mode="poster">
                           <xsl:with-param name="category" select="$category" />

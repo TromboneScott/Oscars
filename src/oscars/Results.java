@@ -18,9 +18,11 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 
@@ -171,17 +173,23 @@ public class Results {
                 .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 
-    public Element winnersDOM() {
+    public Element awardsDOM() {
         return Category.stream()
                 .map(category -> winners.get(category.name).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.name),
                                 Element::addContent))
-                .reduce(new Element("winners"), Element::addContent);
+                .reduce(new Element("awards"), Element::addContent)
+                .setAttributes(showTimes.entrySet().stream()
+                        .map(entry -> new Attribute(entry.getKey().name().toLowerCase(),
+                                entry.getValue().toString()))
+                        .collect(Collectors.toList()))
+                .setAttribute("length",
+                        Standings.formatTime(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
     }
 
     private static Map<String, Set<String>> winners(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("winners"))
+        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("awards"))
                 .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
                 .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
                         categoryDOM -> Collections.unmodifiableSet(
@@ -191,12 +199,12 @@ public class Results {
     }
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("showTime"))
+        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("awards"))
                 .map(element -> Stream.of(ShowTimeType.values())
                         .map(type -> new SimpleEntry<>(type,
-                                element.getAttributeValue(type.name().toLowerCase()))))
-                .orElseGet(Stream::empty).filter(entry -> !entry.getValue().isEmpty())
-                .collect(Collectors.toMap(Entry::getKey,
+                                element.getAttributeValue(type.name().toLowerCase())))
+                        .filter(entry -> entry.getValue() != null))
+                .orElseGet(Stream::empty).collect(Collectors.toMap(Entry::getKey,
                         entry -> ZonedDateTime.parse(entry.getValue())));
     }
 }

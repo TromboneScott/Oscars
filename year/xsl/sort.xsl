@@ -200,7 +200,7 @@
                   <xsl:value-of select="'='" />
                 </xsl:otherwise>
               </xsl:choose>
-              <xsl:value-of select="$results/showTime/@length" />
+              <xsl:value-of select="$results/awards/@length" />
             </xsl:variable>
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="$timeHeader" />
@@ -418,11 +418,11 @@
   </xsl:template>
   <xsl:template name="winners">
     <xsl:param name="start" />
-    <xsl:if test="$start &lt; count($results/winners/category)">
+    <xsl:if test="$start &lt; count($results/awards/category)">
       <xsl:variable name="end" select="$start + 6" />
       <tr>
         <xsl:for-each
-          select="$results/winners/category[position() &gt; $start and position() &lt;= $end]">
+          select="$results/awards/category[position() &gt; $start and position() &lt;= $end]">
           <td style="text-align: center">
             <a>
               <xsl:attribute name="id">

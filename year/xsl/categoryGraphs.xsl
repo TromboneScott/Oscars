@@ -33,7 +33,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$results/winners/category">
+              <xsl:for-each select="$results/awards/category">
                 <xsl:variable name="name" select="@name" />
                 <tr>
                   <td class="header">

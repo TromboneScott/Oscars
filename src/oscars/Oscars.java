@@ -118,8 +118,7 @@ public class Oscars implements Runnable {
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
-        Results.write(updated, results.winnersDOM(), standings.playerDOM(players),
-                standings.resultsShowTimeDOM());
+        Results.write(updated, results.awardsDOM(), standings.playerDOM(players));
     }
 
     private void writeCategoryPages() throws IOException {

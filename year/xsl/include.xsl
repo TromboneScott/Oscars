@@ -6,7 +6,7 @@
     select="document('../data/definitions.xml')/definitions" />
   <xsl:variable name="responses"
     select="document('../data/responses.xml')/responses" />
-  <xsl:variable name="inProgress" select="not(string($results/showTime/@end))" />
+  <xsl:variable name="inProgress" select="not(string($results/awards/@end))" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
@@ -85,12 +85,12 @@
       <xsl:attribute name="src">
         <xsl:value-of select="@name" />
         <xsl:variable name="category" select="@name" />
-        <xsl:variable name="winners"
-          select="$results/winners/category[@name = $category]" />
+        <xsl:variable name="awards"
+          select="$results/awards/category[@name = $category]" />
         <xsl:for-each select="nominee">
           <xsl:variable name="nominee" select="@name" />
           <xsl:choose>
-            <xsl:when test="$winners/nominee[@name = $nominee]">
+            <xsl:when test="$awards/nominee[@name = $nominee]">
               <xsl:value-of select="'1'" />
             </xsl:when>
             <xsl:otherwise>
@@ -144,7 +144,7 @@
       </tr>
     </table>
   </xsl:template>
-  <xsl:template match="/results/winners/category" mode="attribute">
+  <xsl:template match="/results/awards/category" mode="attribute">
     <xsl:param name="nominee" />
     <xsl:attribute name="class">
       <xsl:choose>
