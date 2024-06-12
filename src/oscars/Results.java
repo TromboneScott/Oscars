@@ -194,7 +194,7 @@ public class Results {
         return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("showTime"))
                 .map(element -> Stream.of(ShowTimeType.values())
                         .map(type -> new SimpleEntry<>(type,
-                                element.getChildText(type.name().toLowerCase()))))
+                                element.getAttributeValue(type.name().toLowerCase()))))
                 .orElseGet(Stream::empty).filter(entry -> !entry.getValue().isEmpty())
                 .collect(Collectors.toMap(Entry::getKey,
                         entry -> ZonedDateTime.parse(entry.getValue())));
