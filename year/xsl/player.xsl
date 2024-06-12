@@ -45,7 +45,7 @@
             </tr>
           </table>
           <xsl:if
-            test="not(string($results/showTime/end))">
+            test="$inProgress">
             <br /> Best Possible Rank (BPR): <xsl:value-of
               select="$playerResults/@bpr" />
             <br /> Worst Possible Rank (WPR): <xsl:value-of

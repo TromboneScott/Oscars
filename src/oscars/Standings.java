@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 /** The score and rank standings - Immutable */
@@ -132,10 +133,11 @@ public final class Standings {
     }
 
     public Element resultsShowTimeDOM() {
-        return showTimes.entrySet().stream()
-                .map(entry -> new Element(entry.getKey().name().toLowerCase())
-                        .addContent(entry.getValue()))
-                .reduce(new Element("showTime"), Element::addContent)
+        return new Element("showTime")
+                .setAttributes(showTimes.entrySet().stream()
+                        .map(entry -> new Attribute(entry.getKey().name().toLowerCase(),
+                                entry.getValue()))
+                        .collect(Collectors.toList()))
                 .setAttribute("length", formatTime(elapsedTime));
     }
 

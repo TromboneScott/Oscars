@@ -6,6 +6,7 @@
     select="document('../data/definitions.xml')/definitions" />
   <xsl:variable name="responses"
     select="document('../data/responses.xml')/responses" />
+  <xsl:variable name="inProgress" select="not(string($results/showTime/@end))" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
@@ -68,7 +69,7 @@
         </tr>
       </table>
     </a>
-    <xsl:if test="not(string($results/showTime/end))">
+    <xsl:if test="$inProgress">
       <br />
       <i>Refresh this page to get updated results during the contest.</i>
       <br />

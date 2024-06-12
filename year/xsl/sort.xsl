@@ -97,7 +97,7 @@
               <br />
               <br />
               <div class="info">
-                <xsl:if test="not(string($results/showTime/end))">
+                <xsl:if test="$inProgress">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
                 If guesses for all remaining <a href="../category/all.xml">
                 categories</a> turn out to be correct / incorrect. <br />
@@ -144,7 +144,6 @@
   <xsl:template name="player-table">
     <xsl:param name="sort" />
     <xsl:param name="inPlayer" />
-    <xsl:variable name="inProgress" select="not(string($results/showTime/end))" />
     <table>
       <thead>
         <tr>
@@ -219,7 +218,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'nameReverse'">
@@ -227,7 +225,6 @@
               <xsl:sort select="@lastName" order="descending" />
               <xsl:sort select="@firstName" order="descending" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'rank' or $sort = 'score'">
@@ -238,7 +235,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when
@@ -250,7 +246,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bpr'">
@@ -261,7 +256,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bprReverse'">
@@ -271,7 +265,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wpr'">
@@ -281,7 +274,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wprReverse'">
@@ -291,7 +283,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'time'">
@@ -300,7 +291,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'timeReverse'">
@@ -309,7 +299,6 @@
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
-              <xsl:with-param name="inProgress" select="$inProgress" />
             </xsl:apply-templates>
           </xsl:when>
         </xsl:choose>
@@ -341,7 +330,6 @@
   </xsl:template>
   <xsl:template match="/results/players/player">
     <xsl:param name="inPlayer" />
-    <xsl:param name="inProgress" />
     <tr>
       <td>
         <xsl:attribute name="class"> header <xsl:if test="$inPlayer">
