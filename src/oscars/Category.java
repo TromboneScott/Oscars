@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -22,7 +20,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
 public final class Category implements ChartColor {
-    private static final File DEFINITIONS_FILE = new File(Directory.DATA, "definitions.xml");
+    private static final String DEFINITIONS_FILE = "definitions.xml";
 
     /** Categories in display order */
     public static final List<Category> ALL = Collections.unmodifiableList(all());
@@ -57,9 +55,11 @@ public final class Category implements ChartColor {
 
     private static List<Category> all() {
         try {
-            return new SAXBuilder().build(DEFINITIONS_FILE).getRootElement().getChildren("category")
-                    .stream().map(Category::new).collect(Collectors.toList());
-        } catch (IOException | JDOMException e) {
+            return Directory.DATA.getRootElement(DEFINITIONS_FILE).getChildren("category").stream()
+                    .map(Category::new).collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            throw new RuntimeException("File not found: " + DEFINITIONS_FILE);
+        } catch (IOException e) {
             throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
         }
     }
