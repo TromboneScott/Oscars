@@ -180,9 +180,10 @@ public class Results {
                         .reduce(new Element("category").setAttribute("name", category.name),
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)
-                .setAttributes(showTimes.entrySet().stream()
-                        .map(entry -> new Attribute(entry.getKey().name().toLowerCase(),
-                                entry.getValue().toString()))
+                .setAttributes(Stream.of(ShowTimeType.values())
+                        .map(type -> new Attribute(type.name().toLowerCase(),
+                                Optional.ofNullable(showTimes.get(type)).map(Object::toString)
+                                        .orElse("")))
                         .collect(Collectors.toList()))
                 .setAttribute("duration",
                         String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
@@ -203,7 +204,7 @@ public class Results {
                 .map(element -> Stream.of(ShowTimeType.values())
                         .map(type -> new SimpleEntry<>(type,
                                 element.getAttributeValue(type.name().toLowerCase())))
-                        .filter(entry -> entry.getValue() != null))
+                        .filter(entry -> !entry.getValue().isEmpty()))
                 .orElseGet(Stream::empty).collect(Collectors.toMap(Entry::getKey,
                         entry -> ZonedDateTime.parse(entry.getValue())));
     }

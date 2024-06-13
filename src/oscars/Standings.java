@@ -23,7 +23,7 @@ public final class Standings {
 
     private final Map<String, Set<String>> winners;
 
-    private final Map<ShowTimeType, String> showTimes;
+    public final boolean showEnded;
 
     public final long elapsedTime;
 
@@ -31,18 +31,13 @@ public final class Standings {
         winners = Collections.unmodifiableMap(Category.stream().map(category -> category.name)
                 .collect(Collectors.toMap(category -> category, category -> Collections
                         .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
-        showTimes = Collections.unmodifiableMap(Stream.of(ShowTimeType.values())
-                .collect(Collectors.toMap(showTimeType -> showTimeType, inResults::get)));
+        showEnded = !inResults.get(ShowTimeType.END).isEmpty();
         scoreMap = Collections.unmodifiableMap(
                 inPlayers.stream().collect(Collectors.toMap(player -> player, this::score)));
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         lostToMap = Collections
                 .unmodifiableMap(inPlayers.stream().collect(Collectors.toMap(player -> player,
                         player -> Collections.unmodifiableSet(lostTo(player, scoreMap)))));
-    }
-
-    public boolean showEnded() {
-        return !showTimes.get(ShowTimeType.END).isEmpty();
     }
 
     private BigDecimal score(Player inPlayer) {
@@ -74,7 +69,7 @@ public final class Standings {
 
     private Set<Player> lostTo(Player inPlayer, Map<Player, BigDecimal> inScoreMap) {
         return lostToStream(inPlayer, possibleScores(inPlayer, inScoreMap, true), elapsedTime,
-                showEnded()).map(Entry::getKey).collect(Collectors.toSet());
+                showEnded).map(Entry::getKey).collect(Collectors.toSet());
     }
 
     private Map<Player, BigDecimal> possibleScores(Player inPlayer,
@@ -93,14 +88,15 @@ public final class Standings {
         int tieBreakers = (int) Category.stream()
                 .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
-                .toDOM().setAttribute("id", String.valueOf(playerNum + 1))
+                .toDOM()
+                .setAttribute("score",
+                        scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers).toString())
                 .setAttribute("rank", String.valueOf(rank(inPlayers.get(playerNum))))
                 .setAttribute("bpr",
                         String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1))
                 .setAttribute("wpr",
                         String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap)))
-                .setAttribute("score",
-                        scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers).toString())
+                .setAttribute("id", String.valueOf(playerNum + 1))
                 .setAttribute("decided", inPlayers.stream()
                         .map(opponent -> lostToMap.get(inPlayers.get(playerNum)).contains(opponent)
                                 || lostToMap.get(opponent).contains(inPlayers.get(playerNum))
@@ -112,7 +108,7 @@ public final class Standings {
     /** Determine if the player and opponent will be tied at the end of the game */
     private boolean tied(Player inPlayer, Player inOpponent) {
         return (inPlayer.time == inOpponent.time
-                || inPlayer.time > elapsedTime && inOpponent.time > elapsedTime && showEnded())
+                || inPlayer.time > elapsedTime && inOpponent.time > elapsedTime && showEnded)
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
                 && Category.stream().map(category -> category.name)
                         .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
