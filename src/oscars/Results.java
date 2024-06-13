@@ -185,7 +185,7 @@ public class Results {
                                 entry.getValue().toString()))
                         .collect(Collectors.toList()))
                 .setAttribute("length",
-                        Standings.formatTime(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
+                        String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
     }
 
     private static Map<String, Set<String>> winners(Element inResultsDOM) {

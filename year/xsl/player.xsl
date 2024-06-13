@@ -9,8 +9,7 @@
       <body>
         <center>
           <xsl:call-template name="header" />
-          <xsl:variable
-            name="playerResults"
+          <xsl:variable name="playerResults"
             select="$results/players/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
           <xsl:variable
             name="playerName" select="concat(@firstName, ' ', @lastName)" />
@@ -137,9 +136,7 @@
                 </th>
               </tr>
               <tr>
-                <xsl:attribute name="class">
-                  <xsl:value-of select="$playerResults/time/@status" />
-                </xsl:attribute>
+                <xsl:apply-templates select="$playerResults" mode="attribute" />
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
                   <xsl:apply-templates
@@ -148,17 +145,44 @@
                 </td>
                 <td>
                   <center>
-                    <xsl:value-of select="$playerResults/time" />
+                    <xsl:apply-templates select="$playerResults" mode="time" />
                   </center>
                 </td>
                 <td>
                   <center>
-                    <xsl:value-of select="$results/awards/@length" />
+                    <xsl:call-template name="time">
+                      <xsl:with-param name="time">
+                        <xsl:value-of select="$results/awards/@length" />
+                      </xsl:with-param>
+                    </xsl:call-template>
                   </center>
                 </td>
                 <td>
                   <center>
-                    <xsl:value-of select="$playerResults/time/@delta" />
+                    <xsl:variable name="playerTime"
+                      select="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
+                    <xsl:choose>
+                      <xsl:when test="$playerTime &lt;= $results/awards/@length">
+                        <xsl:call-template name="time">
+                          <xsl:with-param name="time">
+                            <xsl:value-of
+                              select="$results/awards/@length - $playerTime" />
+                          </xsl:with-param>
+                        </xsl:call-template>
+                      </xsl:when>
+                      <xsl:when test="$inProgress">
+                        <xsl:value-of select="'-'" />
+                        <xsl:call-template name="time">
+                          <xsl:with-param name="time">
+                            <xsl:value-of
+                              select="$playerTime - $results/awards/@length" />
+                          </xsl:with-param>
+                        </xsl:call-template>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        OVER
+                      </xsl:otherwise>
+                    </xsl:choose>
                   </center>
                 </td>
               </tr>

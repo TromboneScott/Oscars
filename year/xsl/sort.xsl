@@ -200,7 +200,11 @@
                   <xsl:value-of select="'='" />
                 </xsl:otherwise>
               </xsl:choose>
-              <xsl:value-of select="$results/awards/@length" />
+              <xsl:call-template name="time">
+                <xsl:with-param name="time">
+                  <xsl:value-of select="$results/awards/@length" />
+                </xsl:with-param>
+              </xsl:call-template>
             </xsl:variable>
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="$timeHeader" />
@@ -391,9 +395,8 @@
         </img>
       </td>
       <td>
-        <xsl:attribute name="class">
-          <xsl:value-of select="time/@status" /> time </xsl:attribute>
-        <xsl:value-of select="time" />
+        <xsl:apply-templates select="." mode="attribute" />
+        <xsl:apply-templates select="." mode="time" />
       </td>
     </tr>
   </xsl:template>
@@ -448,5 +451,35 @@
         <xsl:with-param name="start" select="$end" />
       </xsl:call-template>
     </xsl:if>
+  </xsl:template>
+  <xsl:template match="/results/players/player" mode="attribute">
+    <xsl:attribute name="class">
+      <xsl:variable name="player" select="." />
+      <xsl:choose>
+        <xsl:when
+          test="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/awards/@length">
+      correct
+        </xsl:when>
+        <xsl:when test="$inProgress">
+          unannounced
+        </xsl:when>
+        <xsl:otherwise>
+          incorrect
+        </xsl:otherwise>
+      </xsl:choose> time </xsl:attribute>
+  </xsl:template>
+  <xsl:template match="/results/players/player" mode="time">
+    <xsl:variable name="player" select="." />
+    <xsl:call-template name="time">
+      <xsl:with-param name="time">
+        <xsl:value-of
+          select="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  <xsl:template name="time">
+    <xsl:param name="time" />
+    <xsl:value-of
+      select="concat(format-number(floor($time div 60 div 60), '0'), ':', format-number(floor($time div 60) mod 60, '00'), ':', format-number($time mod 60, '00'))" />
   </xsl:template>
 </xsl:stylesheet>

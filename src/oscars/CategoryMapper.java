@@ -124,13 +124,21 @@ public final class CategoryMapper {
             throws IOException {
         Directory.DATA.write(Category.ALL.stream().map(category -> category.name)
                 .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
-                        .orElseGet(() -> new LinkedHashMap<>()).entrySet().stream()
-                        .map(map -> Optional.ofNullable(inPlayerGuesses).map(List::stream)
+                        .filter(mapping -> !mapping.isEmpty())
+                        .map(mapping -> mapping.entrySet().stream().map(map -> Optional
+                                .ofNullable(inPlayerGuesses).map(List::stream)
                                 .orElseGet(Stream::empty)
                                 .filter(player -> map.getKey().equals(player.picks.get(category)))
                                 .map(Player::toDOM)
                                 .reduce(new Element("nominee").setAttribute("name", map.getValue())
-                                        .setAttribute("ballot", map.getKey()), Element::addContent))
+                                        .setAttribute("ballot", map.getKey()),
+                                        Element::addContent)))
+                        .orElseGet(
+                                () -> Category.TIME.equals(category) && inPlayerGuesses != null
+                                        ? inPlayerGuesses.stream()
+                                                .map(player -> player.toDOM().setAttribute("time",
+                                                        String.valueOf(player.time)))
+                                        : Stream.empty())
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
                 .reduce(new Element("responses"), Element::addContent), RESPONSES_FILE, null);

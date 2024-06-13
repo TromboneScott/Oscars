@@ -1,7 +1,6 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -100,19 +99,8 @@ public final class Standings {
                         String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1))
                 .setAttribute("wpr",
                         String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap)))
-                .setAttribute("score", scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers)
-                        .toString())
-                .addContent(
-                        new Element("time")
-                                .setAttribute("delta", inPlayers.get(playerNum).time <= elapsedTime
-                                        ? formatTime(elapsedTime - inPlayers.get(playerNum).time)
-                                        : showEnded() ? "OVER"
-                                                : "-" + formatTime(inPlayers.get(playerNum).time
-                                                        - elapsedTime))
-                                .setAttribute("status",
-                                        inPlayers.get(playerNum).time <= elapsedTime ? "correct"
-                                                : showEnded() ? "incorrect" : "unannounced")
-                                .addContent(formatTime(inPlayers.get(playerNum).time)))
+                .setAttribute("score",
+                        scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers).toString())
                 .addContent(new Element("opponents").setAttribute("decided", inPlayers.stream()
                         .map(opponent -> lostToMap.get(inPlayers.get(playerNum)).contains(opponent)
                                 || lostToMap.get(opponent).contains(inPlayers.get(playerNum))
@@ -129,9 +117,5 @@ public final class Standings {
                 && Category.stream().map(category -> category.name)
                         .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
                                 .get(category).equals(inOpponent.picks.get(category)));
-    }
-
-    public static String formatTime(long inTime) {
-        return inTime < 0 ? "" : LocalTime.ofSecondOfDay(inTime).format(Player.TIME_FORMAT);
     }
 }
