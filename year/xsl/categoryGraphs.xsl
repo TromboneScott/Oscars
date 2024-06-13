@@ -13,7 +13,7 @@
           </div>
           <br />
           <xsl:variable name="playerCount"
-            select="count($results/players/player)" />
+            select="count($results/standings/player)" />
           <xsl:variable name="graphWidth" select="250" />
           <table>
             <thead>

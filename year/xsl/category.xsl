@@ -60,7 +60,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:for-each select="$results/players/player">
+              <xsl:for-each select="$results/standings/player">
                 <xsl:sort select="@lastName" />
                 <xsl:sort select="@firstName" />
                 <xsl:variable name="player" select="." />

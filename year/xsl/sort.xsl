@@ -12,7 +12,7 @@
         <center>
           <xsl:call-template name="header" />
           <xsl:choose>
-            <xsl:when test="count($results/players/player)=0">
+            <xsl:when test="count($results/standings/player)=0">
               <a href="javascript:history.go(0)" style="all: unset">
                 <table>
                   <tr>
@@ -218,21 +218,21 @@
       <tbody>
         <xsl:choose>
           <xsl:when test="$sort = 'name'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'nameReverse'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@lastName" order="descending" />
               <xsl:sort select="@firstName" order="descending" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'rank' or $sort = 'score'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@rank" data-type="number" />
               <xsl:sort select="@bpr" data-type="number" />
               <xsl:sort select="@wpr" data-type="number" />
@@ -243,7 +243,7 @@
           </xsl:when>
           <xsl:when
             test="$sort = 'rankReverse' or $sort = 'scoreReverse'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@rank" data-type="number" order="descending" />
               <xsl:sort select="@bpr" data-type="number" order="descending" />
               <xsl:sort select="@wpr" data-type="number" order="descending" />
@@ -254,7 +254,7 @@
           </xsl:when>
           <xsl:when test="$sort = 'bpr'">
             <xsl:apply-templates
-              select="$results/players/player">
+              select="$results/standings/player">
               <xsl:sort select="@bpr" data-type="number" />
               <xsl:sort select="@rank" data-type="number" />
               <xsl:sort select="@lastName" />
@@ -263,7 +263,7 @@
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'bprReverse'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@bpr" data-type="number" order="descending" />
               <xsl:sort select="@rank" data-type="number" order="descending" />
               <xsl:sort select="@lastName" />
@@ -272,7 +272,7 @@
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wpr'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@wpr" data-type="number" />
               <xsl:sort select="@rank" data-type="number" />
               <xsl:sort select="@lastName" />
@@ -281,7 +281,7 @@
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'wprReverse'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="@wpr" data-type="number" order="descending" />
               <xsl:sort select="@rank" data-type="number" order="descending" />
               <xsl:sort select="@lastName" />
@@ -290,7 +290,7 @@
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'time'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="time" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
@@ -298,7 +298,7 @@
             </xsl:apply-templates>
           </xsl:when>
           <xsl:when test="$sort = 'timeReverse'">
-            <xsl:apply-templates select="$results/players/player">
+            <xsl:apply-templates select="$results/standings/player">
               <xsl:sort select="time" order="descending" />
               <xsl:sort select="@lastName" />
               <xsl:sort select="@firstName" />
@@ -332,7 +332,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="/results/players/player">
+  <xsl:template match="/results/standings/player">
     <xsl:param name="inPlayer" />
     <tr>
       <td>
@@ -342,7 +342,7 @@
                 unannounced
               </xsl:when>
               <xsl:when
-                test="substring($inPlayer/opponents/@decided, number(@id), 1) = 'Y'">
+                test="substring($inPlayer/@decided, number(@id), 1) = 'Y'">
           correct
               </xsl:when>
             </xsl:choose>
@@ -452,7 +452,7 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="/results/players/player" mode="attribute">
+  <xsl:template match="/results/standings/player" mode="attribute">
     <xsl:attribute name="class">
       <xsl:variable name="player" select="." />
       <xsl:choose>
@@ -468,7 +468,7 @@
         </xsl:otherwise>
       </xsl:choose> time </xsl:attribute>
   </xsl:template>
-  <xsl:template match="/results/players/player" mode="time">
+  <xsl:template match="/results/standings/player" mode="time">
     <xsl:variable name="player" select="." />
     <xsl:call-template name="time">
       <xsl:with-param name="time">

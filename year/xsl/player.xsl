@@ -10,7 +10,7 @@
         <center>
           <xsl:call-template name="header" />
           <xsl:variable name="playerResults"
-            select="$results/players/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
+            select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
           <xsl:variable
             name="playerName" select="concat(@firstName, ' ', @lastName)" />
           <div
@@ -23,7 +23,7 @@
               <td id="rank"> Rank <div id="rank">
                   <xsl:value-of select="$playerResults/@rank" />
                 </div>
-          Out of <xsl:value-of select="count($results/players/player)" />
+          Out of <xsl:value-of select="count($results/standings/player)" />
               </td>
               <td class="header">
                 <img>
@@ -33,11 +33,11 @@
                   </xsl:attribute>
                   <xsl:attribute name="alt">
                     <xsl:value-of select="$playerResults/@rank" /> out of <xsl:value-of
-                      select="count($results/players/player)" />
+                      select="count($results/standings/player)" />
                   </xsl:attribute>
                   <xsl:attribute name="title">
                     <xsl:value-of select="$playerResults/@rank" /> out of <xsl:value-of
-                      select="count($results/players/player)" />
+                      select="count($results/standings/player)" />
                   </xsl:attribute>
                 </img>
               </td>

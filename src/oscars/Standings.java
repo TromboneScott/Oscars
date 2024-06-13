@@ -89,7 +89,7 @@ public final class Standings {
                                 .reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
-    public Element playerDOM(List<Player> inPlayers) {
+    public Element toDOM(List<Player> inPlayers) {
         int tieBreakers = (int) Category.stream()
                 .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
@@ -101,12 +101,12 @@ public final class Standings {
                         String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap)))
                 .setAttribute("score",
                         scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers).toString())
-                .addContent(new Element("opponents").setAttribute("decided", inPlayers.stream()
+                .setAttribute("decided", inPlayers.stream()
                         .map(opponent -> lostToMap.get(inPlayers.get(playerNum)).contains(opponent)
                                 || lostToMap.get(opponent).contains(inPlayers.get(playerNum))
                                 || tied(inPlayers.get(playerNum), opponent) ? "Y" : "N")
-                        .collect(Collectors.joining()))))
-                .reduce(new Element("players"), Element::addContent);
+                        .collect(Collectors.joining())))
+                .reduce(new Element("standings"), Element::addContent);
     }
 
     /** Determine if the player and opponent will be tied at the end of the game */
