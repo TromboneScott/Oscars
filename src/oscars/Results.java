@@ -184,7 +184,7 @@ public class Results {
                         .map(entry -> new Attribute(entry.getKey().name().toLowerCase(),
                                 entry.getValue().toString()))
                         .collect(Collectors.toList()))
-                .setAttribute("length",
+                .setAttribute("duration",
                         String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
     }
 

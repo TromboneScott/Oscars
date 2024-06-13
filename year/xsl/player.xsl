@@ -152,7 +152,7 @@
                   <center>
                     <xsl:call-template name="time">
                       <xsl:with-param name="time">
-                        <xsl:value-of select="$results/awards/@length" />
+                        <xsl:value-of select="$results/awards/@duration" />
                       </xsl:with-param>
                     </xsl:call-template>
                   </center>
@@ -162,11 +162,12 @@
                     <xsl:variable name="playerTime"
                       select="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
                     <xsl:choose>
-                      <xsl:when test="$playerTime &lt;= $results/awards/@length">
+                      <xsl:when
+                        test="$playerTime &lt;= $results/awards/@duration">
                         <xsl:call-template name="time">
                           <xsl:with-param name="time">
                             <xsl:value-of
-                              select="$results/awards/@length - $playerTime" />
+                              select="$results/awards/@duration - $playerTime" />
                           </xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
@@ -175,7 +176,7 @@
                         <xsl:call-template name="time">
                           <xsl:with-param name="time">
                             <xsl:value-of
-                              select="$playerTime - $results/awards/@length" />
+                              select="$playerTime - $results/awards/@duration" />
                           </xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
