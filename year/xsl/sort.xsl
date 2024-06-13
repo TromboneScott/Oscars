@@ -423,7 +423,7 @@
     <xsl:param name="start" />
     <xsl:if test="$start &lt; count($results/awards/category)">
       <xsl:variable name="end" select="$start + 6" />
-      <tr>
+      <tr class="unannounced">
         <xsl:for-each
           select="$results/awards/category[position() &gt; $start and position() &lt;= $end]">
           <td style="text-align: center">

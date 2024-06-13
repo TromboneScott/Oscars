@@ -124,11 +124,15 @@ public class Oscars implements Runnable {
     private void writeCategoryPages() throws IOException {
         for (Category category : Category.stream().collect(Collectors.toList())) {
             category.writeChart(results, players);
-            Directory.CATEGORY.write(new Element("category").setAttribute("name", category.name),
-                    category.name + ".xml", "category.xsl");
+            writeCategoryPage(category.name);
         }
-        Directory.CATEGORY.write(new Element("all"), "all.xml", "categoryGraphs.xsl");
+        writeCategoryPage("all");
         Directory.CATEGORY.cleanUp();
+    }
+
+    public void writeCategoryPage(String inCategory) throws IOException {
+        Directory.CATEGORY.write(new Element("category").setAttribute("name", inCategory),
+                inCategory + ".xml", "category.xsl");
     }
 
     private void writePlayerPages() throws IOException {

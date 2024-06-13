@@ -80,34 +80,6 @@
     <br />
     <br />
   </xsl:template>
-  <xsl:template match="/definitions/category" mode="chart">
-    <img>
-      <xsl:attribute name="src">
-        <xsl:value-of select="@name" />
-        <xsl:variable name="category" select="@name" />
-        <xsl:variable name="awards"
-          select="$results/awards/category[@name = $category]" />
-        <xsl:for-each select="nominee">
-          <xsl:variable name="nominee" select="@name" />
-          <xsl:choose>
-            <xsl:when test="$awards/nominee[@name = $nominee]">
-              <xsl:value-of select="'1'" />
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="'0'" />
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
-        <xsl:value-of select="'.png'" />
-      </xsl:attribute>
-      <xsl:attribute name="alt">
-        <xsl:value-of select="@name" />
-      </xsl:attribute>
-      <xsl:attribute name="title">
-        <xsl:value-of select="@name" />
-      </xsl:attribute>
-    </img>
-  </xsl:template>
   <xsl:template match="/definitions/category" mode="value">
     <xsl:if test="@tieBreaker">
       <xsl:value-of select="'1.'" />
