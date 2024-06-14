@@ -75,7 +75,8 @@ public final class Ballot {
     }
 
     private String getName() {
-        return values.get(Category.LAST_NAME) + ", " + values.get(Category.FIRST_NAME);
+        return Stream.of(Category.LAST_NAME, Category.FIRST_NAME).map(values::get)
+                .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
     }
 
     public LocalDateTime getTimestamp() {

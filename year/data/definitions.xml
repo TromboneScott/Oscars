@@ -3,8 +3,8 @@
 <!--OSCARS website created by Scott McDonald-->
 <definitions>
   <category name="Timestamp" />
-  <category name="First" />
-  <category name="Last" />
+  <category name="First Name" />
+  <category name="Last Name" />
   <category name="Best Picture" tieBreaker="1">
     <nominee name="American Fiction"
       img="https://lh7-us.googleusercontent.com/AzCPj1MBzkt1wYGnV9G20nQmoghbOxH7_nZgjac8iTQ-Zj-oFuEm5PaKsBuozejc62wP8YUN9eGSAdhPW_hpResNjPZJCEgvdXk4heREvZb-9hhJRhzeknAp3l47feFMAlCXfQsFR-1ybfDF7Zai5dEvHUblrg" />

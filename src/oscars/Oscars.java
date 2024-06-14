@@ -137,8 +137,8 @@ public class Oscars implements Runnable {
 
     private void writePlayerPages() throws IOException {
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(),
-                    player.firstName + "_" + player.lastName + ".xml", "player.xsl");
+            Directory.PLAYER.write(player.toDOM(), player.picks.get(Category.FIRST_NAME) + "_"
+                    + player.picks.get(Category.LAST_NAME) + ".xml", "player.xsl");
         Directory.PLAYER.cleanUp();
     }
 }

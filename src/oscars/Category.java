@@ -27,9 +27,9 @@ public final class Category implements ChartColor {
 
     public static final String TIMESTAMP = "Timestamp";
 
-    public static final String FIRST_NAME = "First";
+    public static final String FIRST_NAME = "First Name";
 
-    public static final String LAST_NAME = "Last";
+    public static final String LAST_NAME = "Last Name";
 
     public static final String TIME = "Time";
 
