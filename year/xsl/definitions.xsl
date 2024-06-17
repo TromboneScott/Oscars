@@ -57,7 +57,7 @@
             <br />
             <xsl:variable name="category" select="@name" />
             <xsl:value-of
-              select="$responses/category[@name = $category]/@ballot" />
+              select="$mappings/category[@name = $category]/@ballot" />
             <xsl:if test="nominee">
               <table>
                 <tbody>
@@ -74,7 +74,7 @@
                         </b>
                         <xsl:variable name="name" select="@name" />
                         <xsl:for-each
-                          select="$responses/category[@name = $category]/nominee[@name = $name]">
+                          select="$mappings/category[@name = $category]/nominee[@name = $name]">
                           <br />
                           <xsl:value-of select="@ballot" />
                         </xsl:for-each>

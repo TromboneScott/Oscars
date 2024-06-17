@@ -4,8 +4,9 @@
   <xsl:variable name="results" select="document('../data/results.xml')/results" />
   <xsl:variable name="definitions"
     select="document('../data/definitions.xml')/definitions" />
-  <xsl:variable name="responses"
-    select="document('../data/responses.xml')/responses" />
+  <xsl:variable name="mappings"
+    select="document('../data/mappings.xml')/mappings" />
+  <xsl:variable name="ballots" select="document('../data/ballots.xml')/ballots" />
   <xsl:variable name="inProgress" select="not(string($results/awards/@end))" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
@@ -144,7 +145,7 @@
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="$responses/category[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
+        select="$mappings/category[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
         <xsl:value-of select="$description" />
         <xsl:if test="not($description)">

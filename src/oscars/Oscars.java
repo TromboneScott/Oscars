@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jdom2.Element;
 
@@ -136,6 +137,15 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
+        Directory.DATA.write(IntStream.range(0, players.size()).mapToObj(playerNum -> Category
+                .stream()
+                .map(category -> new Element("category").setAttribute("name", category.name)
+                        .setAttribute("nominee", players.get(playerNum).picks.get(category.name)))
+                .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                .setAttribute("id", String.valueOf(playerNum + 1))
+                .setAttribute("time", String.valueOf(players.get(playerNum).time)))
+                .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
+
         for (Player player : players)
             Directory.PLAYER.write(player.toDOM(), player.picks.get(Category.FIRST_NAME) + "_"
                     + player.picks.get(Category.LAST_NAME) + ".xml", "player.xsl");

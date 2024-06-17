@@ -70,10 +70,8 @@
                 <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryDefinition"
                   select="$definitions/category[@name = $categoryName]" />
-                <xsl:variable name="categoryData"
-                  select="$responses/category[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
-                  select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@name" />
+                  select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/category[@name = $categoryName]/@nominee" />
                 <tr>
                   <xsl:apply-templates select="." mode="attribute">
                     <xsl:with-param name="nominee" select="$playerGuess" />
@@ -84,7 +82,7 @@
                         <xsl:value-of
                           select="concat('../category/', @name, '.xml')" />
                       </xsl:attribute>
-                      <xsl:value-of select="$categoryName" />
+                      <xsl:value-of select="@name" />
                     </a>
                     <xsl:apply-templates select="$categoryDefinition"
                       mode="tieBreaker" />
@@ -160,7 +158,7 @@
                 <td>
                   <center>
                     <xsl:variable name="playerTime"
-                      select="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
+                      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
                     <xsl:choose>
                       <xsl:when
                         test="$playerTime &lt;= $results/awards/@duration">

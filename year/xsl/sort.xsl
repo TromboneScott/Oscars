@@ -337,12 +337,14 @@
     <tr>
       <td>
         <xsl:attribute name="class"> header <xsl:if test="$inPlayer">
+            <xsl:variable name="player" select="." />
             <xsl:choose>
-              <xsl:when test="@id = $inPlayer/@id">
-                unannounced
+              <xsl:when
+                test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id = $ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id">
+          unannounced
               </xsl:when>
               <xsl:when
-                test="substring($inPlayer/@decided, number(@id), 1) = 'Y'">
+                test="substring($inPlayer/@decided, number($ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id), 1) = 'Y'">
           correct
               </xsl:when>
             </xsl:choose>
@@ -457,7 +459,7 @@
       <xsl:variable name="player" select="." />
       <xsl:choose>
         <xsl:when
-          test="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/awards/@duration">
+          test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/awards/@duration">
       correct
         </xsl:when>
         <xsl:when test="$inProgress">
@@ -473,7 +475,7 @@
     <xsl:call-template name="time">
       <xsl:with-param name="time">
         <xsl:value-of
-          select="$responses/category[@name = 'Time']/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
+          select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>

@@ -57,7 +57,7 @@
                       <xsl:choose>
                         <xsl:when test="string($winners)">
                           <xsl:variable name="correct"
-                            select="count($responses/category[@name = $name]/nominee[contains($winners, concat('|', @name, '|'))]/player)" />
+                            select="count($ballots/player/category[@name = $name and contains($winners, concat('|', @nominee, '|'))])" />
                           <td class="correct">
                             <center>
                               <xsl:value-of select="$correct" />
@@ -141,9 +141,6 @@
                 name="categoryDefinition"
                 select="$definitions/category[@name = $categoryName]" />
               <xsl:variable
-                name="categoryData"
-                select="$responses/category[@name = $categoryName]" />
-              <xsl:variable
                 name="awards"
                 select="$results/awards/category[@name = $categoryName]" />
               <div
@@ -197,7 +194,7 @@
                     <xsl:sort select="@firstName" />
                     <xsl:variable name="player" select="." />
                     <xsl:variable name="guess"
-                      select="$categoryData/nominee[player/@firstName = $player/@firstName and player/@lastName = $player/@lastName]/@name" />
+                      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/category[@name = $categoryName]/@nominee" />
                     <tr>
                       <xsl:apply-templates select="$awards" mode="attribute">
                         <xsl:with-param name="nominee" select="$guess" />
@@ -225,7 +222,7 @@
                         </xsl:apply-templates>
                         <xsl:variable name="name" select="@name" />
                         <xsl:value-of
-                          select="count($categoryData/nominee[@name = $name]/player)" />
+                          select="count($ballots/player/category[@name = $categoryName and @nominee = $name])" />
                       </th>
                     </xsl:for-each>
                   </tr>

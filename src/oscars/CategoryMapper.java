@@ -18,7 +18,7 @@ import org.jdom2.Element;
 
 /** Map the Category data - Immutable */
 public final class CategoryMapper {
-    private static final String RESPONSES_FILE = "responses.xml";
+    private static final String MAPPINGS_FILE = "mappings.xml";
 
     private final List<Player> playerGuesses;
 
@@ -29,8 +29,7 @@ public final class CategoryMapper {
                 .sorted(Comparator.comparing(Ballot::getTimestamp))
                 .map(ballot -> new Player(ballot.values)).collect(Collectors.toList());
         categoryMaps = categoryMaps();
-        writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps,
-                playerGuesses);
+        writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps);
     }
 
     public static void setHeaders(String[] inHeaders) throws IOException {
@@ -40,7 +39,7 @@ public final class CategoryMapper {
         writeCategoryMaps(
                 IntStream.range(0, inHeaders.length).boxed().collect(Collectors.toMap(
                         column -> Category.ALL.get(column).name, column -> inHeaders[column])),
-                readCategoryMaps(), null);
+                readCategoryMaps());
     }
 
     public List<Player> getPlayers() {
@@ -103,11 +102,11 @@ public final class CategoryMapper {
     }
 
     private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
-        Element responsesDOM = Directory.DATA.getRootElement(RESPONSES_FILE);
-        if (responsesDOM != null)
-            return responsesDOM.getChildren("category").stream().collect(Collectors.toMap(
+        Element mappingsDOM = Directory.DATA.getRootElement(MAPPINGS_FILE);
+        if (mappingsDOM != null)
+            return mappingsDOM.getChildren("category").stream().collect(Collectors.toMap(
                     categoryDOM -> categoryDOM.getAttributeValue("name"), inFunction::apply));
-        System.out.println("\nStarting new responses file: " + RESPONSES_FILE);
+        System.out.println("\nStarting new mappings file: " + MAPPINGS_FILE);
         return new HashMap<>();
     }
 
@@ -120,27 +119,14 @@ public final class CategoryMapper {
     }
 
     private static void writeCategoryMaps(Map<String, String> inHeaderMap,
-            Map<String, LinkedHashMap<String, String>> inCategoryMaps, List<Player> inPlayerGuesses)
-            throws IOException {
+            Map<String, LinkedHashMap<String, String>> inCategoryMaps) throws IOException {
         Directory.DATA.write(Category.ALL.stream().map(category -> category.name)
                 .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
-                        .filter(mapping -> !mapping.isEmpty())
-                        .map(mapping -> mapping.entrySet().stream().map(map -> Optional
-                                .ofNullable(inPlayerGuesses).map(List::stream)
-                                .orElseGet(Stream::empty)
-                                .filter(player -> map.getKey().equals(player.picks.get(category)))
-                                .map(Player::toDOM)
-                                .reduce(new Element("nominee").setAttribute("name", map.getValue())
-                                        .setAttribute("ballot", map.getKey()),
-                                        Element::addContent)))
-                        .orElseGet(
-                                () -> Category.TIME.equals(category) && inPlayerGuesses != null
-                                        ? inPlayerGuesses.stream()
-                                                .map(player -> player.toDOM().setAttribute("time",
-                                                        String.valueOf(player.time)))
-                                        : Stream.empty())
+                        .map(mapping -> mapping.entrySet().stream()).orElseGet(Stream::empty)
+                        .map(map -> new Element("nominee").setAttribute("name", map.getValue())
+                                .setAttribute("ballot", map.getKey()))
                         .reduce(new Element("category").setAttribute("name", category).setAttribute(
                                 "ballot", inHeaderMap.get(category)), Element::addContent))
-                .reduce(new Element("responses"), Element::addContent), RESPONSES_FILE, null);
+                .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 }
