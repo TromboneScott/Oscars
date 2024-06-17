@@ -1,6 +1,7 @@
 package oscars;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,14 +21,12 @@ import org.jdom2.Element;
 public final class CategoryMapper {
     private static final String MAPPINGS_FILE = "mappings.xml";
 
-    private final List<Player> playerGuesses;
+    private final Collection<Ballot> ballots;
 
     private final Map<String, LinkedHashMap<String, String>> categoryMaps;
 
     public CategoryMapper() throws IOException {
-        playerGuesses = Ballot.readBallots().collect(Ballot.LATEST).stream()
-                .sorted(Comparator.comparing(Ballot::getTimestamp))
-                .map(ballot -> new Player(ballot.values)).collect(Collectors.toList());
+        ballots = Ballot.readBallots().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
         writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps);
     }
@@ -43,8 +42,8 @@ public final class CategoryMapper {
     }
 
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(playerGuesses.stream()
-                .map(player -> new Player(player.picks.entrySet().stream()
+        return Collections.unmodifiableList(ballots.stream()
+                .map(ballot -> new Player(ballot.values.entrySet().stream()
                         .collect(Collectors.toMap(Entry::getKey,
                                 entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
                                         .map(map -> map.get(entry.getValue()))
@@ -64,7 +63,8 @@ public final class CategoryMapper {
         Category.stream().forEach(category -> {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
-            playerGuesses.stream().map(player -> player.picks.get(category.name))
+            ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
+                    .map(ballot -> ballot.values.get(category.name))
                     .filter(guess -> !categoryMap.containsKey(guess))
                     .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
             for (String nominee : category.nominees)
