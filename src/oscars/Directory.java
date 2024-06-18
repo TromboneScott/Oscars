@@ -34,20 +34,6 @@ public class Directory extends File {
 
     private static final Instant START = Instant.now();
 
-    /* Write out the sort XML web pages */
-    static {
-        try {
-            Directory sort = new Directory("sort");
-            for (String column : new String[] { "name", "rank", "bpr", "wpr", "score", "time" })
-                for (String type : new String[] { column, column + "Reverse" })
-                    sort.write(new Element("sort").setAttribute("column", type), type + ".xml",
-                            "sort.xsl");
-            sort.cleanUp();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to create sort XML web pages", e);
-        }
-    }
-
     private Directory(String inPathname) {
         super(inPathname);
         if (!exists())

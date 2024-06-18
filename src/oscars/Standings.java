@@ -96,6 +96,7 @@ public final class Standings {
                         String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1))
                 .setAttribute("wpr",
                         String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap)))
+                .setAttribute("time", String.valueOf(inPlayers.get(playerNum).time))
                 .setAttribute("decided", inPlayers.stream()
                         .map(opponent -> lostToMap.get(inPlayers.get(playerNum)).contains(opponent)
                                 || lostToMap.get(opponent).contains(inPlayers.get(playerNum))
