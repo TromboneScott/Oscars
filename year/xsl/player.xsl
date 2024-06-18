@@ -192,12 +192,10 @@
             select="$playerName" />
           <br />
           <br />
-          <xsl:call-template
-            name="player-table">
-            <xsl:with-param name="sort"
-              select="document('../sort/rank.xml')/sort" />
+          <xsl:apply-templates
+            select="document('../sort/rank.xml')/sort" mode="player-table">
             <xsl:with-param name="inPlayer" select="$playerResults" />
-          </xsl:call-template>
+          </xsl:apply-templates>
           <br />
           <a
             href="../category/all.xml" id="return">All Categories</a>

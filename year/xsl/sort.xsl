@@ -91,9 +91,7 @@
                 breaker #1, .01 for #2, .001 for #3, etc. </div>
               <br />
               <br />
-              <xsl:call-template name="player-table">
-                <xsl:with-param name="sort" select="." />
-              </xsl:call-template>
+              <xsl:apply-templates select="." mode="player-table" />
               <br />
               <a href="../category/all.xml" id="return">All Categories</a>
             </xsl:otherwise>
@@ -123,8 +121,7 @@
       </td>
     </tr>
   </xsl:template>
-  <xsl:template name="player-table">
-    <xsl:param name="sort" />
+  <xsl:template match="/sort" mode="player-table">
     <xsl:param name="inPlayer" />
     <table>
       <thead>
@@ -133,7 +130,7 @@
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="'Name'" />
               <xsl:with-param name="type" select="'name'" />
-              <xsl:with-param name="sort" select="$sort/@name" />
+              <xsl:with-param name="sort" select="@name" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
           </th>
@@ -141,7 +138,7 @@
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="'Rank'" />
               <xsl:with-param name="type" select="'rank'" />
-              <xsl:with-param name="sort" select="$sort/@name" />
+              <xsl:with-param name="sort" select="@name" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
           </th>
@@ -150,7 +147,7 @@
               <xsl:call-template name="player-table-column-header">
                 <xsl:with-param name="text" select="'BPR'" />
                 <xsl:with-param name="type" select="'bpr'" />
-                <xsl:with-param name="sort" select="$sort/@name" />
+                <xsl:with-param name="sort" select="@name" />
                 <xsl:with-param name="inPlayer" select="$inPlayer" />
               </xsl:call-template>
             </th>
@@ -158,7 +155,7 @@
               <xsl:call-template name="player-table-column-header">
                 <xsl:with-param name="text" select="'WPR'" />
                 <xsl:with-param name="type" select="'wpr'" />
-                <xsl:with-param name="sort" select="$sort/@name" />
+                <xsl:with-param name="sort" select="@name" />
                 <xsl:with-param name="inPlayer" select="$inPlayer" />
               </xsl:call-template>
             </th>
@@ -167,7 +164,7 @@
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="'Score'" />
               <xsl:with-param name="type" select="'score'" />
-              <xsl:with-param name="sort" select="$sort/@name" />
+              <xsl:with-param name="sort" select="@name" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
           </th>
@@ -191,29 +188,25 @@
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="$timeHeader" />
               <xsl:with-param name="type" select="'time'" />
-              <xsl:with-param name="sort" select="$sort/@name" />
+              <xsl:with-param name="sort" select="@name" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
           </th>
         </tr>
       </thead>
       <tbody>
+        <xsl:variable name="sort" select="." />
         <xsl:apply-templates select="$results/standings/player">
           <xsl:sort select="@*[name() = $sort/column1/@name]"
-            data-type="{$sort/column1/@data-type}"
-            order="{$sort/column1/@order}" />
+            data-type="{column1/@data-type}" order="{column1/@order}" />
           <xsl:sort select="@*[name() = $sort/column2/@name]"
-            data-type="{$sort/column2/@data-type}"
-            order="{$sort/column2/@order}" />
+            data-type="{column2/@data-type}" order="{column2/@order}" />
           <xsl:sort select="@*[name() = $sort/column3/@name]"
-            data-type="{$sort/column3/@data-type}"
-            order="{$sort/column3/@order}" />
+            data-type="{column3/@data-type}" order="{column3/@order}" />
           <xsl:sort select="@*[name() = $sort/column4/@name]"
-            data-type="{$sort/column4/@data-type}"
-            order="{$sort/column4/@order}" />
+            data-type="{column4/@data-type}" order="{column4/@order}" />
           <xsl:sort select="@*[name() = $sort/column5/@name]"
-            data-type="{$sort/column5/@data-type}"
-            order="{$sort/column5/@order}" />
+            data-type="{column5/@data-type}" order="{column5/@order}" />
           <xsl:with-param name="inPlayer" select="$inPlayer" />
         </xsl:apply-templates>
       </tbody>
