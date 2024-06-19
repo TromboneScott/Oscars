@@ -260,7 +260,7 @@
             <xsl:variable name="player" select="." />
             <xsl:choose>
               <xsl:when
-                test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id = $ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id">
+                test="@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName">
           unannounced
               </xsl:when>
               <xsl:when
