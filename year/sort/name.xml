@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="../xsl/sort.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<sort name="name" ballotSort="name">
-  <column1 name="lastName" data-type="text" order="ascending" />
-  <column2 name="firstName" data-type="text" order="ascending" />
-  <column3 name="firstName" data-type="text" order="ascending" />
-  <column4 name="firstName" data-type="text" order="ascending" />
-  <column5 name="firstName" data-type="text" order="ascending" />
-</sort>
+<sort name="name" ballotSort="name" order="ascending" />

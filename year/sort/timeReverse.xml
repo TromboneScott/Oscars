@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="../xsl/sort.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<sort name="timeReverse">
-  <column1 name="time" data-type="number" order="descending" />
-  <column2 name="time" data-type="number" order="descending" />
-  <column3 name="time" data-type="number" order="descending" />
-  <column4 name="lastName" data-type="text" order="ascending" />
-  <column5 name="firstName" data-type="text" order="ascending" />
-</sort>
+<sort name="timeReverse" order="descending" />

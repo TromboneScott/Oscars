@@ -157,13 +157,15 @@
                 </td>
                 <td>
                   <center>
+                    <xsl:variable name="playerTime"
+                      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
                     <xsl:choose>
                       <xsl:when
-                        test="$playerResults/@time &lt;= $results/awards/@duration">
+                        test="$playerTime &lt;= $results/awards/@duration">
                         <xsl:call-template name="time">
                           <xsl:with-param name="time">
                             <xsl:value-of
-                              select="$results/awards/@duration - $playerResults/@time" />
+                              select="$results/awards/@duration - $playerTime" />
                           </xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
@@ -172,7 +174,7 @@
                         <xsl:call-template name="time">
                           <xsl:with-param name="time">
                             <xsl:value-of
-                              select="$playerResults/@time - $results/awards/@duration" />
+                              select="$playerTime - $results/awards/@duration" />
                           </xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>

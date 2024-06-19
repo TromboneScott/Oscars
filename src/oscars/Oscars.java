@@ -142,7 +142,8 @@ public class Oscars implements Runnable {
                 .map(category -> new Element("category").setAttribute("name", category.name)
                         .setAttribute("nominee", players.get(playerNum).picks.get(category.name)))
                 .reduce(players.get(playerNum).toDOM(), Element::addContent)
-                .setAttribute("id", String.valueOf(playerNum + 1)))
+                .setAttribute("id", String.valueOf(playerNum + 1))
+                .setAttribute("time", String.valueOf(players.get(playerNum).time)))
                 .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
 
         for (Player player : players)

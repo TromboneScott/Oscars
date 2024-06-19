@@ -60,9 +60,8 @@
                   </tr>
                   <xsl:variable name="ballotSort" select="@ballotSort" />
                   <xsl:apply-templates select="$results/ballots/ballot">
-                    <xsl:sort select="@*[name() = $ballotSort]"
-                      order="{column1/@order}" />
-                    <xsl:sort select="@name" order="{column1/@order}" />
+                    <xsl:sort select="@*[name() = $ballotSort]" order="{@order}" />
+                    <xsl:sort select="@name" order="{@order}" />
                   </xsl:apply-templates>
                 </table>
               </xsl:if>
@@ -195,20 +194,38 @@
         </tr>
       </thead>
       <tbody>
-        <xsl:variable name="sort" select="." />
-        <xsl:apply-templates select="$results/standings/player">
-          <xsl:sort select="@*[name() = $sort/column1/@name]"
-            data-type="{column1/@data-type}" order="{column1/@order}" />
-          <xsl:sort select="@*[name() = $sort/column2/@name]"
-            data-type="{column2/@data-type}" order="{column2/@order}" />
-          <xsl:sort select="@*[name() = $sort/column3/@name]"
-            data-type="{column3/@data-type}" order="{column3/@order}" />
-          <xsl:sort select="@*[name() = $sort/column4/@name]"
-            data-type="{column4/@data-type}" order="{column4/@order}" />
-          <xsl:sort select="@*[name() = $sort/column5/@name]"
-            data-type="{column5/@data-type}" order="{column5/@order}" />
-          <xsl:with-param name="inPlayer" select="$inPlayer" />
-        </xsl:apply-templates>
+        <xsl:choose>
+          <xsl:when test="starts-with(@name, 'time')">
+            <xsl:for-each select="$ballots/player">
+              <xsl:sort select="@time" data-type="number" order="{@order}" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
+              <xsl:variable name="player" select="." />
+              <xsl:apply-templates
+                select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:when test="starts-with(@name, 'name')">
+            <xsl:apply-templates select="$results/standings/player">
+              <xsl:sort select="@lastName" order="{@order}" />
+              <xsl:sort select="@firstName" order="{@order}" />
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="sort" select="." />
+            <xsl:apply-templates select="$results/standings/player">
+              <xsl:sort select="@*[name() = $sort/@column1]" data-type="number"
+                order="{@order}" />
+              <xsl:sort select="@*[name() = $sort/@column2]" data-type="number"
+                order="{@order}" />
+              <xsl:sort select="@*[name() = $sort/@column3]" data-type="number"
+                order="{@order}" />
+              <xsl:sort select="@lastName" />
+              <xsl:sort select="@firstName" />
+              <xsl:with-param name="inPlayer" select="$inPlayer" />
+            </xsl:apply-templates>
+          </xsl:otherwise>
+        </xsl:choose>
       </tbody>
     </table>
   </xsl:template>
@@ -359,9 +376,11 @@
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="attribute">
     <xsl:attribute name="class">
+      <xsl:variable name="player" select="." />
       <xsl:choose>
-        <xsl:when test="@time &lt;= $results/awards/@duration">
-          correct
+        <xsl:when
+          test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/awards/@duration">
+      correct
         </xsl:when>
         <xsl:when test="$inProgress">
           unannounced
@@ -372,9 +391,11 @@
       </xsl:choose> time </xsl:attribute>
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="time">
+    <xsl:variable name="player" select="." />
     <xsl:call-template name="time">
       <xsl:with-param name="time">
-        <xsl:value-of select="@time" />
+        <xsl:value-of
+          select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
       </xsl:with-param>
     </xsl:call-template>
   </xsl:template>
