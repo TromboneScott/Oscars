@@ -27,24 +27,24 @@ Download 100x148 pixel pictures for Google Form for all categories
   b. Click the "Add Image" icon that appears on the nominee
   c. Drag and drop the thumbnail image from the IMDB search
 
-Update any code and files as needed
-1. git add <file> (for each <file>)
-2. git commit
-3. git push
-4. git tag -f <year> && git push -f --tags (for current <year>)
-
-Copy year folder to oscars site and rename to current year.
-
-Edit data/definitions.xml using NOTEPAD
+Edit year/data/definitions.xml using NOTEPAD
 1. Update the categories as a few change each year
 2. Make sure the categories are in the same order as the Google Form
 3. Update the tieBreaker values
-4. These categories have to have these exact names: Timestamp, First, Last, Time, EMail
+4. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
 5. Add all the nominees under each category in the order you want them (usually alphabetical)
   a. Be sure to use NOTEPAD so all special characters such as á and é are in UTF-8 format
 6. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
+
+Update the year in global/index.html
+
+Tag code for current year
+1. Commit and push all changes
+2. git tag -f <year> && git push -f --tags (for current <year>)
+
+Copy year folder to oscars site and rename to current year.
 
 Proofread the category definitions:
 1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
@@ -61,16 +61,16 @@ From the new year folder run the batch:
   oscars.bat Ballot (or ./oscars.sh -b)
 Leave it running so it can continuosly download the ballots as they're entered
 
-Update the link in ../index.html to point to current year
+Proofread the category mapping:
+1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
+2. Verify that the year now shows up in the banner title (20xx OSCARS)
+3. Verify that each category (in bold) is mapped to the correct question on the ballot
+
+Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
 
 Check the ballots as they come in and fix any names where they didn't capitalize properly
 1. Fix names direclty in the Google Sheet that the Google Form is using to collect the data
 2. Either restart the batch or just wait until a new ballot is entered
-
-Proofread the category mapping:
-1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
-2. Verify that the year now shows up in the banner title (20xx OSCARS)
-2. Verify that each category (in bold) is mapped to the correct question on the ballot
 
 
 --- After contest deadline for entering guesses
@@ -89,7 +89,7 @@ Proofread the nominee mapping:
 2. Verify that each nominee (in bold) is mapped to the correct response(s) from the ballot
 3. Verify that any special characters in ballot responses are displayed correctly
 
-Edit (or delete and start over) the file data/responses.xml
+Edit (or delete and start over) the file data/mappings.xml
 - Fix any mistakes
 - Fix any special characters that were copied/pasted (use NOTEPAD so characters will be in UTF-8)
 - If any duplicates are found for the website mapping the last one will be used
