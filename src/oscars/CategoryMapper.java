@@ -60,16 +60,13 @@ public final class CategoryMapper {
 
     private Map<String, LinkedHashMap<String, String>> categoryMaps() throws IOException {
         Map<String, LinkedHashMap<String, String>> categoryMaps = readCategoryMaps();
-        Map<String, String> computed = new HashMap<>();
         Category.stream().forEach(category -> {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
             ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
                     .map(ballot -> ballot.values.get(category.name))
                     .filter(guess -> !categoryMap.containsKey(guess))
-                    .forEach(guess -> categoryMap.put(guess,
-                            computed.computeIfAbsent(guess.substring(0, guess.lastIndexOf(" - ")),
-                                    key -> mapping(category, key))));
+                    .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
             for (String nominee : category.nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");

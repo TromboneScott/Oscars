@@ -5,12 +5,10 @@ Create Google Form:
 2. Select the dots menu at top right and click "Make a copy"
 3. Make all necessary updates for the current year
   a. Change tie-breakers 3 & 4
-    i.  Even years: 3 = Actress, 4 = Supporting Actor
+    i. Even years: 3 = Actress, 4 = Supporting Actor
     ii. Odd years: 3 = Actor, 4 = Supporting Actress
   b. Update the broadcast date
-  c. Update nominees
-    i.  Copy from oscars.org and include special characters
-    ii. Use the string " - " to separate movie from person (or actor from movie)
+  c. Update nominees - Can be copied from oscars.org and include special characters
 4. Set up data export
   a. Click Responses tab
   b. Click the green spreadsheet button to Create Spreadsheet
