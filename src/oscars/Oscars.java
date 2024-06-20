@@ -131,7 +131,7 @@ public class Oscars implements Runnable {
         Directory.CATEGORY.cleanUp();
     }
 
-    public void writeCategoryPage(String inCategory) throws IOException {
+    private static void writeCategoryPage(String inCategory) throws IOException {
         Directory.CATEGORY.write(new Element("category").setAttribute("name", inCategory),
                 inCategory + ".xml", "category.xsl");
     }
