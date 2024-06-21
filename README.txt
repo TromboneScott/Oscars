@@ -30,31 +30,34 @@ Download 100x148 pixel pictures for Google Form for all categories
   c. Drag and drop the thumbnail image from the IMDB search
 
 Edit year/data/definitions.xml using NOTEPAD
-1. Update the categories as a few change each year
-2. Make sure the categories are in the same order as the Google Form
-3. Update the tieBreaker values
-4. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
-5. Add all the nominees under each category in the order you want them (usually alphabetical)
+1. Update the year
+2. Update the categories as a few change each year
+3. Make sure the categories are in the same order as the Google Form
+4. Update the tieBreaker values
+5. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
+6. Add all the nominees under each category in the order you want them (usually alphabetical)
   a. Be sure to use NOTEPAD so all special characters such as á and é are in UTF-8 format
-6. Set the img value for each nominee
+7. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
 
-Update the year in global/index.html
-
-Tag code for current year
-1. Commit and push all changes
-2. git tag -f <year> && git push -f --tags (for current <year>)
-
-Copy year folder to oscars site and rename to current year.
+Start the year
+1. Copy year folder to oscars site and rename to current year
+2. Update the year in global/index.html
+3. Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
 
 Proofread the category definitions:
 1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
-2. Verify that the tie breakers are correct (including Time as the final tie breaker)
-3. Verify that images for the Best Picture nominees show up in the banner at the top
-4. Verify that all nominee images match their names
-5. Verify that all nominee names are short enough to be displayed
-6. Verify that any special characters in nominee names are displayed correctly
+2. Verify the year in the banner title (20xx OSCARS)
+3. Verify that the tie breakers are correct (including Time as the final tie breaker)
+4. Verify that images for the Best Picture nominees show up in the banner at the top
+5. Verify that all nominee images match their names
+6. Verify that all nominee names are short enough to be displayed
+7. Verify that any special characters in nominee names are displayed correctly
+
+Commit changes for the year
+1. Commit and push all changes
+2. git tag -f <year> && git push -f --tags (for current <year>)
 
 
 -- While ballots are being collected
@@ -65,10 +68,7 @@ Leave it running so it can continuosly download the ballots as they're entered
 
 Proofread the category mapping:
 1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
-2. Verify that the year now shows up in the banner title (20xx OSCARS)
-3. Verify that each category (in bold) is mapped to the correct question on the ballot
-
-Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
+2. Verify that each category (in bold) is mapped to the correct question on the ballot
 
 Check the ballots as they come in and fix any names where they didn't capitalize properly
 1. Fix names direclty in the Google Sheet that the Google Form is using to collect the data
@@ -78,7 +78,7 @@ Check the ballots as they come in and fix any names where they didn't capitalize
 --- After contest deadline for entering guesses
 
 From the new year folder run the batch:
-  oscars.bat Ballot emails (or ./emails.sh)
+  oscars.bat Ballot emails (or ./oscars.sh -e)
 Send the list of names and emails to Scott Takeda.
 
 From the new year folder run the batch:

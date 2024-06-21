@@ -98,9 +98,11 @@
           <br />
           <br />
           <a href="../../history">Oscars History</a>
-          <br />
-          <br />
-          <xsl:call-template name="updated" />
+          <xsl:if test="$results/@updated">
+            <br />
+            <br />
+            <xsl:call-template name="updated" />
+          </xsl:if>
         </center>
       </body>
     </html>

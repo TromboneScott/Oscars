@@ -18,12 +18,12 @@
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
       <title>
-        <xsl:value-of select="$results/@year" /> OSCARS </title>
+        <xsl:value-of select="$definitions/@year" /> OSCARS </title>
       <style>body {background-color: PaleGoldenrod}</style>
     </head>
   </xsl:template>
   <xsl:template name="header">
-    <a href="https://oscars.site44.com/{$results/@year}" style="all: unset">
+    <a href="https://oscars.site44.com/{$definitions/@year}" style="all: unset">
       <table id="header"
         style="color:PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%;">
         <tr>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
           <th style="background-color: transparent">
-            <xsl:value-of select="$results/@year" /> OSCARS </th>
+            <xsl:value-of select="$definitions/@year" /> OSCARS </th>
         </tr>
         <tr>
           <td>

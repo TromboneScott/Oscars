@@ -1,7 +1,6 @@
 package oscars;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -32,9 +31,6 @@ public class Results {
     private static final String RESULTS_FILE = "results.xml";
 
     private static final String WINNER_DELIMITER = ",";
-
-    private static final String YEAR = Paths.get("").toAbsolutePath().normalize().getFileName()
-            .toString();
 
     private final Map<String, Map<String, String>> nomineeDescriptions;
 
@@ -167,10 +163,12 @@ public class Results {
     }
 
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        Directory.DATA.write(new Element("results").setAttribute("year", YEAR)
-                .setAttribute("updated",
-                        inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")))
-                .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
+        Directory.DATA
+                .write(new Element("results")
+                        .setAttribute("updated",
+                                inUpdated.format(
+                                        DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")))
+                        .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 
     public Element awardsDOM() {

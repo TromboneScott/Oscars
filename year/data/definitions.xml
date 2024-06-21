@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="../xsl/definitions.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<definitions>
+<definitions year="2024">
   <category name="Timestamp" />
   <category name="First Name" />
   <category name="Last Name" />
