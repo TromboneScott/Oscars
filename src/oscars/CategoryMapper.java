@@ -89,6 +89,9 @@ public final class CategoryMapper {
         String match = matches.get(inGuess);
         if (inCategory.nominees.contains(match))
             return match;
+        if (match != null)
+            System.out.println(
+                    "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
 
         List<String> mappings = inCategory.nominees.stream()
                 .filter(nominee -> inGuess.toUpperCase().contains(nominee.toUpperCase()))
