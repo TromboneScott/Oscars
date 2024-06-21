@@ -25,6 +25,8 @@ public final class CategoryMapper {
 
     private final Map<String, LinkedHashMap<String, String>> categoryMaps;
 
+    private final HashMap<String, String> matches = new HashMap<>();
+
     public CategoryMapper() throws IOException {
         ballots = Ballot.readBallots().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
@@ -64,9 +66,13 @@ public final class CategoryMapper {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
             ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
-                    .map(ballot -> ballot.values.get(category.name))
-                    .filter(guess -> !categoryMap.containsKey(guess))
-                    .forEach(guess -> categoryMap.put(guess, mapping(category, guess)));
+                    .map(ballot -> ballot.values.get(category.name)).filter(
+                            guess -> !categoryMap.containsKey(guess))
+                    .forEach(guess -> categoryMap.put(guess,
+                            mapping(category,
+                                    guess.contains(" - ")
+                                            ? guess.substring(0, guess.lastIndexOf(" - "))
+                                            : guess)));
             for (String nominee : category.nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
@@ -79,12 +85,18 @@ public final class CategoryMapper {
         return categoryMaps;
     }
 
-    private static String mapping(Category inCategory, String inGuess) {
+    private String mapping(Category inCategory, String inGuess) {
+        String match = matches.get(inGuess);
+        if (inCategory.nominees.contains(match))
+            return match;
+
         List<String> mappings = inCategory.nominees.stream()
                 .filter(nominee -> inGuess.toUpperCase().contains(nominee.toUpperCase()))
                 .collect(Collectors.toList());
-        return mappings.size() == 1 ? mappings.get(0)
+        String mapping = mappings.size() == 1 ? mappings.get(0)
                 : prompt(inCategory, inGuess, mappings.isEmpty() ? inCategory.nominees : mappings);
+        matches.put(inGuess, mapping);
+        return mapping;
     }
 
     private static String prompt(Category inCategory, String inGuess, List<String> inNominees) {
