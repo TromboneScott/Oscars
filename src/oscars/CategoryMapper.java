@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
 /** Map the Category data - Immutable */
@@ -66,13 +67,10 @@ public final class CategoryMapper {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
             ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
-                    .map(ballot -> ballot.values.get(category.name)).filter(
-                            guess -> !categoryMap.containsKey(guess))
-                    .forEach(guess -> categoryMap.put(guess,
-                            mapping(category,
-                                    guess.contains(" - ")
-                                            ? guess.substring(0, guess.lastIndexOf(" - "))
-                                            : guess)));
+                    .map(ballot -> ballot.values.get(category.name))
+                    .filter(guess -> !categoryMap.containsKey(guess))
+                    .forEach(guess -> categoryMap.put(guess, mapping(category,
+                            StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
             for (String nominee : category.nominees)
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
@@ -94,7 +92,7 @@ public final class CategoryMapper {
                     "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
 
         List<String> mappings = inCategory.nominees.stream()
-                .filter(nominee -> inGuess.toUpperCase().contains(nominee.toUpperCase()))
+                .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
                 .collect(Collectors.toList());
         String mapping = mappings.size() == 1 ? mappings.get(0)
                 : prompt(inCategory, inGuess, mappings.isEmpty() ? inCategory.nominees : mappings);
