@@ -16,6 +16,7 @@ import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
@@ -83,6 +84,7 @@ public final class Category implements ChartColor {
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
+        chart.setPadding(new RectangleInsets(10, 0, 0, 25));
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
