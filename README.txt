@@ -46,6 +46,15 @@ Start the year
 2. Update the year in global/index.html
 3. Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
 
+Proofread the category definitions:
+1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
+2. Verify the year in the banner title (20xx OSCARS)
+3. Verify that the tie breakers are correct (including Time as the final tie breaker)
+4. Verify that images for the Best Picture nominees show up in the banner at the top
+5. Verify that all nominee images match their names
+6. Verify that all nominee names are short enough to be displayed
+7. Verify that any special characters in nominee names are displayed correctly
+
 Commit changes for the year
 1. Commit and push all changes
 2. git tag -f <year> && git push -f --tags (for current <year>)
@@ -56,10 +65,6 @@ Commit changes for the year
 From the new year folder run the batch:
   oscars.bat Ballot (or ./oscars.sh -b)
 Leave it running so it can continuosly download the ballots as they're entered
-
-Proofread the header on the website
-1. Verify the year in the banner title (20xx OSCARS)
-2. Verify that images for the Best Picture nominees show up in the banner
 
 Check the ballots as they come in and fix any names where they didn't capitalize properly
 1. Fix names direclty in the Google Sheet that the Google Form is using to collect the data
@@ -79,13 +84,9 @@ This will be saved so you only have to do this for new survey answers.
 
 Proofread the category definitions:
 1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
-2. Verify that the tie breakers are correct (including Time as the final tie breaker)
-3. Verify that each category (in bold) is mapped to the correct question on the ballot
-4. Verify that all nominee images match their names
-5. Verify that all nominee names are short enough to be displayed
-6. Verify that any special characters in nominee names are displayed correctly
-7. Verify that each nominee (in bold) is mapped to the correct response(s) from the ballot
-8. Verify that any special characters in ballot responses are displayed correctly
+2. Verify that each category (in bold) is mapped to the correct question on the ballot
+3. Verify that each nominee (in bold) is mapped to the correct response(s) from the ballot
+4. Verify that any special characters in ballot responses are displayed correctly
 
 Edit (or delete and start over) the file data/mappings.xml
 - Fix any mistakes
