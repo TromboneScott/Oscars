@@ -1,11 +1,6 @@
 package oscars;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -23,12 +18,8 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
-import com.opencsv.CSVReader;
-
 /** Entries on a player's ballot - Immutable */
 public final class Ballot {
-    private static final String URL_FILE = "ResponsesURL.txt";
-
     /** Provides the latest Ballot for each player */
     public static final Collector<Ballot, ?, Collection<Ballot>> LATEST = Collectors
             .collectingAndThen(
@@ -43,35 +34,21 @@ public final class Ballot {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            readBallots().filter(ballot -> !ballot.values.get(Category.EMAIL).isEmpty())
+            new BallotReader().stream()
+                    .filter(ballot -> !ballot.values.get(Category.EMAIL).isEmpty())
                     .forEach(ballot -> System.out
                             .println(ballot.getName() + " = " + ballot.values.get(Category.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
 
-    private Ballot(String[] inValues) {
+    public Ballot(String[] inValues) {
         if (inValues.length != Category.ALL.size())
             throw new RuntimeException("Ballot length: " + inValues.length
                     + " does not match category definitions: " + Category.ALL.size());
         values = Collections.unmodifiableMap(IntStream.range(0, inValues.length).boxed()
                 .collect(Collectors.toMap(column -> Category.ALL.get(column).name,
                         column -> inValues[column].trim())));
-    }
-
-    public static Stream<Ballot> readBallots() throws IOException {
-        try (Stream<String> lines = Files
-                .lines(Paths.get(Ballot.class.getClassLoader().getResource(URL_FILE).toURI()))) {
-            URL url = new URL(lines.iterator().next());
-            url.openConnection().setDefaultUseCaches(false);
-            try (CSVReader reader = new CSVReader(
-                    new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-                CategoryMapper.setHeaders(reader.readNext());
-                return reader.readAll().stream().map(Ballot::new);
-            }
-        } catch (Exception e) {
-            throw new IOException("Error reading ballots using URL from: " + URL_FILE, e);
-        }
     }
 
     private String getName() {
@@ -87,7 +64,7 @@ public final class Ballot {
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Ballot> ballots = readBallots().collect(LATEST);
+                Collection<Ballot> ballots = new BallotReader().stream().collect(LATEST);
                 LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {

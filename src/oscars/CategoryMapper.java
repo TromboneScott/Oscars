@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -29,19 +28,13 @@ public final class CategoryMapper {
     private final HashMap<String, String> matches = new HashMap<>();
 
     public CategoryMapper() throws IOException {
-        ballots = Ballot.readBallots().collect(Ballot.LATEST);
+        BallotReader ballotReader = new BallotReader();
+        ballots = ballotReader.stream().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
-        writeCategoryMaps(readFile(element -> element.getAttributeValue("ballot")), categoryMaps);
-    }
-
-    public static void setHeaders(String[] inHeaders) throws IOException {
-        if (inHeaders.length != Category.ALL.size())
-            throw new IOException("Ballot headers: " + inHeaders.length
-                    + " does not match defined categories: " + Category.ALL.size());
-        writeCategoryMaps(
-                IntStream.range(0, inHeaders.length).boxed().collect(Collectors.toMap(
-                        column -> Category.ALL.get(column).name, column -> inHeaders[column])),
-                readCategoryMaps());
+        writeCategoryMaps(IntStream.range(0, ballotReader.headers.size()).boxed()
+                .collect(Collectors.toMap(column -> Category.ALL.get(column).name,
+                        column -> ballotReader.headers.get(column))),
+                categoryMaps);
     }
 
     public List<Player> getPlayers() {
@@ -114,21 +107,18 @@ public final class CategoryMapper {
         }
     }
 
-    private static <T> Map<String, T> readFile(Function<Element, T> inFunction) throws IOException {
+    private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
+            throws IOException {
         Element mappingsDOM = Directory.DATA.getRootElement(MAPPINGS_FILE);
         if (mappingsDOM != null)
             return mappingsDOM.getChildren("category").stream().collect(Collectors.toMap(
-                    categoryDOM -> categoryDOM.getAttributeValue("name"), inFunction::apply));
+                    categoryDOM -> categoryDOM.getAttributeValue("name"),
+                    element -> element.getChildren("nominee").stream()
+                            .collect(Collectors.toMap(mapDOM -> mapDOM.getAttributeValue("ballot"),
+                                    mapDOM -> mapDOM.getAttributeValue("name"),
+                                    (list1, list2) -> list1, LinkedHashMap::new))));
         System.out.println("\nStarting new mappings file: " + MAPPINGS_FILE);
         return new HashMap<>();
-    }
-
-    private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
-            throws IOException {
-        return readFile(element -> element.getChildren("nominee").stream()
-                .collect(Collectors.toMap(mapDOM -> mapDOM.getAttributeValue("ballot"),
-                        mapDOM -> mapDOM.getAttributeValue("name"), (list1, list2) -> list1,
-                        LinkedHashMap::new)));
     }
 
     private static void writeCategoryMaps(Map<String, String> inHeaderMap,
