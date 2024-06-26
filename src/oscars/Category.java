@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,8 +71,8 @@ public final class Category implements ChartColor {
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     public String chartName(Results inResults) {
-        Set<String> winners = inResults.winners(name);
-        return name + nominees.stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
+        return name + nominees.stream()
+                .map(nominee -> inResults.winners(name).contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
 
@@ -90,10 +89,9 @@ public final class Category implements ChartColor {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND);
-
-        Set<String> winners = inResults.winners(name);
-        plot.setRenderer(new NomineeRenderer(winners.isEmpty() ? nominee -> GRAY
-                : nominee -> winners.contains(nominees.get(nominee)) ? GREEN : RED));
+        plot.setRenderer(new NomineeRenderer(inResults.winners(name).isEmpty() ? nominee -> GRAY
+                : nominee -> inResults.winners(name).contains(nominees.get(nominee)) ? GREEN
+                        : RED));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);

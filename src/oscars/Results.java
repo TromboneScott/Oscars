@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
@@ -34,17 +35,16 @@ public class Results {
 
     private final Map<String, Map<String, String>> nomineeDescriptions;
 
-    private final Map<String, Set<String>> winners;
+    private final Map<String, Collection<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
-        Element resultsDOM = Directory.DATA.getRootElement(RESULTS_FILE);
-        if (resultsDOM == null)
-            System.out.println("\nStarting new results file: " + RESULTS_FILE);
-        winners = winners(resultsDOM);
-        showTimes = showTimes(resultsDOM);
+        Element awardsDOM = Optional.ofNullable(Directory.DATA.getRootElement(RESULTS_FILE))
+                .map(element -> element.getChild("awards")).orElseGet(() -> new Element("EMPTY"));
+        winners = winners(awardsDOM);
+        showTimes = showTimes(awardsDOM);
     }
 
     /**
@@ -101,14 +101,14 @@ public class Results {
         String input = STDIN.nextLine();
         try {
             winners.put(inCategory.name,
-                    Collections.unmodifiableSet(new LinkedHashSet<>(
+                    Collections.unmodifiableCollection(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
                                         if (number > inCategory.nominees.size() || number < 1)
                                             throw new NumberFormatException();
                                     }).sorted()
                                     .mapToObj(number -> inCategory.nominees.get(number - 1))
-                                    .collect(Collectors.toList()))));
+                                    .collect(Collectors.toCollection(LinkedHashSet::new))));
             inCategory.writeChart(this, inPlayers);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
@@ -152,13 +152,13 @@ public class Results {
     }
 
     /**
-     * Get the winner(s) of the given category
+     * Get the winner(s) of the given category in display order
      *
      * @param inCategory
      *            The category to get the winner(s) for
-     * @return All the winners that have been entered for this category
+     * @return All the winners that have been entered for this category in display order
      */
-    public Set<String> winners(String inCategory) {
+    public Collection<String> winners(String inCategory) {
         return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 
@@ -173,7 +173,7 @@ public class Results {
 
     public Element awardsDOM() {
         return Category.stream()
-                .map(category -> winners.get(category.name).stream()
+                .map(category -> winners(category.name).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.name),
                                 Element::addContent))
@@ -187,9 +187,8 @@ public class Results {
                         String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
     }
 
-    private static Map<String, Set<String>> winners(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("awards"))
-                .map(element -> element.getChildren("category").stream()).orElseGet(Stream::empty)
+    private static Map<String, Collection<String>> winners(Element inAwardsDOM) {
+        return inAwardsDOM.getChildren("category").stream()
                 .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
                         categoryDOM -> Collections.unmodifiableSet(
                                 new LinkedHashSet<>(categoryDOM.getChildren("nominee").stream()
@@ -197,13 +196,11 @@ public class Results {
                                         .collect(Collectors.toList())))));
     }
 
-    private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inResultsDOM) {
-        return Optional.ofNullable(inResultsDOM).map(element -> element.getChild("awards"))
-                .map(element -> Stream.of(ShowTimeType.values())
-                        .map(type -> new SimpleEntry<>(type,
-                                element.getAttributeValue(type.name().toLowerCase())))
-                        .filter(entry -> !entry.getValue().isEmpty()))
-                .orElseGet(Stream::empty).collect(Collectors.toMap(Entry::getKey,
-                        entry -> ZonedDateTime.parse(entry.getValue())));
+    private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inAwardsDOM) {
+        return Stream.of(ShowTimeType.values())
+                .map(type -> new SimpleEntry<>(type,
+                        inAwardsDOM.getAttributeValue(type.name().toLowerCase())))
+                .filter(entry -> StringUtils.isNotEmpty(entry.getValue())).collect(Collectors
+                        .toMap(Entry::getKey, entry -> ZonedDateTime.parse(entry.getValue())));
     }
 }

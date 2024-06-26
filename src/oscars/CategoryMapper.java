@@ -31,10 +31,7 @@ public final class CategoryMapper {
         BallotReader ballotReader = new BallotReader();
         ballots = ballotReader.stream().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
-        writeCategoryMaps(IntStream.range(0, ballotReader.headers.size()).boxed()
-                .collect(Collectors.toMap(column -> Category.ALL.get(column).name,
-                        column -> ballotReader.headers.get(column))),
-                categoryMaps);
+        writeCategoryMaps(ballotReader.headers);
     }
 
     public List<Player> getPlayers() {
@@ -109,27 +106,30 @@ public final class CategoryMapper {
 
     private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
             throws IOException {
-        Element mappingsDOM = Directory.DATA.getRootElement(MAPPINGS_FILE);
-        if (mappingsDOM != null)
-            return mappingsDOM.getChildren("category").stream().collect(Collectors.toMap(
-                    categoryDOM -> categoryDOM.getAttributeValue("name"),
-                    element -> element.getChildren("nominee").stream()
-                            .collect(Collectors.toMap(mapDOM -> mapDOM.getAttributeValue("ballot"),
-                                    mapDOM -> mapDOM.getAttributeValue("name"),
-                                    (list1, list2) -> list1, LinkedHashMap::new))));
-        System.out.println("\nStarting new mappings file: " + MAPPINGS_FILE);
-        return new HashMap<>();
+        return Optional.ofNullable(Directory.DATA.getRootElement(MAPPINGS_FILE))
+                .map(mappingsDOM -> mappingsDOM.getChildren("category").stream())
+                .orElseGet(Stream::empty)
+                .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
+                        categoryDOM -> categoryDOM.getChildren("nominee").stream()
+                                .collect(Collectors.toMap(
+                                        nomineeDOM -> nomineeDOM.getAttributeValue("ballot"),
+                                        nomineeDOM -> nomineeDOM.getAttributeValue("name"),
+                                        (name1, name2) -> name2, LinkedHashMap::new))));
     }
 
-    private static void writeCategoryMaps(Map<String, String> inHeaderMap,
-            Map<String, LinkedHashMap<String, String>> inCategoryMaps) throws IOException {
-        Directory.DATA.write(Category.ALL.stream().map(category -> category.name)
-                .map(category -> Optional.ofNullable(inCategoryMaps.get(category))
-                        .map(mapping -> mapping.entrySet().stream()).orElseGet(Stream::empty)
-                        .map(map -> new Element("nominee").setAttribute("name", map.getValue())
-                                .setAttribute("ballot", map.getKey()))
-                        .reduce(new Element("category").setAttribute("name", category).setAttribute(
-                                "ballot", inHeaderMap.get(category)), Element::addContent))
+    private void writeCategoryMaps(List<String> inHeaders) throws IOException {
+        Directory.DATA.write(IntStream.range(0, inHeaders.size())
+                .mapToObj(
+                        column -> categoryDOM(Category.ALL.get(column).name, inHeaders.get(column)))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
+    }
+
+    private Element categoryDOM(String inName, String inBallot) {
+        return Optional.ofNullable(categoryMaps.get(inName))
+                .map(mapping -> mapping.entrySet().stream()).orElseGet(Stream::empty)
+                .map(map -> new Element("nominee").setAttribute("name", map.getValue())
+                        .setAttribute("ballot", map.getKey()))
+                .reduce(new Element("category").setAttribute("name", inName).setAttribute("ballot",
+                        inBallot), Element::addContent);
     }
 }
