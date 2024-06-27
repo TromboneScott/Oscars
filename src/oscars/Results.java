@@ -7,18 +7,17 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,10 +91,8 @@ public class Results {
     private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
         System.out.println("\n" + toString(inCategory.name));
 
-        for (int x = 0; x < inCategory.nominees.size(); x++)
-            System.out.println((x + 1) + ": "
-                    + nomineeDescriptions.get(inCategory.name).get(inCategory.nominees.get(x)));
-
+        IntStream.range(0, inCategory.nominees.size()).forEach(x -> System.out.println((x + 1)
+                + ": " + nomineeDescriptions.get(inCategory.name).get(inCategory.nominees.get(x))));
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
@@ -179,28 +176,25 @@ public class Results {
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)
                 .setAttributes(Stream.of(ShowTimeType.values())
-                        .map(type -> new Attribute(type.name().toLowerCase(),
-                                Optional.ofNullable(showTimes.get(type)).map(Object::toString)
-                                        .orElse("")))
+                        .map(type -> new Attribute(type.name().toLowerCase(), get(type)))
                         .collect(Collectors.toList()))
                 .setAttribute("duration",
                         String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
     }
 
     private static Map<String, Collection<String>> winners(Element inAwardsDOM) {
-        return inAwardsDOM.getChildren("category").stream()
-                .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
-                        categoryDOM -> Collections.unmodifiableSet(
-                                new LinkedHashSet<>(categoryDOM.getChildren("nominee").stream()
-                                        .map(element -> element.getAttributeValue("name"))
-                                        .collect(Collectors.toList())))));
+        return inAwardsDOM.getChildren("category").stream().collect(Collectors.toMap(
+                categoryDOM -> categoryDOM.getAttributeValue("name"),
+                categoryDOM -> Collections.unmodifiableCollection(categoryDOM.getChildren("nominee")
+                        .stream().map(element -> element.getAttributeValue("name"))
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))));
     }
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inAwardsDOM) {
         return Stream.of(ShowTimeType.values())
-                .map(type -> new SimpleEntry<>(type,
-                        inAwardsDOM.getAttributeValue(type.name().toLowerCase())))
-                .filter(entry -> StringUtils.isNotEmpty(entry.getValue())).collect(Collectors
-                        .toMap(Entry::getKey, entry -> ZonedDateTime.parse(entry.getValue())));
+                .filter(type -> StringUtils
+                        .isNotEmpty(inAwardsDOM.getAttributeValue(type.name().toLowerCase())))
+                .collect(Collectors.toMap(type -> type, type -> ZonedDateTime
+                        .parse(inAwardsDOM.getAttributeValue(type.name().toLowerCase()))));
     }
 }
