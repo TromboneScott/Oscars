@@ -50,7 +50,7 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
 
         System.out.print("Step 3 of 4: Writing rank images... ");
-        RankChart.writeAll(players.size());
+        writeRankCharts();
         System.out.println("DONE");
 
         System.out.print("Step 4 of 4: Writing web pages... ");
@@ -69,7 +69,7 @@ public class Oscars implements Runnable {
         Directory.CATEGORY
                 .cleanUpCharts(Category.stream().map(category -> category.chartName(results)));
         Directory.RANK.cleanUpCharts(
-                players.stream().mapToLong(standings::rank).mapToObj(RankChart::name));
+                players.stream().map(player -> new RankChart(standings.rank(player)).getName()));
         System.out.println("DONE");
     }
 
@@ -120,6 +120,12 @@ public class Oscars implements Runnable {
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
         Results.write(updated, results.awardsDOM(), standings.toDOM(players));
+    }
+
+    private void writeRankCharts() throws IOException {
+        for (int rank = 1; rank <= players.size(); rank++)
+            new RankChart(rank).write(players.size());
+        Directory.RANK.cleanUp();
     }
 
     private void writeCategoryPages() throws IOException {

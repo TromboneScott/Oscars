@@ -9,28 +9,31 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public abstract class RankChart implements ChartColor {
-    public static String name(long inRank) {
-        return "rank_" + inRank + ".png";
+public class RankChart implements ChartColor {
+    private final long rank;
+
+    public RankChart(long inRank) {
+        rank = inRank;
     }
 
-    public static void writeAll(int inTotal) throws IOException {
-        for (int rank = 1; rank <= inTotal; rank++) {
-            DefaultCategoryDataset data = new DefaultCategoryDataset();
-            data.addValue(rank, "A", "");
-            data.addValue(inTotal, "B", "");
+    public String getName() {
+        return "rank_" + rank + ".png";
+    }
 
-            JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
-            chart.removeLegend();
+    public void write(int inTotal) throws IOException {
+        DefaultCategoryDataset data = new DefaultCategoryDataset();
+        data.addValue(rank, "A", "");
+        data.addValue(inTotal, "B", "");
 
-            CategoryPlot plot = chart.getCategoryPlot();
-            plot.getRangeAxis().setRange(1, Math.max(2, inTotal));
-            plot.getRangeAxis().setInverted(true);
-            plot.getRenderer().setSeriesPaint(0, GRAY);
-            plot.getRenderer().setSeriesPaint(1, GREEN);
+        JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
+        chart.removeLegend();
 
-            ChartUtils.saveChartAsPNG(new File(Directory.RANK, name(rank)), chart, 80, 180);
-        }
-        Directory.RANK.cleanUp();
+        CategoryPlot plot = chart.getCategoryPlot();
+        plot.getRangeAxis().setRange(1, Math.max(2, inTotal));
+        plot.getRangeAxis().setInverted(true);
+        plot.getRenderer().setSeriesPaint(0, GRAY);
+        plot.getRenderer().setSeriesPaint(1, GREEN);
+
+        ChartUtils.saveChartAsPNG(new File(Directory.RANK, getName()), chart, 80, 180);
     }
 }
