@@ -23,7 +23,7 @@ public final class Standings {
 
     private final Map<String, Set<String>> winners;
 
-    public final boolean showEnded;
+    private final boolean showEnded;
 
     public final long elapsedTime;
 
@@ -31,7 +31,7 @@ public final class Standings {
         winners = Collections.unmodifiableMap(Category.stream().map(category -> category.name)
                 .collect(Collectors.toMap(category -> category, category -> Collections
                         .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
-        showEnded = !inResults.get(ShowTimeType.END).isEmpty();
+        showEnded = inResults.showEnded();
         scoreMap = Collections.unmodifiableMap(
                 inPlayers.stream().collect(Collectors.toMap(player -> player, this::score)));
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());

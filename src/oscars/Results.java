@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
@@ -85,7 +84,8 @@ public class Results {
     }
 
     private String toString(ShowTimeType inShowTimeType) {
-        return inShowTimeType + " = " + get(inShowTimeType);
+        return inShowTimeType + " = " + Optional.ofNullable(showTimes.get(inShowTimeType))
+                .map(Object::toString).orElse("");
     }
 
     private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
@@ -130,8 +130,8 @@ public class Results {
             }
     }
 
-    public String get(ShowTimeType inShowTimeType) {
-        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(Object::toString).orElse("");
+    public boolean showEnded() {
+        return showTimes.containsKey(ShowTimeType.END);
     }
 
     /**
@@ -175,8 +175,9 @@ public class Results {
                         .reduce(new Element("category").setAttribute("name", category.name),
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)
-                .setAttributes(Stream.of(ShowTimeType.values())
-                        .map(type -> new Attribute(type.name().toLowerCase(), get(type)))
+                .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
+                        .map(type -> new Attribute(type.name().toLowerCase(),
+                                showTimes.get(type).toString()))
                         .collect(Collectors.toList()))
                 .setAttribute("duration",
                         String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
@@ -192,8 +193,7 @@ public class Results {
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inAwardsDOM) {
         return Stream.of(ShowTimeType.values())
-                .filter(type -> StringUtils
-                        .isNotEmpty(inAwardsDOM.getAttributeValue(type.name().toLowerCase())))
+                .filter(type -> inAwardsDOM.getAttributeValue(type.name().toLowerCase()) != null)
                 .collect(Collectors.toMap(type -> type, type -> ZonedDateTime
                         .parse(inAwardsDOM.getAttributeValue(type.name().toLowerCase()))));
     }
