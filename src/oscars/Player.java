@@ -11,8 +11,6 @@ import org.jdom2.Element;
 
 /** Player information - Immutable */
 public final class Player {
-    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm:ss");
-
     /** Player's picks for each category - Immutable */
     public final Map<String, String> picks;
 
@@ -28,7 +26,8 @@ public final class Player {
     public Player(Map<String, String> inPicks) {
         picks = Collections.unmodifiableMap(new HashMap<>(inPicks));
         try {
-            time = LocalTime.parse(picks.get(Category.TIME), TIME_FORMAT).toSecondOfDay();
+            time = LocalTime.parse(picks.get(Category.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
+                    .toSecondOfDay();
         } catch (DateTimeParseException e) {
             throw new RuntimeException(
                     picks.get(Category.FIRST_NAME) + " " + picks.get(Category.LAST_NAME)

@@ -31,6 +31,9 @@ public class Results {
 
     private static final String WINNER_DELIMITER = ",";
 
+    private static final DateTimeFormatter UPDATED_PATTERN = DateTimeFormatter
+            .ofPattern("MM/dd/yyyy hh:mm:ss a - z");
+
     private final Map<String, Map<String, String>> nomineeDescriptions;
 
     private final Map<String, Collection<String>> winners;
@@ -160,12 +163,10 @@ public class Results {
     }
 
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        Directory.DATA
-                .write(new Element("results")
-                        .setAttribute("updated",
-                                inUpdated.format(
-                                        DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z")))
-                        .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
+        Directory.DATA.write(
+                new Element("results").setAttribute("updated", inUpdated.format(UPDATED_PATTERN))
+                        .addContent(Arrays.asList(inContent)),
+                RESULTS_FILE, null);
     }
 
     public Element awardsDOM() {
