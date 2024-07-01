@@ -9,7 +9,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public class RankChart implements ChartColor {
+public class RankChart {
     private final long rank;
 
     public RankChart(long inRank) {
@@ -31,8 +31,8 @@ public class RankChart implements ChartColor {
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(1, Math.max(2, inTotal));
         plot.getRangeAxis().setInverted(true);
-        plot.getRenderer().setSeriesPaint(0, GRAY);
-        plot.getRenderer().setSeriesPaint(1, GREEN);
+        plot.getRenderer().setSeriesPaint(0, ChartPaint.GRAY);
+        plot.getRenderer().setSeriesPaint(1, ChartPaint.GREEN);
 
         ChartUtils.saveChartAsPNG(new File(Directory.RANK, getName()), chart, 80, 180);
     }

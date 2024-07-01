@@ -19,7 +19,7 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
-public final class Category implements ChartColor {
+public final class Category {
     private static final String DEFINITIONS_FILE = "definitions.xml";
 
     /** Categories in display order */
@@ -88,10 +88,12 @@ public final class Category implements ChartColor {
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-        plot.setBackgroundPaint(BACKGROUND);
-        plot.setRenderer(new NomineeRenderer(inResults.winners(name).isEmpty() ? nominee -> GRAY
-                : nominee -> inResults.winners(name).contains(nominees.get(nominee)) ? GREEN
-                        : RED));
+        plot.setBackgroundPaint(ChartPaint.BACKGROUND);
+        plot.setRenderer(
+                new NomineeRenderer(inResults.winners(name).isEmpty() ? nominee -> ChartPaint.GRAY
+                        : nominee -> inResults.winners(name).contains(nominees.get(nominee))
+                                ? ChartPaint.GREEN
+                                : ChartPaint.RED));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);
