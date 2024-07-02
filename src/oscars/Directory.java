@@ -74,12 +74,10 @@ public class Directory extends File {
                     .toInstant().isBefore(START))
                 file.delete();
     }
-
     /** Delete all charts in this directory that we don't want to keep */
-    public void cleanUpCharts(Stream<String> inChartsToKeep) {
-        Set<String> chartsToKeep = inChartsToKeep.collect(Collectors.toSet());
+    public void cleanUpCharts(Set<String> inChartsToKeep) {
         for (File file : listFiles())
-            if (file.getName().endsWith(".png") && !chartsToKeep.contains(file.getName()))
+            if (file.getName().endsWith(".png") && !inChartsToKeep.contains(file.getName()))
                 file.delete();
     }
 }

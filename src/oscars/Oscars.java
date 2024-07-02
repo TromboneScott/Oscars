@@ -66,10 +66,11 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        Directory.CATEGORY
-                .cleanUpCharts(Category.stream().map(category -> category.chartName(results)));
+        Directory.CATEGORY.cleanUpCharts(Category.stream()
+                .map(category -> category.chartName(results)).collect(Collectors.toSet()));
         Directory.RANK.cleanUpCharts(
-                players.stream().map(player -> new RankChart(standings.rank(player)).getName()));
+                players.stream().map(player -> new RankChart(standings.rank(player)).getName())
+                        .collect(Collectors.toSet()));
         System.out.println("DONE");
     }
 
