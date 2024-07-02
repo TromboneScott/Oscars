@@ -29,7 +29,7 @@ public class BallotReader {
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
                 if (headers.size() != Category.ALL.size())
-                    throw new IOException("Ballot headers size: " + headers
+                    throw new IOException("Ballot headers size: " + headers.size()
                             + " does not match defined categories: " + Category.ALL.size());
                 ballots = Collections.unmodifiableList(reader.readAll());
             }

@@ -22,7 +22,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public final class Category {
     private static final String DEFINITIONS_FILE = "definitions.xml";
 
-    /** Categories in display order */
+    /** All categories in display order */
     public static final List<Category> ALL = Collections.unmodifiableList(all());
 
     public static final String TIMESTAMP = "Timestamp";
@@ -55,16 +55,16 @@ public final class Category {
 
     private static List<Category> all() {
         try {
-            return Directory.DATA.getRootElement(DEFINITIONS_FILE).getChildren("category").stream()
-                    .map(Category::new).collect(Collectors.toList());
-        } catch (NullPointerException e) {
-            throw new RuntimeException("File not found: " + DEFINITIONS_FILE);
+            return Optional.ofNullable(Directory.DATA.getRootElement(DEFINITIONS_FILE))
+                    .orElseThrow(() -> new RuntimeException("File not found: " + DEFINITIONS_FILE))
+                    .getChildren("category").stream().map(Category::new)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
         }
     }
 
-    /** Stream of categories (in order) that have nominees */
+    /** Stream of categories in display order that have nominees */
     public static Stream<Category> stream() {
         return ALL.stream().filter(category -> !category.nominees.isEmpty());
     }
@@ -90,9 +90,8 @@ public final class Category {
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
         plot.setRenderer(
-                new NomineeRenderer(inResults.winners(name).isEmpty() ? nominee -> ChartPaint.GRAY
-                        : nominee -> inResults.winners(name).contains(nominees.get(nominee))
-                                ? ChartPaint.GREEN
+                new NomineeRenderer(nominee -> inResults.winners(name).isEmpty() ? ChartPaint.GRAY
+                        : inResults.winners(name).contains(nominees.get(nominee)) ? ChartPaint.GREEN
                                 : ChartPaint.RED));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
