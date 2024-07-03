@@ -40,6 +40,16 @@ public class Results {
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
+    private static enum ShowTimeType {
+        START,
+        END;
+
+        @Override
+        public String toString() {
+            return "Show Time " + name();
+        }
+    }
+
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
         Element awardsDOM = Optional.ofNullable(Directory.DATA.getRootElement(RESULTS_FILE))
