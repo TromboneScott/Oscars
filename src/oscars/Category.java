@@ -19,7 +19,6 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -94,23 +93,26 @@ public final class Category {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-
-        @SuppressWarnings("serial")
-        CategoryItemRenderer renderer = new BarRenderer() {
-            private final Collection<String> winners = inResults.winners(name);
-
-            @Override
-            public Paint getItemPaint(final int inRow, final int inColumn) {
-                return winners.isEmpty() ? ChartPaint.GRAY
-                        : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN
-                                : ChartPaint.RED;
-            }
-        };
-        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        renderer.setDefaultItemLabelsVisible(true);
-        plot.setRenderer(renderer);
+        plot.setRenderer(new NomineeRenderer(inResults));
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);
+    }
+
+    @SuppressWarnings("serial")
+    private class NomineeRenderer extends BarRenderer {
+        private final Collection<String> winners;
+
+        public NomineeRenderer(Results inResults) {
+            winners = inResults.winners(name);
+            setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+            setDefaultItemLabelsVisible(true);
+        }
+
+        @Override
+        public Paint getItemPaint(final int inRow, final int inColumn) {
+            return winners.isEmpty() ? ChartPaint.GRAY
+                    : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN : ChartPaint.RED;
+        }
     }
 }
