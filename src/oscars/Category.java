@@ -1,8 +1,10 @@
 package oscars;
 
+import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +16,10 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -89,10 +94,21 @@ public final class Category {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-        plot.setRenderer(
-                new NomineeRenderer(nominee -> inResults.winners(name).isEmpty() ? ChartPaint.GRAY
-                        : inResults.winners(name).contains(nominees.get(nominee)) ? ChartPaint.GREEN
-                                : ChartPaint.RED));
+
+        @SuppressWarnings("serial")
+        CategoryItemRenderer renderer = new BarRenderer() {
+            private final Collection<String> winners = inResults.winners(name);
+
+            @Override
+            public Paint getItemPaint(final int inRow, final int inColumn) {
+                return winners.isEmpty() ? ChartPaint.GRAY
+                        : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN
+                                : ChartPaint.RED;
+            }
+        };
+        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        renderer.setDefaultItemLabelsVisible(true);
+        plot.setRenderer(renderer);
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);
