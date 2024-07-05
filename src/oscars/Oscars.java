@@ -10,10 +10,10 @@ import java.util.stream.IntStream;
 import org.jdom2.Element;
 
 /**
- * This program will allow Oscars winners to be entered and it will update the results on the web
- * site. Ballots with each player's guesses are downloaded from the web in comma-delimited format.
- * The columns are defined in an XML file that defines each category and its nominees. The order of
- * the categories on the website will be the same as the order on the ballot.
+ * Create and update the Oscars website with the winners that are entered by the user. The players'
+ * guesses are downloaded from the survey in comma-delimited format. The columns are defined in an
+ * XML file that defines each category and its nominees. The order of the categories on the website
+ * will be the same as the order on the ballot.
  * 
  * @author Scott McDonald
  * @version 6.0
@@ -29,12 +29,7 @@ public class Oscars implements Runnable {
 
     private ZonedDateTime updated;
 
-    /**
-     * Prompt for Oscars results, store them and create output files
-     *
-     * @throws IOException
-     * @throws InterruptedException
-     */
+    /** Prompt for Oscars results, store them and create output files */
     public static void main(String[] inArgs) throws Exception {
         new Oscars().process();
     }

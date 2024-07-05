@@ -3,7 +3,7 @@ package oscars;
 import java.awt.Color;
 import java.awt.Paint;
 
-/** Define standard Paint colors for the charts */
+/** Define standard Paint colors for the charts - Immutable */
 public final class ChartPaint {
     public static final Paint BACKGROUND = new Color(0xB0C4DE);
 

@@ -27,7 +27,8 @@ public final class Ballot {
                             BinaryOperator.maxBy(Comparator.comparing(Ballot::getTimestamp))),
                     Map::values);
 
-    public final Map<String, String> values;
+    /** The entries for each category on this ballot */
+    public final Map<String, String> entries;
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
@@ -36,29 +37,31 @@ public final class Ballot {
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
             new BallotReader().stream()
-                    .filter(ballot -> !ballot.values.get(Category.EMAIL).isEmpty())
-                    .forEach(ballot -> System.out
-                            .println(ballot.getName() + " = " + ballot.values.get(Category.EMAIL)));
+                    .filter(ballot -> !ballot.entries.get(Category.EMAIL).isEmpty())
+                    .forEach(ballot -> System.out.println(
+                            ballot.getName() + " = " + ballot.entries.get(Category.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
 
-    public Ballot(String[] inValues) {
-        if (inValues.length != Category.ALL.size())
-            throw new RuntimeException("Ballot length: " + inValues.length
+    /** Create a Ballot with the given entries */
+    public Ballot(String[] inEntries) {
+        if (inEntries.length != Category.ALL.size())
+            throw new RuntimeException("Number of ballot entries: " + inEntries.length
                     + " does not match category definitions: " + Category.ALL.size());
-        values = Collections.unmodifiableMap(IntStream.range(0, inValues.length).boxed()
+        entries = Collections.unmodifiableMap(IntStream.range(0, inEntries.length).boxed()
                 .collect(Collectors.toMap(column -> Category.ALL.get(column).name,
-                        column -> inValues[column].trim())));
+                        column -> inEntries[column].trim())));
     }
 
     private String getName() {
-        return Stream.of(Category.LAST_NAME, Category.FIRST_NAME).map(values::get)
+        return Stream.of(Category.LAST_NAME, Category.FIRST_NAME).map(entries::get)
                 .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
     }
 
+    /** Get the timestamp of this Ballot */
     public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(values.get(Category.TIMESTAMP),
+        return LocalDateTime.parse(entries.get(Category.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 

@@ -13,13 +13,16 @@ import java.util.stream.Stream;
 
 import com.opencsv.CSVReader;
 
+/** A reader that gets the ballots and header info from the survey */
 public class BallotReader {
     private static final String URL_FILE = "ResponsesURL.txt";
 
+    /** The header info for the categories from the survey */
     public final List<String> headers;
 
     private final List<String[]> ballots;
 
+    /** Create a reader and read the ballots and header info from the survey */
     public BallotReader() throws IOException {
         try (Stream<String> lines = Files
                 .lines(Paths.get(Ballot.class.getClassLoader().getResource(URL_FILE).toURI()))) {
@@ -38,6 +41,7 @@ public class BallotReader {
         }
     }
 
+    /** Get a Stream of the ballots from the survey */
     public Stream<Ballot> stream() {
         return ballots.stream().map(Ballot::new);
     }

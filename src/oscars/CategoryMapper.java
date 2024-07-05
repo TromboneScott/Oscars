@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
-/** Map the Category data - Immutable */
+/** Map the Category data from the survey to the website - Immutable */
 public final class CategoryMapper {
     private static final String MAPPINGS_FILE = "mappings.xml";
 
@@ -27,6 +27,7 @@ public final class CategoryMapper {
 
     private final HashMap<String, String> matches = new HashMap<>();
 
+    /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
         BallotReader ballotReader = new BallotReader();
         ballots = ballotReader.stream().collect(Ballot.LATEST);
@@ -34,9 +35,10 @@ public final class CategoryMapper {
         writeCategoryMaps(ballotReader.headers);
     }
 
+    /** Get the players with their entries */
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(ballots.stream()
-                .map(ballot -> new Player(ballot.values.entrySet().stream()
+                .map(ballot -> new Player(ballot.entries.entrySet().stream()
                         .collect(Collectors.toMap(Entry::getKey,
                                 entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
                                         .map(map -> map.get(entry.getValue()))
@@ -44,6 +46,7 @@ public final class CategoryMapper {
                 .collect(Collectors.toList()));
     }
 
+    /** Get the survey descriptions of the nominees in each Category */
     public Map<String, Map<String, String>> getNomineeDescriptions() {
         return Collections.unmodifiableMap(categoryMaps.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
@@ -57,7 +60,7 @@ public final class CategoryMapper {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
             ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
-                    .map(ballot -> ballot.values.get(category.name))
+                    .map(ballot -> ballot.entries.get(category.name))
                     .filter(guess -> !categoryMap.containsKey(guess))
                     .forEach(guess -> categoryMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));

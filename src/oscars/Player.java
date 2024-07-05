@@ -17,12 +17,7 @@ public final class Player {
     /** Player's guessed time in seconds */
     public final int time;
 
-    /**
-     * Constructs a new Player with specified picks
-     *
-     * @param inPicks
-     *            This Player's picks for each category
-     */
+    /** Create a Player with the specified picks */
     public Player(Map<String, String> inPicks) {
         picks = Collections.unmodifiableMap(new HashMap<>(inPicks));
         try {
@@ -36,6 +31,7 @@ public final class Player {
         }
     }
 
+    /** Get the DOM Element for this Player */
     public Element toDOM() {
         return new Element("player").setAttribute("firstName", picks.get(Category.FIRST_NAME))
                 .setAttribute("lastName", picks.get(Category.LAST_NAME));

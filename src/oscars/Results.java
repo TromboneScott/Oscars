@@ -24,7 +24,9 @@ import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 
+/** The current results of the Oscars contest */
 public class Results {
+    /** Get user input from the system's standard input */
     public static final Scanner STDIN = new Scanner(System.in);
 
     private static final String RESULTS_FILE = "results.xml";
@@ -50,6 +52,7 @@ public class Results {
         }
     }
 
+    /** Read existing Results or create new Results including the given nominee descriptions */
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
         Element awardsDOM = Optional.ofNullable(Directory.DATA.getRootElement(RESULTS_FILE))
@@ -62,8 +65,8 @@ public class Results {
      * Prompt for results
      * 
      * @param inPlayers
-     *            Players whose picks we can count
-     * @return true unless user wants to exit the program
+     *            Players whose picks we can count for the category chart
+     * @return Whether or not the user wants to continue entering results
      */
     public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
@@ -143,15 +146,12 @@ public class Results {
             }
     }
 
+    /** Get whether or not the Oscars broadcast has ended */
     public boolean showEnded() {
         return showTimes.containsKey(ShowTimeType.END);
     }
 
-    /**
-     * The elapsed time since the start of the broadcast in milliseconds
-     *
-     * @return The elapsed time, zero if the show hasn't started
-     */
+    /** Get the elapsed time in milliseconds since the start of the broadcast */
     public long elapsedTimeMillis() {
         return Math.max(0, getMillis(ShowTimeType.END) - getMillis(ShowTimeType.START));
     }
@@ -161,17 +161,12 @@ public class Results {
                 .orElseGet(Instant::now).toEpochMilli();
     }
 
-    /**
-     * Get the winner(s) of the given category in display order
-     *
-     * @param inCategory
-     *            The category to get the winner(s) for
-     * @return All the winners that have been entered for this category in display order
-     */
+    /** Get the winner(s) of the given category in display order */
     public Collection<String> winners(String inCategory) {
         return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 
+    /** Write the given content to the results XML file */
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
         Directory.DATA.write(
                 new Element("results").setAttribute("updated", inUpdated.format(UPDATED_PATTERN))
@@ -179,6 +174,7 @@ public class Results {
                 RESULTS_FILE, null);
     }
 
+    /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
         return Category.stream()
                 .map(category -> winners(category.name).stream()

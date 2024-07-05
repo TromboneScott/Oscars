@@ -9,21 +9,25 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public class RankChart {
+/** Chart for a given rank - Immutable */
+public final class RankChart {
     private final long rank;
 
+    /** Create a rank chart for the given rank */
     public RankChart(long inRank) {
         rank = inRank;
     }
 
+    /** Get the file name for this chart */
     public String getName() {
         return "rank_" + rank + ".png";
     }
 
+    /** Write this chart using the given total number of players */
     public void write(int inTotal) throws IOException {
         DefaultCategoryDataset data = new DefaultCategoryDataset();
-        data.addValue(rank, "A", "");
-        data.addValue(inTotal, "B", "");
+        data.addValue(rank, "rank", "");
+        data.addValue(inTotal, "total", "");
 
         JFreeChart chart = ChartFactory.createStackedBarChart(null, null, null, data);
         chart.removeLegend();

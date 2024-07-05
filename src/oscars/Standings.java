@@ -25,6 +25,7 @@ public final class Standings {
 
     private final boolean showEnded;
 
+    /** The elapsed time in milliseconds since the start of the broadcast */
     public final long elapsedTime;
 
     public Standings(Collection<Player> inPlayers, Results inResults) {
@@ -46,6 +47,7 @@ public final class Standings {
                 .map(category -> category.value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /** Get the rank of the given Player */
     public long rank(Player inPlayer) {
         return lostToStream(inPlayer, scoreMap, elapsedTime, true).count() + 1;
     }
@@ -84,6 +86,7 @@ public final class Standings {
                                 .reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
+    /** Get the DOM Element for these Standings */
     public Element toDOM(List<Player> inPlayers) {
         int tieBreakers = (int) Category.stream()
                 .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
