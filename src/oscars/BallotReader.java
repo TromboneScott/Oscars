@@ -17,8 +17,8 @@ import com.opencsv.CSVReader;
 public class BallotReader {
     private static final String URL_FILE = "ResponsesURL.txt";
 
-    /** The header info for the categories from the survey */
-    public final List<String> headers;
+    /** The category names from the header row of the survey */
+    public final List<String> categories;
 
     private final List<String[]> ballots;
 
@@ -30,9 +30,9 @@ public class BallotReader {
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-                headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
-                if (headers.size() != Category.ALL.size())
-                    throw new IOException("Ballot headers size: " + headers.size()
+                categories = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
+                if (categories.size() != Category.ALL.size())
+                    throw new IOException("Number of categories in ballots: " + categories.size()
                             + " does not match defined categories: " + Category.ALL.size());
                 ballots = Collections.unmodifiableList(reader.readAll());
             }

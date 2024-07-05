@@ -32,7 +32,7 @@ public final class CategoryMapper {
         BallotReader ballotReader = new BallotReader();
         ballots = ballotReader.stream().collect(Ballot.LATEST);
         categoryMaps = categoryMaps();
-        writeCategoryMaps(ballotReader.headers);
+        writeCategoryMaps(ballotReader.categories);
     }
 
     /** Get the players with their entries */
@@ -120,10 +120,9 @@ public final class CategoryMapper {
                                         (name1, name2) -> name2, LinkedHashMap::new))));
     }
 
-    private void writeCategoryMaps(List<String> inHeaders) throws IOException {
-        Directory.DATA.write(IntStream.range(0, inHeaders.size())
-                .mapToObj(
-                        column -> categoryDOM(Category.ALL.get(column).name, inHeaders.get(column)))
+    private void writeCategoryMaps(List<String> inCategories) throws IOException {
+        Directory.DATA.write(IntStream.range(0, inCategories.size()).mapToObj(
+                column -> categoryDOM(Category.ALL.get(column).name, inCategories.get(column)))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 

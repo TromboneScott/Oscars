@@ -76,17 +76,15 @@ public final class Ballot {
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
-                    Results.write(ZonedDateTime.now(), ballots.stream().map(Ballot::toDOM)
+                    Results.write(ZonedDateTime.now(), ballots.stream()
+                            .map(ballot -> new Element("ballot")
+                                    .setAttribute("name", ballot.getName())
+                                    .setAttribute("timestamp", ballot.getTimestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
                     lastTimestamp = maxTimestamp;
                 }
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
             }
-    }
-
-    private Element toDOM() {
-        return new Element("ballot").setAttribute("name", getName()).setAttribute("timestamp",
-                getTimestamp().toString());
     }
 }
