@@ -42,7 +42,7 @@ public final class CategoryMapper {
                         .collect(Collectors.toMap(Entry::getKey,
                                 entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
                                         .map(map -> map.get(entry.getValue()))
-                                        .orElseGet(() -> entry.getValue())))))
+                                        .orElseGet(entry::getValue)))))
                 .collect(Collectors.toList()));
     }
 
