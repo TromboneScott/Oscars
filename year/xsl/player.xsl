@@ -25,30 +25,16 @@
                 </div>
           Out of <xsl:value-of select="count($results/standings/player)" />
               </td>
-              <td class="header">
-                <img>
-                  <xsl:attribute name="src">
-                    <xsl:value-of
-                      select="concat('../rank/rank_', $playerResults/@rank, '.png')" />
-                  </xsl:attribute>
-                  <xsl:attribute name="alt">
-                    <xsl:value-of select="$playerResults/@rank" /> out of <xsl:value-of
-                      select="count($results/standings/player)" />
-                  </xsl:attribute>
-                  <xsl:attribute name="title">
-                    <xsl:value-of select="$playerResults/@rank" /> out of <xsl:value-of
-                      select="count($results/standings/player)" />
-                  </xsl:attribute>
-                </img>
-              </td>
             </tr>
           </table>
           <xsl:if
             test="$inProgress">
-            <br /> Best Possible Rank (BPR): <xsl:value-of
+            <br /> Possible Final Rank: <xsl:value-of
               select="$playerResults/@bpr" />
-            <br /> Worst Possible Rank (WPR): <xsl:value-of
-              select="$playerResults/@wpr" />
+            <xsl:if
+              test="$playerResults/@bpr != $playerResults/@wpr"> to <xsl:value-of
+                select="$playerResults/@wpr" />
+            </xsl:if>
           </xsl:if>
           <br />
           <br />

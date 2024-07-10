@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,7 +75,7 @@ public final class Category {
     }
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
-    public String chartName(Results inResults) {
+    private String chartName(Results inResults) {
         return name + nominees.stream()
                 .map(nominee -> inResults.winners(name).contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
@@ -115,5 +116,14 @@ public final class Category {
             return winners.isEmpty() ? ChartPaint.GRAY
                     : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN : ChartPaint.RED;
         }
+    }
+
+    /** Delete all charts we don't need to keep */
+    public static void cleanUpCharts(Results inResults) {
+        Set<String> chartsToKeep = stream().map(category -> category.chartName(inResults))
+                .collect(Collectors.toSet());
+        for (File file : Directory.CATEGORY.listFiles())
+            if (file.getName().endsWith(".png") && !chartsToKeep.contains(file.getName()))
+                file.delete();
     }
 }

@@ -35,20 +35,16 @@ public class Oscars implements Runnable {
     }
 
     private Oscars() throws IOException {
-        System.out.print("Step 1 of 4: Downloading ballots... ");
+        System.out.print("Step 1 of 3: Downloading ballots... ");
         CategoryMapper categoryMapper = new CategoryMapper();
         System.out.println("DONE");
 
-        System.out.print("Step 2 of 4: Reading any existing results... ");
+        System.out.print("Step 2 of 3: Reading any existing results... ");
         players = categoryMapper.getPlayers();
         results = new Results(categoryMapper.getNomineeDescriptions());
         System.out.println("DONE");
 
-        System.out.print("Step 3 of 4: Writing rank images... ");
-        writeRankCharts();
-        System.out.println("DONE");
-
-        System.out.print("Step 4 of 4: Writing web pages... ");
+        System.out.print("Step 3 of 3: Writing web pages... ");
         writeCategoryPages();
         writePlayerPages();
         System.out.println("DONE");
@@ -61,11 +57,7 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        Directory.CATEGORY.cleanUpCharts(Category.stream()
-                .map(category -> category.chartName(results)).collect(Collectors.toSet()));
-        Directory.RANK.cleanUpCharts(
-                players.stream().map(player -> new RankChart(standings.rank(player)).getName())
-                        .collect(Collectors.toSet()));
+        Category.cleanUpCharts(results);
         System.out.println("DONE");
     }
 
@@ -116,12 +108,6 @@ public class Oscars implements Runnable {
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
         Results.write(updated, results.awardsDOM(), standings.toDOM(players));
-    }
-
-    private void writeRankCharts() throws IOException {
-        for (int rank = 1; rank <= players.size(); rank++)
-            new RankChart(rank).write(players.size());
-        Directory.RANK.cleanUp();
     }
 
     private void writeCategoryPages() throws IOException {
