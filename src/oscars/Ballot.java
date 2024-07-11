@@ -7,11 +7,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BinaryOperator;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -20,13 +17,6 @@ import org.jdom2.Element;
 
 /** Entries on a player's ballot - Immutable */
 public final class Ballot {
-    /** Provides the latest Ballot for each player */
-    public static final Collector<Ballot, ?, Collection<Ballot>> LATEST = Collectors
-            .collectingAndThen(
-                    Collectors.toMap(Ballot::getName, ballot -> ballot,
-                            BinaryOperator.maxBy(Comparator.comparing(Ballot::getTimestamp))),
-                    Map::values);
-
     /** The entries for each category on this ballot */
     public final Map<String, String> entries;
 
@@ -36,7 +26,7 @@ public final class Ballot {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new BallotReader().stream()
+            new BallotReader().ballots.stream()
                     .filter(ballot -> !ballot.entries.get(Category.EMAIL).isEmpty())
                     .forEach(ballot -> System.out.println(
                             ballot.getName() + " = " + ballot.entries.get(Category.EMAIL)));
@@ -54,7 +44,7 @@ public final class Ballot {
                         column -> inEntries[column].trim())));
     }
 
-    private String getName() {
+    public String getName() {
         return Stream.of(Category.LAST_NAME, Category.FIRST_NAME).map(entries::get)
                 .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
     }
@@ -68,7 +58,7 @@ public final class Ballot {
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Ballot> ballots = new BallotReader().stream().collect(LATEST);
+                Collection<Ballot> ballots = new BallotReader().latest();
                 LocalDateTime maxTimestamp = ballots.stream().map(Ballot::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {

@@ -30,7 +30,7 @@ public final class CategoryMapper {
     /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
         BallotReader ballotReader = new BallotReader();
-        ballots = ballotReader.stream().collect(Ballot.LATEST);
+        ballots = ballotReader.latest();
         categoryMaps = categoryMaps();
         writeCategoryMaps(ballotReader.categories);
     }
