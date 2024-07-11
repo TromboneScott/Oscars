@@ -44,6 +44,7 @@ public final class Ballot {
                         column -> inEntries[column].trim())));
     }
 
+    /** Get the name (last, first) on the Ballot */
     public String getName() {
         return Stream.of(Category.LAST_NAME, Category.FIRST_NAME).map(entries::get)
                 .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
