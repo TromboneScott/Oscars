@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +18,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-/** Define the directories to be used and how to read, write and clean up those directories */
+/** Define the directories to be used and how to read and write in those directories */
 @SuppressWarnings("serial")
 public class Directory extends File {
     public static final Directory DATA = new Directory("data");
@@ -29,8 +26,6 @@ public class Directory extends File {
     public static final Directory CATEGORY = new Directory("category");
 
     public static final Directory PLAYER = new Directory("player");
-
-    private static final Instant START = Instant.now();
 
     private Directory(String inPathname) {
         super(inPathname);
@@ -62,13 +57,5 @@ public class Directory extends File {
                 StandardCharsets.UTF_8.name())) {
             new XMLOutputter(Format.getPrettyFormat()).output(document, writer);
         }
-    }
-
-    /** Delete all files in this directory that haven't been modified since the program started */
-    public void cleanUp() throws IOException {
-        for (File file : listFiles())
-            if (Files.readAttributes(file.toPath(), BasicFileAttributes.class).lastModifiedTime()
-                    .toInstant().isBefore(START))
-                file.delete();
     }
 }

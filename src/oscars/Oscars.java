@@ -116,7 +116,6 @@ public class Oscars implements Runnable {
             writeCategoryPage(category.name);
         }
         writeCategoryPage("all");
-        Directory.CATEGORY.cleanUp();
     }
 
     private static void writeCategoryPage(String inCategory) throws IOException {
@@ -137,6 +136,5 @@ public class Oscars implements Runnable {
         for (Player player : players)
             Directory.PLAYER.write(player.toDOM(), player.picks.get(Category.FIRST_NAME) + "_"
                     + player.picks.get(Category.LAST_NAME) + ".xml", "player.xsl");
-        Directory.PLAYER.cleanUp();
     }
 }
