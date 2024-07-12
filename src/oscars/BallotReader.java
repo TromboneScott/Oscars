@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,9 +31,11 @@ public class BallotReader {
 
     /** Create a reader and read the ballots and header info from the survey */
     public BallotReader() throws IOException {
-        try (Stream<String> lines = Files
-                .lines(Paths.get(Ballot.class.getClassLoader().getResource(URL_FILE).toURI()))) {
-            URL url = new URI(lines.iterator().next()).toURL();
+        try (Stream<String> lines = Files.lines(
+                Paths.get(Optional.ofNullable(getClass().getClassLoader().getResource(URL_FILE))
+                        .orElseThrow(() -> new IOException("File not found")).toURI()))) {
+            URL url = new URI(lines.findFirst().orElseThrow(() -> new IOException("File is empty")))
+                    .toURL();
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
@@ -44,7 +47,7 @@ public class BallotReader {
                         reader.readAll().stream().map(Ballot::new).collect(Collectors.toList()));
             }
         } catch (Exception e) {
-            throw new IOException("Error reading ballots using URL from: " + URL_FILE, e);
+            throw new IOException("Error reading ballots using URL from file: " + URL_FILE, e);
         }
     }
 

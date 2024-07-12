@@ -55,7 +55,7 @@ public class Results {
     /** Read existing Results or create new Results including the given nominee descriptions */
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
-        Element awardsDOM = Optional.ofNullable(Directory.DATA.getRootElement(RESULTS_FILE))
+        Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
                 .map(element -> element.getChild("awards")).orElseGet(() -> new Element("EMPTY"));
         winners = winners(awardsDOM);
         showTimes = showTimes(awardsDOM);

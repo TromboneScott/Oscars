@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,13 +38,12 @@ public class Directory extends File {
             mkdir();
     }
 
-    /** Get the root element of the XML file or null if file doesn't exist */
-    public Element getRootElement(String inXMLFile) throws IOException {
+    /** Get the root element of the XML file or empty if file doesn't exist */
+    public Optional<Element> getRootElement(String inXMLFile) throws IOException {
         File xmlFile = new File(this, inXMLFile);
-        if (!xmlFile.exists())
-            return null;
         try {
-            return new SAXBuilder().build(xmlFile).getRootElement();
+            return xmlFile.exists() ? Optional.of(new SAXBuilder().build(xmlFile).getRootElement())
+                    : Optional.empty();
         } catch (JDOMException e) {
             throw new IOException("ERROR: Unable to read xml file: " + inXMLFile, e);
         }

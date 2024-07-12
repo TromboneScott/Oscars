@@ -109,7 +109,7 @@ public final class CategoryMapper {
 
     private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
             throws IOException {
-        return Optional.ofNullable(Directory.DATA.getRootElement(MAPPINGS_FILE))
+        return Directory.DATA.getRootElement(MAPPINGS_FILE)
                 .map(mappingsDOM -> mappingsDOM.getChildren("category").stream())
                 .orElseGet(Stream::empty)
                 .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),

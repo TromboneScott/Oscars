@@ -60,7 +60,7 @@ public final class Category {
 
     private static List<Category> all() {
         try {
-            return Optional.ofNullable(Directory.DATA.getRootElement(DEFINITIONS_FILE))
+            return Directory.DATA.getRootElement(DEFINITIONS_FILE)
                     .orElseThrow(() -> new RuntimeException("File not found: " + DEFINITIONS_FILE))
                     .getChildren("category").stream().map(Category::new)
                     .collect(Collectors.toList());
