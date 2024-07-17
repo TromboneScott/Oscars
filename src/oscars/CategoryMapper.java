@@ -21,7 +21,7 @@ import org.jdom2.Element;
 public final class CategoryMapper {
     private static final String MAPPINGS_FILE = "mappings.xml";
 
-    private final Collection<Ballot> ballots;
+    private final Collection<Player> players;
 
     private final Map<String, LinkedHashMap<String, String>> categoryMaps;
 
@@ -29,16 +29,16 @@ public final class CategoryMapper {
 
     /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
-        BallotReader ballotReader = new BallotReader();
-        ballots = ballotReader.latest();
+        Ballots ballots = new Ballots();
+        players = ballots.players();
         categoryMaps = categoryMaps();
-        writeCategoryMaps(ballotReader.categories);
+        writeCategoryMaps(ballots.categories);
     }
 
     /** Get the players with their entries */
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(ballots.stream()
-                .map(ballot -> new Player(ballot.entries.entrySet().stream()
+        return Collections.unmodifiableList(players.stream()
+                .map(player -> new Player(player.picks.entrySet().stream()
                         .collect(Collectors.toMap(Entry::getKey,
                                 entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
                                         .map(map -> map.get(entry.getValue()))
@@ -59,8 +59,8 @@ public final class CategoryMapper {
         Category.stream().forEach(category -> {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
-            ballots.stream().sorted(Comparator.comparing(Ballot::getTimestamp))
-                    .map(ballot -> ballot.entries.get(category.name))
+            players.stream().sorted(Comparator.comparing(Player::getTimestamp))
+                    .map(player -> player.picks.get(category.name))
                     .filter(guess -> !categoryMap.containsKey(guess))
                     .forEach(guess -> categoryMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));

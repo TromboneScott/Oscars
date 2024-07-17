@@ -13,8 +13,8 @@ class="Oscars"
 while getopts beh opt
 do
   case $opt in
-    b) class="Ballot";;
-    e) class="Ballot emails";;
+    b) class="Ballots";;
+    e) class="Ballots emails";;
     h) usage
        exit 0;;
     ?) usage >&2

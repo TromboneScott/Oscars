@@ -1,5 +1,6 @@
 package oscars;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -29,6 +30,12 @@ public final class Player {
                             + " has invalid time guess: " + picks.get(Category.TIME),
                     e);
         }
+    }
+
+    /** Get the timestamp of the ballot for this Player */
+    public LocalDateTime getTimestamp() {
+        return LocalDateTime.parse(picks.get(Category.TIMESTAMP),
+                DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     /** Get the DOM Element for this Player */
