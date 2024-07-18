@@ -36,6 +36,9 @@ public final class Ballots {
     /** All of the ballots that were received */
     private final List<Player> all;
 
+    /** The data for the players using the latest ballot for each Player */
+    public final Collection<Player> players;
+
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
         System.out.println("Downloading ballots...");
@@ -69,6 +72,10 @@ public final class Ballots {
         } catch (Exception e) {
             throw new IOException("Error reading ballots using URL from file: " + URL_FILE, e);
         }
+        players = Collections.unmodifiableCollection(all.stream()
+                .collect(Collectors.toMap(Ballots::getName, player -> player,
+                        BinaryOperator.maxBy(Comparator.comparing(Player::getTimestamp))))
+                .values());
     }
 
     private static Player toPlayer(String[] inEntries) {
@@ -77,12 +84,6 @@ public final class Ballots {
                     + " does not match category definitions: " + Category.ALL.size());
         return new Player(IntStream.range(0, inEntries.length).boxed().collect(Collectors.toMap(
                 column -> Category.ALL.get(column).name, column -> inEntries[column].trim())));
-    }
-
-    /** Get the the players' data using the latest ballot for each Player */
-    public Collection<Player> players() {
-        return all.stream().collect(Collectors.toMap(Ballots::getName, player -> player,
-                BinaryOperator.maxBy(Comparator.comparing(Player::getTimestamp)))).values();
     }
 
     /** Get the name (last, first) for the Player */
@@ -94,7 +95,7 @@ public final class Ballots {
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Player> players = new Ballots().players();
+                Collection<Player> players = new Ballots().players;
                 LocalDateTime maxTimestamp = players.stream().map(Player::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
