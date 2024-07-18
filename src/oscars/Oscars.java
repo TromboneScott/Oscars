@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.jdom2.Element;
@@ -111,7 +110,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        for (Category category : Category.stream().collect(Collectors.toList())) {
+        for (Category category : Category.CONTEST) {
             category.writeChart(results, players);
             writeCategoryPage(category.name);
         }
@@ -124,13 +123,14 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.write(IntStream.range(0, players.size()).mapToObj(playerNum -> Category
-                .stream()
-                .map(category -> new Element("category").setAttribute("name", category.name)
-                        .setAttribute("nominee", players.get(playerNum).picks.get(category.name)))
-                .reduce(players.get(playerNum).toDOM(), Element::addContent)
-                .setAttribute("id", String.valueOf(playerNum + 1))
-                .setAttribute("time", String.valueOf(players.get(playerNum).time)))
+        Directory.DATA.write(IntStream.range(0, players.size())
+                .mapToObj(playerNum -> Category.CONTEST.stream()
+                        .map(category -> new Element("category").setAttribute("name", category.name)
+                                .setAttribute("nominee",
+                                        players.get(playerNum).picks.get(category.name)))
+                        .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                        .setAttribute("id", String.valueOf(playerNum + 1))
+                        .setAttribute("time", String.valueOf(players.get(playerNum).time)))
                 .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
 
         for (Player player : players)

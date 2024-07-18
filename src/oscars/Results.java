@@ -70,12 +70,11 @@ public class Results {
      */
     public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        Category[] categories = Category.stream().toArray(Category[]::new);
-        for (int resultNum = 0; resultNum < categories.length
+        for (int resultNum = 0; resultNum < Category.CONTEST.size()
                 + ShowTimeType.values().length; resultNum++)
-            System.out.println((resultNum + 1) + ": "
-                    + (resultNum < categories.length ? toString(categories[resultNum].name)
-                            : toString(ShowTimeType.values()[resultNum - categories.length])));
+            System.out.println((resultNum + 1) + ": " + (resultNum < Category.CONTEST.size()
+                    ? toString(Category.CONTEST.get(resultNum).name)
+                    : toString(ShowTimeType.values()[resultNum - Category.CONTEST.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
         String input = STDIN.nextLine();
@@ -83,12 +82,13 @@ public class Results {
             return false;
         try {
             int resultNum = Integer.parseInt(input) - 1;
-            if (resultNum < 0 || resultNum >= categories.length + ShowTimeType.values().length)
+            if (resultNum < 0
+                    || resultNum >= Category.CONTEST.size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum < categories.length)
-                promptWinner(categories[resultNum], inPlayers);
+            if (resultNum < Category.CONTEST.size())
+                promptWinner(Category.CONTEST.get(resultNum), inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - categories.length]);
+                promptTime(ShowTimeType.values()[resultNum - Category.CONTEST.size()]);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -176,7 +176,7 @@ public class Results {
 
     /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
-        return Category.stream()
+        return Category.CONTEST.stream()
                 .map(category -> winners(category.name).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.name),

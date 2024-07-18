@@ -56,7 +56,7 @@ public final class CategoryMapper {
 
     private Map<String, LinkedHashMap<String, String>> categoryMaps() throws IOException {
         Map<String, LinkedHashMap<String, String>> categoryMaps = readCategoryMaps();
-        Category.stream().forEach(category -> {
+        for (Category category : Category.CONTEST) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
             players.stream().sorted(Comparator.comparing(Player::getTimestamp))
@@ -72,7 +72,7 @@ public final class CategoryMapper {
                     System.out.print("Enter Ballot Description: ");
                     categoryMap.put(Results.STDIN.nextLine(), nominee);
                 }
-        });
+        }
         return categoryMaps;
     }
 
