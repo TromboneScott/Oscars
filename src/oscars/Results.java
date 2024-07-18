@@ -36,21 +36,16 @@ public class Results {
     private static final DateTimeFormatter UPDATED_PATTERN = DateTimeFormatter
             .ofPattern("MM/dd/yyyy hh:mm:ss a - z");
 
+    private static enum ShowTimeType {
+        START,
+        END;
+    }
+
     private final Map<String, Map<String, String>> nomineeDescriptions;
 
     private final Map<String, Collection<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
-
-    private static enum ShowTimeType {
-        START,
-        END;
-
-        @Override
-        public String toString() {
-            return "Show Time " + name();
-        }
-    }
 
     /** Read existing Results or create new Results including the given nominee descriptions */
     public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
@@ -100,8 +95,8 @@ public class Results {
     }
 
     private String toString(ShowTimeType inShowTimeType) {
-        return inShowTimeType + " = " + Optional.ofNullable(showTimes.get(inShowTimeType))
-                .map(Object::toString).orElse("");
+        return "Show Time " + inShowTimeType + " = " + Optional
+                .ofNullable(showTimes.get(inShowTimeType)).map(Object::toString).orElse("");
     }
 
     private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
