@@ -4,13 +4,12 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
@@ -33,8 +32,8 @@ public final class Standings {
                 .collect(Collectors.toMap(category -> category, category -> Collections
                         .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
         showEnded = inResults.showEnded();
-        scoreMap = Collections.unmodifiableMap(
-                inPlayers.stream().collect(Collectors.toMap(player -> player, this::score)));
+        scoreMap = Collections.unmodifiableMap(inPlayers.stream().collect(Collectors
+                .toMap(player -> player, this::score, BigDecimal::min, LinkedHashMap::new)));
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         lostToMap = Collections
                 .unmodifiableMap(inPlayers.stream().collect(Collectors.toMap(player -> player,
@@ -47,8 +46,7 @@ public final class Standings {
                 .map(category -> category.value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    /** Get the rank of the given Player */
-    public long rank(Player inPlayer) {
+    private long rank(Player inPlayer) {
         return lostToStream(inPlayer, scoreMap, elapsedTime, true).count() + 1;
     }
 
@@ -87,27 +85,25 @@ public final class Standings {
     }
 
     /** Get the DOM Element for these Standings */
-    public Element toDOM(List<Player> inPlayers) {
-        int tieBreakers = (int) Category.ALL.stream()
-                .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
-        return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
-                .toDOM()
-                .setAttribute("score",
-                        scoreMap.get(inPlayers.get(playerNum)).setScale(tieBreakers).toString())
-                .setAttribute("rank", String.valueOf(rank(inPlayers.get(playerNum))))
-                .setAttribute("bpr",
-                        String.valueOf(lostToMap.get(inPlayers.get(playerNum)).size() + 1))
-                .setAttribute("wpr",
-                        String.valueOf(worstPossibleRank(inPlayers.get(playerNum), scoreMap)))
-                .setAttribute("decided", inPlayers.stream()
-                        .map(opponent -> lostToMap.get(inPlayers.get(playerNum)).contains(opponent)
-                                || lostToMap.get(opponent).contains(inPlayers.get(playerNum))
-                                || tied(inPlayers.get(playerNum), opponent) ? "Y" : "N")
-                        .collect(Collectors.joining())))
+    public Element toDOM() {
+        int scale = Category.ALL.stream().mapToInt(category -> category.value.scale()).max()
+                .orElse(0);
+        return scoreMap.keySet().stream()
+                .map(player -> player.toDOM()
+                        .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
+                        .setAttribute("rank", String.valueOf(rank(player)))
+                        .setAttribute("bpr", String.valueOf(lostToMap.get(player).size() + 1))
+                        .setAttribute("wpr", String.valueOf(worstPossibleRank(player, scoreMap)))
+                        .setAttribute("decided",
+                                scoreMap.keySet().stream()
+                                        .map(opponent -> lostToMap.get(player).contains(opponent)
+                                                || lostToMap.get(opponent).contains(player)
+                                                || tied(player, opponent) ? "Y" : "N")
+                                        .collect(Collectors.joining())))
                 .reduce(new Element("standings"), Element::addContent);
     }
 
-    /** Determine if the player and opponent will be tied at the end of the game */
+    /** Determine if the player and their opponent will be tied at the end of the game */
     private boolean tied(Player inPlayer, Player inOpponent) {
         return (inPlayer.time == inOpponent.time
                 || inPlayer.time > elapsedTime && inOpponent.time > elapsedTime && showEnded)
