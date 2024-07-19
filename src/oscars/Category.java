@@ -26,11 +26,11 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public final class Category {
     private static final String DEFINITIONS_FILE = "definitions.xml";
 
-    /** All categories in display order */
-    public static final List<Category> ALL = Collections.unmodifiableList(all());
+    /** All the defined categories in display order */
+    public static final List<Category> DEFINED = Collections.unmodifiableList(all());
 
-    /** Contest categories (categories that have nominees) in display order */
-    public static final List<Category> CONTEST = Collections.unmodifiableList(ALL.stream()
+    /** All the defined categories in display order that have nominees */
+    public static final List<Category> ALL = Collections.unmodifiableList(DEFINED.stream()
             .filter(category -> !category.nominees.isEmpty()).collect(Collectors.toList()));
 
     public static final String TIMESTAMP = "Timestamp";
@@ -118,7 +118,7 @@ public final class Category {
 
     /** Delete all charts we don't need to keep */
     public static void cleanUpCharts(Results inResults) {
-        Set<String> chartsToKeep = CONTEST.stream().map(category -> category.chartName(inResults))
+        Set<String> chartsToKeep = ALL.stream().map(category -> category.chartName(inResults))
                 .collect(Collectors.toSet());
         for (File file : Directory.CATEGORY.listFiles())
             if (file.getName().endsWith(".png") && !chartsToKeep.contains(file.getName()))

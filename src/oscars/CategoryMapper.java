@@ -29,7 +29,7 @@ public final class CategoryMapper {
     /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
         categoryMaps = readCategoryMaps();
-        for (Category category : Category.CONTEST) {
+        for (Category category : Category.ALL) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
                     k -> new LinkedHashMap<>());
             ballots.players.stream().sorted(Comparator.comparing(Player::getTimestamp))
@@ -114,7 +114,7 @@ public final class CategoryMapper {
 
     private void writeCategoryMaps() throws IOException {
         Directory.DATA.write(IntStream.range(0, ballots.categories.size())
-                .mapToObj(column -> categoryDOM(Category.ALL.get(column).name,
+                .mapToObj(column -> categoryDOM(Category.DEFINED.get(column).name,
                         ballots.categories.get(column)))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }

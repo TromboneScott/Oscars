@@ -63,9 +63,9 @@ public final class Ballots {
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 categories = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
-                if (categories.size() != Category.ALL.size())
+                if (categories.size() != Category.DEFINED.size())
                     throw new IOException("Number of categories in ballots: " + categories.size()
-                            + " does not match defined categories: " + Category.ALL.size());
+                            + " does not match defined categories: " + Category.DEFINED.size());
                 all = Collections.unmodifiableList(reader.readAll().stream().map(Ballots::toPlayer)
                         .collect(Collectors.toList()));
             }
@@ -79,11 +79,11 @@ public final class Ballots {
     }
 
     private static Player toPlayer(String[] inEntries) {
-        if (inEntries.length != Category.ALL.size())
+        if (inEntries.length != Category.DEFINED.size())
             throw new RuntimeException("Number of ballot entries: " + inEntries.length
-                    + " does not match category definitions: " + Category.ALL.size());
+                    + " does not match category definitions: " + Category.DEFINED.size());
         return new Player(IntStream.range(0, inEntries.length).boxed().collect(Collectors.toMap(
-                column -> Category.ALL.get(column).name, column -> inEntries[column].trim())));
+                column -> Category.DEFINED.get(column).name, column -> inEntries[column].trim())));
     }
 
     /** Get the name (last, first) for the Player */

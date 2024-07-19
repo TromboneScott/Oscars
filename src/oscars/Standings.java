@@ -29,10 +29,9 @@ public final class Standings {
     public final long elapsedTime;
 
     public Standings(Collection<Player> inPlayers, Results inResults) {
-        winners = Collections
-                .unmodifiableMap(Category.CONTEST.stream().map(category -> category.name)
-                        .collect(Collectors.toMap(category -> category, category -> Collections
-                                .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
+        winners = Collections.unmodifiableMap(Category.ALL.stream().map(category -> category.name)
+                .collect(Collectors.toMap(category -> category, category -> Collections
+                        .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
         showEnded = inResults.showEnded();
         scoreMap = Collections.unmodifiableMap(
                 inPlayers.stream().collect(Collectors.toMap(player -> player, this::score)));
@@ -43,7 +42,7 @@ public final class Standings {
     }
 
     private BigDecimal score(Player inPlayer) {
-        return Category.CONTEST.stream().filter(
+        return Category.ALL.stream().filter(
                 category -> winners.get(category.name).contains(inPlayer.picks.get(category.name)))
                 .map(category -> category.value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -79,7 +78,7 @@ public final class Standings {
             Map<Player, BigDecimal> inScoreMap, boolean inBest) {
         return inScoreMap.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
-                        scoreEntry -> Category.CONTEST.stream()
+                        scoreEntry -> Category.ALL.stream()
                                 .filter(category -> winners.get(category.name).isEmpty()
                                         && inBest == scoreEntry.getKey().picks.get(category.name)
                                                 .equals(inPlayer.picks.get(category.name)))
@@ -89,7 +88,7 @@ public final class Standings {
 
     /** Get the DOM Element for these Standings */
     public Element toDOM(List<Player> inPlayers) {
-        int tieBreakers = (int) Category.CONTEST.stream()
+        int tieBreakers = (int) Category.ALL.stream()
                 .filter(category -> !category.value.equals(BigDecimal.ONE)).count();
         return IntStream.range(0, inPlayers.size()).mapToObj(playerNum -> inPlayers.get(playerNum)
                 .toDOM()
@@ -113,7 +112,7 @@ public final class Standings {
         return (inPlayer.time == inOpponent.time
                 || inPlayer.time > elapsedTime && inOpponent.time > elapsedTime && showEnded)
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
-                && Category.CONTEST.stream().map(category -> category.name)
+                && Category.ALL.stream().map(category -> category.name)
                         .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
                                 .get(category).equals(inOpponent.picks.get(category)));
     }
