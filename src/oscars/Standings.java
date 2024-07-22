@@ -16,7 +16,7 @@ import org.jdom2.Element;
 
 /** The score and rank standings - Immutable */
 public final class Standings {
-    /** The elapsed time in milliseconds since the start of the broadcast */
+    /** The elapsed time in seconds since the start of the broadcast */
     public final long elapsedTime;
 
     private final boolean showEnded;
@@ -62,7 +62,8 @@ public final class Standings {
                                                 || lostToMap.get(opponent).contains(player)
                                                 || tied(player, opponent) ? "Y" : "N")
                                         .collect(Collectors.joining())))
-                .reduce(new Element("standings"), Element::addContent);
+                .reduce(new Element("standings"), Element::addContent)
+                .setAttribute("time", String.valueOf(elapsedTime));
     }
 
     private Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,

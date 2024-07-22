@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -175,13 +174,11 @@ public class Results {
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.name),
                                 Element::addContent))
-                .reduce(new Element("awards"), Element::addContent)
-                .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
-                        .map(type -> new Attribute(type.name().toLowerCase(),
-                                showTimes.get(type).toString()))
-                        .collect(Collectors.toList()))
-                .setAttribute("duration",
-                        String.valueOf(TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis())));
+                .reduce(new Element("awards"), Element::addContent).setAttributes(
+                        Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
+                                .map(type -> new Attribute(type.name().toLowerCase(),
+                                        showTimes.get(type).toString()))
+                                .collect(Collectors.toList()));
     }
 
     private static Map<String, Collection<String>> winners(Element inAwardsDOM) {

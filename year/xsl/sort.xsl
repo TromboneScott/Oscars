@@ -182,7 +182,7 @@
               </xsl:choose>
               <xsl:call-template name="time">
                 <xsl:with-param name="time">
-                  <xsl:value-of select="$results/awards/@duration" />
+                  <xsl:value-of select="$results/standings/@time" />
                 </xsl:with-param>
               </xsl:call-template>
             </xsl:variable>
@@ -381,7 +381,7 @@
       <xsl:variable name="player" select="." />
       <xsl:choose>
         <xsl:when
-          test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/awards/@duration">
+          test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/standings/@time">
       correct
         </xsl:when>
         <xsl:when test="$inProgress">
