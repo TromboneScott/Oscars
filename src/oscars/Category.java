@@ -79,8 +79,8 @@ public final class Category {
                 .collect(Collectors.joining()) + ".png";
     }
 
-    /** Write the chart for this Category based on the current Results and the list of players */
-    public void writeChart(Results inResults, List<Player> inPlayers) throws IOException {
+    /** Write the chart for this Category given these players and these Results */
+    public void writeChart(List<Player> inPlayers, Results inResults) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
         inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.picks.get(name)));

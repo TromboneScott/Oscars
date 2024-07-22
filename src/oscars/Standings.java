@@ -1,10 +1,10 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -25,7 +25,7 @@ public final class Standings {
 
     private final Map<Player, BigDecimal> scoreMap;
 
-    public Standings(Collection<Player> inPlayers, Results inResults) {
+    public Standings(List<Player> inPlayers, Results inResults) {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         showEnded = inResults.showEnded();
         winners = Collections.unmodifiableMap(Category.ALL.stream().map(category -> category.name)

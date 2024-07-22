@@ -111,7 +111,7 @@ public class Oscars implements Runnable {
 
     private void writeCategoryPages() throws IOException {
         for (Category category : Category.ALL) {
-            category.writeChart(results, players);
+            category.writeChart(players, results);
             writeCategoryPage(category.name);
         }
         writeCategoryPage("all");

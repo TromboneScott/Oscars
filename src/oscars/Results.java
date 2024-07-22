@@ -115,7 +115,7 @@ public class Results {
                                     }).sorted()
                                     .mapToObj(number -> inCategory.nominees.get(number - 1))
                                     .collect(Collectors.toCollection(LinkedHashSet::new))));
-            inCategory.writeChart(this, inPlayers);
+            inCategory.writeChart(inPlayers, this);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
