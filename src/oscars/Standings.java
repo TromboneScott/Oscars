@@ -99,8 +99,7 @@ public final class Standings {
         return (inPlayer.time == inOpponent.time
                 || showEnded && inPlayer.time > elapsedTime && inOpponent.time > elapsedTime)
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
-                && Category.ALL.stream().map(category -> category.name)
-                        .allMatch(category -> !winners.get(category).isEmpty() || inPlayer.picks
-                                .get(category).equals(inOpponent.picks.get(category)));
+                && winners.keySet().stream().allMatch(category -> !winners.get(category).isEmpty()
+                        || inPlayer.picks.get(category).equals(inOpponent.picks.get(category)));
     }
 }
