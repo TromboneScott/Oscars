@@ -173,11 +173,11 @@
             <xsl:variable name="timeHeader">
               <xsl:value-of select="'Time'" />
               <xsl:choose>
-                <xsl:when test="$inProgress">
-                  <xsl:value-of select="'&gt;'" />
+                <xsl:when test="$results/awards/@end">
+                  <xsl:value-of select="'='" />
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="'='" />
+                  <xsl:value-of select="'&gt;'" />
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:call-template name="time">
@@ -384,13 +384,14 @@
           test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/standings/@time">
       correct
         </xsl:when>
-        <xsl:when test="$inProgress">
-          unannounced
+        <xsl:when test="$results/awards/@end">
+          incorrect
         </xsl:when>
         <xsl:otherwise>
-          incorrect
+          unannounced
         </xsl:otherwise>
-      </xsl:choose> time </xsl:attribute>
+      </xsl:choose>
+      time </xsl:attribute>
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="time">
     <xsl:variable name="player" select="." />

@@ -7,7 +7,8 @@
   <xsl:variable name="mappings"
     select="document('../data/mappings.xml')/mappings" />
   <xsl:variable name="ballots" select="document('../data/ballots.xml')/ballots" />
-  <xsl:variable name="inProgress" select="not(string($results/awards/@end))" />
+  <xsl:variable name="inProgress"
+    select="$results/awards[not(@end)] or $results/awards/category[not(nominee)]" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>

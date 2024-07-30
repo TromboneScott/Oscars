@@ -155,7 +155,10 @@
                           </xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
-                      <xsl:when test="$inProgress">
+                      <xsl:when test="$results/awards/@end">
+                        OVER
+                      </xsl:when>
+                      <xsl:otherwise>
                         <xsl:value-of select="'-'" />
                         <xsl:call-template name="time">
                           <xsl:with-param name="time">
@@ -163,9 +166,6 @@
                               select="$playerTime - $results/standings/@time" />
                           </xsl:with-param>
                         </xsl:call-template>
-                      </xsl:when>
-                      <xsl:otherwise>
-                        OVER
                       </xsl:otherwise>
                     </xsl:choose>
                   </center>

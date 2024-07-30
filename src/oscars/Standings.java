@@ -89,6 +89,8 @@ public final class Standings {
 
     private long worstPossibleRank(Player inPlayer) {
         Map<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, false);
+        if (showEnded)
+            return 1 + lostToStream(inPlayer, worstPossibleScores, elapsedTime, true).count();
         return 1 + Math.max(inPlayer.time > elapsedTime
                 ? lostToStream(inPlayer, worstPossibleScores, inPlayer.time - 1, true).count()
                 : 0, lostToStream(inPlayer, worstPossibleScores, Long.MAX_VALUE, false).count());
