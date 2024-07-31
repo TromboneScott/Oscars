@@ -12,11 +12,9 @@ import org.jdom2.Element;
 
 /** Player information - Immutable */
 public final class Player {
-    /** Player's picks for each category - Immutable */
-    public final Map<String, String> picks;
+    private final Map<String, String> picks;
 
-    /** Player's guessed time in seconds */
-    public final int time;
+    private final int time;
 
     /** Create a Player with the specified picks */
     public Player(Map<String, String> inPicks) {
@@ -32,15 +30,25 @@ public final class Player {
         }
     }
 
+    /** Get the Player's picks for the given category */
+    public String getPick(String inCategory) {
+        return picks.get(inCategory);
+    }
+
+    /** Get the Player's guessed time in seconds */
+    public int getTime() {
+        return time;
+    }
+
     /** Get the timestamp of the ballot for this Player */
     public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(picks.get(Category.TIMESTAMP),
+        return LocalDateTime.parse(getPick(Category.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     /** Get the DOM Element for this Player */
     public Element toDOM() {
-        return new Element("player").setAttribute("firstName", picks.get(Category.FIRST_NAME))
-                .setAttribute("lastName", picks.get(Category.LAST_NAME));
+        return new Element("player").setAttribute("firstName", getPick(Category.FIRST_NAME))
+                .setAttribute("lastName", getPick(Category.LAST_NAME));
     }
 }

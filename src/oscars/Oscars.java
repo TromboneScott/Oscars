@@ -91,8 +91,8 @@ public class Oscars implements Runnable {
     }
 
     private long waitTime(long inMaxWait) {
-        long nextPlayerTime = players.stream().mapToLong(player -> player.time)
-                .filter(playerTime -> playerTime > standings.elapsedTime)
+        long nextPlayerTime = players.stream().mapToLong(player -> player.getTime())
+                .filter(playerTime -> playerTime > standings.getElapsedTime())
                 .map(TimeUnit.SECONDS::toMillis).min().orElse(Long.MAX_VALUE);
         long elapsedTimeMillis = results.elapsedTimeMillis();
         return Math.min(Math.max(nextPlayerTime - elapsedTimeMillis, 0),
@@ -101,8 +101,8 @@ public class Oscars implements Runnable {
 
     private void writeResults() throws IOException {
         standings = new Standings(players, results);
-        long currentTimes = players.stream().filter(player -> player.time <= standings.elapsedTime)
-                .count();
+        long currentTimes = players.stream()
+                .filter(player -> player.getTime() <= standings.getElapsedTime()).count();
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
@@ -112,7 +112,7 @@ public class Oscars implements Runnable {
     private void writeCategoryPages() throws IOException {
         for (Category category : Category.ALL) {
             category.writeChart(players, results);
-            writeCategoryPage(category.name);
+            writeCategoryPage(category.getName());
         }
         writeCategoryPage("all");
     }
@@ -123,17 +123,18 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.write(IntStream.range(0, players.size()).mapToObj(playerNum -> Category.ALL
-                .stream()
-                .map(category -> new Element("category").setAttribute("name", category.name)
-                        .setAttribute("nominee", players.get(playerNum).picks.get(category.name)))
-                .reduce(players.get(playerNum).toDOM(), Element::addContent)
-                .setAttribute("id", String.valueOf(playerNum + 1))
-                .setAttribute("time", String.valueOf(players.get(playerNum).time)))
+        Directory.DATA.write(IntStream.range(0, players.size())
+                .mapToObj(playerNum -> Category.ALL.stream()
+                        .map(category -> new Element("category")
+                                .setAttribute("name", category.getName()).setAttribute("nominee",
+                                        players.get(playerNum).getPick(category.getName())))
+                        .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                        .setAttribute("id", String.valueOf(playerNum + 1))
+                        .setAttribute("time", String.valueOf(players.get(playerNum).getTime())))
                 .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
 
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(), player.picks.get(Category.FIRST_NAME) + "_"
-                    + player.picks.get(Category.LAST_NAME) + ".xml", "player.xsl");
+            Directory.PLAYER.write(player.toDOM(), player.getPick(Category.FIRST_NAME) + "_"
+                    + player.getPick(Category.LAST_NAME) + ".xml", "player.xsl");
     }
 }

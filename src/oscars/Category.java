@@ -31,7 +31,7 @@ public final class Category {
 
     /** All the defined categories in display order that have nominees */
     public static final List<Category> ALL = Collections.unmodifiableList(DEFINED.stream()
-            .filter(category -> !category.nominees.isEmpty()).collect(Collectors.toList()));
+            .filter(category -> !category.getNominees().isEmpty()).collect(Collectors.toList()));
 
     public static final String TIMESTAMP = "Timestamp";
 
@@ -43,14 +43,11 @@ public final class Category {
 
     public static final String EMAIL = "EMail";
 
-    /** Category name */
-    public final String name;
+    private final String name;
 
-    /** Scoring value */
-    public final BigDecimal value;
+    private final BigDecimal value;
 
-    /** Nominees in display order */
-    public final List<String> nominees;
+    private final List<String> nominees;
 
     private Category(Element inCategory) {
         name = inCategory.getAttributeValue("name");
@@ -72,6 +69,21 @@ public final class Category {
         }
     }
 
+    /** Get the name of this Category */
+    public String getName() {
+        return name;
+    }
+
+    /** Get the scoring value of this Category */
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    /** Get the nominees in display order of this Category */
+    public List<String> getNominees() {
+        return nominees;
+    }
+
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
         return name + nominees.stream()
@@ -83,7 +95,7 @@ public final class Category {
     public void writeChart(List<Player> inPlayers, Results inResults) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.picks.get(name)));
+        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.getPick(name)));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();

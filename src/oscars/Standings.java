@@ -16,8 +16,7 @@ import org.jdom2.Element;
 
 /** The score and rank standings - Immutable */
 public final class Standings {
-    /** The elapsed time in seconds since the start of the broadcast */
-    public final long elapsedTime;
+    private final long elapsedTime;
 
     private final boolean showEnded;
 
@@ -28,22 +27,29 @@ public final class Standings {
     public Standings(List<Player> inPlayers, Results inResults) {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         showEnded = inResults.showEnded();
-        winners = Collections.unmodifiableMap(Category.ALL.stream().map(category -> category.name)
-                .collect(Collectors.toMap(category -> category, category -> Collections
-                        .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
+        winners = Collections
+                .unmodifiableMap(Category.ALL.stream().map(category -> category.getName())
+                        .collect(Collectors.toMap(category -> category, category -> Collections
+                                .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
         scoreMap = Collections.unmodifiableMap(inPlayers.stream().collect(Collectors
                 .toMap(player -> player, this::score, BigDecimal::min, LinkedHashMap::new)));
     }
 
     private BigDecimal score(Player inPlayer) {
-        return Category.ALL.stream().filter(
-                category -> winners.get(category.name).contains(inPlayer.picks.get(category.name)))
-                .map(category -> category.value).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return Category.ALL.stream()
+                .filter(category -> winners.get(category.getName())
+                        .contains(inPlayer.getPick(category.getName())))
+                .map(Category::getValue).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /** Get the elapsed time in seconds since the start of the broadcast */
+    public long getElapsedTime() {
+        return elapsedTime;
     }
 
     /** Get the DOM Element for these Standings */
     public Element toDOM() {
-        int scale = Category.ALL.stream().mapToInt(category -> category.value.scale()).max()
+        int scale = Category.ALL.stream().map(Category::getValue).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
         Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream().collect(Collectors.toMap(
                 player -> player,
@@ -71,37 +77,36 @@ public final class Standings {
         return inScoreMap.entrySet().stream()
                 .filter(scoreEntry -> inScoreMap.get(inPlayer).compareTo(scoreEntry.getValue()) < 0
                         || inScoreMap.get(inPlayer).equals(scoreEntry.getValue())
-                                && scoreEntry.getKey().time <= inElapsedTime
-                                && (inPlayer.time < scoreEntry.getKey().time
-                                        || inCheckOverTime && inPlayer.time > inElapsedTime));
+                                && scoreEntry.getKey().getTime() <= inElapsedTime
+                                && (inPlayer.getTime() < scoreEntry.getKey().getTime()
+                                        || inCheckOverTime && inPlayer.getTime() > inElapsedTime));
     }
 
     private Map<Player, BigDecimal> possibleScores(Player inPlayer, boolean inBest) {
         return scoreMap.entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey,
-                        scoreEntry -> Category.ALL.stream()
-                                .filter(category -> winners.get(category.name).isEmpty()
-                                        && inBest == scoreEntry.getKey().picks.get(category.name)
-                                                .equals(inPlayer.picks.get(category.name)))
-                                .map(category -> category.value)
-                                .reduce(scoreEntry.getValue(), BigDecimal::add)));
+                .collect(Collectors.toMap(Entry::getKey, scoreEntry -> Category.ALL.stream()
+                        .filter(category -> winners.get(category.getName()).isEmpty()
+                                && inBest == scoreEntry.getKey().getPick(category.getName())
+                                        .equals(inPlayer.getPick(category.getName())))
+                        .map(Category::getValue).reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
     private long worstPossibleRank(Player inPlayer) {
         Map<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, false);
-        if (showEnded)
-            return 1 + lostToStream(inPlayer, worstPossibleScores, elapsedTime, true).count();
-        return 1 + Math.max(inPlayer.time > elapsedTime
-                ? lostToStream(inPlayer, worstPossibleScores, inPlayer.time - 1, true).count()
-                : 0, lostToStream(inPlayer, worstPossibleScores, Long.MAX_VALUE, false).count());
+        return 1 + Math.max(
+                lostToStream(inPlayer, worstPossibleScores,
+                        showEnded ? elapsedTime : Long.MAX_VALUE, showEnded).count(),
+                showEnded || inPlayer.getTime() <= elapsedTime ? 0
+                        : lostToStream(inPlayer, worstPossibleScores, inPlayer.getTime() - 1, true)
+                                .count());
     }
 
     /** Determine if the player and their opponent will be tied at the end of the game */
     private boolean tied(Player inPlayer, Player inOpponent) {
-        return (inPlayer.time == inOpponent.time
-                || showEnded && inPlayer.time > elapsedTime && inOpponent.time > elapsedTime)
+        return (inPlayer.getTime() == inOpponent.getTime() || showEnded
+                && inPlayer.getTime() > elapsedTime && inOpponent.getTime() > elapsedTime)
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
                 && winners.keySet().stream().allMatch(category -> !winners.get(category).isEmpty()
-                        || inPlayer.picks.get(category).equals(inOpponent.picks.get(category)));
+                        || inPlayer.getPick(category).equals(inOpponent.getPick(category)));
     }
 }

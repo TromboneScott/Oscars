@@ -67,7 +67,8 @@ public class Results {
         for (int resultNum = 0; resultNum < Category.ALL.size()
                 + ShowTimeType.values().length; resultNum++)
             System.out.println((resultNum + 1) + ": "
-                    + (resultNum < Category.ALL.size() ? toString(Category.ALL.get(resultNum).name)
+                    + (resultNum < Category.ALL.size()
+                            ? toString(Category.ALL.get(resultNum).getName())
                             : toString(ShowTimeType.values()[resultNum - Category.ALL.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
@@ -98,22 +99,23 @@ public class Results {
     }
 
     private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
-        System.out.println("\n" + toString(inCategory.name));
+        System.out.println("\n" + toString(inCategory.getName()));
 
-        IntStream.range(0, inCategory.nominees.size()).forEach(x -> System.out.println((x + 1)
-                + ": " + nomineeDescriptions.get(inCategory.name).get(inCategory.nominees.get(x))));
+        IntStream.range(0, inCategory.getNominees().size())
+                .forEach(x -> System.out.println((x + 1) + ": " + nomineeDescriptions
+                        .get(inCategory.getName()).get(inCategory.getNominees().get(x))));
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
         try {
-            winners.put(inCategory.name,
+            winners.put(inCategory.getName(),
                     Collections.unmodifiableCollection(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
-                                        if (number > inCategory.nominees.size() || number < 1)
+                                        if (number > inCategory.getNominees().size() || number < 1)
                                             throw new NumberFormatException();
                                     }).sorted()
-                                    .mapToObj(number -> inCategory.nominees.get(number - 1))
+                                    .mapToObj(number -> inCategory.getNominees().get(number - 1))
                                     .collect(Collectors.toCollection(LinkedHashSet::new))));
             inCategory.writeChart(inPlayers, this);
         } catch (NumberFormatException e) {
@@ -170,9 +172,9 @@ public class Results {
     /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
         return Category.ALL.stream()
-                .map(category -> winners(category.name).stream()
+                .map(category -> winners(category.getName()).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
-                        .reduce(new Element("category").setAttribute("name", category.name),
+                        .reduce(new Element("category").setAttribute("name", category.getName()),
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent).setAttributes(
                         Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)

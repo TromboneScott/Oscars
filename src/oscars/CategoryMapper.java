@@ -30,17 +30,17 @@ public final class CategoryMapper {
     public CategoryMapper() throws IOException {
         categoryMaps = readCategoryMaps();
         for (Category category : Category.ALL) {
-            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.name,
+            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.getName(),
                     k -> new LinkedHashMap<>());
-            ballots.players.stream().sorted(Comparator.comparing(Player::getTimestamp))
-                    .map(player -> player.picks.get(category.name))
+            ballots.getPlayers().stream().sorted(Comparator.comparing(Player::getTimestamp))
+                    .map(player -> player.getPick(category.getName()))
                     .filter(guess -> !categoryMap.containsKey(guess))
                     .forEach(guess -> categoryMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
-            for (String nominee : category.nominees)
+            for (String nominee : category.getNominees())
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
-                    System.out.println("CATEGORY: " + category.name);
+                    System.out.println("CATEGORY: " + category.getName());
                     System.out.println("NOMINEE: " + nominee);
                     System.out.print("Enter Ballot Description: ");
                     categoryMap.put(Results.STDIN.nextLine(), nominee);
@@ -51,12 +51,12 @@ public final class CategoryMapper {
 
     /** Get the players with their entries */
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(ballots.players.stream()
-                .map(player -> new Player(player.picks.entrySet().stream()
-                        .collect(Collectors.toMap(Entry::getKey,
-                                entry -> Optional.ofNullable(categoryMaps.get(entry.getKey()))
-                                        .map(map -> map.get(entry.getValue()))
-                                        .orElseGet(entry::getValue)))))
+        return Collections.unmodifiableList(ballots.getPlayers().stream()
+                .map(player -> new Player(Category.DEFINED.stream().map(Category::getName)
+                        .collect(Collectors.toMap(category -> category,
+                                category -> Optional.ofNullable(categoryMaps.get(category))
+                                        .map(map -> map.get(player.getPick(category)))
+                                        .orElseGet(() -> player.getPick(category))))))
                 .collect(Collectors.toList()));
     }
 
@@ -70,23 +70,24 @@ public final class CategoryMapper {
 
     private String mapping(Category inCategory, String inGuess) {
         String match = matches.get(inGuess);
-        if (inCategory.nominees.contains(match))
+        if (inCategory.getNominees().contains(match))
             return match;
         if (match != null)
             System.out.println(
                     "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
 
-        List<String> mappings = inCategory.nominees.stream()
+        List<String> mappings = inCategory.getNominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
                 .collect(Collectors.toList());
         String mapping = mappings.size() == 1 ? mappings.get(0)
-                : prompt(inCategory, inGuess, mappings.isEmpty() ? inCategory.nominees : mappings);
+                : prompt(inCategory, inGuess,
+                        mappings.isEmpty() ? inCategory.getNominees() : mappings);
         matches.put(inGuess, mapping);
         return mapping;
     }
 
     private static String prompt(Category inCategory, String inGuess, List<String> inNominees) {
-        System.out.println("\nCATEGORY: " + inCategory.name);
+        System.out.println("\nCATEGORY: " + inCategory.getName());
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");
@@ -113,9 +114,9 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.DATA.write(IntStream.range(0, ballots.categories.size())
-                .mapToObj(column -> categoryDOM(Category.DEFINED.get(column).name,
-                        ballots.categories.get(column)))
+        Directory.DATA.write(IntStream.range(0, ballots.getCategories().size())
+                .mapToObj(column -> categoryDOM(Category.DEFINED.get(column).getName(),
+                        ballots.getCategories().get(column)))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 
