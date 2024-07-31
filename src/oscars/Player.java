@@ -30,7 +30,7 @@ public final class Player {
         }
     }
 
-    /** Get the Player's picks for the given category */
+    /** Get the Player's pick for the given category */
     public String getPick(String inCategory) {
         return picks.get(inCategory);
     }

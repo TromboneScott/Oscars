@@ -51,15 +51,16 @@ public final class Standings {
     public Element toDOM() {
         int scale = Category.ALL.stream().map(Category::getValue).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
-        Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream().collect(Collectors.toMap(
-                player -> player,
-                player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
-                        .map(Entry::getKey).collect(Collectors.toSet())));
+        Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream()
+                .collect(Collectors.toMap(player -> player,
+                        player -> lostToStream(player, possibleScores(player, true),
+                                getElapsedTime(), showEnded).map(Entry::getKey)
+                                        .collect(Collectors.toSet())));
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
                         .setAttribute("rank", String.valueOf(
-                                lostToStream(player, scoreMap, elapsedTime, true).count() + 1))
+                                lostToStream(player, scoreMap, getElapsedTime(), true).count() + 1))
                         .setAttribute("bpr", String.valueOf(lostToMap.get(player).size() + 1))
                         .setAttribute("wpr", String.valueOf(worstPossibleRank(player)))
                         .setAttribute("decided",
@@ -69,7 +70,7 @@ public final class Standings {
                                                 || tied(player, opponent) ? "Y" : "N")
                                         .collect(Collectors.joining())))
                 .reduce(new Element("standings"), Element::addContent)
-                .setAttribute("time", String.valueOf(elapsedTime));
+                .setAttribute("time", String.valueOf(getElapsedTime()));
     }
 
     private Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
@@ -95,8 +96,8 @@ public final class Standings {
         Map<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, false);
         return 1 + Math.max(
                 lostToStream(inPlayer, worstPossibleScores,
-                        showEnded ? elapsedTime : Long.MAX_VALUE, showEnded).count(),
-                showEnded || inPlayer.getTime() <= elapsedTime ? 0
+                        showEnded ? getElapsedTime() : Long.MAX_VALUE, showEnded).count(),
+                showEnded || inPlayer.getTime() <= getElapsedTime() ? 0
                         : lostToStream(inPlayer, worstPossibleScores, inPlayer.getTime() - 1, true)
                                 .count());
     }
@@ -104,7 +105,7 @@ public final class Standings {
     /** Determine if the player and their opponent will be tied at the end of the game */
     private boolean tied(Player inPlayer, Player inOpponent) {
         return (inPlayer.getTime() == inOpponent.getTime() || showEnded
-                && inPlayer.getTime() > elapsedTime && inOpponent.getTime() > elapsedTime)
+                && inPlayer.getTime() > getElapsedTime() && inOpponent.getTime() > getElapsedTime())
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
                 && winners.keySet().stream().allMatch(category -> !winners.get(category).isEmpty()
                         || inPlayer.getPick(category).equals(inOpponent.getPick(category)));
