@@ -86,17 +86,16 @@ public final class Category {
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
-        return getName() + getNominees().stream()
-                .map(nominee -> inResults.winners(getName()).contains(nominee) ? "1" : "0")
+        return name + nominees.stream()
+                .map(nominee -> inResults.winners(name).contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
 
     /** Write the chart for this Category given these players and these Results */
     public void writeChart(List<Player> inPlayers, Results inResults) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        getNominees().forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-        inPlayers
-                .forEach(player -> dataset.incrementValue(1, "nominee", player.getPick(getName())));
+        nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
+        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.getPick(name)));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
@@ -117,7 +116,7 @@ public final class Category {
         private final Collection<String> winners;
 
         public NomineeRenderer(Results inResults) {
-            winners = inResults.winners(getName());
+            winners = inResults.winners(name);
             setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
             setDefaultItemLabelsVisible(true);
         }
@@ -125,8 +124,7 @@ public final class Category {
         @Override
         public Paint getItemPaint(final int inRow, final int inColumn) {
             return winners.isEmpty() ? ChartPaint.GRAY
-                    : winners.contains(getNominees().get(inColumn)) ? ChartPaint.GREEN
-                            : ChartPaint.RED;
+                    : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN : ChartPaint.RED;
         }
     }
 
