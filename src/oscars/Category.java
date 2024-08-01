@@ -107,8 +107,7 @@ public final class Category {
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
         plot.setRenderer(new NomineeRenderer(inResults));
 
-        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
-                300);
+        ChartUtils.saveChartAsPNG(Directory.CATEGORY.file(chartName(inResults)), chart, 500, 300);
     }
 
     @SuppressWarnings("serial")
@@ -132,8 +131,8 @@ public final class Category {
     public static void cleanUpCharts(Results inResults) {
         Set<String> chartsToKeep = ALL.stream().map(category -> category.chartName(inResults))
                 .collect(Collectors.toSet());
-        for (File file : Directory.CATEGORY.listFiles())
-            if (file.getName().endsWith(".png") && !chartsToKeep.contains(file.getName()))
-                file.delete();
+        for (File file : Directory.CATEGORY.listFiles(
+                (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
+            file.delete();
     }
 }

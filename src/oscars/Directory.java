@@ -18,9 +18,12 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-/** Define the directories to be used and how to read and write in those directories */
+/**
+ * Define the directories to be used and how to read and write in those directories - Immutable
+ * (though the file system itself can change)
+ */
 @SuppressWarnings("serial")
-public class Directory extends File {
+public final class Directory extends File {
     public static final Directory DATA = new Directory("data");
 
     public static final Directory CATEGORY = new Directory("category");
@@ -33,9 +36,14 @@ public class Directory extends File {
             mkdir();
     }
 
+    /** Get a File object in this Directory */
+    public File file(String inFilename) {
+        return new File(this, inFilename);
+    }
+
     /** Get the root element of the XML file or empty if file doesn't exist */
     public Optional<Element> getRootElement(String inXMLFile) throws IOException {
-        File xmlFile = new File(this, inXMLFile);
+        File xmlFile = file(inXMLFile);
         try {
             return xmlFile.exists() ? Optional.of(new SAXBuilder().build(xmlFile).getRootElement())
                     : Optional.empty();
@@ -53,8 +61,7 @@ public class Directory extends File {
                     .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
         document.addContent(new Comment("OSCARS website created by Scott McDonald"));
         document.addContent(inElement);
-        try (Writer writer = new PrintWriter(new File(this, inXMLFile),
-                StandardCharsets.UTF_8.name())) {
+        try (Writer writer = new PrintWriter(file(inXMLFile), StandardCharsets.UTF_8.name())) {
             new XMLOutputter(Format.getPrettyFormat()).output(document, writer);
         }
     }
