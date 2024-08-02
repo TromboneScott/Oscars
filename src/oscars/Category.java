@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
@@ -33,16 +34,6 @@ public final class Category {
     public static final List<Category> ALL = Collections.unmodifiableList(DEFINED.stream()
             .filter(category -> !category.getNominees().isEmpty()).collect(Collectors.toList()));
 
-    public static final String TIMESTAMP = "Timestamp";
-
-    public static final String FIRST_NAME = "First Name";
-
-    public static final String LAST_NAME = "Last Name";
-
-    public static final String TIME = "Time";
-
-    public static final String EMAIL = "EMail";
-
     private final String name;
 
     private final BigDecimal value;
@@ -60,11 +51,15 @@ public final class Category {
 
     private static List<Category> all() {
         try {
-            return Directory.DATA.getRootElement(DEFINITIONS_FILE)
-                    .orElseThrow(() -> new RuntimeException("File not found: " + DEFINITIONS_FILE))
+            List<Category> all = Directory.DATA.getRootElement(DEFINITIONS_FILE)
+                    .orElseThrow(() -> new RuntimeException("File not found"))
                     .getChildren("category").stream().map(Category::new)
                     .collect(Collectors.toList());
-        } catch (IOException e) {
+            Stream.of(Column.values()).map(Column::getHeader).forEach(header -> all.stream()
+                    .filter(category -> category.getName().equals(header)).findAny()
+                    .orElseThrow(() -> new RuntimeException("Category not defined: " + header)));
+            return all;
+        } catch (Exception e) {
             throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
         }
     }
@@ -95,7 +90,7 @@ public final class Category {
     public void writeChart(List<Player> inPlayers, Results inResults) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.getPick(name)));
+        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.getPick(this)));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();

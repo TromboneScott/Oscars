@@ -40,9 +40,9 @@ public final class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream().filter(player -> !player.getPick(Category.EMAIL).isEmpty())
+            new Ballots().all.stream().filter(player -> !player.getPick(Column.EMAIL).isEmpty())
                     .forEach(player -> System.out
-                            .println(getName(player) + " = " + player.getPick(Category.EMAIL)));
+                            .println(getName(player) + " = " + player.getPick(Column.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
@@ -93,7 +93,7 @@ public final class Ballots {
 
     /** Get the name (last, first) for the Player */
     private static String getName(Player inPlayer) {
-        return Stream.of(Category.LAST_NAME, Category.FIRST_NAME).map(inPlayer::getPick)
+        return Stream.of(Column.LAST_NAME, Column.FIRST_NAME).map(inPlayer::getPick)
                 .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
     }
 

@@ -33,7 +33,7 @@ public final class CategoryMapper {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.getName(),
                     k -> new LinkedHashMap<>());
             ballots.getPlayers().stream().sorted(Comparator.comparing(Player::getTimestamp))
-                    .map(player -> player.getPick(category.getName()))
+                    .map(player -> player.getPick(category))
                     .filter(guess -> !categoryMap.containsKey(guess))
                     .forEach(guess -> categoryMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
@@ -52,11 +52,11 @@ public final class CategoryMapper {
     /** Get the players with their entries */
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(ballots.getPlayers().stream()
-                .map(player -> new Player(Category.DEFINED.stream().map(Category::getName)
-                        .collect(Collectors.toMap(category -> category,
-                                category -> Optional.ofNullable(categoryMaps.get(category))
-                                        .map(map -> map.get(player.getPick(category)))
-                                        .orElseGet(() -> player.getPick(category))))))
+                .map(player -> new Player(Category.DEFINED.stream().collect(Collectors.toMap(
+                        Category::getName,
+                        category -> Optional.ofNullable(categoryMaps.get(category.getName()))
+                                .map(map -> map.get(player.getPick(category)))
+                                .orElseGet(() -> player.getPick(category))))))
                 .collect(Collectors.toList()));
     }
 

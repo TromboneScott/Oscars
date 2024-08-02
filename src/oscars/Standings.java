@@ -36,9 +36,8 @@ public final class Standings {
     }
 
     private BigDecimal score(Player inPlayer) {
-        return Category.ALL.stream()
-                .filter(category -> winners.get(category.getName())
-                        .contains(inPlayer.getPick(category.getName())))
+        return Category.ALL.stream().filter(
+                category -> winners.get(category.getName()).contains(inPlayer.getPick(category)))
                 .map(Category::getValue).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -86,8 +85,8 @@ public final class Standings {
         return scoreMap.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey, scoreEntry -> Category.ALL.stream()
                         .filter(category -> winners.get(category.getName()).isEmpty()
-                                && inBest == scoreEntry.getKey().getPick(category.getName())
-                                        .equals(inPlayer.getPick(category.getName())))
+                                && inBest == scoreEntry.getKey().getPick(category)
+                                        .equals(inPlayer.getPick(category)))
                         .map(Category::getValue).reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
@@ -106,7 +105,8 @@ public final class Standings {
         return (inPlayer.getTime() == inOpponent.getTime() || showEnded
                 && inPlayer.getTime() > elapsedTime && inOpponent.getTime() > elapsedTime)
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
-                && winners.keySet().stream().allMatch(category -> !winners.get(category).isEmpty()
-                        || inPlayer.getPick(category).equals(inOpponent.getPick(category)));
+                && Category.ALL.stream()
+                        .allMatch(category -> !winners.get(category.getName()).isEmpty()
+                                || inPlayer.getPick(category).equals(inOpponent.getPick(category)));
     }
 }

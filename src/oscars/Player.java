@@ -20,19 +20,22 @@ public final class Player {
     public Player(Map<String, String> inPicks) {
         picks = Collections.unmodifiableMap(new HashMap<>(inPicks));
         try {
-            time = LocalTime.parse(picks.get(Category.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
+            time = LocalTime.parse(getPick(Column.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
                     .toSecondOfDay();
         } catch (DateTimeParseException e) {
-            throw new RuntimeException(
-                    picks.get(Category.FIRST_NAME) + " " + picks.get(Category.LAST_NAME)
-                            + " has invalid time guess: " + picks.get(Category.TIME),
-                    e);
+            throw new RuntimeException(getPick(Column.FIRST_NAME) + " " + getPick(Column.LAST_NAME)
+                    + " has invalid time guess: " + getPick(Column.TIME), e);
         }
     }
 
-    /** Get the Player's pick for the given category */
-    public String getPick(String inCategory) {
-        return picks.get(inCategory);
+    /** Get the Player's pick for the given Category */
+    public String getPick(Category inCategory) {
+        return picks.get(inCategory.getName());
+    }
+
+    /** Get the Player's pick for the given Column */
+    public String getPick(Column inColumn) {
+        return picks.get(inColumn.getHeader());
     }
 
     /** Get the Player's guessed time in seconds */
@@ -42,13 +45,13 @@ public final class Player {
 
     /** Get the timestamp of the ballot for this Player */
     public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(getPick(Category.TIMESTAMP),
+        return LocalDateTime.parse(getPick(Column.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     /** Get the DOM Element for this Player */
     public Element toDOM() {
-        return new Element("player").setAttribute("firstName", getPick(Category.FIRST_NAME))
-                .setAttribute("lastName", getPick(Category.LAST_NAME));
+        return new Element("player").setAttribute("firstName", getPick(Column.FIRST_NAME))
+                .setAttribute("lastName", getPick(Column.LAST_NAME));
     }
 }
