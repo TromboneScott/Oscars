@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
@@ -24,24 +23,15 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
-public final class Category {
-    private static final String DEFINITIONS_FILE = "definitions.xml";
-
-    /** All the defined categories in display order */
-    public static final List<Category> DEFINED = Collections.unmodifiableList(all());
-
-    /** All the defined categories in display order that have nominees */
-    public static final List<Category> ALL = Collections.unmodifiableList(DEFINED.stream()
-            .filter(category -> !category.getNominees().isEmpty()).collect(Collectors.toList()));
-
-    private final String name;
+public final class Category implements Column {
+    private final String header;
 
     private final BigDecimal value;
 
     private final List<String> nominees;
 
-    private Category(Element inCategory) {
-        name = inCategory.getAttributeValue("name");
+    public Category(Element inCategory) {
+        header = inCategory.getAttributeValue("name");
         value = BigDecimal.ONE.add(Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
                 .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
                 .orElse(BigDecimal.ZERO));
@@ -49,40 +39,25 @@ public final class Category {
                 .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
     }
 
-    private static List<Category> all() {
-        try {
-            List<Category> all = Directory.DATA.getRootElement(DEFINITIONS_FILE)
-                    .orElseThrow(() -> new RuntimeException("File not found"))
-                    .getChildren("category").stream().map(Category::new)
-                    .collect(Collectors.toList());
-            Stream.of(Column.values()).map(Column::getHeader).forEach(header -> all.stream()
-                    .filter(category -> category.getName().equals(header)).findAny()
-                    .orElseThrow(() -> new RuntimeException("Category not defined: " + header)));
-            return all;
-        } catch (Exception e) {
-            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
-        }
+    /** The header of this Column */
+    public String header() {
+        return header;
     }
 
-    /** Get the name of this Category */
-    public String getName() {
-        return name;
-    }
-
-    /** Get the scoring value of this Category */
-    public BigDecimal getValue() {
+    /** The scoring value of this Category */
+    public BigDecimal value() {
         return value;
     }
 
-    /** Get the nominees in display order of this Category */
-    public List<String> getNominees() {
+    /** The nominees in display order of this Category */
+    public List<String> nominees() {
         return nominees;
     }
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
-        return name + nominees.stream()
-                .map(nominee -> inResults.winners(name).contains(nominee) ? "1" : "0")
+        return header + nominees.stream()
+                .map(nominee -> inResults.winners(this).contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
 
@@ -90,7 +65,7 @@ public final class Category {
     public void writeChart(List<Player> inPlayers, Results inResults) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.getPick(this)));
+        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(this)));
 
         JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
         chart.removeLegend();
@@ -100,7 +75,7 @@ public final class Category {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-        plot.setRenderer(new NomineeRenderer(inResults));
+        plot.setRenderer(new NomineeRenderer(inResults.winners(this)));
 
         ChartUtils.saveChartAsPNG(Directory.CATEGORY.file(chartName(inResults)), chart, 500, 300);
     }
@@ -109,8 +84,8 @@ public final class Category {
     private class NomineeRenderer extends BarRenderer {
         private final Collection<String> winners;
 
-        public NomineeRenderer(Results inResults) {
-            winners = inResults.winners(name);
+        public NomineeRenderer(Collection<String> inWinners) {
+            winners = inWinners;
             setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
             setDefaultItemLabelsVisible(true);
         }
@@ -124,8 +99,8 @@ public final class Category {
 
     /** Delete all charts we don't need to keep */
     public static void cleanUpCharts(Results inResults) {
-        Set<String> chartsToKeep = ALL.stream().map(category -> category.chartName(inResults))
-                .collect(Collectors.toSet());
+        Set<String> chartsToKeep = Columns.categories().stream()
+                .map(category -> category.chartName(inResults)).collect(Collectors.toSet());
         for (File file : Directory.CATEGORY.listFiles(
                 (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
             file.delete();

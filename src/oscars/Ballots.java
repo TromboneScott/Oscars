@@ -30,7 +30,7 @@ import com.opencsv.CSVReader;
 public final class Ballots {
     private static final String URL_FILE = "ResponsesURL.txt";
 
-    private final List<String> categories;
+    private final List<String> headers;
 
     private final List<Player> all;
 
@@ -40,9 +40,10 @@ public final class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream().filter(player -> !player.getPick(Column.EMAIL).isEmpty())
+            new Ballots().all.stream()
+                    .filter(player -> !player.answer(DefinedColumn.EMAIL).isEmpty())
                     .forEach(player -> System.out
-                            .println(getName(player) + " = " + player.getPick(Column.EMAIL)));
+                            .println(player.name() + " = " + player.answer(DefinedColumn.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
@@ -57,10 +58,10 @@ public final class Ballots {
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-                categories = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
-                if (categories.size() != Category.DEFINED.size())
-                    throw new IOException("Number of categories in ballots: " + categories.size()
-                            + " does not match defined categories: " + Category.DEFINED.size());
+                headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
+                if (headers.size() != Columns.all().size())
+                    throw new IOException("Number of columns on ballots: " + headers.size()
+                            + " does not match defined categories: " + Columns.all().size());
                 all = Collections.unmodifiableList(reader.readAll().stream().map(Ballots::toPlayer)
                         .collect(Collectors.toList()));
             }
@@ -70,37 +71,30 @@ public final class Ballots {
     }
 
     private static Player toPlayer(String[] inEntries) {
-        if (inEntries.length != Category.DEFINED.size())
+        if (inEntries.length != Columns.all().size())
             throw new RuntimeException("Number of ballot entries: " + inEntries.length
-                    + " does not match category definitions: " + Category.DEFINED.size());
-        return new Player(IntStream.range(0, inEntries.length).boxed()
-                .collect(Collectors.toMap(column -> Category.DEFINED.get(column).getName(),
-                        column -> inEntries[column].trim())));
+                    + " does not match category definitions: " + Columns.all().size());
+        return new Player(IntStream.range(0, inEntries.length).boxed().collect(Collectors
+                .toMap(column -> Columns.all().get(column), column -> inEntries[column].trim())));
     }
 
-    /** Get the category names from the header row of the survey */
-    public List<String> getCategories() {
-        return categories;
+    /** The column headers of the survey */
+    public List<String> headers() {
+        return headers;
     }
 
-    /** Get the players from the survey using the latest ballot for each Player */
-    public Collection<Player> getPlayers() {
+    /** The players from the survey using the latest ballot for each Player */
+    public Collection<Player> players() {
         return Collections.unmodifiableCollection(all.stream()
-                .collect(Collectors.toMap(Ballots::getName, player -> player,
+                .collect(Collectors.toMap(Player::name, player -> player,
                         BinaryOperator.maxBy(Comparator.comparing(Player::getTimestamp))))
                 .values());
-    }
-
-    /** Get the name (last, first) for the Player */
-    private static String getName(Player inPlayer) {
-        return Stream.of(Column.LAST_NAME, Column.FIRST_NAME).map(inPlayer::getPick)
-                .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
     }
 
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Player> players = new Ballots().getPlayers();
+                Collection<Player> players = new Ballots().players();
                 LocalDateTime maxTimestamp = players.stream().map(Player::getTimestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
@@ -109,8 +103,7 @@ public final class Ballots {
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
                     Results.write(ZonedDateTime.now(), players.stream()
-                            .map(player -> new Element("ballot")
-                                    .setAttribute("name", getName(player))
+                            .map(player -> new Element("ballot").setAttribute("name", player.name())
                                     .setAttribute("timestamp", player.getTimestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
                     lastTimestamp = maxTimestamp;

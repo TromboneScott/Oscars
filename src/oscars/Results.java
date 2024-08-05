@@ -64,12 +64,11 @@ public class Results {
      */
     public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        for (int resultNum = 0; resultNum < Category.ALL.size()
+        for (int resultNum = 0; resultNum < Columns.categories().size()
                 + ShowTimeType.values().length; resultNum++)
-            System.out.println((resultNum + 1) + ": "
-                    + (resultNum < Category.ALL.size()
-                            ? toString(Category.ALL.get(resultNum).getName())
-                            : toString(ShowTimeType.values()[resultNum - Category.ALL.size()])));
+            System.out.println((resultNum + 1) + ": " + (resultNum < Columns.categories().size()
+                    ? toString(Columns.categories().get(resultNum))
+                    : toString(ShowTimeType.values()[resultNum - Columns.categories().size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
         String input = STDIN.nextLine();
@@ -77,20 +76,21 @@ public class Results {
             return false;
         try {
             int resultNum = Integer.parseInt(input) - 1;
-            if (resultNum < 0 || resultNum >= Category.ALL.size() + ShowTimeType.values().length)
+            if (resultNum < 0
+                    || resultNum >= Columns.categories().size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum < Category.ALL.size())
-                promptWinner(Category.ALL.get(resultNum), inPlayers);
+            if (resultNum < Columns.categories().size())
+                promptWinner(Columns.categories().get(resultNum), inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - Category.ALL.size()]);
+                promptTime(ShowTimeType.values()[resultNum - Columns.categories().size()]);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
         return true;
     }
 
-    private String toString(String inCategory) {
-        return inCategory + " = " + String.join(", ", winners(inCategory));
+    private String toString(Category inCategory) {
+        return inCategory.header() + " = " + String.join(", ", winners(inCategory));
     }
 
     private String toString(ShowTimeType inShowTimeType) {
@@ -99,23 +99,23 @@ public class Results {
     }
 
     private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
-        System.out.println("\n" + toString(inCategory.getName()));
+        System.out.println("\n" + toString(inCategory));
 
-        IntStream.range(0, inCategory.getNominees().size())
-                .forEach(x -> System.out.println((x + 1) + ": " + nomineeDescriptions
-                        .get(inCategory.getName()).get(inCategory.getNominees().get(x))));
+        IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println((x + 1)
+                + ": "
+                + nomineeDescriptions.get(inCategory.header()).get(inCategory.nominees().get(x))));
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
         try {
-            winners.put(inCategory.getName(),
+            winners.put(inCategory.header(),
                     Collections.unmodifiableCollection(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
-                                        if (number > inCategory.getNominees().size() || number < 1)
+                                        if (number > inCategory.nominees().size() || number < 1)
                                             throw new NumberFormatException();
                                     }).sorted()
-                                    .mapToObj(number -> inCategory.getNominees().get(number - 1))
+                                    .mapToObj(number -> inCategory.nominees().get(number - 1))
                                     .collect(Collectors.toCollection(LinkedHashSet::new))));
             inCategory.writeChart(inPlayers, this);
         } catch (NumberFormatException e) {
@@ -148,17 +148,17 @@ public class Results {
 
     /** Get the elapsed time in milliseconds since the start of the broadcast */
     public long elapsedTimeMillis() {
-        return Math.max(0, getMillis(ShowTimeType.END) - getMillis(ShowTimeType.START));
+        return Math.max(0, timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START));
     }
 
-    private Long getMillis(ShowTimeType inShowTimeType) {
+    private Long timeInMillis(ShowTimeType inShowTimeType) {
         return Optional.ofNullable(showTimes.get(inShowTimeType)).map(ZonedDateTime::toInstant)
                 .orElseGet(Instant::now).toEpochMilli();
     }
 
     /** Get the winner(s) of the given category in display order */
-    public Collection<String> winners(String inCategory) {
-        return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
+    public Collection<String> winners(Category inCategory) {
+        return winners.computeIfAbsent(inCategory.header(), k -> Collections.emptySet());
     }
 
     /** Write the given content to the results XML file */
@@ -171,10 +171,10 @@ public class Results {
 
     /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
-        return Category.ALL.stream()
-                .map(category -> winners(category.getName()).stream()
+        return Columns.categories().stream()
+                .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
-                        .reduce(new Element("category").setAttribute("name", category.getName()),
+                        .reduce(new Element("category").setAttribute("name", category.header()),
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent).setAttributes(
                         Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
