@@ -110,7 +110,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        for (Category category : Columns.categories()) {
+        for (Category category : Columns.CATEGORIES) {
             category.writeChart(players, results);
             writeCategoryPage(category.header());
         }
@@ -123,17 +123,18 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.write(IntStream.range(0, players.size()).mapToObj(playerNum -> Columns
-                .categories().stream()
-                .map(category -> new Element("category").setAttribute("name", category.header())
-                        .setAttribute("nominee", players.get(playerNum).answer(category)))
-                .reduce(players.get(playerNum).toDOM(), Element::addContent)
-                .setAttribute("id", String.valueOf(playerNum + 1))
-                .setAttribute("time", String.valueOf(players.get(playerNum).time())))
+        Directory.DATA.write(IntStream.range(0, players.size())
+                .mapToObj(playerNum -> Columns.CATEGORIES.stream()
+                        .map(category -> new Element("category")
+                                .setAttribute("name", category.header())
+                                .setAttribute("nominee", players.get(playerNum).answer(category)))
+                        .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                        .setAttribute("id", String.valueOf(playerNum + 1))
+                        .setAttribute("time", String.valueOf(players.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
 
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(), player.answer(DefinedColumn.FIRST_NAME) + "_"
-                    + player.answer(DefinedColumn.LAST_NAME) + ".xml", "player.xsl");
+            Directory.PLAYER.write(player.toDOM(), player.answer(Columns.FIRST_NAME) + "_"
+                    + player.answer(Columns.LAST_NAME) + ".xml", "player.xsl");
     }
 }

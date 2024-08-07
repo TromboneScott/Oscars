@@ -22,15 +22,15 @@ public final class CategoryMapper {
 
     private final Ballots ballots = new Ballots();
 
-    private final Map<String, LinkedHashMap<String, String>> categoryMaps;
+    private final Map<Column, LinkedHashMap<String, String>> categoryMaps;
 
     private final HashMap<String, String> matches = new HashMap<>();
 
     /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
         categoryMaps = readCategoryMaps();
-        for (Category category : Columns.categories()) {
-            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category.header(),
+        for (Category category : Columns.CATEGORIES) {
+            Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category,
                     k -> new LinkedHashMap<>());
             ballots.players().stream().sorted(Comparator.comparing(Player::getTimestamp))
                     .map(player -> player.answer(category))
@@ -40,7 +40,7 @@ public final class CategoryMapper {
             for (String nominee : category.nominees())
                 if (!categoryMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
-                    System.out.println("CATEGORY: " + category.header());
+                    System.out.println("CATEGORY: " + category);
                     System.out.println("NOMINEE: " + nominee);
                     System.out.print("Enter Ballot Description: ");
                     categoryMap.put(Results.STDIN.nextLine(), nominee);
@@ -52,16 +52,16 @@ public final class CategoryMapper {
     /** The players with their entries */
     public List<Player> players() {
         return Collections.unmodifiableList(ballots.players().stream()
-                .map(player -> new Player(Columns.all().stream()
+                .map(player -> new Player(Columns.ALL.stream()
                         .collect(Collectors.toMap(column -> column,
-                                column -> Optional.ofNullable(categoryMaps.get(column.header()))
+                                column -> Optional.ofNullable(categoryMaps.get(column))
                                         .map(map -> map.get(player.answer(column)))
                                         .orElseGet(() -> player.answer(column))))))
                 .collect(Collectors.toList()));
     }
 
     /** The survey descriptions of the nominees in each Category */
-    public Map<String, Map<String, String>> nomineeDescriptions() {
+    public Map<Column, Map<String, String>> nomineeDescriptions() {
         return Collections.unmodifiableMap(categoryMaps.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
                         entry -> Collections.unmodifiableMap(entry.getValue().entrySet().stream()
@@ -87,7 +87,7 @@ public final class CategoryMapper {
     }
 
     private static String prompt(Category inCategory, String inGuess, List<String> inNominees) {
-        System.out.println("\nCATEGORY: " + inCategory.header());
+        System.out.println("\nCATEGORY: " + inCategory);
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");
@@ -100,12 +100,13 @@ public final class CategoryMapper {
         }
     }
 
-    private static Map<String, LinkedHashMap<String, String>> readCategoryMaps()
+    private static Map<Column, LinkedHashMap<String, String>> readCategoryMaps()
             throws IOException {
         return Directory.DATA.getRootElement(MAPPINGS_FILE)
                 .map(mappingsDOM -> mappingsDOM.getChildren("category").stream())
                 .orElseGet(Stream::empty)
-                .collect(Collectors.toMap(categoryDOM -> categoryDOM.getAttributeValue("name"),
+                .collect(Collectors.toMap(
+                        categoryDOM -> new Column(categoryDOM.getAttributeValue("name")),
                         categoryDOM -> categoryDOM.getChildren("nominee").stream()
                                 .collect(Collectors.toMap(
                                         nomineeDOM -> nomineeDOM.getAttributeValue("ballot"),
@@ -114,18 +115,17 @@ public final class CategoryMapper {
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.DATA.write(IntStream.range(0, Columns.all().size())
-                .mapToObj(column -> categoryDOM(Columns.all().get(column).header(),
-                        ballots.headers().get(column)))
+        Directory.DATA.write(IntStream.range(0, Columns.ALL.size()).mapToObj(
+                column -> categoryDOM(Columns.ALL.get(column), ballots.headers().get(column)))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 
-    private Element categoryDOM(String inName, String inBallot) {
-        return Optional.ofNullable(categoryMaps.get(inName))
+    private Element categoryDOM(Column inColumn, String inBallot) {
+        return Optional.ofNullable(categoryMaps.get(inColumn))
                 .map(mapping -> mapping.entrySet().stream()).orElseGet(Stream::empty)
                 .map(map -> new Element("nominee").setAttribute("name", map.getValue())
                         .setAttribute("ballot", map.getKey()))
-                .reduce(new Element("category").setAttribute("name", inName).setAttribute("ballot",
-                        inBallot), Element::addContent);
+                .reduce(new Element("category").setAttribute("name", inColumn.header())
+                        .setAttribute("ballot", inBallot), Element::addContent);
     }
 }

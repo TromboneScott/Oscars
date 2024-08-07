@@ -40,14 +40,14 @@ public class Results {
         END;
     }
 
-    private final Map<String, Map<String, String>> nomineeDescriptions;
+    private final Map<Column, Map<String, String>> nomineeDescriptions;
 
-    private final Map<String, Collection<String>> winners;
+    private final Map<Column, Collection<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(Map<String, Map<String, String>> inNomineeDescriptions) throws IOException {
+    public Results(Map<Column, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
         Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
                 .map(element -> element.getChild("awards")).orElseGet(() -> new Element("EMPTY"));
@@ -64,11 +64,11 @@ public class Results {
      */
     public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        for (int resultNum = 0; resultNum < Columns.categories().size()
+        for (int resultNum = 0; resultNum < Columns.CATEGORIES.size()
                 + ShowTimeType.values().length; resultNum++)
-            System.out.println((resultNum + 1) + ": " + (resultNum < Columns.categories().size()
-                    ? toString(Columns.categories().get(resultNum))
-                    : toString(ShowTimeType.values()[resultNum - Columns.categories().size()])));
+            System.out.println((resultNum + 1) + ": " + (resultNum < Columns.CATEGORIES.size()
+                    ? toString(Columns.CATEGORIES.get(resultNum))
+                    : toString(ShowTimeType.values()[resultNum - Columns.CATEGORIES.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
         String input = STDIN.nextLine();
@@ -77,12 +77,12 @@ public class Results {
         try {
             int resultNum = Integer.parseInt(input) - 1;
             if (resultNum < 0
-                    || resultNum >= Columns.categories().size() + ShowTimeType.values().length)
+                    || resultNum >= Columns.CATEGORIES.size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum < Columns.categories().size())
-                promptWinner(Columns.categories().get(resultNum), inPlayers);
+            if (resultNum < Columns.CATEGORIES.size())
+                promptWinner(Columns.CATEGORIES.get(resultNum), inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - Columns.categories().size()]);
+                promptTime(ShowTimeType.values()[resultNum - Columns.CATEGORIES.size()]);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -90,7 +90,7 @@ public class Results {
     }
 
     private String toString(Category inCategory) {
-        return inCategory.header() + " = " + String.join(", ", winners(inCategory));
+        return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
     private String toString(ShowTimeType inShowTimeType) {
@@ -102,13 +102,12 @@ public class Results {
         System.out.println("\n" + toString(inCategory));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println((x + 1)
-                + ": "
-                + nomineeDescriptions.get(inCategory.header()).get(inCategory.nominees().get(x))));
+                + ": " + nomineeDescriptions.get(inCategory).get(inCategory.nominees().get(x))));
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
         try {
-            winners.put(inCategory.header(),
+            winners.put(inCategory,
                     Collections.unmodifiableCollection(
                             Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                                     .mapToInt(Integer::parseInt).peek(number -> {
@@ -158,7 +157,7 @@ public class Results {
 
     /** Get the winner(s) of the given category in display order */
     public Collection<String> winners(Category inCategory) {
-        return winners.computeIfAbsent(inCategory.header(), k -> Collections.emptySet());
+        return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 
     /** Write the given content to the results XML file */
@@ -171,7 +170,7 @@ public class Results {
 
     /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
-        return Columns.categories().stream()
+        return Columns.CATEGORIES.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.header()),
@@ -183,9 +182,9 @@ public class Results {
                                 .collect(Collectors.toList()));
     }
 
-    private static Map<String, Collection<String>> winners(Element inAwardsDOM) {
+    private static Map<Column, Collection<String>> winners(Element inAwardsDOM) {
         return inAwardsDOM.getChildren("category").stream().collect(Collectors.toMap(
-                categoryDOM -> categoryDOM.getAttributeValue("name"),
+                categoryDOM -> new Column(categoryDOM.getAttributeValue("name")),
                 categoryDOM -> Collections.unmodifiableCollection(categoryDOM.getChildren("nominee")
                         .stream().map(element -> element.getAttributeValue("name"))
                         .collect(Collectors.toCollection(LinkedHashSet::new)))));

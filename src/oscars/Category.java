@@ -23,25 +23,18 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /** Category information - Immutable */
-public final class Category implements Column {
-    private final String header;
-
+public final class Category extends Column {
     private final BigDecimal value;
 
     private final List<String> nominees;
 
     public Category(Element inCategory) {
-        header = inCategory.getAttributeValue("name");
+        super(inCategory.getAttributeValue("name"));
         value = BigDecimal.ONE.add(Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
                 .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
                 .orElse(BigDecimal.ZERO));
         nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
-    }
-
-    /** The header of this Column */
-    public String header() {
-        return header;
     }
 
     /** The scoring value of this Category */
@@ -56,7 +49,7 @@ public final class Category implements Column {
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
-        return header + nominees.stream()
+        return header() + nominees.stream()
                 .map(nominee -> inResults.winners(this).contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
@@ -99,7 +92,7 @@ public final class Category implements Column {
 
     /** Delete all charts we don't need to keep */
     public static void cleanUpCharts(Results inResults) {
-        Set<String> chartsToKeep = Columns.categories().stream()
+        Set<String> chartsToKeep = Columns.CATEGORIES.stream()
                 .map(category -> category.chartName(inResults)).collect(Collectors.toSet());
         for (File file : Directory.CATEGORY.listFiles(
                 (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))

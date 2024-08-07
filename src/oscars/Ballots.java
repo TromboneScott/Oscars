@@ -40,10 +40,9 @@ public final class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream()
-                    .filter(player -> !player.answer(DefinedColumn.EMAIL).isEmpty())
+            new Ballots().all.stream().filter(player -> !player.answer(Columns.EMAIL).isEmpty())
                     .forEach(player -> System.out
-                            .println(player.name() + " = " + player.answer(DefinedColumn.EMAIL)));
+                            .println(player.name() + " = " + player.answer(Columns.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }
@@ -59,9 +58,9 @@ public final class Ballots {
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
-                if (headers.size() != Columns.all().size())
+                if (headers.size() != Columns.ALL.size())
                     throw new IOException("Number of columns on ballots: " + headers.size()
-                            + " does not match defined categories: " + Columns.all().size());
+                            + " does not match defined categories: " + Columns.ALL.size());
                 all = Collections.unmodifiableList(reader.readAll().stream().map(Ballots::toPlayer)
                         .collect(Collectors.toList()));
             }
@@ -71,11 +70,11 @@ public final class Ballots {
     }
 
     private static Player toPlayer(String[] inEntries) {
-        if (inEntries.length != Columns.all().size())
+        if (inEntries.length != Columns.ALL.size())
             throw new RuntimeException("Number of ballot entries: " + inEntries.length
-                    + " does not match category definitions: " + Columns.all().size());
+                    + " does not match category definitions: " + Columns.ALL.size());
         return new Player(IntStream.range(0, inEntries.length).boxed().collect(Collectors
-                .toMap(column -> Columns.all().get(column), column -> inEntries[column].trim())));
+                .toMap(column -> Columns.ALL.get(column), column -> inEntries[column].trim())));
     }
 
     /** The column headers of the survey */
