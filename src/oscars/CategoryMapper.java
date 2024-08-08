@@ -16,9 +16,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
-import oscars.column.Category;
-import oscars.column.Column;
-
 /** Map the Category data from the survey to the website - Immutable */
 public final class CategoryMapper {
     private static final String MAPPINGS_FILE = "mappings.xml";
@@ -32,7 +29,7 @@ public final class CategoryMapper {
     /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
         categoryMaps = readCategoryMaps();
-        for (Category category : Category.ALL) {
+        for (Column category : Column.CATEGORIES) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category,
                     k -> new LinkedHashMap<>());
             ballots.players().stream().sorted(Comparator.comparing(Player::getTimestamp))
@@ -71,7 +68,7 @@ public final class CategoryMapper {
                                 .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))));
     }
 
-    private String mapping(Category inCategory, String inGuess) {
+    private String mapping(Column inCategory, String inGuess) {
         String match = matches.get(inGuess);
         if (inCategory.nominees().contains(match))
             return match;
@@ -89,7 +86,7 @@ public final class CategoryMapper {
         return mapping;
     }
 
-    private static String prompt(Category inCategory, String inGuess, List<String> inNominees) {
+    private static String prompt(Column inCategory, String inGuess, List<String> inNominees) {
         System.out.println("\nCATEGORY: " + inCategory);
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));

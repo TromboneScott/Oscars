@@ -26,9 +26,6 @@ import org.jdom2.Element;
 
 import com.opencsv.CSVReader;
 
-import oscars.column.Column;
-import oscars.column.Columns;
-
 /** The data from the ballot survey - Immutable */
 public final class Ballots {
     private static final String URL_FILE = "ResponsesURL.txt";
@@ -43,9 +40,9 @@ public final class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream().filter(player -> !player.answer(Columns.EMAIL).isEmpty())
+            new Ballots().all.stream().filter(player -> !player.answer(Column.EMAIL).isEmpty())
                     .forEach(player -> System.out
-                            .println(player.name() + " = " + player.answer(Columns.EMAIL)));
+                            .println(player.name() + " = " + player.answer(Column.EMAIL)));
         else
             throw new Exception("Unknown action: " + inArgs[0]);
     }

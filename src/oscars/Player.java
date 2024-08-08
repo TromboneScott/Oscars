@@ -12,9 +12,6 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
-import oscars.column.Column;
-import oscars.column.Columns;
-
 /** Player information - Immutable */
 public final class Player {
     private final Map<Column, String> answers;
@@ -25,17 +22,17 @@ public final class Player {
     public Player(Map<Column, String> inAnswers) {
         answers = Collections.unmodifiableMap(new HashMap<>(inAnswers));
         try {
-            time = LocalTime.parse(answer(Columns.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
+            time = LocalTime.parse(answer(Column.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
                     .toSecondOfDay();
         } catch (DateTimeParseException e) {
-            throw new RuntimeException(name() + " has invalid time guess: " + answer(Columns.TIME),
+            throw new RuntimeException(name() + " has invalid time guess: " + answer(Column.TIME),
                     e);
         }
     }
 
     /** Get the name (last, first) for the Player */
     public String name() {
-        return Stream.of(Columns.LAST_NAME, Columns.FIRST_NAME).map(this::answer)
+        return Stream.of(Column.LAST_NAME, Column.FIRST_NAME).map(this::answer)
                 .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
     }
 
@@ -51,13 +48,13 @@ public final class Player {
 
     /** Get the timestamp of the ballot for this Player */
     public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(answer(Columns.TIMESTAMP),
+        return LocalDateTime.parse(answer(Column.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     /** Get the DOM Element for this Player */
     public Element toDOM() {
-        return new Element("player").setAttribute("firstName", answer(Columns.FIRST_NAME))
-                .setAttribute("lastName", answer(Columns.LAST_NAME));
+        return new Element("player").setAttribute("firstName", answer(Column.FIRST_NAME))
+                .setAttribute("lastName", answer(Column.LAST_NAME));
     }
 }

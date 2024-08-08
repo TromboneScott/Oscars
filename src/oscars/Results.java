@@ -23,9 +23,6 @@ import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 
-import oscars.column.Category;
-import oscars.column.Column;
-
 /** The current results of the Oscars contest */
 public class Results {
     /** Get user input from the system's standard input */
@@ -59,7 +56,7 @@ public class Results {
             winners = winners(awardsDOM);
             showTimes = showTimes(awardsDOM);
         } catch (Exception e) {
-            throw new RuntimeException("Error reading results file: " + RESULTS_FILE, e);
+            throw new IOException("Error reading results file: " + RESULTS_FILE, e);
         }
     }
 
@@ -72,11 +69,11 @@ public class Results {
      */
     public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        for (int resultNum = 0; resultNum < Category.ALL.size()
+        for (int resultNum = 0; resultNum < Column.CATEGORIES.size()
                 + ShowTimeType.values().length; resultNum++)
-            System.out.println((resultNum + 1) + ": "
-                    + (resultNum < Category.ALL.size() ? toString(Category.ALL.get(resultNum))
-                            : toString(ShowTimeType.values()[resultNum - Category.ALL.size()])));
+            System.out.println((resultNum + 1) + ": " + (resultNum < Column.CATEGORIES.size()
+                    ? toString(Column.CATEGORIES.get(resultNum))
+                    : toString(ShowTimeType.values()[resultNum - Column.CATEGORIES.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
         String input = STDIN.nextLine();
@@ -84,19 +81,20 @@ public class Results {
             return false;
         try {
             int resultNum = Integer.parseInt(input) - 1;
-            if (resultNum < 0 || resultNum >= Category.ALL.size() + ShowTimeType.values().length)
+            if (resultNum < 0
+                    || resultNum >= Column.CATEGORIES.size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum < Category.ALL.size())
-                promptWinner(Category.ALL.get(resultNum), inPlayers);
+            if (resultNum < Column.CATEGORIES.size())
+                promptWinner(Column.CATEGORIES.get(resultNum), inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - Category.ALL.size()]);
+                promptTime(ShowTimeType.values()[resultNum - Column.CATEGORIES.size()]);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
         return true;
     }
 
-    private String toString(Category inCategory) {
+    private String toString(Column inCategory) {
         return inCategory + " = " + String.join(", ", winners(inCategory));
     }
 
@@ -105,7 +103,7 @@ public class Results {
                 .ofNullable(showTimes.get(inShowTimeType)).map(Object::toString).orElse("");
     }
 
-    private void promptWinner(Category inCategory, List<Player> inPlayers) throws IOException {
+    private void promptWinner(Column inCategory, List<Player> inPlayers) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println((x + 1)
@@ -163,7 +161,7 @@ public class Results {
     }
 
     /** Get the winner(s) of the given category in display order */
-    public Collection<String> winners(Category inCategory) {
+    public Collection<String> winners(Column inCategory) {
         return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
     }
 
@@ -177,7 +175,7 @@ public class Results {
 
     /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
-        return Category.ALL.stream()
+        return Column.CATEGORIES.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.header()),

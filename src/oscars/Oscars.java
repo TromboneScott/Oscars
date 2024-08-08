@@ -8,9 +8,6 @@ import java.util.stream.IntStream;
 
 import org.jdom2.Element;
 
-import oscars.column.Category;
-import oscars.column.Columns;
-
 /**
  * Create and update the Oscars website with the winners that are entered by the user. The players'
  * guesses are downloaded from the survey in comma-delimited format. The columns are defined in an
@@ -59,7 +56,7 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        Category.cleanUpCharts(results);
+        Column.cleanUpCharts(results);
         System.out.println("DONE");
     }
 
@@ -113,30 +110,31 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        for (Category category : Category.ALL) {
+        for (Column category : Column.CATEGORIES) {
             category.writeChart(players, results);
             writeCategoryPage(category.header());
         }
         writeCategoryPage("all");
     }
 
-    private static void writeCategoryPage(String inCategory) throws IOException {
-        Directory.CATEGORY.write(new Element("category").setAttribute("name", inCategory),
-                inCategory + ".xml", "category.xsl");
+    private static void writeCategoryPage(String inHeader) throws IOException {
+        Directory.CATEGORY.write(new Element("category").setAttribute("name", inHeader),
+                inHeader + ".xml", "category.xsl");
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.write(IntStream.range(0, players.size()).mapToObj(playerNum -> Category.ALL
-                .stream()
-                .map(category -> new Element("category").setAttribute("name", category.header())
-                        .setAttribute("nominee", players.get(playerNum).answer(category)))
-                .reduce(players.get(playerNum).toDOM(), Element::addContent)
-                .setAttribute("id", String.valueOf(playerNum + 1))
-                .setAttribute("time", String.valueOf(players.get(playerNum).time())))
+        Directory.DATA.write(IntStream.range(0, players.size())
+                .mapToObj(playerNum -> Column.CATEGORIES.stream()
+                        .map(category -> new Element("category")
+                                .setAttribute("name", category.header())
+                                .setAttribute("nominee", players.get(playerNum).answer(category)))
+                        .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                        .setAttribute("id", String.valueOf(playerNum + 1))
+                        .setAttribute("time", String.valueOf(players.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
 
         for (Player player : players)
-            Directory.PLAYER.write(player.toDOM(), player.answer(Columns.FIRST_NAME) + "_"
-                    + player.answer(Columns.LAST_NAME) + ".xml", "player.xsl");
+            Directory.PLAYER.write(player.toDOM(), player.answer(Column.FIRST_NAME) + "_"
+                    + player.answer(Column.LAST_NAME) + ".xml", "player.xsl");
     }
 }
