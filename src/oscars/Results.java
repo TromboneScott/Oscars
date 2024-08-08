@@ -23,6 +23,9 @@ import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 
+import oscars.column.Category;
+import oscars.column.Column;
+
 /** The current results of the Oscars contest */
 public class Results {
     /** Get user input from the system's standard input */
@@ -49,10 +52,15 @@ public class Results {
     /** Read existing Results or create new Results including the given nominee descriptions */
     public Results(Map<Column, Map<String, String>> inNomineeDescriptions) throws IOException {
         nomineeDescriptions = inNomineeDescriptions;
-        Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
-                .map(element -> element.getChild("awards")).orElseGet(() -> new Element("EMPTY"));
-        winners = winners(awardsDOM);
-        showTimes = showTimes(awardsDOM);
+        try {
+            Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
+                    .map(element -> element.getChild("awards"))
+                    .orElseGet(() -> new Element("EMPTY"));
+            winners = winners(awardsDOM);
+            showTimes = showTimes(awardsDOM);
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading results file: " + RESULTS_FILE, e);
+        }
     }
 
     /**
@@ -64,11 +72,11 @@ public class Results {
      */
     public boolean prompt(List<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        for (int resultNum = 0; resultNum < Columns.CATEGORIES.size()
+        for (int resultNum = 0; resultNum < Category.ALL.size()
                 + ShowTimeType.values().length; resultNum++)
-            System.out.println((resultNum + 1) + ": " + (resultNum < Columns.CATEGORIES.size()
-                    ? toString(Columns.CATEGORIES.get(resultNum))
-                    : toString(ShowTimeType.values()[resultNum - Columns.CATEGORIES.size()])));
+            System.out.println((resultNum + 1) + ": "
+                    + (resultNum < Category.ALL.size() ? toString(Category.ALL.get(resultNum))
+                            : toString(ShowTimeType.values()[resultNum - Category.ALL.size()])));
 
         System.out.print("Enter number to change (\"exit\" to quit): ");
         String input = STDIN.nextLine();
@@ -76,13 +84,12 @@ public class Results {
             return false;
         try {
             int resultNum = Integer.parseInt(input) - 1;
-            if (resultNum < 0
-                    || resultNum >= Columns.CATEGORIES.size() + ShowTimeType.values().length)
+            if (resultNum < 0 || resultNum >= Category.ALL.size() + ShowTimeType.values().length)
                 throw new NumberFormatException();
-            if (resultNum < Columns.CATEGORIES.size())
-                promptWinner(Columns.CATEGORIES.get(resultNum), inPlayers);
+            if (resultNum < Category.ALL.size())
+                promptWinner(Category.ALL.get(resultNum), inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - Columns.CATEGORIES.size()]);
+                promptTime(ShowTimeType.values()[resultNum - Category.ALL.size()]);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -170,7 +177,7 @@ public class Results {
 
     /** Get the awards DOM Element for the current Results */
     public Element awardsDOM() {
-        return Columns.CATEGORIES.stream()
+        return Category.ALL.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.header()),
@@ -184,7 +191,7 @@ public class Results {
 
     private static Map<Column, Collection<String>> winners(Element inAwardsDOM) {
         return inAwardsDOM.getChildren("category").stream().collect(Collectors.toMap(
-                categoryDOM -> new Column(categoryDOM.getAttributeValue("name")),
+                categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
                 categoryDOM -> Collections.unmodifiableCollection(categoryDOM.getChildren("nominee")
                         .stream().map(element -> element.getAttributeValue("name"))
                         .collect(Collectors.toCollection(LinkedHashSet::new)))));

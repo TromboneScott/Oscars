@@ -26,6 +26,9 @@ import org.jdom2.Element;
 
 import com.opencsv.CSVReader;
 
+import oscars.column.Column;
+import oscars.column.Columns;
+
 /** The data from the ballot survey - Immutable */
 public final class Ballots {
     private static final String URL_FILE = "ResponsesURL.txt";
@@ -58,9 +61,9 @@ public final class Ballots {
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
-                if (headers.size() != Columns.ALL.size())
+                if (headers.size() != Column.ALL.size())
                     throw new IOException("Number of columns on ballots: " + headers.size()
-                            + " does not match defined categories: " + Columns.ALL.size());
+                            + " does not match defined categories: " + Column.ALL.size());
                 all = Collections.unmodifiableList(reader.readAll().stream().map(Ballots::toPlayer)
                         .collect(Collectors.toList()));
             }
@@ -70,11 +73,11 @@ public final class Ballots {
     }
 
     private static Player toPlayer(String[] inEntries) {
-        if (inEntries.length != Columns.ALL.size())
+        if (inEntries.length != Column.ALL.size())
             throw new RuntimeException("Number of ballot entries: " + inEntries.length
-                    + " does not match category definitions: " + Columns.ALL.size());
+                    + " does not match category definitions: " + Column.ALL.size());
         return new Player(IntStream.range(0, inEntries.length).boxed().collect(Collectors
-                .toMap(column -> Columns.ALL.get(column), column -> inEntries[column].trim())));
+                .toMap(column -> Column.ALL.get(column), column -> inEntries[column].trim())));
     }
 
     /** The column headers of the survey */

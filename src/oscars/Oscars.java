@@ -8,6 +8,9 @@ import java.util.stream.IntStream;
 
 import org.jdom2.Element;
 
+import oscars.column.Category;
+import oscars.column.Columns;
+
 /**
  * Create and update the Oscars website with the winners that are entered by the user. The players'
  * guesses are downloaded from the survey in comma-delimited format. The columns are defined in an
@@ -110,7 +113,7 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        for (Category category : Columns.CATEGORIES) {
+        for (Category category : Category.ALL) {
             category.writeChart(players, results);
             writeCategoryPage(category.header());
         }
@@ -123,14 +126,13 @@ public class Oscars implements Runnable {
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.write(IntStream.range(0, players.size())
-                .mapToObj(playerNum -> Columns.CATEGORIES.stream()
-                        .map(category -> new Element("category")
-                                .setAttribute("name", category.header())
-                                .setAttribute("nominee", players.get(playerNum).answer(category)))
-                        .reduce(players.get(playerNum).toDOM(), Element::addContent)
-                        .setAttribute("id", String.valueOf(playerNum + 1))
-                        .setAttribute("time", String.valueOf(players.get(playerNum).time())))
+        Directory.DATA.write(IntStream.range(0, players.size()).mapToObj(playerNum -> Category.ALL
+                .stream()
+                .map(category -> new Element("category").setAttribute("name", category.header())
+                        .setAttribute("nominee", players.get(playerNum).answer(category)))
+                .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                .setAttribute("id", String.valueOf(playerNum + 1))
+                .setAttribute("time", String.valueOf(players.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent), "ballots.xml", null);
 
         for (Player player : players)

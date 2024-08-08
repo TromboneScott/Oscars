@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import oscars.column.Category;
+
 /** The score and rank standings - Immutable */
 public final class Standings {
     private final long elapsedTime;
@@ -27,7 +29,7 @@ public final class Standings {
     public Standings(List<Player> inPlayers, Results inResults) {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         showEnded = inResults.showEnded();
-        winners = Collections.unmodifiableMap(Columns.CATEGORIES.stream()
+        winners = Collections.unmodifiableMap(Category.ALL.stream()
                 .collect(Collectors.toMap(category -> category, category -> Collections
                         .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
         scoreMap = Collections.unmodifiableMap(inPlayers.stream().collect(Collectors
@@ -35,7 +37,7 @@ public final class Standings {
     }
 
     private BigDecimal score(Player inPlayer) {
-        return Columns.CATEGORIES.stream()
+        return Category.ALL.stream()
                 .filter(category -> winners.get(category).contains(inPlayer.answer(category)))
                 .map(Category::value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -47,8 +49,8 @@ public final class Standings {
 
     /** Get the DOM Element for these Standings */
     public Element toDOM() {
-        int scale = Columns.CATEGORIES.stream().map(Category::value).mapToInt(BigDecimal::scale)
-                .max().orElse(0);
+        int scale = Category.ALL.stream().map(Category::value).mapToInt(BigDecimal::scale).max()
+                .orElse(0);
         Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream().collect(Collectors.toMap(
                 player -> player,
                 player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
@@ -82,7 +84,7 @@ public final class Standings {
 
     private Map<Player, BigDecimal> possibleScores(Player inPlayer, boolean inBest) {
         return scoreMap.entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, scoreEntry -> Columns.CATEGORIES.stream()
+                .collect(Collectors.toMap(Entry::getKey, scoreEntry -> Category.ALL.stream()
                         .filter(category -> winners.get(category).isEmpty() && inBest == scoreEntry
                                 .getKey().answer(category).equals(inPlayer.answer(category)))
                         .map(Category::value).reduce(scoreEntry.getValue(), BigDecimal::add)));
@@ -103,7 +105,7 @@ public final class Standings {
         return (inPlayer.time() == inOpponent.time()
                 || showEnded && inPlayer.time() > elapsedTime && inOpponent.time() > elapsedTime)
                 && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
-                && Columns.CATEGORIES.stream().allMatch(category -> !winners.get(category).isEmpty()
+                && Category.ALL.stream().allMatch(category -> !winners.get(category).isEmpty()
                         || inPlayer.answer(category).equals(inOpponent.answer(category)));
     }
 }

@@ -1,4 +1,4 @@
-package oscars;
+package oscars.column;
 
 import java.awt.Paint;
 import java.io.File;
@@ -22,18 +22,31 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import oscars.ChartPaint;
+import oscars.Directory;
+import oscars.Player;
+import oscars.Results;
+
 /** Category information - Immutable */
 public final class Category extends Column {
+    private static final String DEFINITIONS_FILE = "definitions.xml";
+
+    static final List<Category> DEFINED = Collections.unmodifiableList(read());
+
+    /** All the award categories in order */
+    public static final List<Category> ALL = Collections.unmodifiableList(DEFINED.stream()
+            .filter(category -> !category.nominees().isEmpty()).collect(Collectors.toList()));
+
     private final BigDecimal value;
 
     private final List<String> nominees;
 
-    public Category(Element inCategory) {
-        super(inCategory.getAttributeValue("name"));
-        value = BigDecimal.ONE.add(Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
+    private Category(Element inElement) {
+        super(inElement);
+        value = BigDecimal.ONE.add(Optional.ofNullable(inElement.getAttributeValue("tieBreaker"))
                 .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
                 .orElse(BigDecimal.ZERO));
-        nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
+        nominees = Collections.unmodifiableList(inElement.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
     }
 
@@ -92,10 +105,21 @@ public final class Category extends Column {
 
     /** Delete all charts we don't need to keep */
     public static void cleanUpCharts(Results inResults) {
-        Set<String> chartsToKeep = Columns.CATEGORIES.stream()
-                .map(category -> category.chartName(inResults)).collect(Collectors.toSet());
+        Set<String> chartsToKeep = ALL.stream().map(category -> category.chartName(inResults))
+                .collect(Collectors.toSet());
         for (File file : Directory.CATEGORY.listFiles(
                 (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
             file.delete();
+    }
+
+    private static List<Category> read() {
+        try {
+            return Directory.DATA.getRootElement(DEFINITIONS_FILE)
+                    .orElseThrow(() -> new RuntimeException("File not found"))
+                    .getChildren("category").stream().map(Category::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
+        }
     }
 }

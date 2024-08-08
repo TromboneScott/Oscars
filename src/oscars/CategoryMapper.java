@@ -16,6 +16,9 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
+import oscars.column.Category;
+import oscars.column.Column;
+
 /** Map the Category data from the survey to the website - Immutable */
 public final class CategoryMapper {
     private static final String MAPPINGS_FILE = "mappings.xml";
@@ -29,7 +32,7 @@ public final class CategoryMapper {
     /** Read the ballots and write the website mappings */
     public CategoryMapper() throws IOException {
         categoryMaps = readCategoryMaps();
-        for (Category category : Columns.CATEGORIES) {
+        for (Category category : Category.ALL) {
             Map<String, String> categoryMap = categoryMaps.computeIfAbsent(category,
                     k -> new LinkedHashMap<>());
             ballots.players().stream().sorted(Comparator.comparing(Player::getTimestamp))
@@ -52,7 +55,7 @@ public final class CategoryMapper {
     /** The players with their entries */
     public List<Player> players() {
         return Collections.unmodifiableList(ballots.players().stream()
-                .map(player -> new Player(Columns.ALL.stream()
+                .map(player -> new Player(Column.ALL.stream()
                         .collect(Collectors.toMap(column -> column,
                                 column -> Optional.ofNullable(categoryMaps.get(column))
                                         .map(map -> map.get(player.answer(column)))
@@ -102,21 +105,25 @@ public final class CategoryMapper {
 
     private static Map<Column, LinkedHashMap<String, String>> readCategoryMaps()
             throws IOException {
-        return Directory.DATA.getRootElement(MAPPINGS_FILE)
-                .map(mappingsDOM -> mappingsDOM.getChildren("category").stream())
-                .orElseGet(Stream::empty)
-                .collect(Collectors.toMap(
-                        categoryDOM -> new Column(categoryDOM.getAttributeValue("name")),
-                        categoryDOM -> categoryDOM.getChildren("nominee").stream()
-                                .collect(Collectors.toMap(
-                                        nomineeDOM -> nomineeDOM.getAttributeValue("ballot"),
-                                        nomineeDOM -> nomineeDOM.getAttributeValue("name"),
-                                        (name1, name2) -> name2, LinkedHashMap::new))));
+        try {
+            return Directory.DATA.getRootElement(MAPPINGS_FILE)
+                    .map(mappingsDOM -> mappingsDOM.getChildren("category").stream())
+                    .orElseGet(Stream::empty)
+                    .collect(Collectors.toMap(
+                            categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
+                            categoryDOM -> categoryDOM.getChildren("nominee").stream()
+                                    .collect(Collectors.toMap(
+                                            nomineeDOM -> nomineeDOM.getAttributeValue("ballot"),
+                                            nomineeDOM -> nomineeDOM.getAttributeValue("name"),
+                                            (name1, name2) -> name2, LinkedHashMap::new))));
+        } catch (Exception e) {
+            throw new IOException("Error reading mappings file: " + MAPPINGS_FILE, e);
+        }
     }
 
     private void writeCategoryMaps() throws IOException {
-        Directory.DATA.write(IntStream.range(0, Columns.ALL.size()).mapToObj(
-                column -> categoryDOM(Columns.ALL.get(column), ballots.headers().get(column)))
+        Directory.DATA.write(IntStream.range(0, Column.ALL.size()).mapToObj(
+                column -> categoryDOM(Column.ALL.get(column), ballots.headers().get(column)))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 

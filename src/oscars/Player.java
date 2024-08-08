@@ -12,6 +12,9 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import oscars.column.Column;
+import oscars.column.Columns;
+
 /** Player information - Immutable */
 public final class Player {
     private final Map<Column, String> answers;
