@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,12 +57,20 @@ public final class Column {
     private final List<String> nominees;
 
     private Column(Element inCategory) {
-        header = inCategory.getAttributeValue("name");
-        value = BigDecimal.ONE.add(Optional.ofNullable(inCategory.getAttributeValue("tieBreaker"))
-                .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
-                .orElse(BigDecimal.ZERO));
+        header = Objects.requireNonNull(inCategory.getAttributeValue("name"),
+                "Category is missing required attribute: name");
+        try {
+            value = BigDecimal.ONE.add(Optional
+                    .ofNullable(inCategory.getAttributeValue("tieBreaker"))
+                    .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
+                    .orElse(BigDecimal.ZERO));
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid tieBreaker value in category: " + header, e);
+        }
         nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
-                .map(nominee -> nominee.getAttributeValue("name")).collect(Collectors.toList()));
+                .map(nominee -> Objects.requireNonNull(nominee.getAttributeValue("name"),
+                        () -> header + " category has nominee without required attribute: name"))
+                .collect(Collectors.toList()));
     }
 
     /** The header of this Column */
@@ -85,7 +94,7 @@ public final class Column {
         return header;
     }
 
-    /** Get the instance of this Column that has the given header */
+    /** Get the Column instance that has the given header */
     public static Column of(String inHeader) {
         return Optional.ofNullable(INSTANCES.get(inHeader))
                 .orElseThrow(() -> new RuntimeException("Column not defined: " + inHeader));
