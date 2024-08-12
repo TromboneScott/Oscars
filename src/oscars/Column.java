@@ -69,7 +69,7 @@ public final class Column {
         }
         nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
                 .map(nominee -> Objects.requireNonNull(nominee.getAttributeValue("name"),
-                        () -> header + " category has nominee without required attribute: name"))
+                        header + " category has nominee without required attribute: name"))
                 .collect(Collectors.toList()));
     }
 
@@ -96,18 +96,17 @@ public final class Column {
 
     /** Get the Column instance that has the given header */
     public static Column of(String inHeader) {
-        return Optional.ofNullable(INSTANCES.get(inHeader))
-                .orElseThrow(() -> new RuntimeException("Column not defined: " + inHeader));
+        return Objects.requireNonNull(INSTANCES.get(inHeader), "Column not defined: " + inHeader);
     }
 
     private static Map<String, Column> read() {
         try {
             return Directory.DATA.getRootElement(DEFINITIONS_FILE)
-                    .orElseThrow(() -> new RuntimeException("File not found"))
-                    .getChildren("category").stream().map(Column::new)
+                    .orElseThrow(() -> new RuntimeException("File not found")).getChildren("column")
+                    .stream().map(Column::new)
                     .collect(Collectors.toMap(Column::header, column -> column, (a, b) -> {
                         throw new RuntimeException(
-                                "Duplicate definitions found for category: " + a.header);
+                                "Duplicate definitions found for column: " + a.header);
                     }, LinkedHashMap::new));
         } catch (Exception e) {
             throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);

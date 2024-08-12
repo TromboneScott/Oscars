@@ -25,7 +25,7 @@
                   Category
                 </th>
               </tr>
-              <xsl:for-each select="category[@tieBreaker]">
+              <xsl:for-each select="column[@tieBreaker]">
                 <xsl:sort select="@tieBreaker" />
                 <tr>
                   <td class="unannounced">
@@ -42,11 +42,11 @@
           <br />
           <hr />
           <h2>
-            Categories
+            Columns
           </h2>
           <i> Values for this website are in <b>bold</b>
           </i>
-          <xsl:for-each select="category">
+          <xsl:for-each select="column">
             <br />
             <br />
             <hr align="center" width="50%" />
@@ -55,9 +55,9 @@
               <xsl:value-of select="@name" />
             </b>
             <br />
-            <xsl:variable name="category" select="@name" />
+            <xsl:variable name="column" select="@name" />
             <xsl:value-of
-              select="$mappings/category[@name = $category]/@ballot" />
+              select="$mappings/column[@name = $column]/@ballot" />
             <xsl:if test="nominee">
               <table>
                 <tbody>
@@ -65,7 +65,7 @@
                     <tr class="unannounced">
                       <td>
                         <xsl:apply-templates select="." mode="poster">
-                          <xsl:with-param name="category" select="$category" />
+                          <xsl:with-param name="category" select="$column" />
                         </xsl:apply-templates>
                       </td>
                       <td>
@@ -74,7 +74,7 @@
                         </b>
                         <xsl:variable name="name" select="@name" />
                         <xsl:for-each
-                          select="$mappings/category[@name = $category]/nominee[@name = $name]">
+                          select="$mappings/column[@name = $column]/nominee[@name = $name]">
                           <br />
                           <xsl:value-of select="@ballot" />
                         </xsl:for-each>

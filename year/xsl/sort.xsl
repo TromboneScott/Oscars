@@ -3,7 +3,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="include.xsl" />
   <xsl:variable name="categoryCount"
-    select="count($definitions/category/nominee[position() = 1])" />
+    select="count($definitions/column/nominee[position() = 1])" />
   <xsl:variable name="pointWidth" select="16" />
   <xsl:template match="/sort">
     <html>

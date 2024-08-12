@@ -55,7 +55,7 @@
               <xsl:for-each select="$results/awards/category">
                 <xsl:variable name="categoryName" select="@name" />
                 <xsl:variable name="categoryDefinition"
-                  select="$definitions/category[@name = $categoryName]" />
+                  select="$definitions/column[@name = $categoryName]" />
                 <xsl:variable name="playerGuess"
                   select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/category[@name = $categoryName]/@nominee" />
                 <tr>
@@ -124,7 +124,7 @@
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
                   <xsl:apply-templates
-                    select="$definitions/category[@name = 'Time']"
+                    select="$definitions/column[@name = 'Time']"
                     mode="tieBreaker" />
                 </td>
                 <td>

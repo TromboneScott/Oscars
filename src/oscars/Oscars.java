@@ -35,12 +35,12 @@ public class Oscars implements Runnable {
 
     private Oscars() throws IOException {
         System.out.print("Step 1 of 3: Downloading ballots... ");
-        CategoryMapper categoryMapper = new CategoryMapper();
+        Mapper mapper = new Mapper();
         System.out.println("DONE");
 
         System.out.print("Step 2 of 3: Reading any existing results... ");
-        players = categoryMapper.players();
-        results = new Results(categoryMapper.nomineeDescriptions());
+        players = mapper.players();
+        results = new Results(mapper.nomineeDescriptions());
         System.out.println("DONE");
 
         System.out.print("Step 3 of 3: Writing web pages... ");

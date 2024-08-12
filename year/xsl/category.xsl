@@ -46,7 +46,7 @@
                           <xsl:value-of select="@name" />
                         </a>
                         <xsl:apply-templates
-                          select="$definitions/category[@name = $name]"
+                          select="$definitions/column[@name = $name]"
                           mode="tieBreaker" />
                       </td>
                       <xsl:variable name="winners">
@@ -100,7 +100,7 @@
                 </tbody>
               </table>
               <br />
-              <xsl:for-each select="$definitions/category[nominee]">
+              <xsl:for-each select="$definitions/column[nominee]">
                 <br />
                 <br />
                 <br />
@@ -139,7 +139,7 @@
               <xsl:variable name="categoryName" select="@name" />
               <xsl:variable
                 name="categoryDefinition"
-                select="$definitions/category[@name = $categoryName]" />
+                select="$definitions/column[@name = $categoryName]" />
               <xsl:variable
                 name="awards"
                 select="$results/awards/category[@name = $categoryName]" />
@@ -244,7 +244,7 @@
       </body>
     </html>
   </xsl:template>
-  <xsl:template match="/definitions/category" mode="chart">
+  <xsl:template match="/definitions/column" mode="chart">
     <img>
       <xsl:attribute name="src">
         <xsl:value-of select="@name" />

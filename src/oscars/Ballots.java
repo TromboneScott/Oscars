@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
@@ -49,9 +49,9 @@ public final class Ballots {
 
     /** Download the data from the ballot survey */
     public Ballots() throws IOException {
-        try (Stream<String> lines = Files.lines(
-                Paths.get(Optional.ofNullable(getClass().getClassLoader().getResource(URL_FILE))
-                        .orElseThrow(() -> new IOException("File not found")).toURI()))) {
+        try (Stream<String> lines = Files.lines(Paths.get(Objects
+                .requireNonNull(getClass().getClassLoader().getResource(URL_FILE), "File not found")
+                .toURI()))) {
             URL url = new URI(lines.findFirst().orElseThrow(() -> new IOException("File is empty")))
                     .toURL();
             url.openConnection().setDefaultUseCaches(false);

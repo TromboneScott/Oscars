@@ -54,7 +54,7 @@
         <tr>
           <td colspan="5">
             <xsl:for-each
-              select="$definitions/category[@name = 'Best Picture']/nominee">
+              select="$definitions/column[@name = 'Best Picture']/nominee">
               <img width="50">
                 <xsl:attribute name="src">
                   <xsl:value-of select="@img" />
@@ -82,7 +82,7 @@
     <br />
     <br />
   </xsl:template>
-  <xsl:template match="/definitions/category" mode="value">
+  <xsl:template match="/definitions/column" mode="value">
     <xsl:if test="@tieBreaker">
       <xsl:value-of select="'1.'" />
       <xsl:call-template name="tieBreakerZeros">
@@ -100,7 +100,7 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="/definitions/category" mode="tieBreaker">
+  <xsl:template match="/definitions/column" mode="tieBreaker">
     <xsl:choose>
       <xsl:when test="@tieBreaker &gt;= 1 and @tieBreaker &lt;= 10">
         <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', @tieBreaker, 1)" />
@@ -140,13 +140,13 @@
     <img>
       <xsl:attribute name="src">
         <xsl:value-of
-          select="$definitions/category[@name = $category]/nominee[@name = $nominee]/@img" />
+          select="$definitions/column[@name = $category]/nominee[@name = $nominee]/@img" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
-        select="$mappings/category[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
+        select="$mappings/column[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
         <xsl:value-of select="$description" />
         <xsl:if test="not($description)">
