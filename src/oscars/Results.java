@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -32,9 +33,6 @@ public class Results {
 
     private static final String WINNER_DELIMITER = ",";
 
-    private static final DateTimeFormatter UPDATED_PATTERN = DateTimeFormatter
-            .ofPattern("MM/dd/yyyy hh:mm:ss a - z");
-
     private static enum ShowTimeType {
         START,
         END;
@@ -48,7 +46,9 @@ public class Results {
 
     /** Read existing Results or create new Results including the given nominee descriptions */
     public Results(Map<Column, Map<String, String>> inNomineeDescriptions) throws IOException {
-        nomineeDescriptions = inNomineeDescriptions;
+        nomineeDescriptions = Collections.unmodifiableMap(
+                inNomineeDescriptions.entrySet().stream().collect(Collectors.toMap(Entry::getKey,
+                        entry -> Collections.unmodifiableMap(entry.getValue()))));
         try {
             Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
                     .map(element -> element.getChild("awards"))
@@ -167,15 +167,14 @@ public class Results {
 
     /** Write the given content to the results XML file */
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        Directory.DATA.write(
-                new Element("results").setAttribute("updated", inUpdated.format(UPDATED_PATTERN))
-                        .addContent(Arrays.asList(inContent)),
-                RESULTS_FILE, null);
+        String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
+        Directory.DATA.write(new Element("results").setAttribute("updated", updated)
+                .addContent(Arrays.asList(inContent)), RESULTS_FILE, null);
     }
 
-    /** Get the awards DOM Element for the current Results */
-    public Element awardsDOM() {
-        return Column.CATEGORIES.stream()
+    /** Write these Results and the given Standings to the results XML file */
+    public void write(ZonedDateTime inUpdated, Standings inStandings) throws IOException {
+        Element awardsDOM = Column.CATEGORIES.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.header()),
@@ -185,6 +184,7 @@ public class Results {
                                 .map(type -> new Attribute(type.name().toLowerCase(),
                                         showTimes.get(type).toString()))
                                 .collect(Collectors.toList()));
+        write(inUpdated, awardsDOM, inStandings.toDOM());
     }
 
     private static Map<Column, Collection<String>> winners(Element inAwardsDOM) {

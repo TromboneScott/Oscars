@@ -2,6 +2,7 @@ package oscars;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -39,7 +40,7 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
 
         System.out.print("Step 2 of 3: Reading any existing results... ");
-        players = mapper.players();
+        players = Collections.unmodifiableList(mapper.players());
         results = new Results(mapper.nomineeDescriptions());
         System.out.println("DONE");
 
@@ -106,7 +107,7 @@ public class Oscars implements Runnable {
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
-        Results.write(updated, results.awardsDOM(), standings.toDOM());
+        results.write(updated, standings);
     }
 
     private void writeCategoryPages() throws IOException {

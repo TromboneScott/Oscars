@@ -5,9 +5,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
@@ -18,19 +18,23 @@ public final class Player {
 
     private final int time;
 
-    /** Create a Player with the specified answers */
-    public Player(Map<Column, String> inAnswers) {
-        answers = Collections.unmodifiableMap(new HashMap<>(inAnswers));
+    private final LocalDateTime timestamp;
+
+    /** Create a Player with the specified answer in each Column */
+    public Player(String[] inAnswers) {
+        answers = Collections.unmodifiableMap(IntStream.range(0, inAnswers.length).boxed()
+                .collect(Collectors.toMap(Column.ALL::get, column -> inAnswers[column].trim())));
         try {
             time = LocalTime.parse(answer(Column.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
                     .toSecondOfDay();
         } catch (DateTimeParseException e) {
-            throw new RuntimeException(name() + " has invalid time guess: " + answer(Column.TIME),
-                    e);
+            throw new RuntimeException(name() + " has invalid time: " + answer(Column.TIME), e);
         }
+        timestamp = LocalDateTime.parse(answer(Column.TIMESTAMP),
+                DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
-    /** Get the name (last, first) for the Player */
+    /** Get the name (last, first) of the Player */
     public String name() {
         return Stream.of(Column.LAST_NAME, Column.FIRST_NAME).map(this::answer)
                 .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
@@ -47,9 +51,8 @@ public final class Player {
     }
 
     /** Get the timestamp of the ballot for this Player */
-    public LocalDateTime getTimestamp() {
-        return LocalDateTime.parse(answer(Column.TIMESTAMP),
-                DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
+    public LocalDateTime timestamp() {
+        return timestamp;
     }
 
     /** Get the DOM Element for this Player */

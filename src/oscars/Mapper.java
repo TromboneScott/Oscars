@@ -1,7 +1,6 @@
 package oscars;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -35,21 +34,20 @@ public final class Mapper {
 
     /** The players with their entries */
     public List<Player> players() {
-        return Collections.unmodifiableList(ballots
-                .players().stream().map(
-                        player -> new Player(Column.ALL.stream()
-                                .collect(Collectors.toMap(column -> column,
-                                        column -> columnMaps.get(column).getOrDefault(
-                                                player.answer(column), player.answer(column))))))
-                .collect(Collectors.toList()));
+        return ballots.players().stream()
+                .map(player -> new Player(Column.ALL.stream()
+                        .map(column -> columnMaps.get(column).getOrDefault(player.answer(column),
+                                player.answer(column)))
+                        .toArray(String[]::new)))
+                .collect(Collectors.toList());
     }
 
     /** The survey descriptions of the nominees in each category */
     public Map<Column, Map<String, String>> nomineeDescriptions() {
-        return Collections.unmodifiableMap(Column.CATEGORIES.stream().collect(Collectors.toMap(
-                category -> category,
-                category -> Collections.unmodifiableMap(columnMaps.get(category).entrySet().stream()
-                        .collect(Collectors.toMap(Entry::getValue, Entry::getKey))))));
+        return Column.CATEGORIES.stream()
+                .collect(Collectors.toMap(category -> category,
+                        category -> columnMaps.get(category).entrySet().stream()
+                                .collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
     }
 
     private void readMappings() throws IOException {
@@ -70,7 +68,7 @@ public final class Mapper {
     private void updateMappings() {
         for (Column category : Column.CATEGORIES) {
             Map<String, String> columnMap = columnMaps.get(category);
-            ballots.players().stream().sorted(Comparator.comparing(Player::getTimestamp))
+            ballots.players().stream().sorted(Comparator.comparing(Player::timestamp))
                     .map(player -> player.answer(category))
                     .filter(guess -> !columnMap.containsKey(guess))
                     .forEach(guess -> columnMap.put(guess, mapping(category,

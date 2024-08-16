@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
@@ -60,21 +59,13 @@ public final class Ballots {
                 headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
                 if (headers.size() != Column.ALL.size())
                     throw new IOException("Number of columns on ballots: " + headers.size()
-                            + " does not match defined categories: " + Column.ALL.size());
-                all = Collections.unmodifiableList(reader.readAll().stream().map(Ballots::toPlayer)
-                        .collect(Collectors.toList()));
+                            + " does not match number of defined columns: " + Column.ALL.size());
+                all = Collections.unmodifiableList(
+                        reader.readAll().stream().map(Player::new).collect(Collectors.toList()));
             }
         } catch (Exception e) {
             throw new IOException("Error reading ballots using URL from file: " + URL_FILE, e);
         }
-    }
-
-    private static Player toPlayer(String[] inEntries) {
-        if (inEntries.length != Column.ALL.size())
-            throw new RuntimeException("Number of ballot entries: " + inEntries.length
-                    + " does not match category definitions: " + Column.ALL.size());
-        return new Player(IntStream.range(0, inEntries.length).boxed().collect(Collectors
-                .toMap(column -> Column.ALL.get(column), column -> inEntries[column].trim())));
     }
 
     /** The column headers of the survey */
@@ -84,17 +75,18 @@ public final class Ballots {
 
     /** The players from the survey using the latest ballot for each Player */
     public Collection<Player> players() {
-        return Collections.unmodifiableCollection(all.stream()
-                .collect(Collectors.toMap(Player::name, player -> player,
-                        BinaryOperator.maxBy(Comparator.comparing(Player::getTimestamp))))
-                .values());
+        return Collections
+                .unmodifiableCollection(all.stream()
+                        .collect(Collectors.toMap(Player::name, player -> player,
+                                BinaryOperator.maxBy(Comparator.comparing(Player::timestamp))))
+                        .values());
     }
 
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
                 Collection<Player> players = new Ballots().players();
-                LocalDateTime maxTimestamp = players.stream().map(Player::getTimestamp)
+                LocalDateTime maxTimestamp = players.stream().map(Player::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
                     System.err.println(LocalDateTime.now() + " - Downloaded: " + players.size()
@@ -103,7 +95,7 @@ public final class Ballots {
                                     .substring(2));
                     Results.write(ZonedDateTime.now(), players.stream()
                             .map(player -> new Element("ballot").setAttribute("name", player.name())
-                                    .setAttribute("timestamp", player.getTimestamp().toString()))
+                                    .setAttribute("timestamp", player.timestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
                     lastTimestamp = maxTimestamp;
                 }
