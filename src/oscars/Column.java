@@ -115,9 +115,8 @@ public final class Column {
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
-        return header + nominees.stream()
-                .map(nominee -> inResults.winners(this).contains(nominee) ? "1" : "0")
-                .collect(Collectors.joining()) + ".png";
+        return header + nominees.stream().map(inResults.winners(this)::contains)
+                .map(winner -> winner ? "1" : "0").collect(Collectors.joining()) + ".png";
     }
 
     /** Write the chart for this Category given these players and these Results */
