@@ -1,0 +1,7 @@
+<!ELEMENT sort EMPTY>
+<!ATTLIST sort name CDATA #REQUIRED>
+<!ATTLIST sort ballotSort (name|timestamp) #IMPLIED>
+<!ATTLIST sort column1 (rank|bpr|wpr) #IMPLIED>
+<!ATTLIST sort column2 (rank|bpr|wpr) #IMPLIED>
+<!ATTLIST sort column3 (rank|bpr|wpr) #IMPLIED>
+<!ATTLIST sort order (ascending|descending) "ascending">
