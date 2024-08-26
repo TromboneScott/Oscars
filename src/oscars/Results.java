@@ -10,12 +10,13 @@ import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -45,10 +46,10 @@ public class Results {
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(Map<Column, Map<String, String>> inNomineeDescriptions) throws IOException {
-        nomineeDescriptions = Collections.unmodifiableMap(
-                inNomineeDescriptions.entrySet().stream().collect(Collectors.toMap(Entry::getKey,
-                        entry -> Collections.unmodifiableMap(entry.getValue()))));
+    public Results(Function<Column, Map<String, String>> inNomineeMapper) throws IOException {
+        nomineeDescriptions = Collections.unmodifiableMap(Column.CATEGORIES.stream()
+                .collect(Collectors.toMap(category -> category, category -> Collections
+                        .unmodifiableMap(new HashMap<>(inNomineeMapper.apply(category))))));
         try {
             Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
                     .map(element -> element.getChild("awards"))

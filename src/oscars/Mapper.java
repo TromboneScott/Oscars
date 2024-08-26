@@ -42,12 +42,10 @@ public final class Mapper {
                 .collect(Collectors.toList());
     }
 
-    /** The survey descriptions of the nominees in each category */
-    public Map<Column, Map<String, String>> nomineeDescriptions() {
-        return Column.CATEGORIES.stream()
-                .collect(Collectors.toMap(category -> category,
-                        category -> columnMaps.get(category).entrySet().stream()
-                                .collect(Collectors.toMap(Entry::getValue, Entry::getKey))));
+    /** The survey descriptions of the nominees in the given category */
+    public Map<String, String> nomineeMapping(Column inCategory) {
+        return columnMaps.get(inCategory).entrySet().stream()
+                .collect(Collectors.toMap(Entry::getValue, Entry::getKey));
     }
 
     private void readMappings() throws IOException {

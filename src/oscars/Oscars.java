@@ -41,7 +41,7 @@ public class Oscars implements Runnable {
 
         System.out.print("Step 2 of 3: Reading any existing results... ");
         players = Collections.unmodifiableList(mapper.players());
-        results = new Results(mapper.nomineeDescriptions());
+        results = new Results(mapper::nomineeMapping);
         System.out.println("DONE");
 
         System.out.print("Step 3 of 3: Writing web pages... ");
