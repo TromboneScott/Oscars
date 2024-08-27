@@ -10,28 +10,26 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.opencsv.CSVReader;
 
 /** The data from the ballot survey - Immutable */
 public final class Ballots {
     private static final String URL_FILE = "ResponsesURL.txt";
 
-    private final List<String> headers;
+    private final ImmutableList<String> headers;
 
-    private final List<Player> all;
+    private final ImmutableList<Player> all;
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
@@ -56,12 +54,12 @@ public final class Ballots {
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-                headers = Collections.unmodifiableList(Arrays.asList(reader.readNext()));
+                headers = ImmutableList.copyOf(reader.readNext());
                 if (headers.size() != Column.ALL.size())
                     throw new IOException("Number of columns on ballots: " + headers.size()
                             + " does not match number of defined columns: " + Column.ALL.size());
-                all = Collections.unmodifiableList(
-                        reader.readAll().stream().map(Player::new).collect(Collectors.toList()));
+                all = reader.readAll().stream().map(Player::new)
+                        .collect(ImmutableList.toImmutableList());
             }
         } catch (Exception e) {
             throw new IOException("Error reading ballots using URL from file: " + URL_FILE, e);
@@ -69,23 +67,20 @@ public final class Ballots {
     }
 
     /** The column headers of the survey */
-    public List<String> headers() {
+    public ImmutableList<String> headers() {
         return headers;
     }
 
-    /** The players from the survey using the latest ballot for each Player */
-    public Collection<Player> players() {
-        return Collections
-                .unmodifiableCollection(all.stream()
-                        .collect(Collectors.toMap(Player::name, player -> player,
-                                BinaryOperator.maxBy(Comparator.comparing(Player::timestamp))))
-                        .values());
+    /** The players in order from the survey using the latest ballot for each Player */
+    public ImmutableCollection<Player> players() {
+        return all.stream().collect(ImmutableMap.toImmutableMap(Player::name, player -> player,
+                BinaryOperator.maxBy(Comparator.comparing(Player::timestamp)))).values();
     }
 
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                Collection<Player> players = new Ballots().players();
+                ImmutableCollection<Player> players = new Ballots().players();
                 LocalDateTime maxTimestamp = players.stream().map(Player::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {

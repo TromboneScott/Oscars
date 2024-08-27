@@ -1,9 +1,6 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,24 +11,26 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 /** The score and rank standings - Immutable */
 public final class Standings {
     private final long elapsedTime;
 
     private final boolean showEnded;
 
-    private final Map<Column, Set<String>> winners;
+    private final ImmutableMap<Column, ImmutableList<String>> winners;
 
-    private final Map<Player, BigDecimal> scoreMap;
+    private final ImmutableMap<Player, BigDecimal> scoreMap;
 
     public Standings(List<Player> inPlayers, Results inResults) {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         showEnded = inResults.showEnded();
-        winners = Collections.unmodifiableMap(Column.CATEGORIES.stream()
-                .collect(Collectors.toMap(category -> category, category -> Collections
-                        .unmodifiableSet(new HashSet<>(inResults.winners(category))))));
-        scoreMap = Collections.unmodifiableMap(inPlayers.stream().collect(Collectors
-                .toMap(player -> player, this::score, BigDecimal::min, LinkedHashMap::new)));
+        winners = Column.CATEGORIES.stream()
+                .collect(ImmutableMap.toImmutableMap(category -> category, inResults::winners));
+        scoreMap = inPlayers.stream()
+                .collect(ImmutableMap.toImmutableMap(player -> player, this::score));
     }
 
     private BigDecimal score(Player inPlayer) {
@@ -49,10 +48,12 @@ public final class Standings {
     public Element toDOM() {
         int scale = Column.CATEGORIES.stream().map(Column::value).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
-        Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream().collect(Collectors.toMap(
-                player -> player,
-                player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
-                        .map(Entry::getKey).collect(Collectors.toSet())));
+        ImmutableMap<Player, Set<Player>> lostToMap = scoreMap.keySet().stream()
+                .collect(
+                        ImmutableMap.toImmutableMap(player -> player,
+                                player -> lostToStream(player, possibleScores(player, true),
+                                        elapsedTime, showEnded).map(Entry::getKey)
+                                                .collect(Collectors.toSet())));
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
@@ -80,9 +81,9 @@ public final class Standings {
                                         || inCheckOverTime && inPlayer.time() > inElapsedTime));
     }
 
-    private Map<Player, BigDecimal> possibleScores(Player inPlayer, boolean inBest) {
-        return scoreMap.entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, scoreEntry -> Column.CATEGORIES.stream()
+    private ImmutableMap<Player, BigDecimal> possibleScores(Player inPlayer, boolean inBest) {
+        return scoreMap.entrySet().stream().collect(ImmutableMap.toImmutableMap(Entry::getKey,
+                scoreEntry -> Column.CATEGORIES.stream()
                         .filter(category -> winners.get(category).isEmpty() && inBest == scoreEntry
                                 .getKey().answer(category).equals(inPlayer.answer(category)))
                         .map(Column::value).reduce(scoreEntry.getValue(), BigDecimal::add)));

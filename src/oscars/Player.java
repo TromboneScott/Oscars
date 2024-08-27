@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
+import com.google.common.collect.ImmutableMap;
+
 /** Player information - Immutable */
 public final class Player {
-    private final Map<Column, String> answers;
+    private final ImmutableMap<Column, String> answers;
 
     private final int time;
 
@@ -22,8 +22,8 @@ public final class Player {
 
     /** Create a Player with the specified answer in each Column */
     public Player(String[] inAnswers) {
-        answers = Collections.unmodifiableMap(IntStream.range(0, inAnswers.length).boxed()
-                .collect(Collectors.toMap(Column.ALL::get, column -> inAnswers[column].trim())));
+        answers = IntStream.range(0, inAnswers.length).boxed().collect(
+                ImmutableMap.toImmutableMap(Column.ALL::get, column -> inAnswers[column].trim()));
         try {
             time = LocalTime.parse(answer(Column.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
                     .toSecondOfDay();

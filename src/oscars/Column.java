@@ -4,12 +4,7 @@ import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -26,19 +21,23 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 /** A column from the survey - Immutable */
 public final class Column {
-    private static final String DEFINITIONS_FILE = "definitions.xml";
-
-    private static final Map<String, Column> INSTANCES = Collections.unmodifiableMap(read());
-
     /** All the columns in survey order */
-    public static final List<Column> ALL = Collections
-            .unmodifiableList(new ArrayList<>(INSTANCES.values()));
+    public static final ImmutableList<Column> ALL = read("definitions.xml");
 
     /** All the award categories in order */
-    public static final List<Column> CATEGORIES = Collections.unmodifiableList(ALL.stream()
-            .filter(category -> !category.nominees().isEmpty()).collect(Collectors.toList()));
+    public static final ImmutableList<Column> CATEGORIES = ALL.stream()
+            .filter(category -> !category.nominees().isEmpty())
+            .collect(ImmutableList.toImmutableList());
+
+    private static final ImmutableMap<String, Column> INSTANCES = ALL.stream()
+            .collect(ImmutableMap.toImmutableMap(Column::header, column -> column, (a, b) -> {
+                throw new RuntimeException("Duplicate definitions found for column: " + a.header);
+            }));
 
     public static final Column TIMESTAMP = of("Timestamp");
 
@@ -54,7 +53,7 @@ public final class Column {
 
     private final BigDecimal value;
 
-    private final List<String> nominees;
+    private final ImmutableList<String> nominees;
 
     private Column(Element inCategory) {
         header = Objects.requireNonNull(inCategory.getAttributeValue("name"),
@@ -67,10 +66,10 @@ public final class Column {
         } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid tieBreaker value in category: " + header, e);
         }
-        nominees = Collections.unmodifiableList(inCategory.getChildren("nominee").stream()
+        nominees = inCategory.getChildren("nominee").stream()
                 .map(nominee -> Objects.requireNonNull(nominee.getAttributeValue("name"),
                         header + " category has nominee without required attribute: name"))
-                .collect(Collectors.toList()));
+                .collect(ImmutableList.toImmutableList());
     }
 
     /** The header of this Column */
@@ -84,7 +83,7 @@ public final class Column {
     }
 
     /** The nominees in display order of this Column */
-    public List<String> nominees() {
+    public ImmutableList<String> nominees() {
         return nominees;
     }
 
@@ -99,17 +98,13 @@ public final class Column {
         return Objects.requireNonNull(INSTANCES.get(inHeader), "Column not defined: " + inHeader);
     }
 
-    private static Map<String, Column> read() {
+    private static ImmutableList<Column> read(String inDefinitionsFile) {
         try {
-            return Directory.DATA.getRootElement(DEFINITIONS_FILE)
+            return Directory.DATA.getRootElement(inDefinitionsFile)
                     .orElseThrow(() -> new RuntimeException("File not found")).getChildren("column")
-                    .stream().map(Column::new)
-                    .collect(Collectors.toMap(Column::header, column -> column, (a, b) -> {
-                        throw new RuntimeException(
-                                "Duplicate definitions found for column: " + a.header);
-                    }, LinkedHashMap::new));
+                    .stream().map(Column::new).collect(ImmutableList.toImmutableList());
         } catch (Exception e) {
-            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
+            throw new RuntimeException("Error reading definitions file: " + inDefinitionsFile, e);
         }
     }
 
@@ -140,9 +135,9 @@ public final class Column {
 
     @SuppressWarnings("serial")
     private class NomineeRenderer extends BarRenderer {
-        private final Collection<String> winners;
+        private final ImmutableList<String> winners;
 
-        public NomineeRenderer(Collection<String> inWinners) {
+        public NomineeRenderer(ImmutableList<String> inWinners) {
             winners = inWinners;
             setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
             setDefaultItemLabelsVisible(true);

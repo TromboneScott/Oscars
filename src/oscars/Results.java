@@ -8,10 +8,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +20,9 @@ import java.util.stream.Stream;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 /** The current results of the Oscars contest */
 public class Results {
@@ -39,17 +38,16 @@ public class Results {
         END;
     }
 
-    private final Map<Column, Map<String, String>> nomineeDescriptions;
+    private final ImmutableMap<Column, ImmutableMap<String, String>> nomineeDescriptions;
 
-    private final Map<Column, Collection<String>> winners;
+    private final Map<Column, ImmutableList<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(Function<Column, Map<String, String>> inNomineeMapper) throws IOException {
-        nomineeDescriptions = Collections.unmodifiableMap(Column.CATEGORIES.stream()
-                .collect(Collectors.toMap(category -> category, category -> Collections
-                        .unmodifiableMap(new HashMap<>(inNomineeMapper.apply(category))))));
+    public Results(Function<Column, ImmutableMap<String, String>> inNominees) throws IOException {
+        nomineeDescriptions = Column.CATEGORIES.stream()
+                .collect(ImmutableMap.toImmutableMap(category -> category, inNominees::apply));
         try {
             Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
                     .map(element -> element.getChild("awards"))
@@ -113,15 +111,12 @@ public class Results {
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
         try {
-            winners.put(inCategory,
-                    Collections.unmodifiableCollection(
-                            Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
-                                    .mapToInt(Integer::parseInt).peek(number -> {
-                                        if (number > inCategory.nominees().size() || number < 1)
-                                            throw new NumberFormatException();
-                                    }).sorted()
-                                    .mapToObj(number -> inCategory.nominees().get(number - 1))
-                                    .collect(Collectors.toCollection(LinkedHashSet::new))));
+            winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
+                    .mapToInt(Integer::parseInt).peek(number -> {
+                        if (number > inCategory.nominees().size() || number < 1)
+                            throw new NumberFormatException();
+                    }).sorted().mapToObj(number -> inCategory.nominees().get(number - 1))
+                    .collect(ImmutableList.toImmutableList()));
             inCategory.writeChart(inPlayers, this);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
@@ -162,8 +157,8 @@ public class Results {
     }
 
     /** Get the winner(s) of the given category in display order */
-    public Collection<String> winners(Column inCategory) {
-        return winners.computeIfAbsent(inCategory, k -> Collections.emptySet());
+    public ImmutableList<String> winners(Column inCategory) {
+        return winners.computeIfAbsent(inCategory, k -> ImmutableList.of());
     }
 
     /** Write the given content to the results XML file */
@@ -180,20 +175,21 @@ public class Results {
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.header()),
                                 Element::addContent))
-                .reduce(new Element("awards"), Element::addContent).setAttributes(
-                        Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
-                                .map(type -> new Attribute(type.name().toLowerCase(),
-                                        showTimes.get(type).toString()))
-                                .collect(Collectors.toList()));
+                .reduce(new Element("awards"), Element::addContent)
+                .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
+                        .map(type -> new Attribute(type.name().toLowerCase(),
+                                showTimes.get(type).toString()))
+                        .collect(ImmutableList.toImmutableList()));
         write(inUpdated, awardsDOM, inStandings.toDOM());
     }
 
-    private static Map<Column, Collection<String>> winners(Element inAwardsDOM) {
-        return inAwardsDOM.getChildren("category").stream().collect(Collectors.toMap(
-                categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
-                categoryDOM -> Collections.unmodifiableCollection(categoryDOM.getChildren("nominee")
-                        .stream().map(element -> element.getAttributeValue("name"))
-                        .collect(Collectors.toCollection(LinkedHashSet::new)))));
+    private static Map<Column, ImmutableList<String>> winners(Element inAwardsDOM) {
+        return inAwardsDOM.getChildren("category").stream()
+                .collect(Collectors.toMap(
+                        categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
+                        categoryDOM -> categoryDOM.getChildren("nominee").stream()
+                                .map(element -> element.getAttributeValue("name"))
+                                .collect(ImmutableList.toImmutableList())));
     }
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inAwardsDOM) {

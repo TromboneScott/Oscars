@@ -2,12 +2,12 @@ package oscars;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import org.jdom2.Element;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Create and update the Oscars website with the winners that are entered by the user. The players'
@@ -19,7 +19,7 @@ import org.jdom2.Element;
  * @version 6.0
  */
 public class Oscars implements Runnable {
-    private final List<Player> players;
+    private final ImmutableList<Player> players;
 
     private final Results results;
 
@@ -40,7 +40,7 @@ public class Oscars implements Runnable {
         System.out.println("DONE");
 
         System.out.print("Step 2 of 3: Reading any existing results... ");
-        players = Collections.unmodifiableList(mapper.players());
+        players = mapper.players();
         results = new Results(mapper::nomineeMapping);
         System.out.println("DONE");
 

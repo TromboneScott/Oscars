@@ -1,7 +1,6 @@
 package oscars;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +12,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 /** Map the data from the survey to the website - Immutable */
 public final class Mapper {
@@ -33,19 +35,19 @@ public final class Mapper {
     }
 
     /** The players with their entries */
-    public List<Player> players() {
+    public ImmutableList<Player> players() {
         return ballots.players().stream()
                 .map(player -> new Player(Column.ALL.stream()
                         .map(column -> columnMaps.get(column).getOrDefault(player.answer(column),
                                 player.answer(column)))
                         .toArray(String[]::new)))
-                .collect(Collectors.toList());
+                .collect(ImmutableList.toImmutableList());
     }
 
     /** The survey descriptions of the nominees in the given category */
-    public Map<String, String> nomineeMapping(Column inCategory) {
+    public ImmutableMap<String, String> nomineeMapping(Column inCategory) {
         return columnMaps.get(inCategory).entrySet().stream()
-                .collect(Collectors.toMap(Entry::getValue, Entry::getKey));
+                .collect(ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey));
     }
 
     private void readMappings() throws IOException {
@@ -66,8 +68,7 @@ public final class Mapper {
     private void updateMappings() {
         for (Column category : Column.CATEGORIES) {
             Map<String, String> columnMap = columnMaps.get(category);
-            ballots.players().stream().sorted(Comparator.comparing(Player::timestamp))
-                    .map(player -> player.answer(category))
+            ballots.players().stream().map(player -> player.answer(category))
                     .filter(guess -> !columnMap.containsKey(guess))
                     .forEach(guess -> columnMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
@@ -90,9 +91,9 @@ public final class Mapper {
             System.out.println(
                     "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
 
-        List<String> mappings = inCategory.nominees().stream()
+        ImmutableList<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
-                .collect(Collectors.toList());
+                .collect(ImmutableList.toImmutableList());
         String mapping = mappings.size() == 1 ? mappings.get(0)
                 : prompt(inCategory, inGuess,
                         mappings.isEmpty() ? inCategory.nominees() : mappings);
@@ -115,17 +116,13 @@ public final class Mapper {
     }
 
     private void writeMappings() throws IOException {
-        Directory.DATA.write(IntStream.range(0, Column.ALL.size())
-                .mapToObj(
-                        column -> columnDOM(Column.ALL.get(column), ballots.headers().get(column)))
-                .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
-    }
-
-    private Element columnDOM(Column inColumn, String inBallot) {
-        return columnMaps.get(inColumn).entrySet().stream()
+        Directory.DATA.write(IntStream.range(0, Column.ALL.size()).mapToObj(column -> columnMaps
+                .get(Column.ALL.get(column)).entrySet().stream()
                 .map(map -> new Element("nominee").setAttribute("name", map.getValue())
                         .setAttribute("ballot", map.getKey()))
-                .reduce(new Element("column").setAttribute("name", inColumn.header())
-                        .setAttribute("ballot", inBallot), Element::addContent);
+                .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).header())
+                        .setAttribute("ballot", ballots.headers().get(column)),
+                        Element::addContent))
+                .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
     }
 }
