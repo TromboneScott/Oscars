@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -21,8 +21,10 @@ import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /** The current results of the Oscars contest */
 public class Results {
@@ -40,7 +42,7 @@ public class Results {
 
     private final ImmutableMap<Column, ImmutableMap<String, String>> nomineeDescriptions;
 
-    private final Map<Column, ImmutableList<String>> winners;
+    private final Map<Column, ImmutableCollection<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
@@ -66,7 +68,7 @@ public class Results {
      *            Players whose picks we can count for the category chart
      * @return Whether or not the user wants to continue entering results
      */
-    public boolean prompt(List<Player> inPlayers) throws IOException {
+    public boolean prompt(Collection<Player> inPlayers) throws IOException {
         System.out.println("Results");
         for (int resultNum = 0; resultNum < Column.CATEGORIES.size()
                 + ShowTimeType.values().length; resultNum++)
@@ -102,7 +104,7 @@ public class Results {
                 .ofNullable(showTimes.get(inShowTimeType)).map(Object::toString).orElse("");
     }
 
-    private void promptWinner(Column inCategory, List<Player> inPlayers) throws IOException {
+    private void promptWinner(Column inCategory, Collection<Player> inPlayers) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println((x + 1)
@@ -116,7 +118,7 @@ public class Results {
                         if (number > inCategory.nominees().size() || number < 1)
                             throw new NumberFormatException();
                     }).sorted().mapToObj(number -> inCategory.nominees().get(number - 1))
-                    .collect(ImmutableList.toImmutableList()));
+                    .collect(ImmutableSet.toImmutableSet()));
             inCategory.writeChart(inPlayers, this);
         } catch (NumberFormatException e) {
             System.out.println("\nInvalid selection: " + input);
@@ -157,7 +159,7 @@ public class Results {
     }
 
     /** Get the winner(s) of the given category in display order */
-    public ImmutableList<String> winners(Column inCategory) {
+    public ImmutableCollection<String> winners(Column inCategory) {
         return winners.computeIfAbsent(inCategory, k -> ImmutableList.of());
     }
 
@@ -173,7 +175,7 @@ public class Results {
         Element awardsDOM = Column.CATEGORIES.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
-                        .reduce(new Element("category").setAttribute("name", category.header()),
+                        .reduce(new Element("category").setAttribute("name", category.name()),
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)
                 .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
@@ -183,13 +185,13 @@ public class Results {
         write(inUpdated, awardsDOM, inStandings.toDOM());
     }
 
-    private static Map<Column, ImmutableList<String>> winners(Element inAwardsDOM) {
+    private static Map<Column, ImmutableCollection<String>> winners(Element inAwardsDOM) {
         return inAwardsDOM.getChildren("category").stream()
                 .collect(Collectors.toMap(
                         categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
                         categoryDOM -> categoryDOM.getChildren("nominee").stream()
                                 .map(element -> element.getAttributeValue("name"))
-                                .collect(ImmutableList.toImmutableList())));
+                                .collect(ImmutableSet.toImmutableSet())));
     }
 
     private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inAwardsDOM) {

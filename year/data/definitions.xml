@@ -2,14 +2,14 @@
 <?xml-stylesheet href="../xsl/definitions.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
 <!DOCTYPE definitions [
-<!ELEMENT definitions (column+)>
-<!ATTLIST definitions year CDATA #REQUIRED>
-<!ELEMENT column (nominee*)>
-<!ATTLIST column name CDATA #REQUIRED>
-<!ATTLIST column tieBreaker CDATA #IMPLIED>
-<!ELEMENT nominee EMPTY>
-<!ATTLIST nominee name CDATA #REQUIRED>
-<!ATTLIST nominee img CDATA #REQUIRED>
+  <!ELEMENT definitions (column+)>
+  <!ATTLIST definitions year CDATA #REQUIRED>
+  <!ELEMENT column (nominee*)>
+  <!ATTLIST column name CDATA #REQUIRED>
+  <!ATTLIST column tieBreaker CDATA #IMPLIED>
+  <!ELEMENT nominee EMPTY>
+  <!ATTLIST nominee name CDATA #REQUIRED>
+  <!ATTLIST nominee img CDATA #REQUIRED>
 ]>
 <definitions year="2024">
   <column name="Timestamp" />

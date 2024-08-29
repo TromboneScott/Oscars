@@ -113,21 +113,21 @@ public class Oscars implements Runnable {
     private void writeCategoryPages() throws IOException {
         for (Column category : Column.CATEGORIES) {
             category.writeChart(players, results);
-            writeCategoryPage(category.header());
+            writeCategoryPage(category.name());
         }
         writeCategoryPage("all");
     }
 
-    private static void writeCategoryPage(String inHeader) throws IOException {
-        Directory.CATEGORY.write(new Element("category").setAttribute("name", inHeader),
-                inHeader + ".xml", "category.xsl");
+    private static void writeCategoryPage(String inName) throws IOException {
+        Directory.CATEGORY.write(new Element("category").setAttribute("name", inName),
+                inName + ".xml", "category.xsl");
     }
 
     private void writePlayerPages() throws IOException {
         Directory.DATA.write(IntStream.range(0, players.size())
                 .mapToObj(playerNum -> Column.CATEGORIES.stream()
                         .map(category -> new Element("category")
-                                .setAttribute("name", category.header())
+                                .setAttribute("name", category.name())
                                 .setAttribute("nominee", players.get(playerNum).answer(category)))
                         .reduce(players.get(playerNum).toDOM(), Element::addContent)
                         .setAttribute("id", String.valueOf(playerNum + 1))

@@ -29,7 +29,7 @@ public final class Ballots {
 
     private final ImmutableList<String> headers;
 
-    private final ImmutableList<Player> all;
+    private final ImmutableCollection<Player> all;
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {

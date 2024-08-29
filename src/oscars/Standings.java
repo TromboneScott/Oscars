@@ -1,7 +1,7 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 
 /** The score and rank standings - Immutable */
@@ -20,11 +20,11 @@ public final class Standings {
 
     private final boolean showEnded;
 
-    private final ImmutableMap<Column, ImmutableList<String>> winners;
+    private final ImmutableMap<Column, ImmutableCollection<String>> winners;
 
     private final ImmutableMap<Player, BigDecimal> scoreMap;
 
-    public Standings(List<Player> inPlayers, Results inResults) {
+    public Standings(Collection<Player> inPlayers, Results inResults) {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         showEnded = inResults.showEnded();
         winners = Column.CATEGORIES.stream()
@@ -48,12 +48,10 @@ public final class Standings {
     public Element toDOM() {
         int scale = Column.CATEGORIES.stream().map(Column::value).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
-        ImmutableMap<Player, Set<Player>> lostToMap = scoreMap.keySet().stream()
-                .collect(
-                        ImmutableMap.toImmutableMap(player -> player,
-                                player -> lostToStream(player, possibleScores(player, true),
-                                        elapsedTime, showEnded).map(Entry::getKey)
-                                                .collect(Collectors.toSet())));
+        Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream().collect(Collectors.toMap(
+                player -> player,
+                player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
+                        .map(Entry::getKey).collect(Collectors.toSet())));
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())

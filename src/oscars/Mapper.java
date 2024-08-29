@@ -25,7 +25,7 @@ public final class Mapper {
     private final Map<Column, Map<String, String>> columnMaps = Column.ALL.stream()
             .collect(Collectors.toMap(column -> column, column -> new LinkedHashMap<>()));
 
-    private final HashMap<String, String> matches = new HashMap<>();
+    private final Map<String, String> matches = new HashMap<>();
 
     /** Read any existing mappings, update with the ballots and write the mappings */
     public Mapper() throws IOException {
@@ -91,7 +91,7 @@ public final class Mapper {
             System.out.println(
                     "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
 
-        ImmutableList<String> mappings = inCategory.nominees().stream()
+        List<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
                 .collect(ImmutableList.toImmutableList());
         String mapping = mappings.size() == 1 ? mappings.get(0)
@@ -120,7 +120,7 @@ public final class Mapper {
                 .get(Column.ALL.get(column)).entrySet().stream()
                 .map(map -> new Element("nominee").setAttribute("name", map.getValue())
                         .setAttribute("ballot", map.getKey()))
-                .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).header())
+                .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).name())
                         .setAttribute("ballot", ballots.headers().get(column)),
                         Element::addContent))
                 .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);

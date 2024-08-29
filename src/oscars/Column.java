@@ -4,7 +4,7 @@ import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -21,23 +21,21 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 /** A column from the survey - Immutable */
 public final class Column {
+    private static final ImmutableMap<String, Column> INSTANCES = read("definitions.xml");
+
     /** All the columns in survey order */
-    public static final ImmutableList<Column> ALL = read("definitions.xml");
+    public static final ImmutableList<Column> ALL = ImmutableList.copyOf(INSTANCES.values());
 
     /** All the award categories in order */
     public static final ImmutableList<Column> CATEGORIES = ALL.stream()
-            .filter(category -> !category.nominees().isEmpty())
+            .filter(column -> !column.nominees().isEmpty())
             .collect(ImmutableList.toImmutableList());
-
-    private static final ImmutableMap<String, Column> INSTANCES = ALL.stream()
-            .collect(ImmutableMap.toImmutableMap(Column::header, column -> column, (a, b) -> {
-                throw new RuntimeException("Duplicate definitions found for column: " + a.header);
-            }));
 
     public static final Column TIMESTAMP = of("Timestamp");
 
@@ -49,32 +47,30 @@ public final class Column {
 
     public static final Column EMAIL = of("EMail");
 
-    private final String header;
+    private final String name;
 
     private final BigDecimal value;
 
     private final ImmutableList<String> nominees;
 
     private Column(Element inCategory) {
-        header = Objects.requireNonNull(inCategory.getAttributeValue("name"),
-                "Category is missing required attribute: name");
+        name = inCategory.getAttributeValue("name");
         try {
             value = BigDecimal.ONE.add(Optional
                     .ofNullable(inCategory.getAttributeValue("tieBreaker"))
                     .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
                     .orElse(BigDecimal.ZERO));
         } catch (NumberFormatException e) {
-            throw new RuntimeException("Invalid tieBreaker value in category: " + header, e);
+            throw new RuntimeException("Invalid tieBreaker value in column: " + name, e);
         }
         nominees = inCategory.getChildren("nominee").stream()
-                .map(nominee -> Objects.requireNonNull(nominee.getAttributeValue("name"),
-                        header + " category has nominee without required attribute: name"))
+                .map(nominee -> nominee.getAttributeValue("name"))
                 .collect(ImmutableList.toImmutableList());
     }
 
-    /** The header of this Column */
-    public final String header() {
-        return header;
+    /** The name of this Column */
+    public String name() {
+        return name;
     }
 
     /** The scoring value of this Column */
@@ -82,15 +78,15 @@ public final class Column {
         return value;
     }
 
-    /** The nominees in display order of this Column */
+    /** The nominees of this Column in display order */
     public ImmutableList<String> nominees() {
         return nominees;
     }
 
-    /** The String representation of this Column which will be just the header */
+    /** The String representation of this Column which is just the name */
     @Override
-    public final String toString() {
-        return header;
+    public String toString() {
+        return name;
     }
 
     /** Get the Column instance that has the given header */
@@ -98,11 +94,12 @@ public final class Column {
         return Objects.requireNonNull(INSTANCES.get(inHeader), "Column not defined: " + inHeader);
     }
 
-    private static ImmutableList<Column> read(String inDefinitionsFile) {
+    private static ImmutableMap<String, Column> read(String inDefinitionsFile) {
         try {
             return Directory.DATA.getRootElement(inDefinitionsFile)
                     .orElseThrow(() -> new RuntimeException("File not found")).getChildren("column")
-                    .stream().map(Column::new).collect(ImmutableList.toImmutableList());
+                    .stream().map(Column::new)
+                    .collect(ImmutableMap.toImmutableMap(Column::name, column -> column));
         } catch (Exception e) {
             throw new RuntimeException("Error reading definitions file: " + inDefinitionsFile, e);
         }
@@ -110,12 +107,13 @@ public final class Column {
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
-        return header + nominees.stream().map(inResults.winners(this)::contains)
-                .map(winner -> winner ? "1" : "0").collect(Collectors.joining()) + ".png";
+        ImmutableCollection<String> winners = inResults.winners(this);
+        return name + nominees.stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
+                .collect(Collectors.joining()) + ".png";
     }
 
     /** Write the chart for this Category given these players and these Results */
-    public void writeChart(List<Player> inPlayers, Results inResults) throws IOException {
+    public void writeChart(Collection<Player> inPlayers, Results inResults) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
         inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(this)));
@@ -128,17 +126,17 @@ public final class Column {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-        plot.setRenderer(new NomineeRenderer(inResults.winners(this)));
+        plot.setRenderer(new NomineeRenderer(inResults));
 
         ChartUtils.saveChartAsPNG(Directory.CATEGORY.file(chartName(inResults)), chart, 500, 300);
     }
 
     @SuppressWarnings("serial")
     private class NomineeRenderer extends BarRenderer {
-        private final ImmutableList<String> winners;
+        private final ImmutableCollection<String> winners;
 
-        public NomineeRenderer(ImmutableList<String> inWinners) {
-            winners = inWinners;
+        public NomineeRenderer(Results inResults) {
+            winners = inResults.winners(Column.this);
             setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
             setDefaultItemLabelsVisible(true);
         }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +38,7 @@ public final class Player {
     /** Get the name (last, first) of the Player */
     public String name() {
         return Stream.of(Column.LAST_NAME, Column.FIRST_NAME).map(this::answer)
-                .filter(name -> !name.isEmpty()).collect(Collectors.joining(", "));
+                .filter(StringUtils::isNotEmpty).collect(Collectors.joining(", "));
     }
 
     /** Get the Player's answer in the given Column */
