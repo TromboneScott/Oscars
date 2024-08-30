@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /** The score and rank standings - Immutable */
 public final class Standings {
@@ -20,7 +20,7 @@ public final class Standings {
 
     private final boolean showEnded;
 
-    private final ImmutableMap<Column, ImmutableCollection<String>> winners;
+    private final ImmutableMap<Column, ImmutableSet<String>> winners;
 
     private final ImmutableMap<Player, BigDecimal> scoreMap;
 

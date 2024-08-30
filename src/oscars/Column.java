@@ -21,9 +21,9 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /** A column from the survey - Immutable */
 public final class Column {
@@ -49,23 +49,22 @@ public final class Column {
 
     private final String name;
 
-    private final BigDecimal value;
-
     private final ImmutableList<String> nominees;
 
-    private Column(Element inCategory) {
-        name = inCategory.getAttributeValue("name");
+    private final BigDecimal value;
+
+    private Column(Element inColumn) {
+        name = inColumn.getAttributeValue("name");
+        nominees = inColumn.getChildren("nominee").stream()
+                .map(nominee -> nominee.getAttributeValue("name"))
+                .collect(ImmutableList.toImmutableList());
         try {
-            value = BigDecimal.ONE.add(Optional
-                    .ofNullable(inCategory.getAttributeValue("tieBreaker"))
+            value = BigDecimal.ONE.add(Optional.ofNullable(inColumn.getAttributeValue("tieBreaker"))
                     .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
                     .orElse(BigDecimal.ZERO));
         } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid tieBreaker value in column: " + name, e);
         }
-        nominees = inCategory.getChildren("nominee").stream()
-                .map(nominee -> nominee.getAttributeValue("name"))
-                .collect(ImmutableList.toImmutableList());
     }
 
     /** The name of this Column */
@@ -73,14 +72,14 @@ public final class Column {
         return name;
     }
 
-    /** The scoring value of this Column */
-    public BigDecimal value() {
-        return value;
-    }
-
     /** The nominees of this Column in display order */
     public ImmutableList<String> nominees() {
         return nominees;
+    }
+
+    /** The scoring value of this Column */
+    public BigDecimal value() {
+        return value;
     }
 
     /** The String representation of this Column which is just the name */
@@ -107,7 +106,7 @@ public final class Column {
 
     /** Use a unique filename for each generated chart in case any browsers cache images */
     private String chartName(Results inResults) {
-        ImmutableCollection<String> winners = inResults.winners(this);
+        ImmutableSet<String> winners = inResults.winners(this);
         return name + nominees.stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
                 .collect(Collectors.joining()) + ".png";
     }
@@ -133,7 +132,7 @@ public final class Column {
 
     @SuppressWarnings("serial")
     private class NomineeRenderer extends BarRenderer {
-        private final ImmutableCollection<String> winners;
+        private final ImmutableSet<String> winners;
 
         public NomineeRenderer(Results inResults) {
             winners = inResults.winners(Column.this);

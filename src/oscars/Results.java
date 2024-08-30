@@ -21,7 +21,6 @@ import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -42,7 +41,7 @@ public class Results {
 
     private final ImmutableMap<Column, ImmutableMap<String, String>> nomineeDescriptions;
 
-    private final Map<Column, ImmutableCollection<String>> winners;
+    private final Map<Column, ImmutableSet<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
@@ -159,8 +158,8 @@ public class Results {
     }
 
     /** Get the winner(s) of the given category in display order */
-    public ImmutableCollection<String> winners(Column inCategory) {
-        return winners.computeIfAbsent(inCategory, k -> ImmutableList.of());
+    public ImmutableSet<String> winners(Column inCategory) {
+        return winners.computeIfAbsent(inCategory, k -> ImmutableSet.of());
     }
 
     /** Write the given content to the results XML file */
@@ -185,7 +184,7 @@ public class Results {
         write(inUpdated, awardsDOM, inStandings.toDOM());
     }
 
-    private static Map<Column, ImmutableCollection<String>> winners(Element inAwardsDOM) {
+    private static Map<Column, ImmutableSet<String>> winners(Element inAwardsDOM) {
         return inAwardsDOM.getChildren("category").stream()
                 .collect(Collectors.toMap(
                         categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
