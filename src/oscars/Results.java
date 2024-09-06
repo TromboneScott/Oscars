@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
@@ -53,8 +54,16 @@ public class Results {
             Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
                     .map(element -> element.getChild("awards"))
                     .orElseGet(() -> new Element("EMPTY"));
-            winners = winners(awardsDOM);
-            showTimes = showTimes(awardsDOM);
+            winners = awardsDOM.getChildren("category").stream()
+                    .collect(Collectors.toMap(
+                            categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
+                            categoryDOM -> categoryDOM.getChildren("nominee").stream()
+                                    .map(nomineeDOM -> nomineeDOM.getAttributeValue("name"))
+                                    .collect(ImmutableSet.toImmutableSet())));
+            showTimes = Stream.of(ShowTimeType.values())
+                    .filter(type -> awardsDOM.getAttribute(type.name()) != null)
+                    .collect(Collectors.toMap(type -> type,
+                            type -> ZonedDateTime.parse(awardsDOM.getAttributeValue(type.name()))));
         } catch (Exception e) {
             throw new IOException("Error reading results file: " + RESULTS_FILE, e);
         }
@@ -64,31 +73,27 @@ public class Results {
      * Prompt for results
      * 
      * @param inPlayers
-     *            Players whose picks we can count for the category chart
+     *            The Players with their picks in each category
      * @return Whether or not the user wants to continue entering results
      */
     public boolean prompt(Collection<Player> inPlayers) throws IOException {
         System.out.println("Results");
-        for (int resultNum = 0; resultNum < Column.CATEGORIES.size()
-                + ShowTimeType.values().length; resultNum++)
-            System.out.println((resultNum + 1) + ": " + (resultNum < Column.CATEGORIES.size()
-                    ? toString(Column.CATEGORIES.get(resultNum))
-                    : toString(ShowTimeType.values()[resultNum - Column.CATEGORIES.size()])));
+        for (int line = 0; line < Column.CATEGORIES.size() + ShowTimeType.values().length; line++)
+            System.out.println((line + 1) + ": "
+                    + (line < Column.CATEGORIES.size() ? toString(Column.CATEGORIES.get(line))
+                            : toString(ShowTimeType.values()[line - Column.CATEGORIES.size()])));
 
-        System.out.print("Enter number to change (\"exit\" to quit): ");
+        System.out.print("Enter number (0 to exit): ");
         String input = STDIN.nextLine();
-        if ("exit".equalsIgnoreCase(input))
+        if ("0".equals(input))
             return false;
         try {
-            int resultNum = Integer.parseInt(input) - 1;
-            if (resultNum < 0
-                    || resultNum >= Column.CATEGORIES.size() + ShowTimeType.values().length)
-                throw new NumberFormatException();
-            if (resultNum < Column.CATEGORIES.size())
-                promptWinner(Column.CATEGORIES.get(resultNum), inPlayers);
+            int entry = Integer.parseInt(input) - 1;
+            if (entry < Column.CATEGORIES.size())
+                promptWinner(Column.CATEGORIES.get(entry), inPlayers);
             else
-                promptTime(ShowTimeType.values()[resultNum - Column.CATEGORIES.size()]);
-        } catch (NumberFormatException e) {
+                promptTime(ShowTimeType.values()[entry - Column.CATEGORIES.size()]);
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
         return true;
@@ -99,8 +104,8 @@ public class Results {
     }
 
     private String toString(ShowTimeType inShowTimeType) {
-        return "Show Time " + inShowTimeType + " = " + Optional
-                .ofNullable(showTimes.get(inShowTimeType)).map(Object::toString).orElse("");
+        return "Show Time " + inShowTimeType + " = "
+                + ObjectUtils.toString(showTimes.get(inShowTimeType), () -> "");
     }
 
     private void promptWinner(Column inCategory, Collection<Player> inPlayers) throws IOException {
@@ -113,21 +118,18 @@ public class Results {
         String input = STDIN.nextLine();
         try {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
-                    .mapToInt(Integer::parseInt).peek(number -> {
-                        if (number > inCategory.nominees().size() || number < 1)
-                            throw new NumberFormatException();
-                    }).sorted().mapToObj(number -> inCategory.nominees().get(number - 1))
-                    .collect(ImmutableSet.toImmutableSet()));
+                    .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
+                    .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
             inCategory.writeChart(inPlayers, this);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
     }
 
     private void promptTime(ShowTimeType inShowTimeType) {
         System.out.println("\n" + toString(inShowTimeType));
-        System.out.println(
-                "Enter * for system time, leave blank to remove, format: " + LocalDateTime.now());
+        System.out.println("Format: " + LocalDateTime.now()
+                + "\nEnter time (use * for system time or leave blank to remove):");
         String input = STDIN.nextLine();
         if (input.isEmpty())
             showTimes.remove(inShowTimeType);
@@ -157,7 +159,7 @@ public class Results {
                 .orElseGet(Instant::now).toEpochMilli();
     }
 
-    /** Get the winner(s) of the given category in display order */
+    /** Get the winner(s) of the given category in display order, may be empty but won't be null */
     public ImmutableSet<String> winners(Column inCategory) {
         return winners.computeIfAbsent(inCategory, k -> ImmutableSet.of());
     }
@@ -178,25 +180,8 @@ public class Results {
                                 Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)
                 .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
-                        .map(type -> new Attribute(type.name().toLowerCase(),
-                                showTimes.get(type).toString()))
+                        .map(type -> new Attribute(type.name(), showTimes.get(type).toString()))
                         .collect(ImmutableList.toImmutableList()));
         write(inUpdated, awardsDOM, inStandings.toDOM());
-    }
-
-    private static Map<Column, ImmutableSet<String>> winners(Element inAwardsDOM) {
-        return inAwardsDOM.getChildren("category").stream()
-                .collect(Collectors.toMap(
-                        categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
-                        categoryDOM -> categoryDOM.getChildren("nominee").stream()
-                                .map(element -> element.getAttributeValue("name"))
-                                .collect(ImmutableSet.toImmutableSet())));
-    }
-
-    private static Map<ShowTimeType, ZonedDateTime> showTimes(Element inAwardsDOM) {
-        return Stream.of(ShowTimeType.values())
-                .filter(type -> inAwardsDOM.getAttributeValue(type.name().toLowerCase()) != null)
-                .collect(Collectors.toMap(type -> type, type -> ZonedDateTime
-                        .parse(inAwardsDOM.getAttributeValue(type.name().toLowerCase()))));
     }
 }
