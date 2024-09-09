@@ -47,7 +47,7 @@ public final class Mapper {
     /** The survey descriptions of the nominees in the given category */
     public ImmutableMap<String, String> nomineeMapping(Column inCategory) {
         return columnMaps.get(inCategory).entrySet().stream()
-                .collect(ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey));
+                .collect(ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey, (a, b) -> b));
     }
 
     private void readMappings() throws IOException {
