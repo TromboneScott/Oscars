@@ -74,7 +74,7 @@ public final class Ballots {
         return headers;
     }
 
-    /** The players in order from the survey using the latest ballot for each Player */
+    /** The players from the survey using the latest ballot for each Player */
     public ImmutableCollection<Player> players() {
         return all.stream().collect(ImmutableMap.toImmutableMap(Ballots::name, player -> player,
                 BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp)))).values();
