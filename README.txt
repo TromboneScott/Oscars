@@ -17,7 +17,7 @@ Create Google Form:
   c. Open responses spreadsheet
   d. Select File/Share/Publish to web
   e. Choose Link = Form Responses 1 (the tab name) and Embed = Comma-separated values (.csv)
-  f. Check box for "Automatically rebulish when changes are made"
+  f. Check box for "Automatically republish when changes are made"
   g. Click "Publish"
   h. Copy the URL it generates and paste it as the only line in the file: ResponsesURL.txt
 
