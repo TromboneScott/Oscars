@@ -5,8 +5,10 @@ Create Google Form:
 2. Select the dots menu at top right and click "Make a copy"
 3. Make all necessary updates for the current year
   a. Change tie-breakers 3 & 4
-    i.  Even years: 3 = Actress, 4 = Supporting Actor
-    ii. Odd years: 3 = Actor, 4 = Supporting Actress
+    - Even years: 3 = Actress, 4 = Supporting Actor
+    - Odd years: 3 = Actor, 4 = Supporting Actress
+    i. Update rule #4 in Contest Info
+    ii. Add/Delete descriptions of the acting categories
   b. Update the broadcast date
   c. Update nominees
     i.  Copy from oscars.org and include special characters
@@ -33,7 +35,7 @@ Edit year/data/definitions.xml using Eclipse
 1. Update the year
 2. Update the categories as a few change each year
 3. Make sure the categories are in the same order as the Google Form
-4. Update the tieBreaker values
+4. Update the tieBreaker values as indicated in Google Form steps above
 5. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
 6. Add all the nominees under each category in the order you want them (usually alphabetical)
   a. Be sure to use Eclipse or NOTEPAD so all special characters such as á and é are in UTF-8 format
