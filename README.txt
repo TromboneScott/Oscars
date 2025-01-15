@@ -38,11 +38,11 @@ Edit year/data/definitions.xml using Eclipse
 4. Update the tieBreaker values as indicated in Google Form steps above
 5. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
 6. Add all the nominees under each category in the order you want them (usually alphabetical)
-  a. Be sure to use Eclipse or NOTEPAD so all special characters such as á and é are in UTF-8 format
+  a. Using Eclipse will put all special characters such as á and é in UTF-8 format
 7. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
-8. Check file in Eclipse to make sure it doesn't have any DTD violations
+8. Using Eclipse will make sure you don't have any DTD violations
 
 Start the year
 1. Copy year folder to oscars site and rename to current year
@@ -60,7 +60,7 @@ Proofread the category definitions:
 
 Commit changes for the year
 1. Commit and push all changes
-2. git tag -f <year> && git push -f --tags (for current <year>)
+2. Replace <year> in this command: git tag -f <year> && git push -f --tags
 
 
 -- While ballots are being collected
