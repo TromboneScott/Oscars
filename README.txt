@@ -10,7 +10,10 @@ Create Google Form:
     i. Update rule #4 in Contest Info
     ii. Add/Delete descriptions of the acting categories
   b. Update the broadcast date
-  c. Update nominees
+  c. Replace "Last Year's Winner"
+    i. Use a picture from the Oscars awards ceremony
+    ii. Use the nominee description from last year
+  d. Update nominees
     i.  Copy from oscars.org and include special characters
     ii. Use the string " - " to separate movie from person (or actor from movie)
 4. Set up data export
@@ -67,10 +70,10 @@ Commit changes for the year
 
 From the new year folder run the batch:
   oscars.bat Ballot (or ./oscars.sh -b)
-Leave it running so it can continuosly download the ballots as they're entered
+Leave it running so it can continuously download the ballots as they're entered
 
 Check the ballots as they come in and fix any names where they didn't capitalize properly
-1. Fix names direclty in the Google Sheet that the Google Form is using to collect the data
+1. Fix names directly in the Google Sheet that the Google Form is using to collect the data
 2. Either restart the batch or just wait until a new ballot is entered
 
 
