@@ -167,8 +167,8 @@ public class Results {
     /** Write the given content to the results XML file */
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
         String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
-        Directory.DATA.write(new Element("results").setAttribute("updated", updated)
-                .addContent(Arrays.asList(inContent)), "results", RESULTS_FILE, null);
+        Directory.DATA.write(RESULTS_FILE, new Element("results").setAttribute("updated", updated)
+                .addContent(Arrays.asList(inContent)), "results", null);
     }
 
     /** Write these Results and the given Standings to the results XML file */

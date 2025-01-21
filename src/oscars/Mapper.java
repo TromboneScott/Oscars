@@ -116,14 +116,14 @@ public final class Mapper {
     }
 
     private void writeMappings() throws IOException {
-        Directory.DATA.write(IntStream.range(0, Column.ALL.size()).mapToObj(column -> columnMaps
-                .get(Column.ALL.get(column)).entrySet().stream()
-                .map(map -> new Element("nominee").setAttribute("name", map.getValue())
-                        .setAttribute("ballot", map.getKey()))
-                .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).name())
-                        .setAttribute("ballot", ballots.headers().get(column)),
-                        Element::addContent))
-                .reduce(new Element("mappings"), Element::addContent), "mappings", MAPPINGS_FILE,
-                null);
+        Directory.DATA.write(MAPPINGS_FILE, IntStream.range(0, Column.ALL.size())
+                .mapToObj(column -> columnMaps.get(Column.ALL.get(column)).entrySet().stream()
+                        .map(map -> new Element("nominee").setAttribute("name", map.getValue())
+                                .setAttribute("ballot", map.getKey()))
+                        .reduce(new Element("column")
+                                .setAttribute("name", Column.ALL.get(column).name())
+                                .setAttribute("ballot", ballots.headers().get(column)),
+                                Element::addContent))
+                .reduce(new Element("mappings"), Element::addContent), "mappings", null);
     }
 }

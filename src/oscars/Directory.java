@@ -6,8 +6,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jdom2.Comment;
 import org.jdom2.DocType;
@@ -18,6 +16,8 @@ import org.jdom2.ProcessingInstruction;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Define the directories to be used and how to read and write in those directories - Immutable
@@ -53,17 +53,15 @@ public final class Directory extends File {
         }
     }
 
-    /** Write the Element to an XML file in this directory */
-    public void write(Element inElement, String inDTDName, String inXMLFile, String inXSLFile)
+    /** Write an XML file in this directory with the given element, DTD and optional XSL file */
+    public void write(String inXMLFile, Element inElement, String inDTDName, String inXSLFile)
             throws IOException {
-        Document document = new Document();
-        document.setDocType(new DocType(inDTDName, "../dtd/" + inDTDName + ".dtd"));
+        Document document = new Document(inElement,
+                new DocType(inDTDName, "../dtd/" + inDTDName + ".dtd"));
+        document.addContent(0, new Comment("OSCARS website created by Scott McDonald"));
         if (inXSLFile != null)
-            document.addContent(new ProcessingInstruction("xml-stylesheet", Stream.of(
-                    new String[][] { { "type", "text/xsl" }, { "href", "../xsl/" + inXSLFile } })
-                    .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]))));
-        document.addContent(new Comment("OSCARS website created by Scott McDonald"));
-        document.addContent(inElement);
+            document.addContent(0, new ProcessingInstruction("xml-stylesheet",
+                    ImmutableMap.of("type", "text/xsl", "href", "../xsl/" + inXSLFile)));
         try (Writer writer = new PrintWriter(file(inXMLFile), StandardCharsets.UTF_8.name())) {
             new XMLOutputter(Format.getPrettyFormat()).output(document, writer);
         }
