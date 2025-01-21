@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sort SYSTEM "../dtd/sort.dtd">
 <?xml-stylesheet href="../xsl/sort.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
+<!DOCTYPE sort SYSTEM "../dtd/sort.dtd">
 <sort name="bprReverse" column1="bpr" column2="rank" column3="wpr" order="descending" />
