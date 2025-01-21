@@ -1,0 +1,9 @@
+<!ELEMENT ballots (player*)>
+<!ELEMENT player (category+)>
+<!ATTLIST player firstName CDATA #REQUIRED>
+<!ATTLIST player lastName CDATA #REQUIRED>
+<!ATTLIST player id CDATA #REQUIRED>
+<!ATTLIST player time CDATA #REQUIRED>
+<!ELEMENT category EMPTY>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ATTLIST category nominee CDATA #REQUIRED>

@@ -1,0 +1,17 @@
+<!ELEMENT results (awards, standings)>
+<!ATTLIST results updated CDATA #REQUIRED>
+<!ELEMENT awards (category+)>
+<!ELEMENT category (nominee*)>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ELEMENT nominee EMPTY>
+<!ATTLIST nominee name CDATA #REQUIRED>
+<!ELEMENT standings (player*)>
+<!ATTLIST standings time CDATA #REQUIRED>
+<!ELEMENT player EMPTY>
+<!ATTLIST player firstName CDATA #REQUIRED>
+<!ATTLIST player lastName CDATA #REQUIRED>
+<!ATTLIST player score CDATA #REQUIRED>
+<!ATTLIST player rank CDATA #REQUIRED>
+<!ATTLIST player bpr CDATA #REQUIRED>
+<!ATTLIST player wpr CDATA #REQUIRED>
+<!ATTLIST player decided CDATA #REQUIRED>

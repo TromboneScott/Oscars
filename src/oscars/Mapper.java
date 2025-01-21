@@ -123,6 +123,7 @@ public final class Mapper {
                 .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).name())
                         .setAttribute("ballot", ballots.headers().get(column)),
                         Element::addContent))
-                .reduce(new Element("mappings"), Element::addContent), MAPPINGS_FILE, null);
+                .reduce(new Element("mappings"), Element::addContent), "mappings", MAPPINGS_FILE,
+                null);
     }
 }

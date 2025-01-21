@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jdom2.Comment;
+import org.jdom2.DocType;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -53,8 +54,10 @@ public final class Directory extends File {
     }
 
     /** Write the Element to an XML file in this directory */
-    public void write(Element inElement, String inXMLFile, String inXSLFile) throws IOException {
+    public void write(Element inElement, String inDTDName, String inXMLFile, String inXSLFile)
+            throws IOException {
         Document document = new Document();
+        document.setDocType(new DocType(inDTDName, "../dtd/" + inDTDName + ".dtd"));
         if (inXSLFile != null)
             document.addContent(new ProcessingInstruction("xml-stylesheet", Stream.of(
                     new String[][] { { "type", "text/xsl" }, { "href", "../xsl/" + inXSLFile } })
