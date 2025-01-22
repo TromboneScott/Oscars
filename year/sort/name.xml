@@ -2,4 +2,4 @@
 <?xml-stylesheet href="../xsl/sort.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
 <!DOCTYPE sort SYSTEM "../dtd/sort.dtd">
-<sort name="name" ballotSort="name" />
+<sort name="name" ballotSort="name" order="ascending" />

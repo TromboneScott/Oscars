@@ -4,4 +4,4 @@
 <!ATTLIST sort column1 (rank|bpr|wpr) #IMPLIED>
 <!ATTLIST sort column2 (rank|bpr|wpr) #IMPLIED>
 <!ATTLIST sort column3 (rank|bpr|wpr) #IMPLIED>
-<!ATTLIST sort order (ascending|descending) "ascending">
+<!ATTLIST sort order (ascending|descending) #REQUIRED>
