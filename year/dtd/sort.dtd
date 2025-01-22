@@ -1,4 +1,3 @@
-<!--OSCARS website created by Scott McDonald-->
 <!ELEMENT sort EMPTY>
 <!ATTLIST sort name CDATA #REQUIRED>
 <!ATTLIST sort ballotSort (name|timestamp) #IMPLIED>

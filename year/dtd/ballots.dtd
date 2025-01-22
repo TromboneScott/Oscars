@@ -1,4 +1,3 @@
-<!--OSCARS website created by Scott McDonald-->
 <!ELEMENT ballots (player*)>
 <!ELEMENT player (category+)>
 <!ATTLIST player firstName CDATA #REQUIRED>
