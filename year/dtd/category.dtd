@@ -1,2 +1,3 @@
+<!--OSCARS website created by Scott McDonald-->
 <!ELEMENT category EMPTY>
 <!ATTLIST category name CDATA #REQUIRED>

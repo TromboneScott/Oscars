@@ -1,3 +1,4 @@
+<!--OSCARS website created by Scott McDonald-->
 <!ELEMENT mappings (column+)>
 <!ELEMENT column (nominee*)>
 <!ATTLIST column name CDATA #REQUIRED>
