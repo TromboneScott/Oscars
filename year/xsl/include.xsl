@@ -11,7 +11,6 @@
     select="$results/awards[not(@end)] or $results/awards/category[not(nominee)]" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
-    <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <head>
       <link rel="stylesheet" type="text/css" href="../../oscars.css" />
       <meta http-equiv="cache-control"
