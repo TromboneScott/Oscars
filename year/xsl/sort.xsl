@@ -21,14 +21,15 @@
                       <b>BALLOTS ARE BEING COLLECTED</b>
                       <br />
                       <br />
-                      &#9993; - &#9993; - &#9993; - &#9993; - &#9993; <br />
+                      &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
                       <br />
-                      Ballot names will appear here a few minutes after being
-                      cast. <br /> The "votes" will be loaded after all ballots
-                      have been collected. <br />
                       <br />
-                      <i>Check here for live
-                      results during the Oscars broadcast.</i>
+                      Ballot names will appear here a few minutes after being cast.
+                      <br />
+                      The guesses on the ballots will be loaded when all have been collected.
+                      <br />
+                      <br />
+                      <i>Check here for live results during the Oscars broadcast.</i>
                       <br />
                       <br />
                     </td>

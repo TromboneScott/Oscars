@@ -23,7 +23,7 @@ Create Google Form:
   d. Select File/Share/Publish to web
   e. Choose Link = Form Responses 1 (the tab name) and Embed = Comma-separated values (.csv)
   f. Check box for "Automatically republish when changes are made"
-  g. Click "Publish"
+  g. Click "Start Publishing"
   h. Copy the URL it generates and paste it as the only line in the file: ResponsesURL.txt
 
 Download 100x148 pixel pictures for Google Form for all categories
