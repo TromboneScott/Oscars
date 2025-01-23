@@ -26,7 +26,7 @@
                       <br />
                       Ballot names will appear here a few minutes after being cast.
                       <br />
-                      The guesses on the ballots will be loaded when all have been collected.
+                      The actual guesses will be loaded after all ballots have been collected.
                       <br />
                       <br />
                       <i>Check here for live results during the Oscars broadcast.</i>
