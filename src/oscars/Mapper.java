@@ -3,7 +3,6 @@ package oscars;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -91,7 +90,7 @@ public final class Mapper {
             System.out.println(
                     "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
 
-        List<String> mappings = inCategory.nominees().stream()
+        ImmutableList<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
                 .collect(ImmutableList.toImmutableList());
         String mapping = mappings.size() == 1 ? mappings.get(0)
@@ -101,7 +100,8 @@ public final class Mapper {
         return mapping;
     }
 
-    private static String prompt(Column inCategory, String inGuess, List<String> inNominees) {
+    private static String prompt(Column inCategory, String inGuess,
+            ImmutableList<String> inNominees) {
         System.out.println("\nCATEGORY: " + inCategory);
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));

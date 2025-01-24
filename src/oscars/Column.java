@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jdom2.Element;
@@ -149,8 +148,9 @@ public final class Column {
 
     /** Delete all charts we don't need to keep */
     public static void cleanUpCharts(Results inResults) {
-        Set<String> chartsToKeep = CATEGORIES.stream()
-                .map(category -> category.chartName(inResults)).collect(Collectors.toSet());
+        ImmutableSet<String> chartsToKeep = CATEGORIES.stream()
+                .map(category -> category.chartName(inResults))
+                .collect(ImmutableSet.toImmutableSet());
         for (File file : Directory.CATEGORY.listFiles(
                 (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
             file.delete();

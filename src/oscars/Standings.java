@@ -2,9 +2,7 @@ package oscars;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,10 +46,11 @@ public final class Standings {
     public Element toDOM() {
         int scale = Column.CATEGORIES.stream().map(Column::value).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
-        Map<Player, Set<Player>> lostToMap = scoreMap.keySet().stream().collect(Collectors.toMap(
-                player -> player,
-                player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
-                        .map(Entry::getKey).collect(Collectors.toSet())));
+        ImmutableMap<Player, ImmutableSet<Player>> lostToMap = scoreMap.keySet().stream()
+                .collect(ImmutableMap.toImmutableMap(player -> player,
+                        player -> lostToStream(player, possibleScores(player, true), elapsedTime,
+                                showEnded).map(Entry::getKey)
+                                        .collect(ImmutableSet.toImmutableSet())));
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
@@ -70,7 +69,8 @@ public final class Standings {
     }
 
     private Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
-            Map<Player, BigDecimal> inScoreMap, long inElapsedTime, boolean inCheckOverTime) {
+            ImmutableMap<Player, BigDecimal> inScoreMap, long inElapsedTime,
+            boolean inCheckOverTime) {
         return inScoreMap.entrySet().stream()
                 .filter(scoreEntry -> inScoreMap.get(inPlayer).compareTo(scoreEntry.getValue()) < 0
                         || inScoreMap.get(inPlayer).equals(scoreEntry.getValue())
@@ -88,7 +88,7 @@ public final class Standings {
     }
 
     private long worstPossibleRank(Player inPlayer) {
-        Map<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, false);
+        ImmutableMap<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, false);
         return 1 + Math.max(
                 lostToStream(inPlayer, worstPossibleScores,
                         showEnded ? elapsedTime : Long.MAX_VALUE, showEnded).count(),
