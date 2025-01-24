@@ -363,7 +363,7 @@
                 <xsl:with-param name="category" select="@name" />
               </xsl:apply-templates>
               <xsl:if test="not(nominee)">
-                <img src="http://oscars.site44.com/trophy_poster.png"
+                <img src="https://lh7-us.googleusercontent.com/rXNEERY7mvEvjOSojoZkUokJe6j0-ZN69W7G1J8tsF4JCwgBQzP9rf5EmfnscQGEF7t05eMqRE7dVyXt-trP-dolg7DqwKwGiK7h6iYoRfL3QIsnfemqcJTqBpgjUIK5hJumr7cBwIDB9xdkpF8tXiX_0qf_mg"
                   title="Not Yet Announced" />
               </xsl:if>
               <br />
