@@ -21,7 +21,10 @@
                       <b>BALLOTS ARE BEING COLLECTED</b>
                       <br />
                       <br />
-                      &#9993; - &#9993; - &#9993; - &#9993; - &#9993;
+                      <img src="https://lh7-us.googleusercontent.com/9tsl1dpGEmRGVe77r7hNNZqUxK8zNCRGeHEzQOm6bxeJ-8mPknIrB0PtexESrvvf9Ty4jf1r1Sbuof9oyLmLmC9pfN-WXj3umHvHcQZ9BsX6a0VK8gykda1TgBvNFNsrzEzQFklGwS7yRp1Foyl8oR6fIyCvwA"
+                        alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
+                        title="Counting Ballots"
+                      />
                       <br />
                       <br />
                       Ballot names will appear here a few minutes after being cast.
@@ -364,6 +367,7 @@
               </xsl:apply-templates>
               <xsl:if test="not(nominee)">
                 <img src="https://lh7-us.googleusercontent.com/rXNEERY7mvEvjOSojoZkUokJe6j0-ZN69W7G1J8tsF4JCwgBQzP9rf5EmfnscQGEF7t05eMqRE7dVyXt-trP-dolg7DqwKwGiK7h6iYoRfL3QIsnfemqcJTqBpgjUIK5hJumr7cBwIDB9xdkpF8tXiX_0qf_mg"
+                  alt="?"
                   title="Not Yet Announced" />
               </xsl:if>
               <br />
