@@ -25,6 +25,7 @@ Create Google Form:
   f. Check box for "Automatically republish when changes are made"
   g. Click "Start Publishing"
   h. Copy the URL it generates and paste it as the only line in the file: ResponsesURL.txt
+  i. Click the 3 dots next to View in Sheets and select "Get email notifications for new responses" 
 
 Download 100x148 pixel pictures for Google Form for all categories
 1. Go to imdb.com
