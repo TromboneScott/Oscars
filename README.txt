@@ -102,3 +102,29 @@ Edit (or delete and start over) the file data/mappings.xml
 - Start oscars.bat or oscars.sh over again if any changes were made
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.
+
+
+====
+
+HOW TO HANDLE TIES
+
+If there's a tie in a category all the players that picked one of the correct nominees
+get the point for that category.
+
+We could award no points for that category with the justification that nobody guessed
+that there would be a tie.  But we don't give players the option of guessing a tie.
+So anyone who guessed one of the winners guessed better than anyone that guessed one of
+the losers and the score should reflect that.
+
+However guessing correctly in a category where there's a tie is not as good as guessing the
+single winner outright.  So we could give a fraction of a point, like half a point, to each player
+that guessed one of the winners.  But this creates an implicit tie-breaker.  Consider what would 
+happen if there were only two categories.  If no one guessed correctly in both categories but 
+players guessed correctly in one of the categories, the winners would be those that guessed 
+correctly in the category without a tie.  Since we explicitly enumerate the tie-breakers for this
+contest and we don't include this situation, awarding a fraction of a point would be problematic.
+
+So giving a full point to each person that guessed one of the winners is the best solution.
+The value of this point is diluted due to the fact that more players will be receiving the point.
+It's still better to guess correctly in categories where there is a single winner.  But it's
+also still better to guess one of the winners of a tie than to guess a loser.
