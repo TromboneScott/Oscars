@@ -49,9 +49,12 @@ Edit year/data/definitions.xml using Eclipse
 8. Using Eclipse will make sure you don't have any DTD violations
 
 Start the year
-1. Copy year folder to oscars site and rename to current year
+1. Copy year folder to Oscars site and rename to current year
 2. Update the year in global/index.html
 3. Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
+4. Add current year to history/index.html
+  a. Insert row: To Be Determined
+  b. Copy to Oscars site
 
 Proofread the category definitions:
 1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
@@ -78,7 +81,7 @@ Check the ballots as they come in and fix any names where they didn't capitalize
 2. Either restart the batch or just wait until a new ballot is entered
 
 
---- After contest deadline for entering guesses
+-- After contest deadline for entering guesses
 
 From the new year folder run the batch:
   oscars.bat Ballot emails (or ./oscars.sh -e)
@@ -102,6 +105,14 @@ Edit (or delete and start over) the file data/mappings.xml
 - Start oscars.bat or oscars.sh over again if any changes were made
 
 On the Responses tab of the Google Form turn off the Accepting Responses option.
+
+
+-- After contest is over
+
+Add the winner to history/index.html
+1. Update the TBD row for this year for the winner
+2. Copy the file to the Oscars site
+3. Commit and push changes to Git 
 
 
 ====
