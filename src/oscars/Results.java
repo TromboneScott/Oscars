@@ -7,7 +7,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -168,7 +167,7 @@ public class Results {
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
         String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
         Directory.DATA.write(RESULTS_FILE, new Element("results").setAttribute("updated", updated)
-                .addContent(Arrays.asList(inContent)), "results", null);
+                .addContent(ImmutableList.copyOf(inContent)), "results", null);
     }
 
     /** Write these Results and the given Standings to the results XML file */
