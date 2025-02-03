@@ -119,12 +119,12 @@ public class Oscars implements Runnable {
     }
 
     private static void writeCategoryPage(String inName) throws IOException {
-        Directory.CATEGORY.write(inName + ".xml", "category",
+        Directory.CATEGORY.write(inName + ".xml",
                 new Element("category").setAttribute("name", inName));
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.write("ballots.xml", "ballots",
+        Directory.DATA.write("ballots.xml",
                 IntStream.range(0, players.size()).mapToObj(playerNum -> Column.CATEGORIES.stream()
                         .map(category -> new Element("category")
                                 .setAttribute("name", category.name())
@@ -136,6 +136,6 @@ public class Oscars implements Runnable {
 
         for (Player player : players)
             Directory.PLAYER.write(player.answer(Column.FIRST_NAME) + "_"
-                    + player.answer(Column.LAST_NAME) + ".xml", "player", player.toDOM());
+                    + player.answer(Column.LAST_NAME) + ".xml", player.toDOM());
     }
 }

@@ -3,7 +3,6 @@ package oscars;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -53,14 +52,15 @@ public final class Directory extends File {
         }
     }
 
-    /** Write an XML file in this directory with the given element, DTD and (optional) XSL file */
-    public void write(String inXMLFile, String inName, Element inElement) throws IOException {
-        try (Writer writer = new PrintWriter(file(inXMLFile), StandardCharsets.UTF_8.name())) {
+    /** Write an XML file in this directory with the given element */
+    public void write(String inXMLFile, Element inElement) throws IOException {
+        try (PrintWriter writer = new PrintWriter(file(inXMLFile), StandardCharsets.UTF_8.name())) {
+            String name = inElement.getName();
             new XMLOutputter(Format.getPrettyFormat()).output(
-                    new Document(inElement, new DocType(inName, "../dtd/" + inName + ".dtd"))
+                    new Document(inElement, new DocType(name, "../dtd/" + name + ".dtd"))
                             .addContent(0, new Comment("OSCARS website created by Scott McDonald"))
                             .addContent(0, new ProcessingInstruction("xml-stylesheet", ImmutableMap
-                                    .of("type", "text/xsl", "href", "../xsl/" + inName + ".xsl"))),
+                                    .of("type", "text/xsl", "href", "../xsl/" + name + ".xsl"))),
                     writer);
         }
     }

@@ -116,7 +116,7 @@ public final class Mapper {
     }
 
     private void writeMappings() throws IOException {
-        Directory.DATA.write(MAPPINGS_FILE, "mappings", IntStream.range(0, Column.ALL.size())
+        Directory.DATA.write(MAPPINGS_FILE, IntStream.range(0, Column.ALL.size())
                 .mapToObj(column -> columnMaps.get(Column.ALL.get(column)).entrySet().stream()
                         .map(map -> new Element("nominee").setAttribute("name", map.getValue())
                                 .setAttribute("ballot", map.getKey()))
