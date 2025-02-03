@@ -53,15 +53,13 @@ public final class Directory extends File {
         }
     }
 
-    /** Write an XML file in this directory with the given element, DTD and optional XSL file */
-    public void write(String inXMLFile, Element inElement, String inDTDName, String inXSLFile)
-            throws IOException {
+    /** Write an XML file in this directory with the given element, DTD and (optional) XSL file */
+    public void write(String inXMLFile, String inName, Element inElement) throws IOException {
         Document document = new Document(inElement,
-                new DocType(inDTDName, "../dtd/" + inDTDName + ".dtd"));
+                new DocType(inName, "../dtd/" + inName + ".dtd"));
         document.addContent(0, new Comment("OSCARS website created by Scott McDonald"));
-        if (inXSLFile != null)
-            document.addContent(0, new ProcessingInstruction("xml-stylesheet",
-                    ImmutableMap.of("type", "text/xsl", "href", "../xsl/" + inXSLFile)));
+        document.addContent(0, new ProcessingInstruction("xml-stylesheet",
+                ImmutableMap.of("type", "text/xsl", "href", "../xsl/" + inName + ".xsl")));
         try (Writer writer = new PrintWriter(file(inXMLFile), StandardCharsets.UTF_8.name())) {
             new XMLOutputter(Format.getPrettyFormat()).output(document, writer);
         }
