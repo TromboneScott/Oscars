@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
@@ -51,14 +50,13 @@ public final class Mapper {
 
     private void readMappings() throws IOException {
         try {
-            Directory.DATA.getRootElement(MAPPINGS_FILE)
-                    .map(mappingsDOM -> mappingsDOM.getChildren("column").stream())
-                    .orElseGet(Stream::empty)
-                    .forEach(columnDOM -> columnDOM.getChildren("nominee")
-                            .forEach(nomineeDOM -> columnMaps
-                                    .get(Column.of(columnDOM.getAttributeValue("name")))
-                                    .put(nomineeDOM.getAttributeValue("ballot"),
-                                            nomineeDOM.getAttributeValue("name"))));
+            Directory.DATA.readXML(MAPPINGS_FILE)
+                    .ifPresent(mappingsDOM -> mappingsDOM.getChildren("column")
+                            .forEach(columnDOM -> columnDOM.getChildren("nominee")
+                                    .forEach(nomineeDOM -> columnMaps
+                                            .get(Column.of(columnDOM.getAttributeValue("name")))
+                                            .put(nomineeDOM.getAttributeValue("ballot"),
+                                                    nomineeDOM.getAttributeValue("name")))));
         } catch (Exception e) {
             throw new IOException("Error reading mappings file: " + MAPPINGS_FILE, e);
         }
@@ -116,7 +114,7 @@ public final class Mapper {
     }
 
     private void writeMappings() throws IOException {
-        Directory.DATA.write(MAPPINGS_FILE, IntStream.range(0, Column.ALL.size())
+        Directory.DATA.writeXML(MAPPINGS_FILE, IntStream.range(0, Column.ALL.size())
                 .mapToObj(column -> columnMaps.get(Column.ALL.get(column)).entrySet().stream()
                         .map(map -> new Element("nominee").setAttribute("name", map.getValue())
                                 .setAttribute("ballot", map.getKey()))

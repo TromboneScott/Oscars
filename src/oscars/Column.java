@@ -2,6 +2,7 @@ package oscars;
 
 import java.awt.Paint;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -26,7 +27,7 @@ import com.google.common.collect.ImmutableSet;
 
 /** A column from the survey - Immutable */
 public final class Column {
-    private static final ImmutableMap<String, Column> INSTANCES = read("definitions.xml");
+    private static final ImmutableMap<String, Column> INSTANCES = readXML("definitions.xml");
 
     /** All the columns in survey order */
     public static final ImmutableList<Column> ALL = ImmutableList.copyOf(INSTANCES.values());
@@ -92,11 +93,10 @@ public final class Column {
         return Objects.requireNonNull(INSTANCES.get(inHeader), "Column not defined: " + inHeader);
     }
 
-    private static ImmutableMap<String, Column> read(String inDefinitionsFile) {
+    private static ImmutableMap<String, Column> readXML(String inDefinitionsFile) {
         try {
-            return Directory.DATA.getRootElement(inDefinitionsFile)
-                    .orElseThrow(() -> new RuntimeException("File not found")).getChildren("column")
-                    .stream().map(Column::new)
+            return Directory.DATA.readXML(inDefinitionsFile).orElseThrow(FileNotFoundException::new)
+                    .getChildren("column").stream().map(Column::new)
                     .collect(ImmutableMap.toImmutableMap(Column::name, column -> column));
         } catch (Exception e) {
             throw new RuntimeException("Error reading definitions file: " + inDefinitionsFile, e);

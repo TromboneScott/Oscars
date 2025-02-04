@@ -32,8 +32,7 @@ public final class Directory extends File {
 
     private Directory(String inPathname) {
         super(inPathname);
-        if (!exists())
-            mkdir();
+        mkdir();
     }
 
     /** Get a File object in this Directory */
@@ -42,7 +41,7 @@ public final class Directory extends File {
     }
 
     /** Get the root element of the XML file or empty if file doesn't exist */
-    public Optional<Element> getRootElement(String inXMLFile) throws IOException {
+    public Optional<Element> readXML(String inXMLFile) throws IOException {
         File xmlFile = file(inXMLFile);
         try {
             return xmlFile.exists() ? Optional.of(new SAXBuilder().build(xmlFile).getRootElement())
@@ -53,7 +52,7 @@ public final class Directory extends File {
     }
 
     /** Write an XML file in this directory with the given element */
-    public void write(String inXMLFile, Element inElement) throws IOException {
+    public void writeXML(String inXMLFile, Element inElement) throws IOException {
         try (PrintWriter writer = new PrintWriter(file(inXMLFile), StandardCharsets.UTF_8.name())) {
             String name = inElement.getName();
             new XMLOutputter(Format.getPrettyFormat()).output(

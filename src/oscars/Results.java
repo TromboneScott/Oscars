@@ -50,7 +50,7 @@ public class Results {
         nomineeDescriptions = Column.CATEGORIES.stream()
                 .collect(ImmutableMap.toImmutableMap(category -> category, inNominees::apply));
         try {
-            Element awardsDOM = Directory.DATA.getRootElement(RESULTS_FILE)
+            Element awardsDOM = Directory.DATA.readXML(RESULTS_FILE)
                     .map(element -> element.getChild("awards"))
                     .orElseGet(() -> new Element("EMPTY"));
             winners = awardsDOM.getChildren("category").stream()
@@ -166,8 +166,8 @@ public class Results {
     /** Write the given content to the results XML file */
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
         String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
-        Directory.DATA.write(RESULTS_FILE, new Element("results").setAttribute("updated", updated)
-                .addContent(ImmutableList.copyOf(inContent)));
+        Directory.DATA.writeXML(RESULTS_FILE, new Element("results")
+                .setAttribute("updated", updated).addContent(ImmutableList.copyOf(inContent)));
     }
 
     /** Write these Results and the given Standings to the results XML file */
