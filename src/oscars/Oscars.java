@@ -119,23 +119,23 @@ public class Oscars implements Runnable {
     }
 
     private static void writeCategoryPage(String inName) throws IOException {
-        Directory.CATEGORY.writeXML(inName + ".xml",
-                new Element("category").setAttribute("name", inName));
+        new XMLFile(Directory.CATEGORY, inName + ".xml")
+                .write(new Element("category").setAttribute("name", inName));
     }
 
     private void writePlayerPages() throws IOException {
-        Directory.DATA.writeXML("ballots.xml",
-                IntStream.range(0, players.size()).mapToObj(playerNum -> Column.CATEGORIES.stream()
+        new XMLFile(Directory.DATA, "ballots.xml").write(IntStream.range(0, players.size())
+                .mapToObj(playerNum -> Column.CATEGORIES.stream()
                         .map(category -> new Element("category")
                                 .setAttribute("name", category.name())
                                 .setAttribute("nominee", players.get(playerNum).answer(category)))
                         .reduce(players.get(playerNum).toDOM(), Element::addContent)
                         .setAttribute("id", String.valueOf(playerNum + 1))
                         .setAttribute("time", String.valueOf(players.get(playerNum).time())))
-                        .reduce(new Element("ballots"), Element::addContent));
+                .reduce(new Element("ballots"), Element::addContent));
 
         for (Player player : players)
-            Directory.PLAYER.writeXML(player.answer(Column.FIRST_NAME) + "_"
-                    + player.answer(Column.LAST_NAME) + ".xml", player.toDOM());
+            new XMLFile(Directory.PLAYER, player.answer(Column.FIRST_NAME) + "_"
+                    + player.answer(Column.LAST_NAME) + ".xml").write(player.toDOM());
     }
 }

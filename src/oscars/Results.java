@@ -30,7 +30,7 @@ public class Results {
     /** Get user input from the system's standard input */
     public static final Scanner STDIN = new Scanner(System.in);
 
-    private static final String RESULTS_FILE = "results.xml";
+    private static final XMLFile RESULTS_FILE = new XMLFile(Directory.DATA, "results.xml");
 
     private static final String WINNER_DELIMITER = ",";
 
@@ -50,8 +50,7 @@ public class Results {
         nomineeDescriptions = Column.CATEGORIES.stream()
                 .collect(ImmutableMap.toImmutableMap(category -> category, inNominees::apply));
         try {
-            Element awardsDOM = Directory.DATA.readXML(RESULTS_FILE)
-                    .map(element -> element.getChild("awards"))
+            Element awardsDOM = RESULTS_FILE.read().map(element -> element.getChild("awards"))
                     .orElseGet(() -> new Element("EMPTY"));
             winners = awardsDOM.getChildren("category").stream()
                     .collect(Collectors.toMap(
@@ -166,8 +165,8 @@ public class Results {
     /** Write the given content to the results XML file */
     public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
         String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
-        Directory.DATA.writeXML(RESULTS_FILE, new Element("results")
-                .setAttribute("updated", updated).addContent(ImmutableList.copyOf(inContent)));
+        RESULTS_FILE.write(new Element("results").setAttribute("updated", updated)
+                .addContent(ImmutableList.copyOf(inContent)));
     }
 
     /** Write these Results and the given Standings to the results XML file */

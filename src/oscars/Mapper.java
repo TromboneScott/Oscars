@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableMap;
 
 /** Map the data from the survey to the website - Immutable */
 public final class Mapper {
-    private static final String MAPPINGS_FILE = "mappings.xml";
+    private static final XMLFile MAPPINGS_FILE = new XMLFile(Directory.DATA, "mappings.xml");
 
     private final Ballots ballots = new Ballots();
 
@@ -50,7 +50,7 @@ public final class Mapper {
 
     private void readMappings() throws IOException {
         try {
-            Directory.DATA.readXML(MAPPINGS_FILE)
+            MAPPINGS_FILE.read()
                     .ifPresent(mappingsDOM -> mappingsDOM.getChildren("column")
                             .forEach(columnDOM -> columnDOM.getChildren("nominee")
                                     .forEach(nomineeDOM -> columnMaps
@@ -114,14 +114,13 @@ public final class Mapper {
     }
 
     private void writeMappings() throws IOException {
-        Directory.DATA.writeXML(MAPPINGS_FILE, IntStream.range(0, Column.ALL.size())
-                .mapToObj(column -> columnMaps.get(Column.ALL.get(column)).entrySet().stream()
-                        .map(map -> new Element("nominee").setAttribute("name", map.getValue())
-                                .setAttribute("ballot", map.getKey()))
-                        .reduce(new Element("column")
-                                .setAttribute("name", Column.ALL.get(column).name())
-                                .setAttribute("ballot", ballots.headers().get(column)),
-                                Element::addContent))
+        MAPPINGS_FILE.write(IntStream.range(0, Column.ALL.size()).mapToObj(column -> columnMaps
+                .get(Column.ALL.get(column)).entrySet().stream()
+                .map(map -> new Element("nominee").setAttribute("name", map.getValue())
+                        .setAttribute("ballot", map.getKey()))
+                .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).name())
+                        .setAttribute("ballot", ballots.headers().get(column)),
+                        Element::addContent))
                 .reduce(new Element("mappings"), Element::addContent));
     }
 }

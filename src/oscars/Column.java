@@ -27,7 +27,8 @@ import com.google.common.collect.ImmutableSet;
 
 /** A column from the survey - Immutable */
 public final class Column {
-    private static final ImmutableMap<String, Column> INSTANCES = readXML("definitions.xml");
+    private static final ImmutableMap<String, Column> INSTANCES = read(
+            new XMLFile(Directory.DATA, "definitions.xml"));
 
     /** All the columns in survey order */
     public static final ImmutableList<Column> ALL = ImmutableList.copyOf(INSTANCES.values());
@@ -93,9 +94,9 @@ public final class Column {
         return Objects.requireNonNull(INSTANCES.get(inHeader), "Column not defined: " + inHeader);
     }
 
-    private static ImmutableMap<String, Column> readXML(String inDefinitionsFile) {
+    private static ImmutableMap<String, Column> read(XMLFile inDefinitionsFile) {
         try {
-            return Directory.DATA.readXML(inDefinitionsFile).orElseThrow(FileNotFoundException::new)
+            return inDefinitionsFile.read().orElseThrow(FileNotFoundException::new)
                     .getChildren("column").stream().map(Column::new)
                     .collect(ImmutableMap.toImmutableMap(Column::name, column -> column));
         } catch (Exception e) {
@@ -126,7 +127,8 @@ public final class Column {
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
         plot.setRenderer(new NomineeRenderer(inResults));
 
-        ChartUtils.saveChartAsPNG(Directory.CATEGORY.file(chartName(inResults)), chart, 500, 300);
+        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
+                300);
     }
 
     @SuppressWarnings("serial")
