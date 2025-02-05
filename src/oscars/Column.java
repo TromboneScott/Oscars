@@ -1,29 +1,14 @@
 package oscars;
 
-import java.awt.Paint;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.jdom2.Element;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 /** A column from the survey - Immutable */
 public final class Column {
@@ -102,56 +87,5 @@ public final class Column {
         } catch (Exception e) {
             throw new RuntimeException("Error reading definitions file: " + inDefinitionsFile, e);
         }
-    }
-
-    /** Use a unique filename for each generated chart in case any browsers cache images */
-    private String chartName(Results inResults) {
-        ImmutableSet<String> winners = inResults.winners(this);
-        return name + nominees.stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
-                .collect(Collectors.joining()) + ".png";
-    }
-
-    /** Write the chart for this Category given these players and these Results */
-    public void writeChart(Collection<Player> inPlayers, Results inResults) throws IOException {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        nominees.forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-        inPlayers.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(this)));
-
-        JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
-        chart.removeLegend();
-        chart.setPadding(new RectangleInsets(10, 0, 0, 25));
-
-        CategoryPlot plot = chart.getCategoryPlot();
-        plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
-        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-        plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-
-        @SuppressWarnings("serial")
-        BarRenderer renderer = new BarRenderer() {
-            private final ImmutableSet<String> winners = inResults.winners(Column.this);
-
-            @Override
-            public Paint getItemPaint(final int inRow, final int inColumn) {
-                return winners.isEmpty() ? ChartPaint.GRAY
-                        : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN
-                                : ChartPaint.RED;
-            }
-        };
-        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        renderer.setDefaultItemLabelsVisible(true);
-        plot.setRenderer(renderer);
-
-        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
-                300);
-    }
-
-    /** Delete all charts we don't need to keep */
-    public static void cleanUpCharts(Results inResults) {
-        ImmutableSet<String> chartsToKeep = CATEGORIES.stream()
-                .map(category -> category.chartName(inResults))
-                .collect(ImmutableSet.toImmutableSet());
-        for (File file : Directory.CATEGORY.listFiles(
-                (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
-            file.delete();
     }
 }

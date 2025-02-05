@@ -41,7 +41,7 @@ public class Oscars implements Runnable {
 
         System.out.print("Step 2 of 3: Reading any existing results... ");
         players = mapper.players();
-        results = new Results(mapper::nomineeMapping);
+        results = new Results(players, mapper::nomineeMapping);
         System.out.println("DONE");
 
         System.out.print("Step 3 of 3: Writing web pages... ");
@@ -57,7 +57,7 @@ public class Oscars implements Runnable {
 
         System.out.print("\nWriting final results... ");
         writeResults(); // In case it was interrupted in the thread
-        Column.cleanUpCharts(results);
+        results.cleanUpCharts();
         System.out.println("DONE");
     }
 
@@ -66,7 +66,7 @@ public class Oscars implements Runnable {
         Thread thread = new Thread(this);
         try {
             thread.start();
-            return results.prompt(players);
+            return results.prompt();
         } finally {
             thread.interrupt(); // Stop file I/O thread
             thread.join(); // Wait for it to finish
@@ -112,7 +112,7 @@ public class Oscars implements Runnable {
 
     private void writeCategoryPages() throws IOException {
         for (Column category : Column.CATEGORIES) {
-            category.writeChart(players, results);
+            results.new Chart(category).write();
             writeCategoryPage(category.name());
         }
         writeCategoryPage("all");

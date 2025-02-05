@@ -1,5 +1,7 @@
 package oscars;
 
+import java.awt.Paint;
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -7,7 +9,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -20,6 +21,15 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.ui.RectangleInsets;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -39,6 +49,8 @@ public class Results {
         END;
     }
 
+    private final ImmutableList<Player> players;
+
     private final ImmutableMap<Column, ImmutableMap<String, String>> nomineeDescriptions;
 
     private final Map<Column, ImmutableSet<String>> winners;
@@ -46,7 +58,9 @@ public class Results {
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(Function<Column, ImmutableMap<String, String>> inNominees) throws IOException {
+    public Results(ImmutableList<Player> inPlayers,
+            Function<Column, ImmutableMap<String, String>> inNominees) throws IOException {
+        players = inPlayers;
         nomineeDescriptions = Column.CATEGORIES.stream()
                 .collect(ImmutableMap.toImmutableMap(category -> category, inNominees::apply));
         try {
@@ -67,14 +81,8 @@ public class Results {
         }
     }
 
-    /**
-     * Prompt for results
-     * 
-     * @param inPlayers
-     *            The Players with their picks in each category
-     * @return Whether or not the user wants to continue entering results
-     */
-    public boolean prompt(Collection<Player> inPlayers) throws IOException {
+    /** Prompt for results and return whether or not the user wants to continue entering results */
+    public boolean prompt() throws IOException {
         System.out.println("Results");
         for (int line = 0; line < Column.CATEGORIES.size() + ShowTimeType.values().length; line++)
             System.out.println((line + 1) + ": "
@@ -88,7 +96,7 @@ public class Results {
         try {
             int entry = Integer.parseInt(input) - 1;
             if (entry < Column.CATEGORIES.size())
-                promptWinner(Column.CATEGORIES.get(entry), inPlayers);
+                promptWinner(Column.CATEGORIES.get(entry));
             else
                 promptTime(ShowTimeType.values()[entry - Column.CATEGORIES.size()]);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
@@ -106,7 +114,7 @@ public class Results {
                 + ObjectUtils.toString(showTimes.get(inShowTimeType), () -> "");
     }
 
-    private void promptWinner(Column inCategory, Collection<Player> inPlayers) throws IOException {
+    private void promptWinner(Column inCategory) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println((x + 1)
@@ -118,7 +126,7 @@ public class Results {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
-            inCategory.writeChart(inPlayers, this);
+            new Chart(inCategory).write();
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -181,5 +189,65 @@ public class Results {
                         .map(type -> new Attribute(type.name(), showTimes.get(type).toString()))
                         .collect(ImmutableList.toImmutableList()));
         write(inUpdated, awardsDOM, inStandings.toDOM());
+    }
+
+    /** The bar chart of these results for a Column */
+    public class Chart {
+        private final Column column;
+
+        private final ImmutableSet<String> winners;
+
+        /** Create the chart for the given Column using a snapshot of the current winners */
+        public Chart(Column inColumn) {
+            column = inColumn;
+            winners = winners(inColumn);
+        }
+
+        /** Use a unique filename for each generated chart in case any browsers cache images */
+        private String name() {
+            return column.name() + column.nominees().stream()
+                    .map(nominee -> winners.contains(nominee) ? "1" : "0")
+                    .collect(Collectors.joining()) + ".png";
+        }
+
+        /** Write this chart */
+        public void write() throws IOException {
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            column.nominees().forEach(nominee -> dataset.setValue(0, "nominee", nominee));
+            players.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(column)));
+
+            JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
+            chart.removeLegend();
+            chart.setPadding(new RectangleInsets(10, 0, 0, 25));
+
+            CategoryPlot plot = chart.getCategoryPlot();
+            plot.getRangeAxis().setRange(0, players.size() * 1.15);
+            plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
+            plot.setBackgroundPaint(ChartPaint.BACKGROUND);
+
+            @SuppressWarnings("serial")
+            BarRenderer renderer = new BarRenderer() {
+                @Override
+                public Paint getItemPaint(final int inRow, final int inColumn) {
+                    return winners.isEmpty() ? ChartPaint.GRAY
+                            : winners.contains(column.nominees().get(inColumn)) ? ChartPaint.GREEN
+                                    : ChartPaint.RED;
+                }
+            };
+            renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+            renderer.setDefaultItemLabelsVisible(true);
+            plot.setRenderer(renderer);
+
+            ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, name()), chart, 500, 300);
+        }
+    }
+
+    /** Delete all charts we don't need to keep */
+    public void cleanUpCharts() {
+        ImmutableSet<String> chartsToKeep = Column.CATEGORIES.stream().map(Chart::new)
+                .map(Chart::name).collect(ImmutableSet.toImmutableSet());
+        for (File file : Directory.CATEGORY.listFiles(
+                (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
+            file.delete();
     }
 }
