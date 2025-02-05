@@ -125,27 +125,24 @@ public final class Column {
         plot.getRangeAxis().setRange(0, inPlayers.size() * 1.15);
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-        plot.setRenderer(new NomineeRenderer(inResults));
+
+        @SuppressWarnings("serial")
+        BarRenderer renderer = new BarRenderer() {
+            private final ImmutableSet<String> winners = inResults.winners(Column.this);
+
+            @Override
+            public Paint getItemPaint(final int inRow, final int inColumn) {
+                return winners.isEmpty() ? ChartPaint.GRAY
+                        : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN
+                                : ChartPaint.RED;
+            }
+        };
+        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        renderer.setDefaultItemLabelsVisible(true);
+        plot.setRenderer(renderer);
 
         ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inResults)), chart, 500,
                 300);
-    }
-
-    @SuppressWarnings("serial")
-    private class NomineeRenderer extends BarRenderer {
-        private final ImmutableSet<String> winners;
-
-        public NomineeRenderer(Results inResults) {
-            winners = inResults.winners(Column.this);
-            setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-            setDefaultItemLabelsVisible(true);
-        }
-
-        @Override
-        public Paint getItemPaint(final int inRow, final int inColumn) {
-            return winners.isEmpty() ? ChartPaint.GRAY
-                    : winners.contains(nominees.get(inColumn)) ? ChartPaint.GREEN : ChartPaint.RED;
-        }
     }
 
     /** Delete all charts we don't need to keep */
