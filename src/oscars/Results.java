@@ -79,6 +79,8 @@ public class Results {
         } catch (Exception e) {
             throw new IOException("Error reading results file: " + RESULTS_FILE, e);
         }
+        for (Column category : Column.CATEGORIES)
+            writeChart(category);
     }
 
     /** Prompt for results and return whether or not the user wants to continue entering results */
@@ -126,7 +128,7 @@ public class Results {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
-            new Chart(inCategory).write();
+            writeChart(inCategory);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -191,61 +193,51 @@ public class Results {
         write(inUpdated, awardsDOM, inStandings.toDOM());
     }
 
-    /** The bar chart of these results for a Column */
-    public class Chart {
-        private final Column column;
+    /** Use a unique filename for each generated chart in case any browsers cache images */
+    private String chartName(Column inCategory) {
+        ImmutableSet<String> winners = winners(inCategory);
+        return inCategory.nominees().stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
+                .collect(Collectors.joining("", inCategory.name(), ".png"));
+    }
 
-        private final ImmutableSet<String> winners;
+    /** Write the chart for this category */
+    private void writeChart(Column inCategory) throws IOException {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        inCategory.nominees().forEach(nominee -> dataset.setValue(0, "nominee", nominee));
+        players.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(inCategory)));
 
-        /** Create the chart for the given Column using a snapshot of the current winners */
-        public Chart(Column inColumn) {
-            column = inColumn;
-            winners = winners(inColumn);
-        }
+        JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
+        chart.removeLegend();
+        chart.setPadding(new RectangleInsets(10, 0, 0, 25));
 
-        /** Use a unique filename for each generated chart in case any browsers cache images */
-        private String name() {
-            return column.name() + column.nominees().stream()
-                    .map(nominee -> winners.contains(nominee) ? "1" : "0")
-                    .collect(Collectors.joining()) + ".png";
-        }
+        CategoryPlot plot = chart.getCategoryPlot();
+        plot.getRangeAxis().setRange(0, players.size() * 1.15);
+        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
+        plot.setBackgroundPaint(ChartPaint.BACKGROUND);
 
-        /** Write this chart */
-        public void write() throws IOException {
-            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-            column.nominees().forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-            players.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(column)));
+        @SuppressWarnings("serial")
+        BarRenderer renderer = new BarRenderer() {
+            private final ImmutableSet<String> winners = winners(inCategory);
 
-            JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
-            chart.removeLegend();
-            chart.setPadding(new RectangleInsets(10, 0, 0, 25));
+            @Override
+            public Paint getItemPaint(final int inRow, final int column) {
+                return winners.isEmpty() ? ChartPaint.GRAY
+                        : winners.contains(inCategory.nominees().get(column)) ? ChartPaint.GREEN
+                                : ChartPaint.RED;
+            }
+        };
+        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        renderer.setDefaultItemLabelsVisible(true);
+        plot.setRenderer(renderer);
 
-            CategoryPlot plot = chart.getCategoryPlot();
-            plot.getRangeAxis().setRange(0, players.size() * 1.15);
-            plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-            plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-
-            @SuppressWarnings("serial")
-            BarRenderer renderer = new BarRenderer() {
-                @Override
-                public Paint getItemPaint(final int inRow, final int inColumn) {
-                    return winners.isEmpty() ? ChartPaint.GRAY
-                            : winners.contains(column.nominees().get(inColumn)) ? ChartPaint.GREEN
-                                    : ChartPaint.RED;
-                }
-            };
-            renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-            renderer.setDefaultItemLabelsVisible(true);
-            plot.setRenderer(renderer);
-
-            ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, name()), chart, 500, 300);
-        }
+        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inCategory)), chart, 500,
+                300);
     }
 
     /** Delete all charts we don't need to keep */
     public void cleanUpCharts() {
-        ImmutableSet<String> chartsToKeep = Column.CATEGORIES.stream().map(Chart::new)
-                .map(Chart::name).collect(ImmutableSet.toImmutableSet());
+        ImmutableSet<String> chartsToKeep = Column.CATEGORIES.stream().map(this::chartName)
+                .collect(ImmutableSet.toImmutableSet());
         for (File file : Directory.CATEGORY.listFiles(
                 (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
             file.delete();

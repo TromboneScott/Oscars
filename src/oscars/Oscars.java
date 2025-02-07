@@ -35,16 +35,13 @@ public class Oscars implements Runnable {
     }
 
     private Oscars() throws IOException {
-        System.out.print("Step 1 of 3: Downloading ballots... ");
+        System.out.print("Step 1 of 2: Downloading ballots... ");
         Mapper mapper = new Mapper();
         System.out.println("DONE");
 
-        System.out.print("Step 2 of 3: Reading any existing results... ");
+        System.out.print("Step 2 of 2: Creating web pages... ");
         players = mapper.players();
         results = new Results(players, mapper::nomineeMapping);
-        System.out.println("DONE");
-
-        System.out.print("Step 3 of 3: Writing web pages... ");
         writeCategoryPages();
         writePlayerPages();
         System.out.println("DONE");
@@ -111,10 +108,8 @@ public class Oscars implements Runnable {
     }
 
     private void writeCategoryPages() throws IOException {
-        for (Column category : Column.CATEGORIES) {
-            results.new Chart(category).write();
+        for (Column category : Column.CATEGORIES)
             writeCategoryPage(category.name());
-        }
         writeCategoryPage("all");
     }
 
