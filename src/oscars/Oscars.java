@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
@@ -107,15 +108,12 @@ public class Oscars implements Runnable {
         results.write(updated, standings);
     }
 
-    private void writeCategoryPages() throws IOException {
-        for (Column category : Column.CATEGORIES)
-            writeCategoryPage(category.name());
-        writeCategoryPage("all");
-    }
-
-    private static void writeCategoryPage(String inName) throws IOException {
-        new XMLFile(Directory.CATEGORY, inName + ".xml")
-                .write(new Element("category").setAttribute("name", inName));
+    private static void writeCategoryPages() throws IOException {
+        for (String name : Stream
+                .concat(Column.CATEGORIES.stream().map(Column::name), Stream.of("all"))
+                .collect(ImmutableList.toImmutableList()))
+            new XMLFile(Directory.CATEGORY, name + ".xml")
+                    .write(new Element("category").setAttribute("name", name));
     }
 
     private void writePlayerPages() throws IOException {
