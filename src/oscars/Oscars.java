@@ -84,7 +84,7 @@ public class Oscars implements Runnable {
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         }
     }
 

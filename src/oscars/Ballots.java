@@ -98,7 +98,8 @@ public final class Ballots {
                     lastTimestamp = maxTimestamp;
                 }
             } catch (IOException e) {
-                System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
+                System.err.println(LocalDateTime.now() + " - Error downloading ballots");
+                e.printStackTrace();
             }
     }
 
