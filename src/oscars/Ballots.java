@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -98,8 +99,8 @@ public final class Ballots {
                     lastTimestamp = maxTimestamp;
                 }
             } catch (IOException e) {
-                System.err.println(LocalDateTime.now() + " - Error downloading ballots");
-                e.printStackTrace();
+                System.err.println(LocalDateTime.now() + " - Error downloading ballots: "
+                        + Throwables.getCausalChain(e));
             }
     }
 
