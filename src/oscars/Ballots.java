@@ -44,7 +44,7 @@ public final class Ballots {
                     .forEach(player -> System.out
                             .println(name(player) + " = " + player.answer(Column.EMAIL)));
         else
-            throw new Exception("Unknown action: " + inArgs[0]);
+            throw new IllegalArgumentException("Unknown action: " + inArgs[0]);
     }
 
     /** Download the data from the ballot survey */
@@ -83,7 +83,7 @@ public final class Ballots {
             try {
                 ImmutableCollection<Player> players = new Ballots().players();
                 LocalDateTime maxTimestamp = players.stream().map(Ballots::timestamp)
-                        .max(Comparable::compareTo).orElse(LocalDateTime.MIN);
+                        .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
                     System.err.println(LocalDateTime.now() + " - Downloaded: " + players.size()
                             + " ballots - After: "
