@@ -35,7 +35,7 @@ public class Oscars implements Runnable {
         new Oscars().process();
     }
 
-    private Oscars() throws IOException {
+    private Oscars() throws Exception {
         System.out.print("Step 1 of 2: Downloading ballots... ");
         Mapper mapper = new Mapper();
         System.out.println("DONE");

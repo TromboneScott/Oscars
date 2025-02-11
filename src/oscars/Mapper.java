@@ -26,7 +26,7 @@ public final class Mapper {
     private final Map<String, String> matches = new HashMap<>();
 
     /** Read any existing mappings, update with the ballots and write the mappings */
-    public Mapper() throws IOException {
+    public Mapper() throws Exception {
         readMappings();
         updateMappings();
         writeMappings();

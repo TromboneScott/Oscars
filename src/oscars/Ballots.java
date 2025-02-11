@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +36,7 @@ public final class Ballots {
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
-        System.out.println("Downloading ballots...");
+        System.out.println("Downloading ballots with URL from file: " + URL_FILE);
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
@@ -49,24 +48,23 @@ public final class Ballots {
     }
 
     /** Download the data from the ballot survey */
-    public Ballots() throws IOException {
-        try (Stream<String> lines = Files.lines(Paths.get(Objects
-                .requireNonNull(getClass().getClassLoader().getResource(URL_FILE), "File not found")
-                .toURI()))) {
-            URL url = new URI(lines.findFirst().orElseThrow(() -> new IOException("File is empty")))
-                    .toURL();
+    public Ballots() throws Exception {
+        try (Stream<String> lines = Files.lines(
+                Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(URL_FILE),
+                        "File not found: " + URL_FILE).toURI()))) {
+            URL url = new URI(lines.findFirst()
+                    .orElseThrow(() -> new NullPointerException("File is empty: " + URL_FILE)))
+                            .toURL();
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 headers = ImmutableList.copyOf(reader.readNext());
                 if (headers.size() != Column.ALL.size())
-                    throw new IOException("Number of columns on ballots: " + headers.size()
+                    throw new NullPointerException("Number of columns on ballots: " + headers.size()
                             + " does not match number of defined columns: " + Column.ALL.size());
                 all = reader.readAll().stream().map(Player::new)
                         .collect(ImmutableList.toImmutableList());
             }
-        } catch (Exception e) {
-            throw new IOException("Error reading ballots using URL from file: " + URL_FILE, e);
         }
     }
 
@@ -99,8 +97,7 @@ public final class Ballots {
                     lastTimestamp = maxTimestamp;
                 }
             } catch (IOException e) {
-                System.err.println(LocalDateTime.now() + " - Error downloading ballots: "
-                        + Throwables.getCausalChain(e));
+                System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
             }
     }
 
