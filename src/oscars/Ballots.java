@@ -53,14 +53,13 @@ public final class Ballots {
                 Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(URL_FILE),
                         "File not found: " + URL_FILE).toURI()))) {
             URL url = new URI(lines.findFirst()
-                    .orElseThrow(() -> new NullPointerException("File is empty: " + URL_FILE)))
-                            .toURL();
+                    .orElseThrow(() -> new Exception("File is empty: " + URL_FILE))).toURL();
             url.openConnection().setDefaultUseCaches(false);
             try (CSVReader reader = new CSVReader(
                     new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 headers = ImmutableList.copyOf(reader.readNext());
                 if (headers.size() != Column.ALL.size())
-                    throw new NullPointerException("Number of columns on ballots: " + headers.size()
+                    throw new Exception("Number of columns on ballots: " + headers.size()
                             + " does not match number of defined columns: " + Column.ALL.size());
                 all = reader.readAll().stream().map(Player::new)
                         .collect(ImmutableList.toImmutableList());
