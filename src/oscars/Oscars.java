@@ -43,8 +43,7 @@ public class Oscars implements Runnable {
         System.out.print("Step 2 of 2: Creating web pages... ");
         players = mapper.players();
         results = new Results(players, mapper::nomineeMapping);
-        writeCategoryPages();
-        writePlayerPages();
+        writeStaticXMLFiles();
         System.out.println("DONE");
     }
 
@@ -108,15 +107,7 @@ public class Oscars implements Runnable {
         results.write(updated, standings);
     }
 
-    private static void writeCategoryPages() throws IOException {
-        for (String name : Stream
-                .concat(Column.CATEGORIES.stream().map(Column::name), Stream.of("all"))
-                .collect(ImmutableList.toImmutableList()))
-            new XMLFile(Directory.CATEGORY, name + ".xml")
-                    .write(new Element("category").setAttribute("name", name));
-    }
-
-    private void writePlayerPages() throws IOException {
+    private void writeStaticXMLFiles() throws IOException {
         new XMLFile(Directory.DATA, "ballots.xml").write(IntStream.range(0, players.size())
                 .mapToObj(playerNum -> Column.CATEGORIES.stream()
                         .map(category -> new Element("category")
@@ -126,6 +117,12 @@ public class Oscars implements Runnable {
                         .setAttribute("id", String.valueOf(playerNum + 1))
                         .setAttribute("time", String.valueOf(players.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent));
+
+        for (String name : Stream
+                .concat(Column.CATEGORIES.stream().map(Column::name), Stream.of("all"))
+                .collect(ImmutableList.toImmutableList()))
+            new XMLFile(Directory.CATEGORY, name + ".xml")
+                    .write(new Element("category").setAttribute("name", name));
 
         for (Player player : players)
             new XMLFile(Directory.PLAYER, player.answer(Column.FIRST_NAME) + "_"
