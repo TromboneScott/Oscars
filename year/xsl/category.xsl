@@ -238,8 +238,7 @@
           <a href=".." id="return">Return to Main Page</a>
           <br />
           <br />
-          <xsl:call-template
-            name="updated" />
+          <xsl:call-template name="updated" />
         </center>
       </body>
     </html>

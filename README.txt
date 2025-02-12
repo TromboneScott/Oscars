@@ -67,6 +67,7 @@ Proofread the category definitions:
 
 Commit changes for the year
 1. Commit and push all changes
+  a. To format an XML file do Ctrl+A then Ctrl+Shift+F
 2. Replace <year> in this command: git tag -f <year> && git push -f --tags
 
 
