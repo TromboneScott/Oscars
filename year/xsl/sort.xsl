@@ -116,11 +116,17 @@
     <tr class="unannounced">
       <td>
         <xsl:value-of
-          select="concat(translate(substring(@timestamp, 6, 5), '-', '/'), '/', substring(@timestamp, 1, 4), ' ')" />
-        <xsl:value-of
-          select="concat(format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'), substring(concat(@timestamp, ':00'), 14, 6))" />
-        <xsl:value-of
-          select="concat(' ', substring('AP', floor(substring(@timestamp, 12, 2) div 12) + 1, 1), 'M')" />
+          select="concat(
+            translate(substring(@timestamp, 6, 5), '-', '/'),
+            '/',
+            substring(@timestamp, 1, 4),
+            ' ',
+            format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'),
+            substring(concat(@timestamp, ':00'), 14, 6),
+            ' ',
+            substring('AP', floor(substring(@timestamp, 12, 2) div 12) + 1, 1),
+            'M'
+            )" />
       </td>
       <td>
         <xsl:value-of select="@name" />
