@@ -17,8 +17,7 @@
         content="no-cache, no-store, must-revalidate" />
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
-      <title>
-        <xsl:value-of select="$definitions/@year" /> OSCARS </title>
+      <title><xsl:value-of select="$definitions/@year" /> OSCARS</title>
       <style>body {background-color: PaleGoldenrod}</style>
     </head>
   </xsl:template>
@@ -45,7 +44,7 @@
         </tr>
         <tr>
           <th style="background-color: transparent">
-            <xsl:value-of select="$definitions/@year" /> OSCARS </th>
+            <xsl:value-of select="$definitions/@year" /> OSCARS</th>
         </tr>
         <tr>
           <td>
@@ -116,8 +115,7 @@
   <xsl:template name="updated">
     <table>
       <tr>
-        <td id="rank"> Last updated: <xsl:value-of select="$results/@updated" />
-        </td>
+        <td id="rank">Last updated: <xsl:value-of select="$results/@updated" /></td>
       </tr>
     </table>
   </xsl:template>

@@ -10,9 +10,7 @@
           <xsl:call-template name="header" />
           <xsl:choose>
             <xsl:when test="@name = 'all'">
-              <div id="name">
-                Category Results
-              </div>
+              <div id="name">Category Results</div>
               <br />
               <xsl:variable name="playerCount"
                 select="count($results/standings/player)" />
@@ -20,18 +18,10 @@
               <table>
                 <thead>
                   <tr>
-                    <th class="header">
-                      Category
-                    </th>
-                    <th>
-                      Correct
-                    </th>
-                    <th>
-                      Wrong
-                    </th>
-                    <th>
-                      Graph
-                    </th>
+                    <th class="header">Category</th>
+                    <th>Correct</th>
+                    <th>Wrong</th>
+                    <th>Graph</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,8 +137,7 @@
                 id="name">
                 <xsl:value-of select="$categoryName" />
               </div> Tie
-              Breaker: <xsl:value-of
-                select="$categoryDefinition/@tieBreaker" />
+              Breaker: <xsl:value-of select="$categoryDefinition/@tieBreaker" />
               <xsl:if
                 test="not(normalize-space($categoryDefinition/@tieBreaker))">
                 NO

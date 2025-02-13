@@ -8,22 +8,14 @@
       <body>
         <center>
           <xsl:call-template name="header" />
-          <div id="name">
-            Definitions
-          </div>
+          <div id="name">Definitions</div>
           <br />
-          <h2>
-            Tie Breakers
-          </h2>
+          <h2>Tie Breakers</h2>
           <table>
             <tbody>
               <tr>
-                <th>
-                  #
-                </th>
-                <th>
-                  Category
-                </th>
+                <th>#</th>
+                <th>Category</th>
               </tr>
               <xsl:for-each select="column[@tieBreaker]">
                 <xsl:sort select="@tieBreaker" />
@@ -41,9 +33,7 @@
           <br />
           <br />
           <hr />
-          <h2>
-            Columns
-          </h2>
+          <h2>Columns</h2>
           <i> Values for this website are in <b>bold</b>
           </i>
           <xsl:for-each select="column">
@@ -56,8 +46,7 @@
             </b>
             <br />
             <xsl:variable name="column" select="@name" />
-            <xsl:value-of
-              select="$mappings/column[@name = $column]/@ballot" />
+            <xsl:value-of select="$mappings/column[@name = $column]/@ballot" />
             <xsl:if test="nominee">
               <table>
                 <tbody>

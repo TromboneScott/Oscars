@@ -20,7 +20,7 @@
           <br />
           <table>
             <tr>
-              <td id="rank"> Rank <div id="rank">
+              <td id="rank">Rank <div id="rank">
                   <xsl:value-of select="$playerResults/@rank" />
                 </div>
           Out of <xsl:value-of select="count($results/standings/player)" />
@@ -29,7 +29,7 @@
           </table>
           <xsl:if
             test="$inProgress">
-            <br /> Possible Final Rank: <xsl:value-of
+            <br />Possible Final Rank: <xsl:value-of
               select="$playerResults/@bpr" />
             <xsl:if
               test="$playerResults/@bpr != $playerResults/@wpr"> to <xsl:value-of
@@ -96,8 +96,7 @@
                           <xsl:value-of select="$value" />
                         </xsl:when>
                         <xsl:otherwise>
-                          <xsl:value-of
-                            select="translate($value, '1', '0')" />
+                          <xsl:value-of select="translate($value, '1', '0')" />
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:if>

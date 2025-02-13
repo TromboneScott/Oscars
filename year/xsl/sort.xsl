@@ -23,16 +23,15 @@
                       <img
                         src="https://lh7-us.googleusercontent.com/9tsl1dpGEmRGVe77r7hNNZqUxK8zNCRGeHEzQOm6bxeJ-8mPknIrB0PtexESrvvf9Ty4jf1r1Sbuof9oyLmLmC9pfN-WXj3umHvHcQZ9BsX6a0VK8gykda1TgBvNFNsrzEzQFklGwS7yRp1Foyl8oR6fIyCvwA"
                         alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
-                        title="Counting Ballots"
-                      />
+                        title="Counting Ballots" />
                       <br />
-                      <br /> Ballot names will
-                      appear here a few minutes after being cast. <br /> The
+                      <br />Ballot names will
+                      appear here a few minutes after being cast.<br />The
                       actual guesses will be loaded after all ballots have been
-                      collected. <br />
+                      collected.<br />
                       <br />
                       <i>Check here for live results
-                      during the Oscars broadcast.</i>
+                        during the Oscars broadcast.</i>
                       <br />
                       <br />
                     </td>
@@ -89,13 +88,13 @@
                 <xsl:if test="$inProgress">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
                 If guesses for all remaining <a href="../category/all.xml">
-                categories</a> turn out to be correct / incorrect. <br />
+                categories</a> turn out to be correct / incorrect.<br />
                   <br />
                 </xsl:if>
                 <u>
                 Score</u> - One point for each correct <a
                   href="../category/all.xml">category</a> plus .1 for tie
-                breaker #1, .01 for #2, .001 for #3, etc. </div>
+                breaker #1, .01 for #2, .001 for #3, etc.</div>
               <br />
               <br />
               <xsl:apply-templates select="." mode="player-table" />
@@ -285,14 +284,14 @@
       </td>
       <xsl:if test="$inProgress">
         <td>
-          <xsl:attribute name="class"> rank <xsl:if test="@bpr = @wpr">
+          <xsl:attribute name="class">rank <xsl:if test="@bpr = @wpr">
             unannounced
             </xsl:if>
           </xsl:attribute>
           <xsl:value-of select="@bpr" />
         </td>
         <td>
-          <xsl:attribute name="class"> rank <xsl:if test="@bpr = @wpr">
+          <xsl:attribute name="class">rank <xsl:if test="@bpr = @wpr">
             unannounced
             </xsl:if>
           </xsl:attribute>
@@ -329,8 +328,7 @@
               <xsl:if test="not(nominee)">
                 <img
                   src="https://lh7-us.googleusercontent.com/rXNEERY7mvEvjOSojoZkUokJe6j0-ZN69W7G1J8tsF4JCwgBQzP9rf5EmfnscQGEF7t05eMqRE7dVyXt-trP-dolg7DqwKwGiK7h6iYoRfL3QIsnfemqcJTqBpgjUIK5hJumr7cBwIDB9xdkpF8tXiX_0qf_mg"
-                  alt="?"
-                  title="Not Yet Announced" />
+                  alt="?" title="Not Yet Announced" />
               </xsl:if>
               <br />
               <xsl:value-of select="@name" />
@@ -358,7 +356,7 @@
           unannounced
         </xsl:otherwise>
       </xsl:choose>
-      time </xsl:attribute>
+      time</xsl:attribute>
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="time">
     <xsl:variable name="player" select="." />
