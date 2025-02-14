@@ -19,23 +19,22 @@
                   <br />
                   <br />
                   <table>
-                    <xsl:for-each select="$definitions/column">
-                      <xsl:if test="count(nominee) &gt; 0">
-                        <tr>
-                          <th>
-                            <xsl:attribute name="rowspan">
-                              <xsl:value-of select="(count(nominee) + 4) div 5" />
-                            </xsl:attribute>
-                            <xsl:value-of select="@name" />
-                          </th>
-                          <xsl:apply-templates
-                            select="nominee[position() &lt;= 5]" />
-                        </tr>
-                        <tr>
-                          <xsl:apply-templates
-                            select="nominee[position() &gt; 5]" />
-                        </tr>
-                      </xsl:if>
+                    <xsl:for-each
+                      select="$definitions/column[count(nominee) &gt; 0]">
+                      <tr>
+                        <th>
+                          <xsl:attribute name="rowspan">
+                            <xsl:value-of select="(count(nominee) + 4) div 5" />
+                          </xsl:attribute>
+                          <xsl:value-of select="@name" />
+                        </th>
+                        <xsl:apply-templates
+                          select="nominee[position() &lt;= 5]" />
+                      </tr>
+                      <tr>
+                        <xsl:apply-templates
+                          select="nominee[position() &gt; 5]" />
+                      </tr>
                     </xsl:for-each>
                   </table>
                 </xsl:when>
