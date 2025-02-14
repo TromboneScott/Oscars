@@ -34,8 +34,7 @@
           <br />
           <hr />
           <h2>Columns</h2>
-          <i> Values for this website are in <b>bold</b>
-          </i>
+          <i>Values for this website are in <b>bold</b></i>
           <xsl:for-each select="column">
             <br />
             <br />

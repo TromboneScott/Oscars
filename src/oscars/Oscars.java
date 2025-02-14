@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.jdom2.Element;
 
@@ -118,11 +117,9 @@ public class Oscars implements Runnable {
                         .setAttribute("time", String.valueOf(players.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent));
 
-        for (String name : Stream
-                .concat(Column.CATEGORIES.stream().map(Column::name), Stream.of("all"))
-                .collect(ImmutableList.toImmutableList()))
-            new XMLFile(Directory.CATEGORY, name + ".xml")
-                    .write(new Element("category").setAttribute("name", name));
+        for (Column column : Column.CATEGORIES)
+            new XMLFile(Directory.CATEGORY, column + ".xml")
+                    .write(new Element("category").setAttribute("name", column.name()));
 
         for (Player player : players)
             new XMLFile(Directory.PLAYER, player.answer(Column.FIRST_NAME) + "_"

@@ -69,9 +69,6 @@
                 </table>
               </xsl:if>
               <br />
-              <a href="../../history">Oscars Contest History</a>
-              <br />
-              <br />
             </xsl:when>
             <xsl:otherwise>
               <a href="../category/all.xml">
@@ -98,11 +95,6 @@
               <br />
               <br />
               <xsl:apply-templates select="." mode="player-table" />
-              <br />
-              <a href="../category/all.xml" id="return">All Categories</a>
-              <br />
-              <br />
-              <a href="../../history">Oscars Contest History</a>
               <br />
               <br />
               <xsl:call-template name="updated" />

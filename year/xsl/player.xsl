@@ -185,10 +185,6 @@
           </xsl:apply-templates>
           <br />
           <a
-            href="../category/all.xml" id="return">All Categories</a>
-          <br />
-          <br />
-          <a
             href=".." id="return">Return to Main Page</a>
           <br />
           <br />
