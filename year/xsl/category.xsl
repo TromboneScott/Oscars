@@ -14,7 +14,8 @@
                 <xsl:when test="count($results/standings/player)=0">
                   <div id="name">Categories</div>
                   <br />
-                  <i>Players' picks in each category will be loaded after all ballots are received.</i>
+                  <i>Players' picks in each category will be loaded after all
+                    ballots are received.</i>
                   <br />
                   <br />
                   <table>
@@ -23,10 +24,7 @@
                         <tr>
                           <th>
                             <xsl:attribute name="rowspan">
-                              <xsl:choose>
-                                <xsl:when test="count(nominee) &gt; 5">2</xsl:when>
-                                <xsl:otherwise>1</xsl:otherwise>
-                              </xsl:choose>
+                              <xsl:value-of select="(count(nominee) + 4) div 5" />
                             </xsl:attribute>
                             <xsl:value-of select="@name" />
                           </th>
