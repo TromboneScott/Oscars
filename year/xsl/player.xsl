@@ -190,6 +190,7 @@
           <br />
           <xsl:call-template
             name="updated" />
+          <xsl:call-template name="credits" />
         </center>
       </body>
     </html>

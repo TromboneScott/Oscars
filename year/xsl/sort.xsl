@@ -68,7 +68,6 @@
                   </xsl:apply-templates>
                 </table>
               </xsl:if>
-              <br />
             </xsl:when>
             <xsl:otherwise>
               <a href="../category/all.xml">
@@ -100,6 +99,7 @@
               <xsl:call-template name="updated" />
             </xsl:otherwise>
           </xsl:choose>
+          <xsl:call-template name="credits" />
         </center>
       </body>
     </html>

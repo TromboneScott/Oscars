@@ -27,6 +27,14 @@
                             <xsl:value-of select="(count(nominee) + 4) div 5" />
                           </xsl:attribute>
                           <xsl:value-of select="@name" />
+                          <xsl:variable name="tieBreaker" select="@tieBreaker" />
+                          <xsl:if test="$tieBreaker">
+                            <br />
+                            <span style="font-weight:normal">
+                              <i>Tie Breaker: <xsl:value-of
+                                  select="$tieBreaker" /></i>
+                            </span>
+                          </xsl:if>
                         </th>
                         <xsl:apply-templates
                           select="nominee[position() &lt;= 5]" />
@@ -256,6 +264,7 @@
           <br />
           <br />
           <xsl:call-template name="updated" />
+          <xsl:call-template name="credits" />
         </center>
       </body>
     </html>

@@ -76,6 +76,7 @@
           <br />
           <br />
           <hr />
+          <xsl:call-template name="credits" />
         </center>
       </body>
     </html>
