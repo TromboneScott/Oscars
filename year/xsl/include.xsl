@@ -77,13 +77,13 @@
     <hr
       width="500" />
     <a href="https://oscars.site44.com/{$definitions/@year}">
-    PLAYERS</a>&#160;&#160;-&#160;&#160;<a
+    PLAYERS</a> &#160;&#160;-&#160;&#160; <a
       href="https://oscars.site44.com/{$definitions/@year}/category/all.xml">
-    CATEGORIES</a>&#160;&#160;-&#160;&#160;<a
-      href="https://oscars.site44.com/history">HISTORY</a>
+    CATEGORIES</a> &#160;&#160;-&#160;&#160; <a
+      href="https://oscars.site44.com/history">
+      HISTORY</a>
     <hr width="500" />
-    <xsl:if
-      test="$inProgress">
+    <xsl:if test="$inProgress">
       <i>Refresh this page to get updated results during the contest.</i>
       <br />
       <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
