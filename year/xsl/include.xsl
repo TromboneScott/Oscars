@@ -22,7 +22,7 @@
     </head>
   </xsl:template>
   <xsl:template name="header">
-    <a href="https://oscars.site44.com/{$definitions/@year}" style="all: unset">
+    <a href="http://oscars.site44.com/{$definitions/@year}" style="all: unset">
       <table id="header"
         style="color:PaleGoldenrod; background-image: url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat: no-repeat; background-size: 100%;">
         <tr>
@@ -76,11 +76,11 @@
     <br />
     <hr
       width="500" />
-    <a href="https://oscars.site44.com/{$definitions/@year}">
+    <a href="http://oscars.site44.com/{$definitions/@year}">
     PLAYERS</a> &#160;&#160;-&#160;&#160; <a
-      href="https://oscars.site44.com/{$definitions/@year}/category/all.xml">
+      href="http://oscars.site44.com/{$definitions/@year}/category/all.xml">
     CATEGORIES</a> &#160;&#160;-&#160;&#160; <a
-      href="https://oscars.site44.com/history">
+      href="http://oscars.site44.com/history">
       HISTORY</a>
     <hr width="500" />
     <xsl:if test="$inProgress">
