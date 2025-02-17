@@ -184,12 +184,10 @@
             <xsl:with-param name="inPlayer" select="$playerResults" />
           </xsl:apply-templates>
           <br />
-          <a
-            href=".." id="return">Return to Main Page</a>
+          <xsl:call-template name="updated" />
           <br />
+          <a href=".." id="return">Return to Main Page</a>
           <br />
-          <xsl:call-template
-            name="updated" />
           <xsl:call-template name="credits" />
         </center>
       </body>

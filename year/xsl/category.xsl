@@ -257,13 +257,14 @@
                   </tr>
                 </tfoot>
               </table>
+              <br />
+              <xsl:call-template
+                name="updated" />
             </xsl:otherwise>
           </xsl:choose>
           <br />
           <a href=".." id="return">Return to Main Page</a>
           <br />
-          <br />
-          <xsl:call-template name="updated" />
           <xsl:call-template name="credits" />
         </center>
       </body>

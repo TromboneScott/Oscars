@@ -95,7 +95,6 @@
               <br />
               <xsl:apply-templates select="." mode="player-table" />
               <br />
-              <br />
               <xsl:call-template name="updated" />
             </xsl:otherwise>
           </xsl:choose>
