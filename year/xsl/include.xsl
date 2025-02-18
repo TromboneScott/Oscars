@@ -12,7 +12,7 @@
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
-      <link rel="stylesheet" type="text/css" href="../../oscars.css" />
+      <link rel="stylesheet" type="text/css" href="/oscars.css" />
       <meta http-equiv="cache-control"
         content="no-cache, no-store, must-revalidate" />
       <meta http-equiv="expires" content="0" />
@@ -78,7 +78,7 @@
       width="500" />
     <a href="..">PLAYERS</a> &#160;&#160;-&#160;&#160; <a
       href="../category/all.xml">CATEGORIES</a> &#160;&#160;-&#160;&#160; <a
-      href="../../history">HISTORY</a>
+      href="/history">HISTORY</a>
     <hr width="500" />
     <xsl:if
       test="$inProgress">
