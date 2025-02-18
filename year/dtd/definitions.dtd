@@ -1,9 +1,0 @@
-<!--OSCARS website created by Scott McDonald-->
-<!ELEMENT definitions (column+)>
-<!ATTLIST definitions year CDATA #REQUIRED>
-<!ELEMENT column (nominee*)>
-<!ATTLIST column name CDATA #REQUIRED>
-<!ATTLIST column tieBreaker CDATA #IMPLIED>
-<!ELEMENT nominee EMPTY>
-<!ATTLIST nominee name CDATA #REQUIRED>
-<!ATTLIST nominee img CDATA #REQUIRED>

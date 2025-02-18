@@ -1,8 +1,0 @@
-<!--OSCARS website created by Scott McDonald-->
-<!ELEMENT mappings (column+)>
-<!ELEMENT column (nominee*)>
-<!ATTLIST column name CDATA #REQUIRED>
-<!ATTLIST column ballot CDATA #REQUIRED>
-<!ELEMENT nominee EMPTY>
-<!ATTLIST nominee name CDATA #REQUIRED>
-<!ATTLIST nominee ballot CDATA #REQUIRED>

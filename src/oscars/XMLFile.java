@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.jdom2.Comment;
-import org.jdom2.DocType;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -34,13 +33,12 @@ public final class XMLFile extends File {
     /** Write the given root element to this XML file */
     public void write(Element inRootElement) throws IOException {
         try (PrintWriter writer = new PrintWriter(this, StandardCharsets.UTF_8.name())) {
-            String name = inRootElement.getName();
-            new XMLOutputter(Format.getPrettyFormat()).output(
-                    new Document(inRootElement, new DocType(name, "../dtd/" + name + ".dtd"))
-                            .addContent(0, new Comment("OSCARS website created by Scott McDonald"))
-                            .addContent(0, new ProcessingInstruction("xml-stylesheet", ImmutableMap
-                                    .of("type", "text/xsl", "href", "../xsl/" + name + ".xsl"))),
-                    writer);
+            new XMLOutputter(Format.getPrettyFormat()).output(new Document()
+                    .addContent(new ProcessingInstruction("xml-stylesheet",
+                            ImmutableMap.of("type", "text/xsl", "href",
+                                    "../xsl/" + inRootElement.getName() + ".xsl")))
+                    .addContent(new Comment("OSCARS website created by Scott McDonald"))
+                    .addContent(inRootElement), writer);
         }
     }
 }

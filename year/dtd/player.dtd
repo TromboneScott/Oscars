@@ -1,4 +1,0 @@
-<!--OSCARS website created by Scott McDonald-->
-<!ELEMENT player EMPTY>
-<!ATTLIST player firstName CDATA #REQUIRED>
-<!ATTLIST player lastName CDATA #REQUIRED>

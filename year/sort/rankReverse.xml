@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="../xsl/sort.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<!DOCTYPE sort SYSTEM "../dtd/sort.dtd">
 <sort name="rankReverse" ballotSort="timestamp" column1="rank" column2="bpr"
   column3="wpr" order="descending" />

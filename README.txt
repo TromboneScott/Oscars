@@ -46,7 +46,6 @@ Edit year/data/definitions.xml using Eclipse
 7. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
-8. Using Eclipse will make sure you don't have any DTD violations
 
 Start the year
 1. Copy year folder to Oscars site and rename to current year
