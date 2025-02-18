@@ -263,7 +263,7 @@
             </xsl:otherwise>
           </xsl:choose>
           <br />
-          <a href=".." id="return">Return to Main Page</a>
+          <a href="/" id="return">Return to Main Page</a>
           <br />
           <xsl:call-template name="credits" />
         </center>
