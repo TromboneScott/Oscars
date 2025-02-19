@@ -70,16 +70,18 @@
               </xsl:if>
             </xsl:when>
             <xsl:otherwise>
-              <a href="../category/all.xml">
-                <h2>OSCAR WINNERS</h2>
-              </a>
-              <table>
-                <xsl:call-template name="winners">
-                  <xsl:with-param name="start" select="0" />
-                </xsl:call-template>
-              </table>
-              <br />
-              <br />
+              <xsl:if test="count($results/awards/category/nominee) > 0">
+                <a href="../category/all.xml">
+                  <h2>OSCAR WINNERS</h2>
+                </a>
+                <table>
+                  <xsl:call-template name="winners">
+                    <xsl:with-param name="start" select="0" />
+                  </xsl:call-template>
+                </table>
+                <br />
+                <br />
+              </xsl:if>
               <div class="info">
                 <xsl:if test="$inProgress">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
