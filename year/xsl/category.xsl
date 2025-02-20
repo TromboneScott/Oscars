@@ -11,7 +11,7 @@
           <xsl:choose>
             <xsl:when test="@name = 'all'">
               <xsl:choose>
-                <xsl:when test="count($results/standings/player)=0">
+                <xsl:when test="count($results/standings/player) = 0">
                   <div id="name">Categories</div>
                   <br />
                   <i>Players' picks in each category will be loaded after all
@@ -132,34 +132,58 @@
                     <br />
                     <br />
                     <br />
-                    <a>
-                      <xsl:attribute name="id">
-                        <xsl:value-of select="@name" />
-                      </xsl:attribute>
-                      <xsl:attribute name="href">
-                        <xsl:value-of select="concat(@name, '.xml')" />
-                      </xsl:attribute>
-                      <b>
-                        <xsl:value-of select="@name" />
-                      </b>
-                      <xsl:variable name="categoryName" select="@name" />
-                      <xsl:variable name="tieBreaker" select="@tieBreaker" />
-                      <xsl:if test="$tieBreaker">
-                        <xsl:value-of
-                          select="concat(' (Tie Breaker: ', $tieBreaker, ')')" />
-                      </xsl:if>
-                      <br />
-                      <xsl:for-each select="nominee">
-                        <xsl:if test="(position() - 1) mod 5 = 0">
+                    <table>
+                      <tr>
+                        <th>
                           <br />
-                        </xsl:if>
-                        <xsl:apply-templates select="." mode="poster">
-                          <xsl:with-param name="category" select="$categoryName" />
-                        </xsl:apply-templates>
-                      </xsl:for-each>
-                      <br />
-                      <xsl:apply-templates select="." mode="chart" />
-                    </a>
+                          <a>
+                            <xsl:attribute name="id">
+                              <xsl:value-of select="@name" />
+                            </xsl:attribute>
+                            <xsl:attribute name="href">
+                              <xsl:value-of select="concat(@name, '.xml')" />
+                            </xsl:attribute>
+                            <xsl:value-of select="@name" />
+                          </a>
+                          <xsl:variable name="tieBreaker" select="@tieBreaker" />
+                          <xsl:if test="$tieBreaker">
+                            <br />
+                            <span style="font-weight:normal">
+                              <i>Tie Breaker: <xsl:value-of select="$tieBreaker" /></i>
+                            </span>
+                          </xsl:if>
+                          <br />
+                          <br />
+                        </th>
+                      </tr>
+                      <tr>
+                        <td id="rank">
+                          <a>
+                            <xsl:attribute name="id">
+                              <xsl:value-of select="@name" />
+                            </xsl:attribute>
+                            <xsl:attribute name="href">
+                              <xsl:value-of select="concat(@name, '.xml')" />
+                            </xsl:attribute>
+                            <xsl:variable name="categoryName" select="@name" />
+                            <xsl:for-each select="nominee">
+                              <xsl:if
+                                test="position() &gt; 1 and (position() - 1) mod 5 = 0">
+                                <br />
+                              </xsl:if>
+                              <xsl:apply-templates select="." mode="poster">
+                                <xsl:with-param name="category"
+                                  select="$categoryName" />
+                              </xsl:apply-templates>
+                            </xsl:for-each>
+                            <br />
+                            <xsl:apply-templates select="." mode="chart">
+                              <xsl:with-param name="border" select="0" />
+                            </xsl:apply-templates>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
                     <br />
                   </xsl:for-each>
                 </xsl:otherwise>
@@ -193,7 +217,9 @@
               <br />
               <br />
               <xsl:apply-templates
-                select="$categoryDefinition" mode="chart" />
+                select="$categoryDefinition" mode="chart">
+                <xsl:with-param name="border" select="3" />
+              </xsl:apply-templates>
               <br />
               <br />
               <br />
@@ -288,7 +314,11 @@
     </td>
   </xsl:template>
   <xsl:template match="/definitions/column" mode="chart">
+    <xsl:param name="border" />
     <img>
+      <xsl:attribute name="border">
+        <xsl:value-of select="$border" />
+      </xsl:attribute>
       <xsl:attribute name="src">
         <xsl:value-of select="@name" />
         <xsl:variable name="category" select="@name" />
