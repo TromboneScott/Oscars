@@ -165,15 +165,13 @@
                             <xsl:attribute name="href">
                               <xsl:value-of select="concat(@name, '.xml')" />
                             </xsl:attribute>
-                            <xsl:variable name="categoryName" select="@name" />
+                            <xsl:variable name="categoryDefinition" select="." />
                             <xsl:for-each select="nominee">
-                              <xsl:if
-                                test="position() &gt; 1 and (position() - 1) mod 5 = 0">
-                                <br />
-                              </xsl:if>
                               <xsl:apply-templates select="." mode="poster">
                                 <xsl:with-param name="category"
-                                  select="$categoryName" />
+                                  select="$categoryDefinition/@name" />
+                                <xsl:with-param name="width"
+                                  select="500 div count($categoryDefinition/nominee)" />
                               </xsl:apply-templates>
                             </xsl:for-each>
                             <br />
@@ -236,6 +234,7 @@
                         </xsl:apply-templates>
                         <xsl:apply-templates select="." mode="poster">
                           <xsl:with-param name="category" select="$categoryName" />
+                          <xsl:with-param name="width" select="50" />
                         </xsl:apply-templates>
                         <br />
                         <xsl:value-of select="." />

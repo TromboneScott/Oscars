@@ -147,6 +147,7 @@
   </xsl:template>
   <xsl:template match="nominee" mode="poster">
     <xsl:param name="category" />
+    <xsl:param name="width" />
     <xsl:variable name="nominee" select="@name" />
     <img>
       <xsl:attribute name="src">
@@ -163,6 +164,9 @@
         <xsl:if test="not($description)">
           <xsl:value-of select="$nominee" />
         </xsl:if>
+      </xsl:attribute>
+      <xsl:attribute name="width">
+        <xsl:value-of select="$width" />
       </xsl:attribute>
     </img>
   </xsl:template>
