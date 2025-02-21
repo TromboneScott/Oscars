@@ -18,11 +18,11 @@
                     ballots are received.</i>
                   <br />
                   <br />
-                  <table>
+                  <table style="border-collapse:collapse;">
                     <xsl:for-each
                       select="$definitions/column[count(nominee) &gt; 0]">
                       <tr>
-                        <th>
+                        <th style="border-right:3pt solid black;">
                           <xsl:attribute name="rowspan">
                             <xsl:value-of select="(count(nominee) + 4) div 5" />
                           </xsl:attribute>
@@ -39,9 +39,8 @@
                         <xsl:apply-templates
                           select="nominee[position() &lt;= 5]" />
                       </tr>
-                      <tr>
-                        <xsl:apply-templates
-                          select="nominee[position() &gt; 5]" />
+                      <tr style="border-bottom:3pt solid black;">
+                        <xsl:apply-templates select="nominee[position() &gt; 5]" />
                       </tr>
                     </xsl:for-each>
                   </table>
@@ -296,7 +295,7 @@
     </html>
   </xsl:template>
   <xsl:template match="/definitions/column/nominee">
-    <td style="text-align: center">
+    <td style="background-color: silver; text-align: center">
       <img>
         <xsl:attribute name="src">
           <xsl:value-of select="@img" />
