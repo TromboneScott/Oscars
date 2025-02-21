@@ -22,6 +22,12 @@
                     <xsl:for-each
                       select="$definitions/column[count(nominee) &gt; 0]">
                       <tr>
+                        <xsl:attribute name="style">
+                          <xsl:if test="count(nominee) &lt;= 5">
+                            <xsl:value-of
+                              select="'border-bottom:3pt solid black;'" />
+                          </xsl:if>
+                        </xsl:attribute>
                         <th style="border-right:3pt solid black;">
                           <xsl:attribute name="rowspan">
                             <xsl:value-of select="(count(nominee) + 4) div 5" />
@@ -233,7 +239,7 @@
                         </xsl:apply-templates>
                         <xsl:apply-templates select="." mode="poster">
                           <xsl:with-param name="category" select="$categoryName" />
-                          <xsl:with-param name="width" select="50" />
+                          <xsl:with-param name="width" select="70" />
                         </xsl:apply-templates>
                         <br />
                         <xsl:value-of select="." />
