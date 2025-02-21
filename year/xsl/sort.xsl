@@ -74,7 +74,7 @@
                 <a href="../category/all.xml">
                   <h2>OSCAR WINNERS</h2>
                 </a>
-                <table>
+                <table style=" table-layout: fixed; width: 700px">
                   <xsl:call-template name="winners">
                     <xsl:with-param name="start" select="0" />
                   </xsl:call-template>
@@ -313,7 +313,8 @@
       <tr class="unannounced">
         <xsl:for-each
           select="$results/awards/category[position() &gt; $start and position() &lt;= $end]">
-          <td style="text-align: center">
+          <td
+            style="text-align: center; vertical-align: top; white-space: normal">
             <a>
               <xsl:attribute name="id">
                 <xsl:value-of select="@name" />
