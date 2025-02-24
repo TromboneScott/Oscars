@@ -171,14 +171,12 @@
                               <xsl:value-of select="concat(@name, '.xml')" />
                             </xsl:attribute>
                             <xsl:variable name="categoryDefinition" select="." />
-                            <xsl:for-each select="nominee">
-                              <xsl:apply-templates select="." mode="poster">
-                                <xsl:with-param name="category"
-                                  select="$categoryDefinition/@name" />
-                                <xsl:with-param name="width"
-                                  select="500 div count($categoryDefinition/nominee)" />
-                              </xsl:apply-templates>
-                            </xsl:for-each>
+                            <xsl:apply-templates select="nominee" mode="poster">
+                              <xsl:with-param name="category"
+                                select="$categoryDefinition/@name" />
+                              <xsl:with-param name="width"
+                                select="500 div count($categoryDefinition/nominee)" />
+                            </xsl:apply-templates>
                             <br />
                             <xsl:apply-templates select="." mode="chart">
                               <xsl:with-param name="border" select="0" />

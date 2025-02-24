@@ -55,20 +55,12 @@
         </tr>
         <tr>
           <td colspan="5">
-            <xsl:for-each
-              select="$definitions/column[@name = 'Best Picture']/nominee">
-              <img width="50">
-                <xsl:attribute name="src">
-                  <xsl:value-of select="@img" />
-                </xsl:attribute>
-                <xsl:attribute name="alt">
-                  <xsl:value-of select="@name" />
-                </xsl:attribute>
-                <xsl:attribute name="title">
-                  <xsl:value-of select="@name" />
-                </xsl:attribute>
-              </img>
-            </xsl:for-each>
+            <xsl:apply-templates
+              select="$definitions/column[@name = 'Best Picture']/nominee"
+              mode="poster">
+              <xsl:with-param name="category" select="'Best Picture'" />
+              <xsl:with-param name="width" select="'50'" />
+            </xsl:apply-templates>
           </td>
         </tr>
       </table>
