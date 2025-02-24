@@ -43,10 +43,14 @@
                           </xsl:if>
                         </th>
                         <xsl:apply-templates
-                          select="nominee[position() &lt;= 5]" />
+                          select="nominee[position() &lt;= 5]" >
+                          <xsl:with-param name="category" select="@name"/>
+                        </xsl:apply-templates>
                       </tr>
                       <tr style="border-bottom:3pt solid black;">
-                        <xsl:apply-templates select="nominee[position() &gt; 5]" />
+                        <xsl:apply-templates select="nominee[position() &gt; 5]" >
+                          <xsl:with-param name="category" select="@name"/>
+                        </xsl:apply-templates>
                       </tr>
                     </xsl:for-each>
                   </table>
@@ -299,18 +303,11 @@
     </html>
   </xsl:template>
   <xsl:template match="/definitions/column/nominee">
+    <xsl:param name="category" />
     <td style="background-color: silver; text-align: center">
-      <img>
-        <xsl:attribute name="src">
-          <xsl:value-of select="@img" />
-        </xsl:attribute>
-        <xsl:attribute name="alt">
-          <xsl:value-of select="@name" />
-        </xsl:attribute>
-        <xsl:attribute name="title">
-          <xsl:value-of select="@name" />
-        </xsl:attribute>
-      </img>
+      <xsl:apply-templates select="." mode="poster">
+        <xsl:with-param name="category" select="$category" />
+      </xsl:apply-templates>
       <br />
       <xsl:value-of select="@name" />
     </td>
