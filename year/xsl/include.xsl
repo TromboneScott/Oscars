@@ -127,7 +127,7 @@
   </xsl:template>
   <xsl:template name="credits">
     <br />
-    <i>Contest by: Scott Takeda | Website by: Scott McDonald</i>
+    <i>Contest by Scott Takeda | Website by Scott McDonald</i>
   </xsl:template>
   <xsl:template match="/results/awards/category" mode="attribute">
     <xsl:param name="nominee" />
