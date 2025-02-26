@@ -71,7 +71,7 @@
                       select="translate(@firstName, $lowercase, $uppercase)"
                       order="{@order}" />
                     <tr class="unannounced">
-                      <td>
+                      <td style="padding-left: 8px; padding-right: 8px">
                         <xsl:value-of
                           select="concat(
                             translate(substring(@timestamp, 6, 5), '-', '/'),
@@ -79,13 +79,11 @@
                             substring(@timestamp, 1, 4),
                             ' ',
                             format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'),
-                            substring(concat(@timestamp, ':00'), 14, 6),
-                            ' ',
-                            substring('AP', floor(substring(@timestamp, 12, 2) div 12) + 1, 1),
-                            'M'
+                            substring(@timestamp, 14, 3),
+                            substring('ampm', floor(substring(@timestamp, 12, 2) div 12) * 2 + 1, 2)
                             )" />
                       </td>
-                      <td>
+                      <td style="padding-left: 8px; padding-right: 8px">
                         <xsl:apply-templates select="." mode="playerName" />
                       </td>
                     </tr>
@@ -98,7 +96,7 @@
                 <a href="../category/all.xml">
                   <h2>OSCAR WINNERS</h2>
                 </a>
-                <table style=" table-layout: fixed; width: 700px">
+                <table style="table-layout: fixed; width: 700px">
                   <xsl:call-template name="winners">
                     <xsl:with-param name="start" select="0" />
                   </xsl:call-template>
