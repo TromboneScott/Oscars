@@ -71,7 +71,7 @@
                       select="translate(@firstName, $lowercase, $uppercase)"
                       order="{@order}" />
                     <tr class="unannounced">
-                      <td style="padding-left: 8px; padding-right: 8px">
+                      <td style="padding-left: 10px; padding-right: 10px">
                         <xsl:value-of
                           select="concat(
                             translate(substring(@timestamp, 6, 5), '-', '/'),
@@ -79,11 +79,11 @@
                             substring(@timestamp, 1, 4),
                             ' ',
                             format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'),
-                            substring(@timestamp, 14, 3),
-                            substring('ampm', floor(substring(@timestamp, 12, 2) div 12) * 2 + 1, 2)
+                            substring(concat(@timestamp, ':00'), 14, 6),                            
+                            substring(' am pm', floor(substring(@timestamp, 12, 2) div 12) * 3 + 1, 3)
                             )" />
                       </td>
-                      <td style="padding-left: 8px; padding-right: 8px">
+                      <td style="padding-left: 10px; padding-right: 10px">
                         <xsl:apply-templates select="." mode="playerName" />
                       </td>
                     </tr>
