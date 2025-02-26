@@ -11,7 +11,7 @@
         <center>
           <xsl:call-template name="header" />
           <xsl:choose>
-            <xsl:when test="count($results/standings/player)=0">
+            <xsl:when test="count($results/standings/player) = 0">
               <a href="javascript:history.go(0)" style="all: unset">
                 <table>
                   <tr>
@@ -62,10 +62,29 @@
                     </th>
                   </tr>
                   <xsl:variable name="ballotSort" select="@ballotSort" />
-                  <xsl:apply-templates select="$results/ballots/ballot">
+                  <xsl:for-each select="$results/ballots/ballot">
                     <xsl:sort select="@*[name() = $ballotSort]" order="{@order}" />
                     <xsl:sort select="@name" order="{@order}" />
-                  </xsl:apply-templates>
+                    <tr class="unannounced">
+                      <td>
+                        <xsl:value-of
+                          select="concat(
+                            translate(substring(@timestamp, 6, 5), '-', '/'),
+                            '/',
+                            substring(@timestamp, 1, 4),
+                            ' ',
+                            format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'),
+                            substring(concat(@timestamp, ':00'), 14, 6),
+                            ' ',
+                            substring('AP', floor(substring(@timestamp, 12, 2) div 12) + 1, 1),
+                            'M'
+                            )" />
+                      </td>
+                      <td>
+                        <xsl:value-of select="@name" />
+                      </td>
+                    </tr>
+                  </xsl:for-each>
                 </table>
               </xsl:if>
             </xsl:when>
@@ -104,27 +123,6 @@
         </center>
       </body>
     </html>
-  </xsl:template>
-  <xsl:template match="/results/ballots/ballot">
-    <tr class="unannounced">
-      <td>
-        <xsl:value-of
-          select="concat(
-            translate(substring(@timestamp, 6, 5), '-', '/'),
-            '/',
-            substring(@timestamp, 1, 4),
-            ' ',
-            format-number((substring(@timestamp, 12, 2) + 11) mod 12 + 1, '00'),
-            substring(concat(@timestamp, ':00'), 14, 6),
-            ' ',
-            substring('AP', floor(substring(@timestamp, 12, 2) div 12) + 1, 1),
-            'M'
-            )" />
-      </td>
-      <td>
-        <xsl:value-of select="@name" />
-      </td>
-    </tr>
   </xsl:template>
   <xsl:template match="/sort" mode="player-table">
     <xsl:param name="inPlayer" />
