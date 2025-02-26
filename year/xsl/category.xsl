@@ -251,8 +251,8 @@
                 </thead>
                 <tbody>
                   <xsl:for-each select="$results/standings/player">
-                    <xsl:sort select="@lastName" />
-                    <xsl:sort select="@firstName" />
+                    <xsl:sort select="translate(@lastName, $lowercase, $uppercase)" />
+                    <xsl:sort select="translate(@firstName, $lowercase, $uppercase)" />
                     <xsl:variable name="player" select="." />
                     <xsl:variable name="guess"
                       select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/category[@name = $categoryName]/@nominee" />

@@ -9,6 +9,8 @@
   <xsl:variable name="ballots" select="document('../data/ballots.xml')/ballots" />
   <xsl:variable name="inProgress"
     select="$results/awards[not(@end)] or $results/awards/category[not(nominee)]" />
+  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+  <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="init">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
@@ -168,11 +170,14 @@
         <xsl:value-of
           select="concat('../player/', @firstName, '_', @lastName, '.xml')" />
       </xsl:attribute>
-      <xsl:value-of select="@lastName" />
-      <xsl:if test="@firstName and @lastName">
-        <xsl:value-of select="', '" />
-      </xsl:if>
-      <xsl:value-of select="@firstName" />
+      <xsl:apply-templates select="." mode="playerName" />
     </a>
+  </xsl:template>
+  <xsl:template match="player" mode="playerName">
+    <xsl:value-of select="@lastName" />
+    <xsl:if test="@firstName and @lastName">
+      <xsl:value-of select="', '" />
+    </xsl:if>
+    <xsl:value-of select="@firstName" />
   </xsl:template>
 </xsl:stylesheet>

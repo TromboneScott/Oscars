@@ -38,11 +38,11 @@
                   </tr>
                 </table>
               </a>
-              <xsl:if test="count($results/ballots/ballot) > 0">
+              <xsl:if test="count($results/ballots/player) > 0">
                 <br />
                 <br />
                 <h3> Ballots Received: <xsl:value-of
-                    select="count($results/ballots/ballot)" />
+                    select="count($results/ballots/player)" />
                 </h3>
                 <table>
                   <tr>
@@ -62,9 +62,14 @@
                     </th>
                   </tr>
                   <xsl:variable name="ballotSort" select="@ballotSort" />
-                  <xsl:for-each select="$results/ballots/ballot">
+                  <xsl:for-each select="$results/ballots/player">
                     <xsl:sort select="@*[name() = $ballotSort]" order="{@order}" />
-                    <xsl:sort select="@name" order="{@order}" />
+                    <xsl:sort
+                      select="translate(@lastName, $lowercase, $uppercase)"
+                      order="{@order}" />
+                    <xsl:sort
+                      select="translate(@firstName, $lowercase, $uppercase)"
+                      order="{@order}" />
                     <tr class="unannounced">
                       <td>
                         <xsl:value-of
@@ -81,7 +86,7 @@
                             )" />
                       </td>
                       <td>
-                        <xsl:value-of select="@name" />
+                        <xsl:apply-templates select="." mode="playerName" />
                       </td>
                     </tr>
                   </xsl:for-each>
@@ -202,8 +207,8 @@
           <xsl:when test="starts-with(@name, 'time')">
             <xsl:for-each select="$ballots/player">
               <xsl:sort select="@time" data-type="number" order="{@order}" />
-              <xsl:sort select="@lastName" />
-              <xsl:sort select="@firstName" />
+              <xsl:sort select="translate(@lastName, $lowercase, $uppercase)" />
+              <xsl:sort select="translate(@firstName, $lowercase, $uppercase)" />
               <xsl:variable name="player" select="." />
               <xsl:apply-templates
                 select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
@@ -211,8 +216,10 @@
           </xsl:when>
           <xsl:when test="starts-with(@name, 'name')">
             <xsl:apply-templates select="$results/standings/player">
-              <xsl:sort select="@lastName" order="{@order}" />
-              <xsl:sort select="@firstName" order="{@order}" />
+              <xsl:sort select="translate(@lastName, $lowercase, $uppercase)"
+                order="{@order}" />
+              <xsl:sort select="translate(@firstName, $lowercase, $uppercase)"
+                order="{@order}" />
             </xsl:apply-templates>
           </xsl:when>
           <xsl:otherwise>
@@ -224,8 +231,8 @@
                 order="{@order}" />
               <xsl:sort select="@*[name() = $sort/@column3]" data-type="number"
                 order="{@order}" />
-              <xsl:sort select="@lastName" />
-              <xsl:sort select="@firstName" />
+              <xsl:sort select="translate(@lastName, $lowercase, $uppercase)" />
+              <xsl:sort select="translate(@firstName, $lowercase, $uppercase)" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:apply-templates>
           </xsl:otherwise>

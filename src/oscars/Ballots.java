@@ -15,10 +15,8 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
 import com.google.common.collect.ImmutableCollection;
@@ -41,8 +39,9 @@ public final class Ballots {
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
             new Ballots().all.stream().filter(player -> !player.answer(Column.EMAIL).isEmpty())
-                    .forEach(player -> System.out
-                            .println(name(player) + " = " + player.answer(Column.EMAIL)));
+                    .forEach(player -> System.out.println(player.answer(Column.LAST_NAME) + ", "
+                            + player.answer(Column.FIRST_NAME) + " = "
+                            + player.answer(Column.EMAIL)));
         else
             throw new IllegalArgumentException("Unknown action: " + inArgs[0]);
     }
@@ -74,8 +73,10 @@ public final class Ballots {
 
     /** The players from the survey using the latest ballot for each Player */
     public ImmutableCollection<Player> players() {
-        return all.stream().collect(ImmutableMap.toImmutableMap(Ballots::name, player -> player,
-                BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp)))).values();
+        return all.stream().collect(ImmutableMap.toImmutableMap(
+                player -> player.answer(Column.LAST_NAME) + "|" + player.answer(Column.FIRST_NAME),
+                player -> player, BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
+                .values();
     }
 
     private static void writeNewBallots() throws Exception {
@@ -89,20 +90,16 @@ public final class Ballots {
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
-                    Results.write(ZonedDateTime.now(), players.stream()
-                            .map(player -> new Element("ballot").setAttribute("name", name(player))
-                                    .setAttribute("timestamp", timestamp(player).toString()))
-                            .reduce(new Element("ballots"), Element::addContent));
+                    Results.write(ZonedDateTime.now(),
+                            players.stream()
+                                    .map(player -> player.toDOM().setAttribute("timestamp",
+                                            timestamp(player).toString()))
+                                    .reduce(new Element("ballots"), Element::addContent));
                     lastTimestamp = maxTimestamp;
                 }
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
             }
-    }
-
-    private static String name(Player inPlayer) {
-        return Stream.of(Column.LAST_NAME, Column.FIRST_NAME).map(inPlayer::answer)
-                .filter(StringUtils::isNotEmpty).collect(Collectors.joining(", "));
     }
 
     private static LocalDateTime timestamp(Player inPlayer) {
