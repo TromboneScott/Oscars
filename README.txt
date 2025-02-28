@@ -56,7 +56,7 @@ Start the year
   b. Copy to Oscars site
 
 Proofread the category definitions:
-1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
+1. Open the web page: oscars.site44.com/<year>/data
 2. Verify the year in the banner title (20xx OSCARS)
 3. Verify that the tie breakers are correct (including Time as the final tie breaker)
 4. Verify that images for the Best Picture nominees show up in the banner at the top
@@ -93,7 +93,7 @@ You will be prompted on how to map survey answers to nominees for each category 
 This will be saved so you only have to do this for new survey answers.
 
 Proofread the category definitions:
-1. Open the web page: oscars.site44.com/<year>/data/definitions.xml
+1. Open the web page: oscars.site44.com/<year>/data
 2. Verify that each category (in bold) is mapped to the correct question on the ballot
 3. Verify that each nominee (in bold) is mapped to the correct response(s) from the ballot
 4. Verify that any special characters in ballot responses are displayed correctly
