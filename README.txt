@@ -83,6 +83,9 @@ Check the ballots as they come in and fix any names where they didn't capitalize
 
 -- After contest deadline for entering guesses
 
+Kill (ctrl-c) the ballot process so nobody can see any late entries
+Wait until the next morning to let any late entries trickle in  
+
 From the new year folder run the batch:
   oscars.bat Ballot emails (or ./oscars.sh -e)
 Send the list of names and emails to Scott Takeda.

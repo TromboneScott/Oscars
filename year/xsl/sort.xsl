@@ -169,7 +169,7 @@
           <th>
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="'Score'" />
-              <xsl:with-param name="type" select="'score'" />
+              <xsl:with-param name="type" select="'default'" />
               <xsl:with-param name="sort" select="@name" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
