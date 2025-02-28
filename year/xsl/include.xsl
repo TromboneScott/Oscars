@@ -175,7 +175,7 @@
   </xsl:template>
   <xsl:template match="player" mode="playerName">
     <xsl:value-of select="@lastName" />
-    <xsl:if test="@firstName and @lastName">
+    <xsl:if test="@firstName != '' and @lastName != ''">
       <xsl:value-of select="', '" />
     </xsl:if>
     <xsl:value-of select="@firstName" />
