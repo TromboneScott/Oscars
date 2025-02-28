@@ -49,7 +49,7 @@
                     <th>
                       <xsl:call-template name="player-table-column-header">
                         <xsl:with-param name="text" select="'Timestamp'" />
-                        <xsl:with-param name="type" select="'rank'" />
+                        <xsl:with-param name="type" select="'default'" />
                         <xsl:with-param name="sort" select="@name" />
                       </xsl:call-template>
                     </th>
@@ -143,7 +143,7 @@
           <th>
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="'Rank'" />
-              <xsl:with-param name="type" select="'rank'" />
+              <xsl:with-param name="type" select="'default'" />
               <xsl:with-param name="sort" select="@name" />
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>

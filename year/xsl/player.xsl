@@ -180,7 +180,7 @@
           <br />
           <br />
           <xsl:apply-templates
-            select="document('../sort/rank.xml')/sort" mode="player-table">
+            select="document('../sort/default.xml')/sort" mode="player-table">
             <xsl:with-param name="inPlayer" select="$playerResults" />
           </xsl:apply-templates>
           <br />
