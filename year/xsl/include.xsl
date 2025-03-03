@@ -8,7 +8,7 @@
     select="document('../data/mappings.xml')/mappings" />
   <xsl:variable name="ballots" select="document('../data/ballots.xml')/ballots" />
   <xsl:variable name="inProgress"
-    select="$results/awards[not(@end)] or $results/awards/category[not(nominee)]" />
+    select="$results/awards[not(@END)] or $results/awards/category[not(nominee)]" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="init">

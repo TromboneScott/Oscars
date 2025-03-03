@@ -178,7 +178,7 @@
             <xsl:variable name="timeHeader">
               <xsl:value-of select="'Time'" />
               <xsl:choose>
-                <xsl:when test="$results/awards/@end">
+                <xsl:when test="$results/awards/@END">
                   <xsl:value-of select="'='" />
                 </xsl:when>
                 <xsl:otherwise>
@@ -352,7 +352,7 @@
           test="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time &lt;= $results/standings/@time">
       correct
         </xsl:when>
-        <xsl:when test="$results/awards/@end">
+        <xsl:when test="$results/awards/@END">
           incorrect
         </xsl:when>
         <xsl:otherwise>

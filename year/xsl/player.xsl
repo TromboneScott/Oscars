@@ -154,7 +154,7 @@
                           </xsl:with-param>
                         </xsl:call-template>
                       </xsl:when>
-                      <xsl:when test="$results/awards/@end">
+                      <xsl:when test="$results/awards/@END">
                         OVER
                       </xsl:when>
                       <xsl:otherwise>
