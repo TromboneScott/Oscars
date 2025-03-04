@@ -22,6 +22,8 @@ public final class Standings {
 
     private final ImmutableMap<Player, BigDecimal> scoreMap;
 
+    private final ImmutableMap<Player, ImmutableSet<Player>> lostToMap;
+
     public Standings(Collection<Player> inPlayers, Results inResults) {
         elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
         showEnded = inResults.showEnded();
@@ -29,6 +31,9 @@ public final class Standings {
                 .collect(ImmutableMap.toImmutableMap(category -> category, inResults::winners));
         scoreMap = inPlayers.stream()
                 .collect(ImmutableMap.toImmutableMap(player -> player, this::score));
+        lostToMap = scoreMap.keySet().stream().collect(ImmutableMap.toImmutableMap(player -> player,
+                player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
+                        .map(Entry::getKey).collect(ImmutableSet.toImmutableSet())));
     }
 
     private BigDecimal score(Player inPlayer) {
@@ -46,11 +51,6 @@ public final class Standings {
     public Element toDOM() {
         int scale = Column.CATEGORIES.stream().map(Column::value).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
-        ImmutableMap<Player, ImmutableSet<Player>> lostToMap = scoreMap.keySet().stream()
-                .collect(ImmutableMap.toImmutableMap(player -> player,
-                        player -> lostToStream(player, possibleScores(player, true), elapsedTime,
-                                showEnded).map(Entry::getKey)
-                                        .collect(ImmutableSet.toImmutableSet())));
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
@@ -58,21 +58,12 @@ public final class Standings {
                                 lostToStream(player, scoreMap, elapsedTime, true).count() + 1))
                         .setAttribute("bpr", String.valueOf(lostToMap.get(player).size() + 1))
                         .setAttribute("wpr", String.valueOf(worstPossibleRank(player)))
-                        .setAttribute("decided", decided(lostToMap, player)))
+                        .setAttribute("decided", decided(player)))
                 .reduce(new Element("standings"), Element::addContent)
                 .setAttribute("time", String.valueOf(elapsedTime));
     }
 
-    private String decided(ImmutableMap<Player, ImmutableSet<Player>> inLostToMap,
-            Player inPlayer) {
-        return scoreMap.keySet().stream()
-                .map(opponent -> opponent == inPlayer ? "-"
-                        : inLostToMap.get(opponent).contains(inPlayer) ? "W"
-                                : inLostToMap.get(inPlayer).contains(opponent) ? "L" : "?")
-                .collect(Collectors.joining());
-    }
-
-    private Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
+    private static Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
             ImmutableMap<Player, BigDecimal> inScoreMap, long inElapsedTime,
             boolean inCheckOverTime) {
         return inScoreMap.entrySet().stream()
@@ -99,5 +90,13 @@ public final class Standings {
                 showEnded || inPlayer.time() <= elapsedTime ? 0
                         : lostToStream(inPlayer, worstPossibleScores, inPlayer.time() - 1, true)
                                 .count());
+    }
+
+    private String decided(Player inPlayer) {
+        return scoreMap.keySet().stream()
+                .map(opponent -> opponent == inPlayer ? "-"
+                        : lostToMap.get(opponent).contains(inPlayer) ? "W"
+                                : lostToMap.get(inPlayer).contains(opponent) ? "L" : "?")
+                .collect(Collectors.joining());
     }
 }
