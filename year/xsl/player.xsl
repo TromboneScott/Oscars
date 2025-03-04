@@ -23,23 +23,21 @@
               <td id="rank">Rank <div id="rank">
                   <xsl:value-of select="$playerResults/@rank" />
                 </div>
-          Out of <xsl:value-of select="count($results/standings/player)" />
+                Out of <xsl:value-of select="count($results/standings/player)" />
               </td>
             </tr>
           </table>
-          <xsl:if
-            test="$inProgress">
-            <br />Possible Final Rank: <xsl:value-of
+          <br />
+          <xsl:if test="$inProgress"> Possible Final Rank: <xsl:value-of
               select="$playerResults/@bpr" />
             <xsl:if
               test="$playerResults/@bpr != $playerResults/@wpr"> to <xsl:value-of
                 select="$playerResults/@wpr" />
             </xsl:if>
+            <br />
           </xsl:if>
           <br />
-          <br />
-          <h3>
-          Guesses</h3>
+          <h3>Guesses</h3>
           <table>
             <thead>
               <tr>
@@ -174,9 +172,17 @@
           </table>
           <br />
           <br />
-          <h3>
-          Rankings</h3> Names in green can no longer pass or be passed by <xsl:value-of
-            select="$playerName" />
+          <br />
+          <h3 style="display:inline">Rankings</h3>
+          <xsl:if test="contains($playerResults/@decided, 'L')">
+            <br />
+            <xsl:value-of select="$playerName" /> can no longer pass
+            players in <font color="red">red</font>
+          </xsl:if>
+          <xsl:if test="contains($playerResults/@decided, 'W')">
+            <br /> Players in <font color="green">green</font> can no longer
+            pass <xsl:value-of select="$playerName" />
+          </xsl:if>
           <br />
           <br />
           <xsl:apply-templates

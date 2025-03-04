@@ -20,13 +20,13 @@
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
       <title><xsl:value-of select="$definitions/@year" /> OSCARS</title>
-      <style>body {background-color: PaleGoldenrod}</style>
+      <style>body {background-color:PaleGoldenrod}</style>
     </head>
   </xsl:template>
   <xsl:template name="header">
-    <a href=".." style="all: unset">
+    <a href=".." style="all:unset">
       <table id="header"
-        style="color:PaleGoldenrod; background-image: url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat: no-repeat; background-size: 100%;">
+        style="color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
         <tr>
           <td rowspan="3" />
           <td rowspan="3">
@@ -45,7 +45,7 @@
           <td rowspan="3" />
         </tr>
         <tr>
-          <th style="background-color: transparent">
+          <th style="background-color:transparent">
             <xsl:value-of select="$definitions/@year" /> OSCARS</th>
         </tr>
         <tr>

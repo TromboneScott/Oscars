@@ -59,10 +59,10 @@ public final class Standings {
                         .setAttribute("bpr", String.valueOf(lostToMap.get(player).size() + 1))
                         .setAttribute("wpr", String.valueOf(worstPossibleRank(player)))
                         .setAttribute("decided",
-                                scoreMap.keySet().stream()
-                                        .map(opponent -> lostToMap.get(player).contains(opponent)
-                                                || lostToMap.get(opponent).contains(player)
-                                                || tied(player, opponent) ? "Y" : "N")
+                                scoreMap.keySet().stream().map(opponent -> player == opponent ? "-"
+                                        : lostToMap.get(player).contains(opponent) ? "L"
+                                                : lostToMap.get(opponent).contains(player)
+                                                        || tied(player, opponent) ? "W" : "?")
                                         .collect(Collectors.joining())))
                 .reduce(new Element("standings"), Element::addContent)
                 .setAttribute("time", String.valueOf(elapsedTime));

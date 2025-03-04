@@ -12,7 +12,7 @@
           <xsl:call-template name="header" />
           <xsl:choose>
             <xsl:when test="count($results/standings/player) = 0">
-              <a href="javascript:history.go(0)" style="all: unset">
+              <a href="javascript:history.go(0)" style="all:unset">
                 <table>
                   <tr>
                     <td id="rank">
@@ -71,7 +71,7 @@
                       select="translate(@firstName, $lowercase, $uppercase)"
                       order="{@order}" />
                     <tr class="unannounced">
-                      <td style="padding-left: 10px; padding-right: 10px">
+                      <td style="padding-left:10px; padding-right:10px">
                         <xsl:value-of
                           select="concat(
                             translate(substring(@timestamp, 6, 5), '-', '/'),
@@ -83,7 +83,7 @@
                             substring(' am pm', floor(substring(@timestamp, 12, 2) div 12) * 3 + 1, 3)
                             )" />
                       </td>
-                      <td style="padding-left: 10px; padding-right: 10px">
+                      <td style="padding-left:10px; padding-right:10px">
                         <xsl:apply-templates select="." mode="playerName" />
                       </td>
                     </tr>
@@ -96,7 +96,7 @@
                 <a href="../category/all.xml">
                   <h2>OSCAR WINNERS</h2>
                 </a>
-                <table style="table-layout: fixed; width: 700px">
+                <table style="table-layout:fixed; width:700px">
                   <xsl:call-template name="winners">
                     <xsl:with-param name="start" select="0" />
                   </xsl:call-template>
@@ -267,15 +267,12 @@
       <td>
         <xsl:attribute name="class"> header <xsl:if test="$inPlayer">
             <xsl:variable name="player" select="." />
+            <xsl:variable name="decided"
+              select="substring($inPlayer/@decided, number($ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id), 1)" />
             <xsl:choose>
-              <xsl:when
-                test="@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName">
-          unannounced
-              </xsl:when>
-              <xsl:when
-                test="substring($inPlayer/@decided, number($ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id), 1) = 'Y'">
-          correct
-              </xsl:when>
+              <xsl:when test="$decided = 'W'">correct</xsl:when>
+              <xsl:when test="$decided = 'L'">incorrect</xsl:when>
+              <xsl:when test="$decided = '?'">unannounced</xsl:when>
             </xsl:choose>
           </xsl:if>
         </xsl:attribute>
@@ -316,8 +313,7 @@
       <tr class="unannounced">
         <xsl:for-each
           select="$results/awards/category[position() &gt; $start and position() &lt;= $end]">
-          <td
-            style="text-align: center; vertical-align: top; white-space: normal">
+          <td style="text-align:center; vertical-align:top; white-space:normal">
             <a>
               <xsl:attribute name="id">
                 <xsl:value-of select="@name" />
