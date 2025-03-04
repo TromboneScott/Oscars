@@ -175,13 +175,13 @@
           <br />
           <h3 style="display:inline">Rankings</h3>
           <xsl:if test="contains($playerResults/@decided, 'L')">
-            <br />
-            <xsl:value-of select="$playerName" /> can no longer pass
-            players in <font color="red">red</font>
+            <br /> All players in <font color="red">red</font> will finish above <xsl:value-of
+              select="$playerName" />
           </xsl:if>
           <xsl:if test="contains($playerResults/@decided, 'W')">
-            <br /> Players in <font color="green">green</font> can no longer
-            pass <xsl:value-of select="$playerName" />
+            <br />
+            <xsl:value-of select="$playerName" /> will finish above all
+            players in <font color="green">green</font>
           </xsl:if>
           <br />
           <br />

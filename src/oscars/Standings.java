@@ -58,14 +58,18 @@ public final class Standings {
                                 lostToStream(player, scoreMap, elapsedTime, true).count() + 1))
                         .setAttribute("bpr", String.valueOf(lostToMap.get(player).size() + 1))
                         .setAttribute("wpr", String.valueOf(worstPossibleRank(player)))
-                        .setAttribute("decided",
-                                scoreMap.keySet().stream().map(opponent -> player == opponent ? "-"
-                                        : lostToMap.get(player).contains(opponent) ? "L"
-                                                : lostToMap.get(opponent).contains(player)
-                                                        || tied(player, opponent) ? "W" : "?")
-                                        .collect(Collectors.joining())))
+                        .setAttribute("decided", decided(lostToMap, player)))
                 .reduce(new Element("standings"), Element::addContent)
                 .setAttribute("time", String.valueOf(elapsedTime));
+    }
+
+    private String decided(ImmutableMap<Player, ImmutableSet<Player>> inLostToMap,
+            Player inPlayer) {
+        return scoreMap.keySet().stream()
+                .map(opponent -> opponent == inPlayer ? "-"
+                        : inLostToMap.get(opponent).contains(inPlayer) ? "W"
+                                : inLostToMap.get(inPlayer).contains(opponent) ? "L" : "?")
+                .collect(Collectors.joining());
     }
 
     private Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
@@ -95,14 +99,5 @@ public final class Standings {
                 showEnded || inPlayer.time() <= elapsedTime ? 0
                         : lostToStream(inPlayer, worstPossibleScores, inPlayer.time() - 1, true)
                                 .count());
-    }
-
-    /** Determine if the player and their opponent will be tied at the end of the game */
-    private boolean tied(Player inPlayer, Player inOpponent) {
-        return (inPlayer.time() == inOpponent.time()
-                || showEnded && inPlayer.time() > elapsedTime && inOpponent.time() > elapsedTime)
-                && scoreMap.get(inPlayer).equals(scoreMap.get(inOpponent))
-                && Column.CATEGORIES.stream().allMatch(category -> !winners.get(category).isEmpty()
-                        || inPlayer.answer(category).equals(inOpponent.answer(category)));
     }
 }
