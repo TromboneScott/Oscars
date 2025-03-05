@@ -71,7 +71,7 @@
     <hr
       width="500" />
     <a href="..">PLAYERS</a> &#160;&#160;-&#160;&#160; <a
-      href="../category/all.xml">CATEGORIES</a> &#160;&#160;-&#160;&#160; <a
+      href="../category">CATEGORIES</a> &#160;&#160;-&#160;&#160; <a
       href="/history">HISTORY</a>
     <hr width="500" />
     <xsl:if

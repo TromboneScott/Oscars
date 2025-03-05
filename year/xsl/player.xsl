@@ -42,7 +42,7 @@
             <thead>
               <tr>
                 <th class="header">
-                  <a href="../category/all.xml">Category</a>
+                  <a href="../category">Category</a>
                 </th>
                 <th>Guess</th>
                 <th>Actual</th>

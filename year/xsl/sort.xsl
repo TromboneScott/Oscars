@@ -93,7 +93,7 @@
             </xsl:when>
             <xsl:otherwise>
               <xsl:if test="count($results/awards/category/nominee) > 0">
-                <a href="../category/all.xml">
+                <a href="../category">
                   <h2>OSCAR WINNERS</h2>
                 </a>
                 <table style="table-layout:fixed; width:700px">
@@ -107,14 +107,14 @@
               <div class="info">
                 <xsl:if test="$inProgress">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
-                If guesses for all remaining <a href="../category/all.xml">
-                categories</a> turn out to be correct / incorrect.<br />
+                If guesses for all remaining <a href="../category"> categories</a>
+                turn out to be correct / incorrect. <br />
                   <br />
                 </xsl:if>
                 <u>
-                Score</u> - One point for each correct <a
-                  href="../category/all.xml">category</a> plus .1 for tie
-                breaker #1, .01 for #2, .001 for #3, etc.</div>
+                Score</u> - One point for each correct <a href="../category">
+                category</a> plus .1 for tie breaker #1, .01 for #2, .001 for
+                #3, etc. </div>
               <br />
               <br />
               <xsl:apply-templates select="." mode="player-table" />

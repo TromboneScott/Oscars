@@ -13,6 +13,5 @@ public final class Directory extends File {
 
     private Directory(String inPathname) {
         super(inPathname);
-        mkdir();
     }
 }
