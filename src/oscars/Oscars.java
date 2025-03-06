@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableList;
  * will be the same as the order on the ballot.
  * 
  * @author Scott McDonald
- * @version 6.0
+ * @version 6.1
  */
 public class Oscars implements Runnable {
     private final ImmutableList<Player> players;
