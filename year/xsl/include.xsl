@@ -1,12 +1,15 @@
 <!-- OSCARS website created by Scott McDonald -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="html" encoding="utf-8" indent="yes" />
-  <xsl:variable name="results" select="document('../data/results.xml')/results" />
   <xsl:variable name="definitions"
     select="document('../data/definitions.xml')/definitions" />
+  <xsl:variable name="rootDir" select="concat('/', $definitions/@year, '/')" />
+  <xsl:variable name="results"
+    select="document(concat($rootDir, 'data/results.xml'))/results" />
   <xsl:variable name="mappings"
-    select="document('../data/mappings.xml')/mappings" />
-  <xsl:variable name="ballots" select="document('../data/ballots.xml')/ballots" />
+    select="document(concat($rootDir, 'data/mappings.xml'))/mappings" />
+  <xsl:variable name="ballots"
+    select="document(concat($rootDir, 'data/ballots.xml'))/ballots" />
   <xsl:variable name="inProgress"
     select="$results/awards[not(@END)] or $results/awards/category[not(nominee)]" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
@@ -24,7 +27,10 @@
     </head>
   </xsl:template>
   <xsl:template name="header">
-    <a href=".." style="all:unset">
+    <a style="all:unset">
+      <xsl:attribute name="href">
+        <xsl:value-of select="$rootDir" />
+      </xsl:attribute>
       <table id="header"
         style="color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
         <tr>
@@ -68,12 +74,18 @@
       </table>
     </a>
     <br />
+    <hr width="500" />
+    <a>
+      <xsl:attribute name="href">
+        <xsl:value-of select="concat($rootDir, 'player')" />
+      </xsl:attribute>
+    PLAYERS</a> &#160;&#160;-&#160;&#160; <a>
+      <xsl:attribute name="href">
+        <xsl:value-of select="concat($rootDir, 'category')" />
+      </xsl:attribute>
+    CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
     <hr
       width="500" />
-    <a href="..">PLAYERS</a> &#160;&#160;-&#160;&#160; <a
-      href="../category">CATEGORIES</a> &#160;&#160;-&#160;&#160; <a
-      href="/history">HISTORY</a>
-    <hr width="500" />
     <xsl:if
       test="$inProgress">
       <i>Refresh this page to get updated results during the contest.</i>
@@ -168,7 +180,7 @@
     <a>
       <xsl:attribute name="href">
         <xsl:value-of
-          select="concat('../player/', @firstName, '_', @lastName, '.xml')" />
+          select="concat($rootDir, 'player/', @firstName, '_', @lastName, '.xml')" />
       </xsl:attribute>
       <xsl:apply-templates select="." mode="playerName" />
     </a>

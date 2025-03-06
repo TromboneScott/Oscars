@@ -42,7 +42,11 @@
             <thead>
               <tr>
                 <th class="header">
-                  <a href="../category">Category</a>
+                  <a>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="concat($rootDir, 'category')" />
+                    </xsl:attribute>
+                    Category</a>
                 </th>
                 <th>Guess</th>
                 <th>Actual</th>
@@ -64,7 +68,7 @@
                     <a>
                       <xsl:attribute name="href">
                         <xsl:value-of
-                          select="concat('../category/', @name, '.xml')" />
+                          select="concat($rootDir, 'category/', @name, '.xml')" />
                       </xsl:attribute>
                       <xsl:value-of select="@name" />
                     </a>
@@ -186,13 +190,18 @@
           <br />
           <br />
           <xsl:apply-templates
-            select="document('../sort/default.xml')/sort" mode="player-table">
+            select="document(concat($rootDir, 'player/sort/default.xml'))/sort"
+            mode="player-table">
             <xsl:with-param name="inPlayer" select="$playerResults" />
           </xsl:apply-templates>
           <br />
           <xsl:call-template name="updated" />
           <br />
-          <a href=".." id="return">Return to Main Page</a>
+          <a id="return">
+            <xsl:attribute name="href">
+              <xsl:value-of select="$rootDir" />
+            </xsl:attribute>
+            Return to Main Page</a>
           <br />
           <xsl:call-template name="credits" />
         </center>

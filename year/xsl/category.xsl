@@ -297,7 +297,11 @@
             </xsl:otherwise>
           </xsl:choose>
           <br />
-          <a href=".." id="return">Return to Main Page</a>
+          <a id="return">
+            <xsl:attribute name="href">
+              <xsl:value-of select="$rootDir" />
+            </xsl:attribute>
+            Return to Main Page</a>
           <br />
           <xsl:call-template name="credits" />
         </center>

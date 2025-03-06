@@ -93,7 +93,10 @@
             </xsl:when>
             <xsl:otherwise>
               <xsl:if test="count($results/awards/category/nominee) > 0">
-                <a href="../category">
+                <a>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="concat($rootDir, 'category')" />
+                  </xsl:attribute>
                   <h2>OSCAR WINNERS</h2>
                 </a>
                 <table style="table-layout:fixed; width:700px">
@@ -107,12 +110,18 @@
               <div class="info">
                 <xsl:if test="$inProgress">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
-                If guesses for all remaining <a href="../category"> categories</a>
-                turn out to be correct / incorrect. <br />
+                If guesses for all remaining <a>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="concat($rootDir, 'category')" />
+                    </xsl:attribute>
+                categories</a> turn out to be correct / incorrect. <br />
                   <br />
                 </xsl:if>
                 <u>
-                Score</u> - One point for each correct <a href="../category">
+                Score</u> - One point for each correct <a>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="concat($rootDir, 'category')" />
+                  </xsl:attribute>
                 category</a> plus .1 for tie breaker #1, .01 for #2, .001 for
                 #3, etc. </div>
               <br />
@@ -319,7 +328,8 @@
                 <xsl:value-of select="@name" />
               </xsl:attribute>
               <xsl:attribute name="href">
-                <xsl:value-of select="concat('../category/', @name, '.xml')" />
+                <xsl:value-of
+                  select="concat($rootDir, 'category/', @name, '.xml')" />
               </xsl:attribute>
               <xsl:apply-templates select="nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />
