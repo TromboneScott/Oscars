@@ -194,16 +194,7 @@
             mode="player-table">
             <xsl:with-param name="inPlayer" select="$playerResults" />
           </xsl:apply-templates>
-          <br />
-          <xsl:call-template name="updated" />
-          <br />
-          <a id="return">
-            <xsl:attribute name="href">
-              <xsl:value-of select="$rootDir" />
-            </xsl:attribute>
-            Return to Main Page</a>
-          <br />
-          <xsl:call-template name="credits" />
+          <xsl:call-template name="footer" />
         </center>
       </body>
     </html>

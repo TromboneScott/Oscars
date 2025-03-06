@@ -127,11 +127,9 @@
               <br />
               <br />
               <xsl:apply-templates select="." mode="player-table" />
-              <br />
-              <xsl:call-template name="updated" />
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:call-template name="credits" />
+          <xsl:call-template name="footer" />
         </center>
       </body>
     </html>

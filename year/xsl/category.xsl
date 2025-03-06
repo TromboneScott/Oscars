@@ -189,7 +189,6 @@
                         </td>
                       </tr>
                     </table>
-                    <br />
                   </xsl:for-each>
                 </xsl:otherwise>
               </xsl:choose>
@@ -291,19 +290,9 @@
                   </tr>
                 </tfoot>
               </table>
-              <br />
-              <xsl:call-template
-                name="updated" />
             </xsl:otherwise>
           </xsl:choose>
-          <br />
-          <a id="return">
-            <xsl:attribute name="href">
-              <xsl:value-of select="$rootDir" />
-            </xsl:attribute>
-            Return to Main Page</a>
-          <br />
-          <xsl:call-template name="credits" />
+          <xsl:call-template name="footer" />
         </center>
       </body>
     </html>

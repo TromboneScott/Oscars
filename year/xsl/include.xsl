@@ -74,7 +74,8 @@
       </table>
     </a>
     <br />
-    <hr width="500" />
+    <hr
+      width="500" />
     <a>
       <xsl:attribute name="href">
         <xsl:value-of select="concat($rootDir, 'player')" />
@@ -124,14 +125,13 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  <xsl:template name="updated">
+  <xsl:template name="footer">
+    <br />
     <table>
       <tr>
         <td id="rank">Last updated: <xsl:value-of select="$results/@updated" /></td>
       </tr>
     </table>
-  </xsl:template>
-  <xsl:template name="credits">
     <br />
     <i>Contest by Scott Takeda | Website by Scott McDonald</i>
   </xsl:template>
