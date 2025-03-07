@@ -4,10 +4,9 @@
   <xsl:include href="include.xsl" />
   <xsl:template match="/category">
     <html>
-      <xsl:call-template name="init" />
+      <xsl:call-template name="header" />
       <body>
         <center>
-          <xsl:call-template name="header" />
           <xsl:choose>
             <xsl:when test="@name = 'all'">
               <xsl:choose>
@@ -292,9 +291,9 @@
               </table>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:call-template name="footer" />
         </center>
       </body>
+      <xsl:call-template name="footer" />
     </html>
   </xsl:template>
   <xsl:template match="/definitions/column/nominee">

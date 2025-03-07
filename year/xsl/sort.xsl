@@ -2,14 +2,11 @@
 <!-- OSCARS website created by Scott McDonald -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="include.xsl" />
-  <xsl:variable name="categoryCount"
-    select="count($definitions/column/nominee[position() = 1])" />
   <xsl:template match="/sort">
     <html>
-      <xsl:call-template name="init" />
+      <xsl:call-template name="header" />
       <body>
         <center>
-          <xsl:call-template name="header" />
           <xsl:choose>
             <xsl:when test="count($results/standings/player) = 0">
               <a href="javascript:history.go(0)" style="all:unset">
@@ -129,9 +126,9 @@
               <xsl:apply-templates select="." mode="player-table" />
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:call-template name="footer" />
         </center>
       </body>
+      <xsl:call-template name="footer" />
     </html>
   </xsl:template>
   <xsl:template match="/sort" mode="player-table">

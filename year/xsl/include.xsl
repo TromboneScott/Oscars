@@ -14,7 +14,7 @@
     select="$results/awards[not(@END)] or $results/awards/category[not(nominee)]" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
-  <xsl:template name="init">
+  <xsl:template name="header">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="/oscars.css" />
@@ -25,77 +25,91 @@
       <title><xsl:value-of select="$definitions/@year" /> OSCARS</title>
       <style>body {background-color:PaleGoldenrod}</style>
     </head>
+    <header>
+      <center>
+        <a style="all:unset">
+          <xsl:attribute name="href">
+            <xsl:value-of select="$rootDir" />
+          </xsl:attribute>
+          <table id="header"
+            style="border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
+            <tr>
+              <td rowspan="3" />
+              <td rowspan="3">
+                <img
+                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
+                  id="trophy" />
+              </td>
+              <td>
+                <br />
+              </td>
+              <td rowspan="3">
+                <img
+                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
+                  id="trophy" />
+              </td>
+              <td rowspan="3" />
+            </tr>
+            <tr>
+              <th style="background-color:transparent">
+                <xsl:value-of select="$definitions/@year" /> OSCARS</th>
+            </tr>
+            <tr>
+              <td>
+                <i>(Unofficial Results)</i>
+                <br />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                <xsl:apply-templates
+                  select="$definitions/column[@name = 'Best Picture']/nominee"
+                  mode="poster">
+                  <xsl:with-param name="category" select="'Best Picture'" />
+                  <xsl:with-param name="width" select="'50'" />
+                </xsl:apply-templates>
+              </td>
+            </tr>
+          </table>
+        </a>
+        <br />
+        <hr
+          width="500" />
+        <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="concat($rootDir, 'player')" />
+          </xsl:attribute>
+        PLAYERS</a> &#160;&#160;-&#160;&#160; <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="concat($rootDir, 'category')" />
+          </xsl:attribute>
+        CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
+        <hr
+          width="500" />
+        <xsl:if
+          test="$inProgress">
+          <i>Refresh this page to get updated results during the contest.</i>
+          <br />
+          <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
+          <br />
+        </xsl:if>
+        <br />
+        <br />
+      </center>
+    </header>
   </xsl:template>
-  <xsl:template name="header">
-    <a style="all:unset">
-      <xsl:attribute name="href">
-        <xsl:value-of select="$rootDir" />
-      </xsl:attribute>
-      <table id="header"
-        style="border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
-        <tr>
-          <td rowspan="3" />
-          <td rowspan="3">
-            <img
-              src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-              id="trophy" />
-          </td>
-          <td>
-            <br />
-          </td>
-          <td rowspan="3">
-            <img
-              src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-              id="trophy" />
-          </td>
-          <td rowspan="3" />
-        </tr>
-        <tr>
-          <th style="background-color:transparent">
-            <xsl:value-of select="$definitions/@year" /> OSCARS</th>
-        </tr>
-        <tr>
-          <td>
-            <i>(Unofficial Results)</i>
-            <br />
-            <br />
-          </td>
-        </tr>
-        <tr>
-          <td colspan="5">
-            <xsl:apply-templates
-              select="$definitions/column[@name = 'Best Picture']/nominee"
-              mode="poster">
-              <xsl:with-param name="category" select="'Best Picture'" />
-              <xsl:with-param name="width" select="'50'" />
-            </xsl:apply-templates>
-          </td>
-        </tr>
-      </table>
-    </a>
-    <br />
-    <hr
-      width="500" />
-    <a>
-      <xsl:attribute name="href">
-        <xsl:value-of select="concat($rootDir, 'player')" />
-      </xsl:attribute>
-    PLAYERS</a> &#160;&#160;-&#160;&#160; <a>
-      <xsl:attribute name="href">
-        <xsl:value-of select="concat($rootDir, 'category')" />
-      </xsl:attribute>
-    CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
-    <hr
-      width="500" />
-    <xsl:if
-      test="$inProgress">
-      <i>Refresh this page to get updated results during the contest.</i>
-      <br />
-      <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
-      <br />
-    </xsl:if>
-    <br />
-    <br />
+  <xsl:template name="footer">
+    <footer>
+      <center>
+        <br />
+        <font face="arial"> Last updated: <xsl:value-of
+            select="$results/@updated" /></font>
+        <br />
+        <br />
+        <i>Contest by Scott Takeda | Website by Scott McDonald</i>
+      </center>
+    </footer>
   </xsl:template>
   <xsl:template match="/definitions/column" mode="value">
     <xsl:if test="@tieBreaker">
@@ -124,13 +138,6 @@
         <xsl:value-of select="concat('(', @tieBreaker, ')')" />
       </xsl:when>
     </xsl:choose>
-  </xsl:template>
-  <xsl:template name="footer">
-    <br />
-    <font face="arial">Last updated: <xsl:value-of select="$results/@updated" /></font>
-    <br />
-    <br />
-    <i>Contest by Scott Takeda | Website by Scott McDonald</i>
   </xsl:template>
   <xsl:template match="/results/awards/category" mode="attribute">
     <xsl:param name="nominee" />

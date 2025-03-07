@@ -4,10 +4,9 @@
   <xsl:include href="include.xsl" />
   <xsl:template match="/definitions">
     <html>
-      <xsl:call-template name="init" />
+      <xsl:call-template name="header" />
       <body>
         <center>
-          <xsl:call-template name="header" />
           <div id="name">Definitions</div>
           <br />
           <h2>Tie Breakers</h2>
@@ -76,9 +75,9 @@
           <br />
           <br />
           <hr />
-          <xsl:call-template name="footer" />
         </center>
       </body>
+      <xsl:call-template name="footer" />
     </html>
   </xsl:template>
 </xsl:stylesheet>

@@ -4,11 +4,10 @@
   <xsl:include href="sort.xsl" />
   <xsl:template match="/player">
     <html>
-      <xsl:call-template name="init" />
-      <xsl:variable name="player" select="." />
+      <xsl:call-template name="header" />
       <body>
         <center>
-          <xsl:call-template name="header" />
+          <xsl:variable name="player" select="." />
           <xsl:variable name="playerResults"
             select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
           <xsl:variable
@@ -194,9 +193,9 @@
             mode="player-table">
             <xsl:with-param name="inPlayer" select="$playerResults" />
           </xsl:apply-templates>
-          <xsl:call-template name="footer" />
         </center>
       </body>
+      <xsl:call-template name="footer" />
     </html>
   </xsl:template>
 </xsl:stylesheet>
