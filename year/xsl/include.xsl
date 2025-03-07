@@ -32,7 +32,7 @@
         <xsl:value-of select="$rootDir" />
       </xsl:attribute>
       <table id="header"
-        style="color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
+        style="border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
         <tr>
           <td rowspan="3" />
           <td rowspan="3">
@@ -127,11 +127,16 @@
   </xsl:template>
   <xsl:template name="footer">
     <br />
-    <table>
-      <tr>
-        <td id="rank">Last updated: <xsl:value-of select="$results/@updated" /></td>
-      </tr>
-    </table>
+    <br />
+    <hr width="500" />
+    <a>
+      <xsl:attribute name="href">
+        <xsl:value-of select="$rootDir" />
+      </xsl:attribute>Last updated: <xsl:value-of
+        select="$results/@updated" />
+    </a>
+    <br />
+    <hr width="500" />
     <br />
     <i>Contest by Scott Takeda | Website by Scott McDonald</i>
   </xsl:template>
