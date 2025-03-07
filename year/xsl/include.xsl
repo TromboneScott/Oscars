@@ -127,16 +127,8 @@
   </xsl:template>
   <xsl:template name="footer">
     <br />
+    <font face="arial">Last updated: <xsl:value-of select="$results/@updated" /></font>
     <br />
-    <hr width="500" />
-    <a>
-      <xsl:attribute name="href">
-        <xsl:value-of select="$rootDir" />
-      </xsl:attribute>Last updated: <xsl:value-of
-        select="$results/@updated" />
-    </a>
-    <br />
-    <hr width="500" />
     <br />
     <i>Contest by Scott Takeda | Website by Scott McDonald</i>
   </xsl:template>

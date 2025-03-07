@@ -73,6 +73,9 @@
               </table>
             </xsl:if>
           </xsl:for-each>
+          <br />
+          <br />
+          <hr />
           <xsl:call-template name="footer" />
         </center>
       </body>
