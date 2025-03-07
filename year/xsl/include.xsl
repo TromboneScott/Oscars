@@ -87,8 +87,7 @@
         CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
         <hr
           width="500" />
-        <xsl:if
-          test="$inProgress">
+        <xsl:if test="$inProgress">
           <i>Refresh this page to get updated results during the contest.</i>
           <br />
           <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
