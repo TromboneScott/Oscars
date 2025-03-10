@@ -31,52 +31,53 @@
           </table>
           <br />
           <br />
-          <hr />
-          <h2>Columns</h2>
+          <br />
+          <h2 style="display:inline">Columns</h2>
+          <br />
           <i>Values for this website are in <b>bold</b></i>
           <xsl:for-each select="column">
             <br />
             <br />
-            <hr align="center" width="50%" />
-            <br />
-            <b>
-              <xsl:value-of select="@name" />
-            </b>
-            <br />
             <xsl:variable name="column" select="@name" />
-            <xsl:value-of select="$mappings/column[@name = $column]/@ballot" />
-            <xsl:if test="nominee">
-              <table style="table-layout: fixed; width: 500px">
-                <tbody>
-                  <xsl:for-each select="nominee">
-                    <tr class="unannounced">
-                      <td style="width:100px">
-                        <xsl:apply-templates select="." mode="poster">
-                          <xsl:with-param name="category" select="$column" />
-                        </xsl:apply-templates>
-                      </td>
-                      <td style="white-space:normal">
-                        <center>
-                          <b>
-                            <xsl:value-of select="@name" />
-                          </b>
-                        </center>
-                        <xsl:variable name="name" select="@name" />
-                        <xsl:for-each
-                          select="$mappings/column[@name = $column]/nominee[@name = $name]">
-                          <hr />
-                          <xsl:value-of select="@ballot" />
-                        </xsl:for-each>
-                      </td>
-                    </tr>
-                  </xsl:for-each>
-                </tbody>
-              </table>
-            </xsl:if>
+            <table style="table-layout: fixed; width: 500px">
+              <thead>
+                <tr>
+                  <th colspan="2" style="font-weight:normal; white-space:normal">
+                    <b>
+                      <xsl:value-of select="@name" />
+                    </b>
+                    <hr />
+                    <xsl:value-of
+                      select="$mappings/column[@name = $column]/@ballot" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <xsl:for-each select="nominee">
+                  <tr class="unannounced">
+                    <td style="width:100px">
+                      <xsl:apply-templates select="." mode="poster">
+                        <xsl:with-param name="category" select="$column" />
+                      </xsl:apply-templates>
+                    </td>
+                    <td style="white-space:normal">
+                      <center>
+                        <b>
+                          <xsl:value-of select="@name" />
+                        </b>
+                      </center>
+                      <xsl:variable name="name" select="@name" />
+                      <xsl:for-each
+                        select="$mappings/column[@name = $column]/nominee[@name = $name]">
+                        <hr />
+                        <xsl:value-of select="@ballot" />
+                      </xsl:for-each>
+                    </td>
+                  </tr>
+                </xsl:for-each>
+              </tbody>
+            </table>
           </xsl:for-each>
-          <br />
-          <br />
-          <hr />
         </center>
       </body>
       <xsl:call-template name="footer" />
