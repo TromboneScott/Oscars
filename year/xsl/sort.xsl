@@ -269,7 +269,7 @@
     <xsl:param name="inPlayer" />
     <tr>
       <td>
-        <xsl:attribute name="class"> header <xsl:if test="$inPlayer">
+        <xsl:attribute name="class">header <xsl:if test="$inPlayer">
             <xsl:variable name="player" select="." />
             <xsl:variable name="decided"
               select="substring($inPlayer/@decided, number($ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id), 1)" />
