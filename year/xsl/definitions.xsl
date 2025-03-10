@@ -46,23 +46,25 @@
             <xsl:variable name="column" select="@name" />
             <xsl:value-of select="$mappings/column[@name = $column]/@ballot" />
             <xsl:if test="nominee">
-              <table>
+              <table style="table-layout: fixed; width: 500px">
                 <tbody>
                   <xsl:for-each select="nominee">
                     <tr class="unannounced">
-                      <td>
+                      <td style="width:100px">
                         <xsl:apply-templates select="." mode="poster">
                           <xsl:with-param name="category" select="$column" />
                         </xsl:apply-templates>
                       </td>
-                      <td>
-                        <b>
-                          <xsl:value-of select="@name" />
-                        </b>
+                      <td style="white-space:normal">
+                        <center>
+                          <b>
+                            <xsl:value-of select="@name" />
+                          </b>
+                        </center>
                         <xsl:variable name="name" select="@name" />
                         <xsl:for-each
                           select="$mappings/column[@name = $column]/nominee[@name = $name]">
-                          <br />
+                          <hr />
                           <xsl:value-of select="@ballot" />
                         </xsl:for-each>
                       </td>
