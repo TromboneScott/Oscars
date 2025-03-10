@@ -101,12 +101,13 @@
   <xsl:template name="footer">
     <footer>
       <center>
-        <br />
-        <font face="arial"> Last updated: <xsl:value-of
-            select="$results/@updated" /></font>
+        <br />Last updated: <xsl:value-of select="$results/@updated" />
         <br />
         <br />
-        <i>Contest by Scott Takeda | Website by Scott McDonald</i>
+        <font
+          color="gray">
+          <i>Contest by Scott Takeda | Website by Scott McDonald</i>
+        </font>
       </center>
     </footer>
   </xsl:template>
