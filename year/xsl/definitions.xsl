@@ -19,7 +19,7 @@
               <xsl:for-each select="column[@tieBreaker]">
                 <xsl:sort select="@tieBreaker" />
                 <tr>
-                  <td class="unannounced">
+                  <td style="background-color:white">
                     <xsl:value-of select="@tieBreaker" />
                   </td>
                   <td class="unannounced">
@@ -41,6 +41,10 @@
             <xsl:variable name="column" select="@name" />
             <table style="table-layout: fixed; width: 500px">
               <thead>
+                <tr style="visibility:collapse">
+                  <td style="width:100px" />
+                  <td />
+                </tr>
                 <tr>
                   <th colspan="2" style="font-weight:normal; white-space:normal">
                     <b>
