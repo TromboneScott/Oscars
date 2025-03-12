@@ -51,8 +51,8 @@ Start the year
 1. Copy year folder to Oscars site and rename to current year
 2. Update the year in global/index.html
 3. Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
-4. Add current year to history/index.html
-  a. Insert row: To Be Determined
+4. Add current year to history/winners.xml
+  a. Insert an element for the current year but no winners: <year name="20XX" />
   b. Copy to Oscars site
 
 Proofread the category definitions:
@@ -112,8 +112,8 @@ On the Responses tab of the Google Form turn off the Accepting Responses option.
 
 -- After contest is over
 
-Add the winner to history/index.html
-1. Update the TBD row for this year for the winner
+Add the winner to history/winners.xml
+1. Update the element for this year for correct and players and add the winner element
 2. Copy the file to the Oscars site
 3. Commit and push changes to Git 
 
