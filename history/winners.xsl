@@ -86,27 +86,35 @@
                   </xsl:when>
                   <xsl:otherwise>
                     <td>
-                      <xsl:if test="count(winner) &gt; 1">
-                        Tie:
-                      </xsl:if>
-                      <xsl:for-each select="winner">
-                        <xsl:choose>
-                          <xsl:when test="@link">
-                            <a>
-                              <xsl:attribute name="href">
-                                <xsl:value-of select="@link" />
-                              </xsl:attribute>
-                              <xsl:value-of select="@name" />
-                            </a>
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <xsl:value-of select="@name" />
-                          </xsl:otherwise>
-                        </xsl:choose>
-                        <xsl:if test="position() != last()">
-                          <xsl:value-of select="', '" />
-                        </xsl:if>
-                      </xsl:for-each>
+                      <table style="border:0px">
+                        <tr>
+                          <xsl:if test="count(winner) &gt; 1">
+                            <td style="border:0px; padding:0px; padding-right:6px">
+                              Tie:
+                            </td>
+                          </xsl:if>
+                          <td style="border:0px; padding:0px">
+                            <xsl:for-each select="winner">
+                              <xsl:choose>
+                                <xsl:when test="@link">
+                                  <a>
+                                    <xsl:attribute name="href">
+                                      <xsl:value-of select="@link" />
+                                    </xsl:attribute>
+                                    <xsl:value-of select="@name" />
+                                  </a>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <xsl:value-of select="@name" />
+                                </xsl:otherwise>
+                              </xsl:choose>
+                              <xsl:if test="position() != last()">
+                                <br />
+                              </xsl:if>
+                            </xsl:for-each>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                     <xsl:choose>
                       <xsl:when test="@correct">
