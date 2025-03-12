@@ -74,8 +74,12 @@
                 </td>
                 <xsl:choose>
                   <xsl:when test="count(winner) = 0">
-                    <td style="background-color: silver" id="selection"
-                      colspan="3">
+                    <xsl:variable name="count"
+                      select="count(document(concat('/', @name, '/data/results.xml'))/results/standings/player)" />
+                    <td style="background-color: silver" id="selection">
+                      <xsl:attribute name="colspan">
+                        <xsl:value-of select="floor(1 div ($count + 1)) + 2" />
+                      </xsl:attribute>
                       <a>
                         <xsl:attribute name="href">
                           <xsl:value-of select="concat('/', @name)" />
@@ -83,13 +87,19 @@
                         <i>To Be Determined</i>
                       </a>
                     </td>
+                    <xsl:if test="$count &gt; 0">
+                      <td style="background-color: silver" id="selection">
+                        <xsl:value-of select="$count" />
+                      </td>
+                    </xsl:if>
                   </xsl:when>
                   <xsl:otherwise>
                     <td>
                       <table style="border:0px">
                         <tr>
                           <xsl:if test="count(winner) &gt; 1">
-                            <td style="border:0px; padding:0px; padding-right:6px">
+                            <td
+                              style="border:0px; padding:0px; padding-right:6px">
                               Tie:
                             </td>
                           </xsl:if>
