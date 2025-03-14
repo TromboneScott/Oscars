@@ -59,37 +59,37 @@
               <tr>
                 <td class="header">
                   <xsl:choose>
-                    <xsl:when test="@name &gt;= 2000">
+                    <xsl:when test="@year &gt;= 2000">
                       <a>
                         <xsl:attribute name="href">
-                          <xsl:value-of select="concat('/', @name)" />
+                          <xsl:value-of select="concat('/', @year)" />
                         </xsl:attribute>
-                        <xsl:value-of select="@name" />
+                        <xsl:value-of select="@year" />
                       </a>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:value-of select="@name" />
+                      <xsl:value-of select="@year" />
                     </xsl:otherwise>
                   </xsl:choose>
                 </td>
                 <xsl:choose>
                   <xsl:when test="count(winner) = 0">
-                    <xsl:variable name="count"
-                      select="count(document(concat('/', @name, '/data/results.xml'))/results/standings/player)" />
+                    <xsl:variable name="players"
+                      select="count(document(concat('/', @year, '/data/results.xml'))/results/standings/player)" />
                     <td style="background-color: silver" id="selection">
                       <xsl:attribute name="colspan">
-                        <xsl:value-of select="floor(1 div ($count + 1)) + 2" />
+                        <xsl:value-of select="floor(1 div ($players + 1)) + 2" />
                       </xsl:attribute>
                       <a>
                         <xsl:attribute name="href">
-                          <xsl:value-of select="concat('/', @name)" />
+                          <xsl:value-of select="concat('/', @year)" />
                         </xsl:attribute>
                         <i>To Be Determined</i>
                       </a>
                     </td>
-                    <xsl:if test="$count &gt; 0">
+                    <xsl:if test="$players &gt; 0">
                       <td style="background-color: silver" id="selection">
-                        <xsl:value-of select="$count" />
+                        <xsl:value-of select="$players" />
                       </td>
                     </xsl:if>
                   </xsl:when>

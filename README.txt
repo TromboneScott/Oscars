@@ -52,7 +52,7 @@ Start the year
 2. Update the year in global/index.html
 3. Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
 4. Add current year to history/winners.xml
-  a. Insert an element for the current year but no winners: <year name="20XX" />
+  a. Insert an element for the current year but no winners: <year year="20XX" />
   b. Copy to Oscars site
 
 Proofread the category definitions:

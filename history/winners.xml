@@ -2,96 +2,96 @@
 <?xml-stylesheet type="text/xsl" href="winners.xsl"?>
 <!--OSCARS website created by Scott McDonald-->
 <winners>
-  <year name="2025" correct="14/18" players="81">
+  <year year="2025" correct="14/18" players="81">
     <winner name="Colbert Alembert" link="/2025/player/Colbert_Alembert.xml" />
   </year>
-  <year name="2024" correct="16/18" players="94">
+  <year year="2024" correct="16/18" players="94">
     <winner name="Tanya and Monika Mathews"
       link="/2024/player/Tanya%20and%20Monika_Mathews.xml" />
   </year>
-  <year name="2023" correct="16/18" players="82">
+  <year year="2023" correct="16/18" players="82">
     <winner name="Melanie Goetz" link="/2023/player/Melanie_Goetz.xml" />
   </year>
-  <year name="2022" correct="17/18" players="63">
+  <year year="2022" correct="17/18" players="63">
     <winner name="Amy Bennett" link="/2022/player/Amy%20Bennett.xml" />
   </year>
-  <year name="2021" correct="15/18" players="93">
+  <year year="2021" correct="15/18" players="93">
     <winner name="Trisha Hall" link="/2021/player/Trisha%20Hall.xml" />
   </year>
-  <year name="2020" correct="16/18" players="66">
+  <year year="2020" correct="16/18" players="66">
     <winner name="Phil Drechsler" link="/2020/player/Phil%20Drechsler.xml" />
   </year>
-  <year name="2019" correct="13/18" players="62">
+  <year year="2019" correct="13/18" players="62">
     <winner name="Tanya Mathews" link="/2019/player/Tanya%20Mathews.xml" />
   </year>
-  <year name="2018" correct="17/18" players="72">
+  <year year="2018" correct="17/18" players="72">
     <winner name="Trisha Hall" link="/2018/player/Trisha%20Hall.xml" />
   </year>
-  <year name="2017" correct="14/18" players="71">
+  <year year="2017" correct="14/18" players="71">
     <winner name="Richard Sykes" link="/2017/player/Richard%20Sykes.xml" />
   </year>
-  <year name="2016" correct="14/18" players="79">
+  <year year="2016" correct="14/18" players="79">
     <winner name="Scott Takeda" link="/2016/player/Scott%20Takeda.xml" />
   </year>
-  <year name="2015" correct="15/18" players="70">
+  <year year="2015" correct="15/18" players="70">
     <winner name="Trisha Hall" link="/2015/player/Trisha%20Hall.xml" />
   </year>
-  <year name="2014" correct="17/18" players="75">
+  <year year="2014" correct="17/18" players="75">
     <winner name="Scott McDonald" />
   </year>
-  <year name="2013" correct="15/18" players="50">
+  <year year="2013" correct="15/18" players="50">
     <winner name="Phil Drechsler" />
   </year>
-  <year name="2012" correct="14/18" players="61">
+  <year year="2012" correct="14/18" players="61">
     <winner name="Andrew Ahlstrom" />
   </year>
-  <year name="2011" correct="15/18" players="48">
+  <year year="2011" correct="15/18" players="48">
     <winner name="Scott McDonald" />
   </year>
-  <year name="2010" correct="14/17" players="50">
+  <year year="2010" correct="14/17" players="50">
     <winner name="Jem and Gina Silverstone" />
   </year>
-  <year name="2009" correct="16/17" players="51">
+  <year year="2009" correct="16/17" players="51">
     <winner name="Andrew Ahlstrom" />
   </year>
-  <year name="2008" correct="11/17" players="55">
+  <year year="2008" correct="11/17" players="55">
     <winner name="Paula Cobler" />
     <winner name="Nicole Greenwood" />
   </year>
-  <year name="2007" correct="11/15" players="47">
+  <year year="2007" correct="11/15" players="47">
     <winner name="Andrew Ahlstrom" />
   </year>
-  <year name="2006" correct="13/15" players="38">
+  <year year="2006" correct="13/15" players="38">
     <winner name="Andrew Ahlstrom" />
   </year>
-  <year name="2005" correct="12/15" players="39">
+  <year year="2005" correct="12/15" players="39">
     <winner name="Kenna Zimmer" />
   </year>
-  <year name="2004" correct="13/14" players="40">
+  <year year="2004" correct="13/14" players="40">
     <winner name="John Crockett" />
   </year>
-  <year name="2003" correct="9/14" players="39">
+  <year year="2003" correct="9/14" players="39">
     <winner name="Jenny Kaufman" />
   </year>
-  <year name="2002" correct="8/12" players="34">
+  <year year="2002" correct="8/12" players="34">
     <winner name="Kathleen Adamson" />
   </year>
-  <year name="2001" correct="9/12" players="20">
+  <year year="2001" correct="9/12" players="20">
     <winner name="Michele Messenger" />
   </year>
-  <year name="2000" correct="8/10" players="23">
+  <year year="2000" correct="8/10" players="23">
     <winner name="Jill Anderson" />
   </year>
-  <year name="1999">
+  <year year="1999">
     <winner name="Kristen Kidd" />
   </year>
-  <year name="1998">
+  <year year="1998">
     <winner name="Scott Takeda" />
   </year>
-  <year name="1997">
+  <year year="1997">
     <winner name="Steve Hiraki" />
   </year>
-  <year name="1996">
+  <year year="1996">
     <winner name="Scott Takeda" />
   </year>
 </winners>
