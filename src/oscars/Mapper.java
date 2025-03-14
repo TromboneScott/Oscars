@@ -72,7 +72,7 @@ public final class Mapper {
             for (String nominee : category.nominees())
                 if (!columnMap.containsValue(nominee)) {
                     System.out.println("\n--Nominee not chosen on any Ballots--");
-                    System.out.println("CATEGORY: " + category);
+                    System.out.println("CATEGORY: " + category.name());
                     System.out.println("NOMINEE: " + nominee);
                     System.out.print("Enter Ballot Description: ");
                     columnMap.put(Results.STDIN.nextLine(), nominee);
@@ -100,7 +100,7 @@ public final class Mapper {
 
     private static String prompt(Column inCategory, String inGuess,
             ImmutableList<String> inNominees) {
-        System.out.println("\nCATEGORY: " + inCategory);
+        System.out.println("\nCATEGORY: " + inCategory.name());
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
         System.out.print(inGuess + " = ");

@@ -118,7 +118,7 @@ public class Oscars implements Runnable {
                 .reduce(new Element("ballots"), Element::addContent));
 
         for (Column column : Column.CATEGORIES)
-            new XMLFile(Directory.CATEGORY, column + ".xml")
+            new XMLFile(Directory.CATEGORY, column.name() + ".xml")
                     .write(new Element("category").setAttribute("name", column.name()));
 
         for (Player player : players)

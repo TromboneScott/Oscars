@@ -108,7 +108,7 @@ public class Results {
     }
 
     private String toString(Column inCategory) {
-        return inCategory + " = " + String.join(", ", winners(inCategory));
+        return inCategory.name() + " = " + String.join(", ", winners(inCategory));
     }
 
     private String toString(ShowTimeType inShowTimeType) {

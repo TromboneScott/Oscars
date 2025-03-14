@@ -68,12 +68,6 @@ public final class Column {
         return value;
     }
 
-    /** The String representation of this Column which is just the name */
-    @Override
-    public String toString() {
-        return name;
-    }
-
     /** Get the Column instance that has the given header */
     public static Column of(String inHeader) {
         return Objects.requireNonNull(INSTANCES.get(inHeader), "Column not defined: " + inHeader);
