@@ -35,11 +35,8 @@ public class Oscars implements Runnable {
     }
 
     private Oscars() throws Exception {
-        System.out.print("Step 1 of 2: Downloading ballots... ");
+        System.out.print("Downloading ballots... ");
         Mapper mapper = new Mapper();
-        System.out.println("DONE");
-
-        System.out.print("Step 2 of 2: Creating web pages... ");
         players = mapper.players();
         results = new Results(players, mapper::nomineeMapping);
         writeStaticXMLFiles();
