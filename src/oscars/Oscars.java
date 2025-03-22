@@ -19,28 +19,32 @@ import com.google.common.collect.ImmutableList;
  * @version 6.1
  */
 public class Oscars implements Runnable {
-    private final ImmutableList<Player> players;
+    public static final ImmutableList<Player> PLAYERS;
 
-    private final Results results;
+    public static final Results RESULTS;
 
-    private Standings standings;
+    private long elapsedTime;
 
     private long validTimes = 0;
 
     private ZonedDateTime updated;
 
+    static {
+        System.out.print("Downloading ballots...");
+        try {
+            Mapper mapper = new Mapper();
+            PLAYERS = mapper.players();
+            RESULTS = new Results(mapper::nomineeMapping);
+            writeStaticFiles();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(" DONE");
+    }
+
     /** Prompt for Oscars results, store them and create output files */
     public static void main(String[] inArgs) throws Exception {
         new Oscars().process();
-    }
-
-    private Oscars() throws Exception {
-        System.out.print("Downloading ballots... ");
-        Mapper mapper = new Mapper();
-        players = mapper.players();
-        results = new Results(players, mapper::nomineeMapping);
-        writeStaticXMLFiles();
-        System.out.println("DONE");
     }
 
     private void process() throws Exception {
@@ -48,10 +52,10 @@ public class Oscars implements Runnable {
             System.out.println();
         while (prompt());
 
-        System.out.print("\nWriting final results... ");
+        System.out.print("\nWriting final results...");
         writeResults(); // In case it was interrupted in the thread
-        results.cleanUpCharts();
-        System.out.println("DONE");
+        Column.deleteUnusedCharts();
+        System.out.println(" DONE");
     }
 
     private boolean prompt() throws Exception {
@@ -59,7 +63,7 @@ public class Oscars implements Runnable {
         Thread thread = new Thread(this);
         try {
             thread.start();
-            return results.prompt();
+            return RESULTS.prompt();
         } finally {
             thread.interrupt(); // Stop file I/O thread
             thread.join(); // Wait for it to finish
@@ -76,7 +80,7 @@ public class Oscars implements Runnable {
             do {
                 writeResults();
                 Thread.sleep(waitTime(TimeUnit.MINUTES.toMillis(1)));
-            } while (results.elapsedTimeMillis() > 0 && !results.showEnded());
+            } while (RESULTS.elapsedTimeMillis() > 0 && !RESULTS.showEnded());
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
@@ -85,41 +89,42 @@ public class Oscars implements Runnable {
     }
 
     private long waitTime(long inMaxWait) {
-        long nextPlayerTime = players.stream().mapToLong(player -> player.time())
-                .filter(playerTime -> playerTime > standings.elapsedTime())
-                .map(TimeUnit.SECONDS::toMillis).min().orElse(Long.MAX_VALUE);
-        long elapsedTimeMillis = results.elapsedTimeMillis();
+        long nextPlayerTime = PLAYERS.stream().mapToLong(player -> player.time())
+                .filter(playerTime -> playerTime > elapsedTime).map(TimeUnit.SECONDS::toMillis)
+                .min().orElse(Long.MAX_VALUE);
+        long elapsedTimeMillis = RESULTS.elapsedTimeMillis();
         return Math.min(Math.max(nextPlayerTime - elapsedTimeMillis, 0),
                 inMaxWait - elapsedTimeMillis % inMaxWait);
     }
 
     private void writeResults() throws IOException {
-        standings = new Standings(players, results);
-        long currentTimes = players.stream()
-                .filter(player -> player.time() <= standings.elapsedTime()).count();
+        elapsedTime = RESULTS.elapsedTimeSeconds();
+        long currentTimes = PLAYERS.stream().filter(player -> player.time() <= elapsedTime).count();
         if (validTimes != currentTimes)
             updated = ZonedDateTime.now();
         validTimes = currentTimes;
-        results.write(updated, standings);
+        Results.write(updated, RESULTS.toDOM(), new Standings().toDOM());
     }
 
-    private void writeStaticXMLFiles() throws IOException {
-        new XMLFile(Directory.DATA, "ballots.xml").write(IntStream.range(0, players.size())
+    private static void writeStaticFiles() throws IOException {
+        new XMLFile(Directory.DATA, "ballots.xml").write(IntStream.range(0, PLAYERS.size())
                 .mapToObj(playerNum -> Column.CATEGORIES.stream()
                         .map(category -> new Element("category")
                                 .setAttribute("name", category.name())
-                                .setAttribute("nominee", players.get(playerNum).answer(category)))
-                        .reduce(players.get(playerNum).toDOM(), Element::addContent)
+                                .setAttribute("nominee", PLAYERS.get(playerNum).answer(category)))
+                        .reduce(PLAYERS.get(playerNum).toDOM(), Element::addContent)
                         .setAttribute("id", String.valueOf(playerNum + 1))
-                        .setAttribute("time", String.valueOf(players.get(playerNum).time())))
+                        .setAttribute("time", String.valueOf(PLAYERS.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent));
 
-        for (Column column : Column.CATEGORIES)
-            new XMLFile(Directory.CATEGORY, column.name() + ".xml")
-                    .write(new Element("category").setAttribute("name", column.name()));
-
-        for (Player player : players)
+        for (Player player : PLAYERS)
             new XMLFile(Directory.PLAYER, player.answer(Column.FIRST_NAME) + "_"
                     + player.answer(Column.LAST_NAME) + ".xml").write(player.toDOM());
+
+        for (Column category : Column.CATEGORIES) {
+            category.writeChart();
+            new XMLFile(Directory.CATEGORY, category.name() + ".xml")
+                    .write(new Element("category").setAttribute("name", category.name()));
+        }
     }
 }

@@ -1,7 +1,5 @@
 package oscars;
 
-import java.awt.Paint;
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -12,6 +10,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,15 +20,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -49,8 +39,6 @@ public class Results {
         END;
     }
 
-    private final ImmutableList<Player> players;
-
     private final ImmutableMap<Column, ImmutableMap<String, String>> nomineeDescriptions;
 
     private final Map<Column, ImmutableSet<String>> winners;
@@ -58,9 +46,7 @@ public class Results {
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(ImmutableList<Player> inPlayers,
-            Function<Column, ImmutableMap<String, String>> inNominees) throws IOException {
-        players = inPlayers;
+    public Results(Function<Column, ImmutableMap<String, String>> inNominees) throws IOException {
         nomineeDescriptions = Column.CATEGORIES.stream()
                 .collect(ImmutableMap.toImmutableMap(category -> category, inNominees::apply));
         try {
@@ -79,8 +65,6 @@ public class Results {
         } catch (Exception e) {
             throw new IOException("Error reading results file: " + RESULTS_FILE, e);
         }
-        for (Column category : Column.CATEGORIES)
-            writeChart(category);
     }
 
     /** Prompt for results and return whether or not the user wants to continue entering results */
@@ -128,7 +112,7 @@ public class Results {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
-            writeChart(inCategory);
+            inCategory.writeChart();
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -162,6 +146,11 @@ public class Results {
         return Math.max(0, timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START));
     }
 
+    /** Get the elapsed time in seconds since the start of the broadcast */
+    public long elapsedTimeSeconds() {
+        return TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis());
+    }
+
     private Long timeInMillis(ShowTimeType inShowTimeType) {
         return Optional.ofNullable(showTimes.get(inShowTimeType)).map(ZonedDateTime::toInstant)
                 .orElseGet(Instant::now).toEpochMilli();
@@ -172,16 +161,9 @@ public class Results {
         return winners.computeIfAbsent(inCategory, k -> ImmutableSet.of());
     }
 
-    /** Write the given content to the results XML file */
-    public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
-        RESULTS_FILE.write(new Element("results").setAttribute("updated", updated)
-                .addContent(ImmutableList.copyOf(inContent)));
-    }
-
-    /** Write these Results and the given Standings to the results XML file */
-    public void write(ZonedDateTime inUpdated, Standings inStandings) throws IOException {
-        Element awardsDOM = Column.CATEGORIES.stream()
+    /** Get the DOM Element for these Results */
+    public Element toDOM() {
+        return Column.CATEGORIES.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(new Element("category").setAttribute("name", category.name()),
@@ -190,56 +172,12 @@ public class Results {
                 .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
                         .map(type -> new Attribute(type.name(), showTimes.get(type).toString()))
                         .collect(ImmutableList.toImmutableList()));
-        write(inUpdated, awardsDOM, inStandings.toDOM());
     }
 
-    /** Use a unique filename for each generated chart in case any browsers cache images */
-    private String chartName(Column inCategory) {
-        ImmutableSet<String> winners = winners(inCategory);
-        return inCategory.nominees().stream().map(nominee -> winners.contains(nominee) ? "1" : "0")
-                .collect(Collectors.joining("", inCategory.name(), ".png"));
-    }
-
-    /** Write the chart for this category */
-    private void writeChart(Column inCategory) throws IOException {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        inCategory.nominees().forEach(nominee -> dataset.setValue(0, "nominee", nominee));
-        players.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(inCategory)));
-
-        JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
-        chart.removeLegend();
-        chart.setPadding(new RectangleInsets(10, 0, 0, 25));
-
-        CategoryPlot plot = chart.getCategoryPlot();
-        plot.getRangeAxis().setRange(0, players.size() * 1.15);
-        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
-        plot.setBackgroundPaint(ChartPaint.BACKGROUND);
-
-        @SuppressWarnings("serial")
-        BarRenderer renderer = new BarRenderer() {
-            private final ImmutableSet<String> winners = winners(inCategory);
-
-            @Override
-            public Paint getItemPaint(final int inRow, final int column) {
-                return winners.isEmpty() ? ChartPaint.GRAY
-                        : winners.contains(inCategory.nominees().get(column)) ? ChartPaint.GREEN
-                                : ChartPaint.RED;
-            }
-        };
-        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        renderer.setDefaultItemLabelsVisible(true);
-        plot.setRenderer(renderer);
-
-        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, chartName(inCategory)), chart, 500,
-                300);
-    }
-
-    /** Delete all charts we don't need to keep */
-    public void cleanUpCharts() {
-        ImmutableSet<String> chartsToKeep = Column.CATEGORIES.stream().map(this::chartName)
-                .collect(ImmutableSet.toImmutableSet());
-        for (File file : Directory.CATEGORY.listFiles(
-                (directory, name) -> name.endsWith(".png") && !chartsToKeep.contains(name)))
-            file.delete();
+    /** Write the given content to the results XML file */
+    public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
+        String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
+        RESULTS_FILE.write(new Element("results").setAttribute("updated", updated)
+                .addContent(ImmutableList.copyOf(inContent)));
     }
 }

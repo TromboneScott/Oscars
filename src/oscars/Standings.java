@@ -1,9 +1,7 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,7 +10,7 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-/** The score and rank standings - Immutable */
+/** The current score and rank standings - Immutable */
 public final class Standings {
     private final long elapsedTime;
 
@@ -24,12 +22,13 @@ public final class Standings {
 
     private final ImmutableMap<Player, ImmutableSet<Player>> lostToMap;
 
-    public Standings(Collection<Player> inPlayers, Results inResults) {
-        elapsedTime = TimeUnit.MILLISECONDS.toSeconds(inResults.elapsedTimeMillis());
-        showEnded = inResults.showEnded();
-        winners = Column.CATEGORIES.stream()
-                .collect(ImmutableMap.toImmutableMap(category -> category, inResults::winners));
-        scoreMap = inPlayers.stream()
+    /** The Standings based on the current Results */
+    public Standings() {
+        elapsedTime = Oscars.RESULTS.elapsedTimeSeconds();
+        showEnded = Oscars.RESULTS.showEnded();
+        winners = Column.CATEGORIES.stream().collect(
+                ImmutableMap.toImmutableMap(category -> category, Oscars.RESULTS::winners));
+        scoreMap = Oscars.PLAYERS.stream()
                 .collect(ImmutableMap.toImmutableMap(player -> player, this::score));
         lostToMap = scoreMap.keySet().stream().collect(ImmutableMap.toImmutableMap(player -> player,
                 player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
@@ -40,11 +39,6 @@ public final class Standings {
         return Column.CATEGORIES.stream()
                 .filter(category -> winners.get(category).contains(inPlayer.answer(category)))
                 .map(Column::value).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /** The elapsed time in seconds since the start of the broadcast */
-    public long elapsedTime() {
-        return elapsedTime;
     }
 
     /** Get the DOM Element for these Standings */
