@@ -107,7 +107,7 @@ public final class Mapper {
         String input = Results.STDIN.nextLine();
         try {
             return inNominees.get(Integer.parseInt(input) - 1);
-        } catch (Exception e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid Input: " + input);
             return prompt(inCategory, inGuess, inNominees);
         }
