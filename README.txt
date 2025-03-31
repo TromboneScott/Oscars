@@ -73,7 +73,7 @@ Commit changes for the year
 -- While ballots are being collected
 
 From the new year folder run the batch:
-  oscars.bat Ballot (or ./oscars.sh -b)
+  oscars.bat ballot.Ballot (or ./oscars.sh -b)
 Leave it running so it can continuously download the ballots as they're entered
 
 Check the ballots as they come in and fix any names where they didn't capitalize properly
@@ -87,7 +87,7 @@ Kill (ctrl-c) the ballot process so nobody can see any late entries
 Wait until the next morning to let any late entries trickle in  
 
 From the new year folder run the batch:
-  oscars.bat Ballot emails (or ./oscars.sh -e)
+  oscars.bat ballot.Ballot emails (or ./oscars.sh -e)
 Send the list of names and emails to Scott Takeda.
 
 From the new year folder run the batch:

@@ -1,4 +1,4 @@
-package oscars;
+package oscars.ballot;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,27 +14,32 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-/** Map the data from the survey to the website - Immutable */
-public final class Mapper {
-    private static final XMLFile MAPPINGS_FILE = new XMLFile(Directory.DATA, "mappings.xml");
+import oscars.Results;
+import oscars.column.Category;
+import oscars.column.Column;
+import oscars.file.Directory;
+import oscars.file.XMLFile;
 
-    private final Ballots ballots = new Ballots();
+/** Ballots from the survey with answers mapped to the website values - Immutable */
+public final class MappedBallots extends Ballots {
+    private static final XMLFile MAPPINGS_FILE = new XMLFile(Directory.DATA, "mappings.xml");
 
     private final Map<Column, Map<String, String>> columnMaps = Column.ALL.stream()
             .collect(Collectors.toMap(column -> column, column -> new LinkedHashMap<>()));
 
     private final Map<String, String> matches = new HashMap<>();
 
-    /** Read any existing mappings, update with the ballots and write the mappings */
-    public Mapper() throws Exception {
+    /** Download ballots, read any existing mappings, update them and write the new mappings */
+    public MappedBallots() throws Exception {
+        super();
         readMappings();
         updateMappings();
         writeMappings();
     }
 
-    /** The players with their entries */
+    /** The players with their answers mapped to the website values */
     public ImmutableList<Player> players() {
-        return ballots.players().stream()
+        return answers().stream()
                 .map(player -> new Player(Column.ALL.stream()
                         .map(column -> columnMaps.get(column).getOrDefault(player.answer(column),
                                 player.answer(column)))
@@ -42,10 +47,11 @@ public final class Mapper {
                 .collect(ImmutableList.toImmutableList());
     }
 
-    /** The survey descriptions of the nominees in the given category */
-    public ImmutableMap<String, String> nomineeMapping(Column inCategory) {
-        return columnMaps.get(inCategory).entrySet().stream()
-                .collect(ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey, (a, b) -> b));
+    /** The survey descriptions of the nominees in the each category */
+    public ImmutableMap<Category, ImmutableMap<String, String>> nomineeMap() {
+        return Category.ALL.stream().collect(ImmutableMap.toImmutableMap(category -> category,
+                category -> columnMaps.get(category).entrySet().stream().collect(
+                        ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey, (a, b) -> b))));
     }
 
     private void readMappings() throws IOException {
@@ -54,7 +60,7 @@ public final class Mapper {
                     .ifPresent(mappingsDOM -> mappingsDOM.getChildren("column")
                             .forEach(columnDOM -> columnDOM.getChildren("nominee")
                                     .forEach(nomineeDOM -> columnMaps
-                                            .get(Column.of(columnDOM.getAttributeValue("name")))
+                                            .get(Category.of(columnDOM.getAttributeValue("name")))
                                             .put(nomineeDOM.getAttributeValue("ballot"),
                                                     nomineeDOM.getAttributeValue("name")))));
         } catch (Exception e) {
@@ -63,9 +69,9 @@ public final class Mapper {
     }
 
     private void updateMappings() {
-        for (Column category : Column.CATEGORIES) {
+        for (Category category : Category.ALL) {
             Map<String, String> columnMap = columnMaps.get(category);
-            ballots.players().stream().map(player -> player.answer(category))
+            answers().stream().map(player -> player.answer(category))
                     .filter(guess -> !columnMap.containsKey(guess))
                     .forEach(guess -> columnMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
@@ -80,7 +86,7 @@ public final class Mapper {
         }
     }
 
-    private String mapping(Column inCategory, String inGuess) {
+    private String mapping(Category inCategory, String inGuess) {
         String match = matches.get(inGuess);
         if (inCategory.nominees().contains(match))
             return match;
@@ -98,7 +104,7 @@ public final class Mapper {
         return mapping;
     }
 
-    private static String prompt(Column inCategory, String inGuess,
+    private static String prompt(Category inCategory, String inGuess,
             ImmutableList<String> inNominees) {
         System.out.println("\nCATEGORY: " + inCategory.name());
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
@@ -119,8 +125,7 @@ public final class Mapper {
                 .map(map -> new Element("nominee").setAttribute("name", map.getValue())
                         .setAttribute("ballot", map.getKey()))
                 .reduce(new Element("column").setAttribute("name", Column.ALL.get(column).name())
-                        .setAttribute("ballot", ballots.headers().get(column)),
-                        Element::addContent))
+                        .setAttribute("ballot", headers().get(column)), Element::addContent))
                 .reduce(new Element("mappings"), Element::addContent));
     }
 }

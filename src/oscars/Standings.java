@@ -10,13 +10,16 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import oscars.ballot.Player;
+import oscars.column.Category;
+
 /** The current score and rank standings - Immutable */
-public final class Standings {
+final class Standings {
     private final long elapsedTime;
 
     private final boolean showEnded;
 
-    private final ImmutableMap<Column, ImmutableSet<String>> winners;
+    private final ImmutableMap<Category, ImmutableSet<String>> winners;
 
     private final ImmutableMap<Player, BigDecimal> scoreMap;
 
@@ -26,7 +29,7 @@ public final class Standings {
     public Standings() {
         elapsedTime = Oscars.RESULTS.elapsedTimeSeconds();
         showEnded = Oscars.RESULTS.showEnded();
-        winners = Column.CATEGORIES.stream().collect(
+        winners = Category.ALL.stream().collect(
                 ImmutableMap.toImmutableMap(category -> category, Oscars.RESULTS::winners));
         scoreMap = Oscars.PLAYERS.stream()
                 .collect(ImmutableMap.toImmutableMap(player -> player, this::score));
@@ -36,14 +39,14 @@ public final class Standings {
     }
 
     private BigDecimal score(Player inPlayer) {
-        return Column.CATEGORIES.stream()
+        return Category.ALL.stream()
                 .filter(category -> winners.get(category).contains(inPlayer.answer(category)))
-                .map(Column::value).reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(Category::value).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /** Get the DOM Element for these Standings */
     public Element toDOM() {
-        int scale = Column.CATEGORIES.stream().map(Column::value).mapToInt(BigDecimal::scale).max()
+        int scale = Category.ALL.stream().map(Category::value).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
@@ -70,10 +73,10 @@ public final class Standings {
 
     private ImmutableMap<Player, BigDecimal> possibleScores(Player inPlayer, boolean inBest) {
         return scoreMap.entrySet().stream().collect(ImmutableMap.toImmutableMap(Entry::getKey,
-                scoreEntry -> Column.CATEGORIES.stream()
+                scoreEntry -> Category.ALL.stream()
                         .filter(category -> winners.get(category).isEmpty() && inBest == scoreEntry
                                 .getKey().answer(category).equals(inPlayer.answer(category)))
-                        .map(Column::value).reduce(scoreEntry.getValue(), BigDecimal::add)));
+                        .map(Category::value).reduce(scoreEntry.getValue(), BigDecimal::add)));
     }
 
     private long worstPossibleRank(Player inPlayer) {

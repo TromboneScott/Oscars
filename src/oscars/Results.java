@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -24,6 +23,11 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import oscars.column.Category;
+import oscars.column.CategoryChart;
+import oscars.file.Directory;
+import oscars.file.XMLFile;
 
 /** The current results of the Oscars contest */
 public class Results {
@@ -39,22 +43,22 @@ public class Results {
         END;
     }
 
-    private final ImmutableMap<Column, ImmutableMap<String, String>> nomineeDescriptions;
+    private final ImmutableMap<Category, ImmutableMap<String, String>> nomineeMap;
 
-    private final Map<Column, ImmutableSet<String>> winners;
+    private final Map<Category, ImmutableSet<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(Function<Column, ImmutableMap<String, String>> inNominees) throws IOException {
-        nomineeDescriptions = Column.CATEGORIES.stream()
-                .collect(ImmutableMap.toImmutableMap(category -> category, inNominees::apply));
+    public Results(ImmutableMap<Category, ImmutableMap<String, String>> inNomineeMap)
+            throws IOException {
+        nomineeMap = inNomineeMap;
         try {
             Element awardsDOM = RESULTS_FILE.read().map(element -> element.getChild("awards"))
                     .orElseGet(() -> new Element("EMPTY"));
             winners = awardsDOM.getChildren("category").stream()
                     .collect(Collectors.toMap(
-                            categoryDOM -> Column.of(categoryDOM.getAttributeValue("name")),
+                            categoryDOM -> Category.of(categoryDOM.getAttributeValue("name")),
                             categoryDOM -> categoryDOM.getChildren("nominee").stream()
                                     .map(nomineeDOM -> nomineeDOM.getAttributeValue("name"))
                                     .collect(ImmutableSet.toImmutableSet())));
@@ -70,10 +74,10 @@ public class Results {
     /** Prompt for results and return whether or not the user wants to continue entering results */
     public boolean prompt() throws IOException {
         System.out.println("Results");
-        for (int line = 0; line < Column.CATEGORIES.size() + ShowTimeType.values().length; line++)
+        for (int line = 0; line < Category.ALL.size() + ShowTimeType.values().length; line++)
             System.out.println((line + 1) + ": "
-                    + (line < Column.CATEGORIES.size() ? toString(Column.CATEGORIES.get(line))
-                            : toString(ShowTimeType.values()[line - Column.CATEGORIES.size()])));
+                    + (line < Category.ALL.size() ? toString(Category.ALL.get(line))
+                            : toString(ShowTimeType.values()[line - Category.ALL.size()])));
 
         System.out.print("Enter number (0 to exit): ");
         String input = STDIN.nextLine();
@@ -81,17 +85,17 @@ public class Results {
             return false;
         try {
             int entry = Integer.parseInt(input) - 1;
-            if (entry < Column.CATEGORIES.size())
-                promptWinner(Column.CATEGORIES.get(entry));
+            if (entry < Category.ALL.size())
+                promptWinner(Category.ALL.get(entry));
             else
-                promptTime(ShowTimeType.values()[entry - Column.CATEGORIES.size()]);
+                promptTime(ShowTimeType.values()[entry - Category.ALL.size()]);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
         return true;
     }
 
-    private String toString(Column inCategory) {
+    private String toString(Category inCategory) {
         return inCategory.name() + " = " + String.join(", ", winners(inCategory));
     }
 
@@ -100,11 +104,11 @@ public class Results {
                 + ObjectUtils.toString(showTimes.get(inShowTimeType), () -> "");
     }
 
-    private void promptWinner(Column inCategory) throws IOException {
+    private void promptWinner(Category inCategory) throws IOException {
         System.out.println("\n" + toString(inCategory));
 
-        IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println((x + 1)
-                + ": " + nomineeDescriptions.get(inCategory).get(inCategory.nominees().get(x))));
+        IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println(
+                (x + 1) + ": " + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
         System.out.print("Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): ");
         String input = STDIN.nextLine();
@@ -112,7 +116,7 @@ public class Results {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
-            inCategory.writeChart();
+            new CategoryChart(inCategory).write();
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             System.out.println("\nInvalid selection: " + input);
         }
@@ -157,17 +161,16 @@ public class Results {
     }
 
     /** Get the winner(s) of the given category in display order, may be empty but won't be null */
-    public ImmutableSet<String> winners(Column inCategory) {
+    public ImmutableSet<String> winners(Category inCategory) {
         return winners.computeIfAbsent(inCategory, k -> ImmutableSet.of());
     }
 
     /** Get the DOM Element for these Results */
     public Element toDOM() {
-        return Column.CATEGORIES.stream()
+        return Category.ALL.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
-                        .reduce(new Element("category").setAttribute("name", category.name()),
-                                Element::addContent))
+                        .reduce(category.toDOM(), Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)
                 .setAttributes(Stream.of(ShowTimeType.values()).filter(showTimes::containsKey)
                         .map(type -> new Attribute(type.name(), showTimes.get(type).toString()))

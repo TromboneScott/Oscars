@@ -1,4 +1,4 @@
-package oscars;
+package oscars.ballot;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,13 +24,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.opencsv.CSVReader;
 
+import oscars.Results;
+import oscars.column.Column;
+import oscars.column.DataColumn;
+
 /** The data from the ballot survey - Immutable */
-public final class Ballots {
+class Ballots {
     private static final String URL_FILE = "ResponsesURL.txt";
 
     private final ImmutableList<String> headers;
 
-    private final ImmutableCollection<Player> all;
+    private final ImmutableCollection<Ballot> all;
 
     /** Output either the name and timestamp or the email for each Ballot */
     public static void main(String[] inArgs) throws Exception {
@@ -38,15 +42,15 @@ public final class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream().filter(player -> !player.answer(Column.EMAIL).isEmpty())
-                    .forEach(player -> System.out.println(player.answer(Column.LAST_NAME) + ", "
-                            + player.answer(Column.FIRST_NAME) + " = "
-                            + player.answer(Column.EMAIL)));
+            new Ballots().all.stream().filter(player -> !player.answer(DataColumn.EMAIL).isEmpty())
+                    .forEach(player -> System.out.println(player.answer(DataColumn.LAST_NAME) + ", "
+                            + player.answer(DataColumn.FIRST_NAME) + " = "
+                            + player.answer(DataColumn.EMAIL)));
         else
             throw new IllegalArgumentException("Unknown action: " + inArgs[0]);
     }
 
-    /** Download the data from the ballot survey */
+    /** Download the ballots from the survey */
     public Ballots() throws Exception {
         try (Stream<String> lines = Files.lines(
                 Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(URL_FILE),
@@ -60,38 +64,41 @@ public final class Ballots {
                 if (headers.size() != Column.ALL.size())
                     throw new Exception("Number of columns on ballots: " + headers.size()
                             + " does not match number of defined columns: " + Column.ALL.size());
-                all = reader.readAll().stream().map(Player::new)
+                all = reader.readAll().stream().map(Ballot::new)
                         .collect(ImmutableList.toImmutableList());
             }
         }
     }
 
     /** The column headers of the survey */
-    public ImmutableList<String> headers() {
+    protected final ImmutableList<String> headers() {
         return headers;
     }
 
-    /** The players from the survey using the latest ballot for each Player */
-    public ImmutableCollection<Player> players() {
-        return all.stream().collect(ImmutableMap.toImmutableMap(
-                player -> player.answer(Column.LAST_NAME) + "|" + player.answer(Column.FIRST_NAME),
-                player -> player, BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
+    /** The answers from the survey using the latest ballot for each Player */
+    protected final ImmutableCollection<Ballot> answers() {
+        return all.stream()
+                .collect(ImmutableMap.toImmutableMap(
+                        answers -> answers.answer(DataColumn.LAST_NAME) + "|"
+                                + answers.answer(DataColumn.FIRST_NAME),
+                        answers -> answers,
+                        BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
                 .values();
     }
 
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
             try {
-                ImmutableCollection<Player> players = new Ballots().players();
-                LocalDateTime maxTimestamp = players.stream().map(Ballots::timestamp)
+                ImmutableCollection<Ballot> answers = new Ballots().answers();
+                LocalDateTime maxTimestamp = answers.stream().map(Ballots::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
-                    System.err.println(LocalDateTime.now() + " - Downloaded: " + players.size()
+                    System.err.println(LocalDateTime.now() + " - Downloaded: " + answers.size()
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
                     Results.write(ZonedDateTime.now(),
-                            players.stream()
+                            answers.stream()
                                     .map(player -> player.toDOM().setAttribute("timestamp",
                                             timestamp(player).toString()))
                                     .reduce(new Element("ballots"), Element::addContent));
@@ -102,8 +109,8 @@ public final class Ballots {
             }
     }
 
-    private static LocalDateTime timestamp(Player inPlayer) {
-        return LocalDateTime.parse(inPlayer.answer(Column.TIMESTAMP),
+    private static LocalDateTime timestamp(Ballot inAnswers) {
+        return LocalDateTime.parse(inAnswers.answer(DataColumn.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 }
