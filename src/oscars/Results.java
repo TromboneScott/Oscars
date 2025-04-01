@@ -145,14 +145,14 @@ public class Results {
         return showTimes.containsKey(ShowTimeType.END);
     }
 
-    /** Get the elapsed time in milliseconds since the start of the broadcast */
-    public long elapsedTimeMillis() {
-        return Math.max(0, timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START));
-    }
-
     /** Get the elapsed time in seconds since the start of the broadcast */
     public long elapsedTimeSeconds() {
-        return TimeUnit.MILLISECONDS.toSeconds(elapsedTimeMillis());
+        return Math.max(0, TimeUnit.MILLISECONDS.toSeconds(millisSinceStart()));
+    }
+
+    /** Get the number of milliseconds since the start of the broadcast (can be negative) */
+    public long millisSinceStart() {
+        return timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START);
     }
 
     private Long timeInMillis(ShowTimeType inShowTimeType) {
