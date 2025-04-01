@@ -30,7 +30,7 @@ public class Oscars {
     public static final Results RESULTS;
 
     static {
-        System.out.print("Downloading ballots...");
+        System.out.println("Downloading ballots...");
         try {
             MappedBallots ballots = new MappedBallots();
             PLAYERS = ballots.players();
@@ -39,7 +39,6 @@ public class Oscars {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        System.out.println(" DONE");
     }
 
     /** Prompt for Oscars results, store them and create output files */

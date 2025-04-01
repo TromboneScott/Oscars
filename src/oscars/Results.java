@@ -73,13 +73,13 @@ public class Results {
 
     /** Prompt for results and return whether or not the user wants to continue entering results */
     public boolean prompt() throws IOException {
-        System.out.println("Results");
+        System.out.println("\033[1;4mRESULTS\033[m");
         for (int line = 0; line < Category.ALL.size() + ShowTimeType.values().length; line++)
-            System.out.println((line + 1) + ": "
+            System.out.println(formatNumber(line)
                     + (line < Category.ALL.size() ? toString(Category.ALL.get(line))
                             : toString(ShowTimeType.values()[line - Category.ALL.size()])));
 
-        System.out.print("Enter number (0 to exit): ");
+        System.out.print("\033[33mEnter number (0 to exit):\033[m ");
         String input = STDIN.nextLine();
         if ("0".equals(input))
             return false;
@@ -96,21 +96,29 @@ public class Results {
     }
 
     private String toString(Category inCategory) {
-        return inCategory.name() + " = " + String.join(", ", winners(inCategory));
+        return inCategory.name() + formatAnswer(String.join(", ", winners(inCategory)));
     }
 
     private String toString(ShowTimeType inShowTimeType) {
-        return "Show Time " + inShowTimeType + " = "
-                + ObjectUtils.toString(showTimes.get(inShowTimeType), () -> "");
+        return "Show Time " + inShowTimeType
+                + formatAnswer(ObjectUtils.toString(showTimes.get(inShowTimeType), () -> ""));
+    }
+
+    private String formatAnswer(String inAnswer) {
+        return "\033[m" + (inAnswer.isEmpty() ? "" : " = \033[32m" + inAnswer + "\033[m");
+    }
+
+    private String formatNumber(int inNumber) {
+        return String.format("\033[33m%2d\033[m: ", inNumber + 1);
     }
 
     private void promptWinner(Category inCategory) throws IOException {
-        System.out.println("\n" + toString(inCategory));
+        System.out.println("\n\033[1;4m" + toString(inCategory));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println(
-                (x + 1) + ": " + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
-        System.out.print("Select number(s) (use " + WINNER_DELIMITER
-                + " to separate ties, leave blank to remove): ");
+                formatNumber(x) + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
+        System.out.print("\033[33mSelect number(s) (use " + WINNER_DELIMITER
+                + " to separate ties, leave blank to remove):\033[m ");
         String input = STDIN.nextLine();
         try {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
@@ -123,9 +131,9 @@ public class Results {
     }
 
     private void promptTime(ShowTimeType inShowTimeType) {
-        System.out.println("\n" + toString(inShowTimeType));
-        System.out.println("Format: " + LocalDateTime.now()
-                + "\nEnter time (use * for system time or leave blank to remove):");
+        System.out.println("\n\033[1;4m" + toString(inShowTimeType));
+        System.out.println("Format: \033[36m" + LocalDateTime.now()
+                + "\n\033[33mEnter time (use * for system time or leave blank to remove):\033[m");
         String input = STDIN.nextLine();
         if (input.isEmpty())
             showTimes.remove(inShowTimeType);
