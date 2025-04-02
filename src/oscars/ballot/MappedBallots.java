@@ -40,9 +40,9 @@ public final class MappedBallots extends Ballots {
     /** The players with their answers mapped to the website values */
     public ImmutableList<Player> players() {
         return answers().stream()
-                .map(player -> new Player(Column.ALL.stream()
-                        .map(column -> columnMaps.get(column).getOrDefault(player.answer(column),
-                                player.answer(column)))
+                .map(ballot -> new Player(Column.ALL.stream()
+                        .map(column -> columnMaps.get(column).getOrDefault(ballot.answer(column),
+                                ballot.answer(column)))
                         .toArray(String[]::new)))
                 .collect(ImmutableList.toImmutableList());
     }
@@ -71,16 +71,16 @@ public final class MappedBallots extends Ballots {
     private void updateMappings() {
         for (Category category : Category.ALL) {
             Map<String, String> columnMap = columnMaps.get(category);
-            answers().stream().map(player -> player.answer(category))
+            answers().stream().map(ballot -> ballot.answer(category))
                     .filter(guess -> !columnMap.containsKey(guess))
                     .forEach(guess -> columnMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
             for (String nominee : category.nominees())
                 if (!columnMap.containsValue(nominee)) {
-                    System.out.println("\n--Nominee not chosen on any Ballots--");
+                    System.out.println("\n\033[1;4mNominee not chosen on any Ballots\033[m");
                     System.out.println("CATEGORY: " + category.name());
                     System.out.println("NOMINEE: " + nominee);
-                    System.out.print("Enter Ballot Description: ");
+                    System.out.print("\033[33mEnter Ballot Description:\033[m ");
                     columnMap.put(Results.STDIN.nextLine(), nominee);
                 }
         }
@@ -91,8 +91,8 @@ public final class MappedBallots extends Ballots {
         if (inCategory.nominees().contains(match))
             return match;
         if (match != null)
-            System.out.println(
-                    "\n\n*** WARNING - Existing mapping found ***\n" + inGuess + "\n" + match);
+            System.out.println("\n\n\033[1;33mWARNING - Existing mapping found\033[m\n"
+                    + inCategory.name() + ": " + inGuess + " -> " + match);
 
         ImmutableList<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
@@ -106,15 +106,15 @@ public final class MappedBallots extends Ballots {
 
     private static String prompt(Category inCategory, String inGuess,
             ImmutableList<String> inNominees) {
-        System.out.println("\nCATEGORY: " + inCategory.name());
+        System.out.println("\n\033[1;4m" + inCategory.name() + "\033[m");
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
-            System.out.println((nomineeNum + 1) + ": " + inNominees.get(nomineeNum));
-        System.out.print(inGuess + " = ");
+            System.out.println(Results.formatNumber(nomineeNum) + inNominees.get(nomineeNum));
+        System.out.print("\033[33m" + inGuess + "\033[m = ");
         String input = Results.STDIN.nextLine();
         try {
             return inNominees.get(Integer.parseInt(input) - 1);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            System.out.println("\nInvalid Input: " + input);
+            Results.outputInvalidInput(input);
             return prompt(inCategory, inGuess, inNominees);
         }
     }

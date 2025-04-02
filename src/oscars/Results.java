@@ -90,9 +90,13 @@ public class Results {
             else
                 promptTime(ShowTimeType.values()[entry - Category.ALL.size()]);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            System.out.println("\nInvalid selection: " + input);
+            outputInvalidInput(input);
         }
         return true;
+    }
+
+    public static void outputInvalidInput(String inInput) {
+        System.out.println("\nInvalid input: \033[31m" + inInput + "\033[m");
     }
 
     private String toString(Category inCategory) {
@@ -104,11 +108,11 @@ public class Results {
                 + formatAnswer(ObjectUtils.toString(showTimes.get(inShowTimeType), () -> ""));
     }
 
-    private String formatAnswer(String inAnswer) {
+    private static String formatAnswer(String inAnswer) {
         return "\033[m" + (inAnswer.isEmpty() ? "" : " = \033[32m" + inAnswer + "\033[m");
     }
 
-    private String formatNumber(int inNumber) {
+    public static String formatNumber(int inNumber) {
         return String.format("\033[33m%2d\033[m: ", inNumber + 1);
     }
 
@@ -126,7 +130,7 @@ public class Results {
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
             new CategoryChart(inCategory).write();
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            System.out.println("\nInvalid selection: " + input);
+            outputInvalidInput(input);
         }
     }
 
@@ -137,14 +141,12 @@ public class Results {
         String input = STDIN.nextLine();
         if (input.isEmpty())
             showTimes.remove(inShowTimeType);
-        else if ("*".equals(input))
-            showTimes.put(inShowTimeType, ZonedDateTime.now());
         else
             try {
-                showTimes.put(inShowTimeType,
-                        LocalDateTime.parse(input).atZone(ZoneId.systemDefault()));
+                showTimes.put(inShowTimeType, "*".equals(input) ? ZonedDateTime.now()
+                        : LocalDateTime.parse(input).atZone(ZoneId.systemDefault()));
             } catch (DateTimeParseException e) {
-                System.out.println("\nInvalid time: " + input);
+                outputInvalidInput(input);
             }
     }
 
