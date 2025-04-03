@@ -40,10 +40,8 @@ public final class MappedBallots extends Ballots {
     /** The players with their answers mapped to the website values */
     public ImmutableList<Player> players() {
         return answers().stream()
-                .map(ballot -> new Player(Column.ALL.stream()
-                        .map(column -> columnMaps.get(column).getOrDefault(ballot.answer(column),
-                                ballot.answer(column)))
-                        .toArray(String[]::new)))
+                .map(ballot -> new Player(column -> columnMaps.get(column)
+                        .getOrDefault(ballot.answer(column), ballot.answer(column))))
                 .collect(ImmutableList.toImmutableList());
     }
 
@@ -91,8 +89,9 @@ public final class MappedBallots extends Ballots {
         if (inCategory.nominees().contains(match))
             return match;
         if (match != null)
-            System.out.println("\n\n\033[1;33mWARNING - Existing mapping found\033[m\n"
-                    + inCategory.name() + ": " + inGuess + " -> " + match);
+            System.out.println("\n\n\033[4;38;5;226mWARNING (" + inCategory.name()
+                    + ")\033[m\nPrevious category mapped guess to different nominee\n\033[36m"
+                    + inGuess + " -> " + match + "\033[m");
 
         ImmutableList<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
