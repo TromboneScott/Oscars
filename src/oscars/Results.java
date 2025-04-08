@@ -73,9 +73,9 @@ public class Results {
 
     /** Prompt for results and return whether or not the user wants to continue entering results */
     public boolean prompt() throws IOException {
-        System.out.println(Font.TITLE + "RESULTS" + Font.NONE);
+        System.out.println(Font.title("RESULTS"));
         for (int line = 0; line < Category.ALL.size() + ShowTimeType.values().length; line++)
-            System.out.println(formatNumber(line)
+            System.out.println(Font.menuNumber(line)
                     + (line < Category.ALL.size() ? toString(Category.ALL.get(line))
                             : toString(ShowTimeType.values()[line - Category.ALL.size()])));
 
@@ -112,15 +112,11 @@ public class Results {
         return Font.NONE + (inAnswer.isEmpty() ? "" : " = " + Font.GREEN + inAnswer + Font.NONE);
     }
 
-    public static String formatNumber(int inNumber) {
-        return String.format("%s%2d%s: ", Font.BROWN, inNumber + 1, Font.NONE);
-    }
-
     private void promptWinner(Category inCategory) throws IOException {
-        System.out.println("\n" + Font.TITLE + toString(inCategory));
+        System.out.println("\n" + Font.title(toString(inCategory)));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println(
-                formatNumber(x) + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
+                Font.menuNumber(x) + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
         System.out.print(Font.BROWN + "Select number(s) (use " + WINNER_DELIMITER
                 + " to separate ties, leave blank to remove): " + Font.NONE);
         String input = STDIN.nextLine();
@@ -135,7 +131,7 @@ public class Results {
     }
 
     private void promptTime(ShowTimeType inShowTimeType) {
-        System.out.println("\n" + Font.TITLE + toString(inShowTimeType));
+        System.out.println("\n" + Font.title(toString(inShowTimeType)));
         System.out.println("Format: " + Font.CYAN + LocalDateTime.now() + "\n" + Font.BROWN
                 + "Enter time (use * for system time or leave blank to remove):" + Font.NONE);
         String input = STDIN.nextLine();

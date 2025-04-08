@@ -76,8 +76,7 @@ public final class MappedBallots extends Ballots {
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
             for (String nominee : category.nominees())
                 if (!columnMap.containsValue(nominee)) {
-                    System.out.println(
-                            "\n" + Font.TITLE + "Nominee not chosen on any Ballots" + Font.NONE);
+                    System.out.println("\n" + Font.title("Nominee not chosen on any Ballots"));
                     System.out.println("CATEGORY: " + category.name());
                     System.out.println("NOMINEE: " + nominee);
                     System.out.print(Font.BROWN + "Enter Ballot Description: " + Font.NONE);
@@ -107,9 +106,9 @@ public final class MappedBallots extends Ballots {
 
     private static String prompt(Category inCategory, String inGuess,
             ImmutableList<String> inNominees) {
-        System.out.println("\n" + Font.TITLE + inCategory.name() + Font.NONE);
+        System.out.println("\n" + Font.title(inCategory.name()));
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
-            System.out.println(Results.formatNumber(nomineeNum) + inNominees.get(nomineeNum));
+            System.out.println(Font.menuNumber(nomineeNum) + inNominees.get(nomineeNum));
         System.out.print(Font.BROWN + inGuess + Font.NONE + " = ");
         String input = Results.STDIN.nextLine();
         try {
