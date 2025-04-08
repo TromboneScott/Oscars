@@ -14,6 +14,7 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import oscars.Font;
 import oscars.Results;
 import oscars.column.Category;
 import oscars.column.Column;
@@ -75,10 +76,11 @@ public final class MappedBallots extends Ballots {
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));
             for (String nominee : category.nominees())
                 if (!columnMap.containsValue(nominee)) {
-                    System.out.println("\n\033[1;4mNominee not chosen on any Ballots\033[m");
+                    System.out.println(
+                            "\n" + Font.TITLE + "Nominee not chosen on any Ballots" + Font.NONE);
                     System.out.println("CATEGORY: " + category.name());
                     System.out.println("NOMINEE: " + nominee);
-                    System.out.print("\033[33mEnter Ballot Description:\033[m ");
+                    System.out.print(Font.BROWN + "Enter Ballot Description: " + Font.NONE);
                     columnMap.put(Results.STDIN.nextLine(), nominee);
                 }
         }
@@ -89,9 +91,9 @@ public final class MappedBallots extends Ballots {
         if (inCategory.nominees().contains(match))
             return match;
         if (match != null)
-            System.out.println("\n\n\033[4;38;5;226mWARNING (" + inCategory.name()
-                    + ")\033[m\nPrevious category mapped guess to different nominee\n\033[36m"
-                    + inGuess + " -> " + match + "\033[m");
+            System.out.println("\n\n" + Font.YELLOW + "WARNING (" + inCategory.name() + ")"
+                    + Font.NONE + "\nPrevious category mapped guess to different nominee\n"
+                    + Font.CYAN + inGuess + " -> " + match + Font.NONE);
 
         ImmutableList<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
@@ -105,10 +107,10 @@ public final class MappedBallots extends Ballots {
 
     private static String prompt(Category inCategory, String inGuess,
             ImmutableList<String> inNominees) {
-        System.out.println("\n\033[1;4m" + inCategory.name() + "\033[m");
+        System.out.println("\n" + Font.TITLE + inCategory.name() + Font.NONE);
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println(Results.formatNumber(nomineeNum) + inNominees.get(nomineeNum));
-        System.out.print("\033[33m" + inGuess + "\033[m = ");
+        System.out.print(Font.BROWN + inGuess + Font.NONE + " = ");
         String input = Results.STDIN.nextLine();
         try {
             return inNominees.get(Integer.parseInt(input) - 1);
