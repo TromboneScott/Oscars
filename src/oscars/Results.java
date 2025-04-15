@@ -76,10 +76,10 @@ public class Results {
         System.out.println(Font.title("RESULTS"));
         for (int line = 0; line < Category.ALL.size() + ShowTimeType.values().length; line++)
             System.out.println(Font.menuNumber(line)
-                    + (line < Category.ALL.size() ? toString(Category.ALL.get(line))
-                            : toString(ShowTimeType.values()[line - Category.ALL.size()])));
+                    + (line < Category.ALL.size() ? toHeader(Category.ALL.get(line), false)
+                            : toHeader(ShowTimeType.values()[line - Category.ALL.size()], false)));
 
-        System.out.print(Font.BROWN + "Enter number (0 to exit): " + Font.NONE);
+        System.out.print(Font.BROWN.apply("Enter number (0 to exit): "));
         String input = STDIN.nextLine();
         if ("0".equals(input))
             return false;
@@ -96,29 +96,30 @@ public class Results {
     }
 
     public static void outputInvalidInput(String inInput) {
-        System.out.println("\nInvalid input: " + Font.RED + inInput + Font.NONE);
+        System.out.println(Font.YELLOW.apply("\nInvalid response: ") + inInput);
     }
 
-    private String toString(Category inCategory) {
-        return inCategory.name() + formatAnswer(String.join(", ", winners(inCategory)));
+    private String toHeader(Category inCategory, boolean inTitle) {
+        return toHeader(inCategory.name(), inTitle, String.join(", ", winners(inCategory)));
     }
 
-    private String toString(ShowTimeType inShowTimeType) {
-        return "Show Time " + inShowTimeType
-                + formatAnswer(ObjectUtils.toString(showTimes.get(inShowTimeType), () -> ""));
+    private String toHeader(ShowTimeType inShowTimeType, boolean inTitle) {
+        return toHeader("Show Time " + inShowTimeType, inTitle,
+                ObjectUtils.toString(showTimes.get(inShowTimeType), () -> ""));
     }
 
-    private static String formatAnswer(String inAnswer) {
-        return Font.NONE + (inAnswer.isEmpty() ? "" : " = " + Font.GREEN + inAnswer + Font.NONE);
+    private static String toHeader(String inHeader, boolean inTitle, String inAnswer) {
+        return (inTitle ? Font.title(inHeader) : inHeader)
+                + (inAnswer.isEmpty() ? "" : " = " + Font.GREEN.apply(inAnswer));
     }
 
     private void promptWinner(Category inCategory) throws IOException {
-        System.out.println("\n" + Font.title(toString(inCategory)));
+        System.out.println("\n" + toHeader(inCategory, true));
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println(
                 Font.menuNumber(x) + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
-        System.out.print(Font.BROWN + "Select number(s) (use " + WINNER_DELIMITER
-                + " to separate ties, leave blank to remove): " + Font.NONE);
+        System.out.print(Font.BROWN.apply("Select number(s) (use " + WINNER_DELIMITER
+                + " to separate ties, leave blank to remove): "));
         String input = STDIN.nextLine();
         try {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
@@ -131,9 +132,9 @@ public class Results {
     }
 
     private void promptTime(ShowTimeType inShowTimeType) {
-        System.out.println("\n" + Font.title(toString(inShowTimeType)));
-        System.out.println("Format: " + Font.CYAN + LocalDateTime.now() + "\n" + Font.BROWN
-                + "Enter time (use * for system time or leave blank to remove):" + Font.NONE);
+        System.out.println("\n" + toHeader(inShowTimeType, true));
+        System.out.println("Format: " + Font.CYAN.apply(LocalDateTime.now() + "\n")
+                + Font.BROWN.apply("Enter time (use * for system time or leave blank to remove):"));
         String input = STDIN.nextLine();
         if (input.isEmpty())
             showTimes.remove(inShowTimeType);

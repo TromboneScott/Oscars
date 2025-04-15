@@ -79,7 +79,7 @@ public final class MappedBallots extends Ballots {
                     System.out.println("\n" + Font.title("Nominee not chosen on any Ballots"));
                     System.out.println("CATEGORY: " + category.name());
                     System.out.println("NOMINEE: " + nominee);
-                    System.out.print(Font.BROWN + "Enter Ballot Description: " + Font.NONE);
+                    System.out.print(Font.BROWN.apply("Enter Ballot Description: "));
                     columnMap.put(Results.STDIN.nextLine(), nominee);
                 }
         }
@@ -90,9 +90,10 @@ public final class MappedBallots extends Ballots {
         if (inCategory.nominees().contains(match))
             return match;
         if (match != null)
-            System.out.println("\n\n" + Font.YELLOW + "WARNING (" + inCategory.name() + ")"
-                    + Font.NONE + "\nPrevious category mapped guess to different nominee\n"
-                    + Font.CYAN + inGuess + " -> " + match + Font.NONE);
+            System.out.println("\n\n"
+                    + Font.YELLOW.apply(Font.UNDERLINE.apply("WARNING") + " - " + inCategory.name())
+                    + "\nPrevious category mapped guess to different nominee\n"
+                    + Font.CYAN.apply(inGuess + " -> " + match));
 
         ImmutableList<String> mappings = inCategory.nominees().stream()
                 .filter(nominee -> inGuess.contains(nominee.toUpperCase()))
@@ -109,7 +110,7 @@ public final class MappedBallots extends Ballots {
         System.out.println("\n" + Font.title(inCategory.name()));
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)
             System.out.println(Font.menuNumber(nomineeNum) + inNominees.get(nomineeNum));
-        System.out.print(Font.BROWN + inGuess + Font.NONE + " = ");
+        System.out.print(Font.BROWN.apply(inGuess) + " = ");
         String input = Results.STDIN.nextLine();
         try {
             return inNominees.get(Integer.parseInt(input) - 1);

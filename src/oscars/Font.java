@@ -1,35 +1,41 @@
 package oscars;
 
+import java.util.regex.Pattern;
+
+/** Apply ANSI escape codes for text colors and graphics modes - Immutable */
 public final class Font {
-    public static final String NONE = format("");
+    private static final String RESET = new Font("").tag;
 
-    public static final String BOLD = format("1");
+    public static final Font BOLD = new Font("1");
 
-    public static final String UNDERLINE = format("4");
+    public static final Font UNDERLINE = new Font("4");
 
-    public static final String TITLE = BOLD + UNDERLINE;
+    public static final Font GREEN = new Font("32");
 
-    public static final String RED = format("31");
+    public static final Font BROWN = new Font("33");
 
-    public static final String GREEN = format("32");
+    public static final Font CYAN = new Font("36");
 
-    public static final String BROWN = format("33");
+    public static final Font YELLOW = new Font("38;5;226");
 
-    public static final String CYAN = format("36");
+    private final String tag;
 
-    public static final String YELLOW = format("4;38;5;226");
-
-    private static String format(String inCode) {
-        return "\033[" + inCode + "m";
+    private Font(String inCode) {
+        tag = "\033[" + inCode + "m";
     }
 
-    /** Format the title using bold and underline */
+    /** Apply this Font to the given text */
+    public String apply(String inText) {
+        return tag + inText.replaceAll(Pattern.quote(RESET), RESET + tag) + RESET;
+    }
+
+    /** Format the title using BOLD and UNDERLINE */
     public static String title(String inTitle) {
-        return Font.BOLD + Font.UNDERLINE + inTitle + Font.NONE;
+        return BOLD.apply(UNDERLINE.apply(inTitle));
     }
 
-    /** Create the formatted menu number for the zero-based index (add one to it) */
+    /** Create the formatted menu number for the zero-based index (adding one to it) */
     public static String menuNumber(int inIndex) {
-        return String.format("%s%2d: %s", Font.BROWN, inIndex + 1, Font.NONE);
+        return BROWN.apply(String.format("%2d: ", inIndex + 1));
     }
 }
