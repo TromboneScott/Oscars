@@ -5,8 +5,8 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
 /** Write the results in a background thread so we can prompt for winners - Singleton */
-final class ResultsUpdater implements Runnable {
-    public static final ResultsUpdater INSTANCE = new ResultsUpdater();
+enum ResultsUpdater implements Runnable {
+    INSTANCE;
 
     private static final long MAX_WAIT = TimeUnit.MINUTES.toMillis(1);
 
@@ -15,9 +15,6 @@ final class ResultsUpdater implements Runnable {
     private long validTimes = 0; // The number of players whose time guess has been reached
 
     private ZonedDateTime updated = ZonedDateTime.now(); // The last time the results changed
-
-    private ResultsUpdater() {
-    }
 
     /**
      * Write the results and wait until we need to update the times again. Continue until the main

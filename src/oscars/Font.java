@@ -3,20 +3,15 @@ package oscars;
 import java.util.regex.Pattern;
 
 /** Apply ANSI escape codes for text colors and graphics modes - Immutable */
-public final class Font {
-    private static final String RESET = new Font("").tag;
+public enum Font {
+    BOLD("1"),
+    UNDERLINE("4"),
+    GREEN("32"),
+    BROWN("33"),
+    CYAN("36"),
+    YELLOW("38;5;226");
 
-    public static final Font BOLD = new Font("1");
-
-    public static final Font UNDERLINE = new Font("4");
-
-    public static final Font GREEN = new Font("32");
-
-    public static final Font BROWN = new Font("33");
-
-    public static final Font CYAN = new Font("36");
-
-    public static final Font YELLOW = new Font("38;5;226");
+    private static final String RESET = "\033[m";
 
     private final String tag;
 

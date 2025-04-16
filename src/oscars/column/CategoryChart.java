@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import oscars.Oscars;
 import oscars.file.Directory;
 
-/** A chart of the nominees in the given Category using the current Results */
+/** A chart of the nominees in the given Category using the current Results - Immutable */
 public final class CategoryChart {
     private static final int WIDTH = 500;
 

@@ -100,7 +100,8 @@ public class Results {
     }
 
     private String toHeader(Category inCategory, boolean inTitle) {
-        return toHeader(inCategory.name(), inTitle, String.join(", ", winners(inCategory)));
+        return toHeader(inCategory.name(), inTitle,
+                String.join(Font.CYAN.apply(" AND "), winners(inCategory)));
     }
 
     private String toHeader(ShowTimeType inShowTimeType, boolean inTitle) {
