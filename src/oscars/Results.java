@@ -96,12 +96,12 @@ public class Results {
     }
 
     public static void outputInvalidInput(String inInput) {
-        System.out.println(Font.YELLOW.apply("\nInvalid response: ") + inInput);
+        System.out.println(Font.YELLOW.apply("\nInvalid response: ") + Font.INVERSE.apply(inInput));
     }
 
     private String toHeader(Category inCategory, boolean inTitle) {
         return toHeader(inCategory.name(), inTitle,
-                String.join(Font.CYAN.apply(" AND "), winners(inCategory)));
+                String.join(Font.WHITE.apply(" AND "), winners(inCategory)));
     }
 
     private String toHeader(ShowTimeType inShowTimeType, boolean inTitle) {
@@ -119,8 +119,8 @@ public class Results {
 
         IntStream.range(0, inCategory.nominees().size()).forEach(x -> System.out.println(
                 Font.menuNumber(x) + nomineeMap.get(inCategory).get(inCategory.nominees().get(x))));
-        System.out.print(Font.BROWN.apply("Select number(s) (use " + WINNER_DELIMITER
-                + " to separate ties, leave blank to remove): "));
+        System.out.println(Font.CYAN.apply("Put a comma between multiple winners"));
+        System.out.print(Font.BROWN.apply("Enter number(s) (leave blank to remove): "));
         String input = STDIN.nextLine();
         try {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))

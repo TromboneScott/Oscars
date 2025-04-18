@@ -6,9 +6,11 @@ import java.util.regex.Pattern;
 public enum Font {
     BOLD("1"),
     UNDERLINE("4"),
+    INVERSE("7"),
     GREEN("32"),
     BROWN("33"),
     CYAN("36"),
+    WHITE("37"),
     YELLOW("38;5;226");
 
     private static final String RESET = "\033[m";
@@ -16,7 +18,7 @@ public enum Font {
     private final String tag;
 
     private Font(String inCode) {
-        tag = "\033[" + inCode + "m";
+        tag = new StringBuilder(RESET).insert(RESET.length() - 1, inCode).toString();
     }
 
     /** Apply this Font to the given text */
