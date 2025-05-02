@@ -241,6 +241,27 @@
         </xsl:choose>
       </tbody>
     </table>
+    <script>
+      <xsl:variable name="time" select="$results/standings/@time" /> var time =
+    parseInt('<xsl:value-of select="$time" />'); <xsl:variable name="next">
+        <xsl:value-of select="'0'" />
+        <xsl:for-each select="$ballots/player[@time &gt; $time]">
+          <xsl:sort select="@time" />
+          <xsl:if test="position() = 1">
+            <xsl:value-of select="@time" />
+          </xsl:if>
+        </xsl:for-each>
+      </xsl:variable>
+    var next = parseInt('<xsl:value-of select="$next" />'); var start = new
+    Date().getTime(); var x = setInterval(function() { var current = "<xsl:value-of
+        select="$results/awards/@START" />" == "" || "<xsl:value-of
+        select="$results/awards/@END" />" != "" ? time : Math.floor((new
+    Date().getTime() - start) / 1000) + time;
+    document.getElementById("time_header").innerHTML = "Time=" +
+    Math.floor(current / 60 / 60) + ":" + String(Math.floor(current / 60) %
+    60).padStart(2, '0') + ":" + String(current % 60).padStart(2, '0'); if (next
+    > 0 &amp;&amp; current >= next) {
+    document.getElementById("time_header").style.color = "red"; } }, 1000); </script>
   </xsl:template>
   <xsl:template name="player-table-column-header">
     <xsl:param name="text" />
@@ -249,10 +270,18 @@
     <xsl:param name="inPlayer" />
     <xsl:choose>
       <xsl:when test="$inPlayer">
-        <xsl:value-of select="$text" />
+        <A>
+          <xsl:attribute name="id">
+            <xsl:value-of select="concat($type, '_header')" />
+          </xsl:attribute>
+          <xsl:value-of select="$text" />
+        </A>
       </xsl:when>
       <xsl:otherwise>
         <A>
+          <xsl:attribute name="id">
+            <xsl:value-of select="concat($type, '_header')" />
+          </xsl:attribute>
           <xsl:attribute name="href">
             <xsl:value-of select="$type" />
             <xsl:if test="$type = $sort">

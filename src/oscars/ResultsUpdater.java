@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 enum ResultsUpdater implements Runnable {
     INSTANCE;
 
-    private static final long MAX_WAIT = TimeUnit.MINUTES.toMillis(1);
+    private static final long MAX_WAIT = TimeUnit.SECONDS.toMillis(10);
 
     private long elapsedTime = 0; // Time since the start of the show
 
