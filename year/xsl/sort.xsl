@@ -271,6 +271,11 @@
         var start = new Date().getTime();
         var x = setInterval(function() { 
           var current = Math.floor((new Date().getTime() - start) / 1000) + time;
+          if (next > 0 &amp;&amp; current >= next) {
+            document.getElementById("refresh").style.color = "red";
+            document.getElementById("refresh_button").style.color = "red";
+            document.getElementById("time_header").style.color = "red";
+          }
 
           var text = timeToString(current);
           document.getElementById("time_header").innerHTML = 'Time=' + text;
@@ -283,11 +288,6 @@
             document.getElementById("time_guess").style.backgroundColor = 'limegreen';
             document.getElementById("time_actual").style.backgroundColor = 'limegreen';
             document.getElementById("time_score").style.backgroundColor = 'limegreen';
-          }
-            
-
-          if (next > 0 &amp;&amp; current >= next) {
-            document.getElementById("time_header").style.color = "red";
           }
         }, 1000);
       }

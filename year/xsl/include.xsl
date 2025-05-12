@@ -88,10 +88,12 @@
         <hr
           width="500" />
         <xsl:if test="$inProgress">
-          <i>Refresh this page to get updated results during the contest.</i>
-          <br />
-          <button onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
-          <br />
+          <A id="refresh">
+            <i>Refresh this page to get updated results during the contest.</i>
+            <br />
+            <button id="refresh_button" onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
+            <br />
+          </A>
         </xsl:if>
         <br />
         <br />
