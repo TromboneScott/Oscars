@@ -134,40 +134,44 @@
                 </td>
                 <td>
                   <center>
-                    <xsl:call-template name="time">
-                      <xsl:with-param name="time">
-                        <xsl:value-of select="$results/standings/@time" />
-                      </xsl:with-param>
-                    </xsl:call-template>
+                    <A id="time_value">
+                      <xsl:call-template name="time">
+                        <xsl:with-param name="time">
+                          <xsl:value-of select="$results/standings/@time" />
+                        </xsl:with-param>
+                      </xsl:call-template>
+                    </A>
                   </center>
                 </td>
                 <td>
                   <center>
                     <xsl:variable name="playerTime"
                       select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
-                    <xsl:choose>
-                      <xsl:when
-                        test="$playerTime &lt;= $results/standings/@time">
-                        <xsl:call-template name="time">
-                          <xsl:with-param name="time">
-                            <xsl:value-of
-                              select="$results/standings/@time - $playerTime" />
-                          </xsl:with-param>
-                        </xsl:call-template>
-                      </xsl:when>
-                      <xsl:when test="$results/awards/@END">
-                        OVER
-                      </xsl:when>
-                      <xsl:otherwise>
-                        <xsl:value-of select="'-'" />
-                        <xsl:call-template name="time">
-                          <xsl:with-param name="time">
-                            <xsl:value-of
-                              select="$playerTime - $results/standings/@time" />
-                          </xsl:with-param>
-                        </xsl:call-template>
-                      </xsl:otherwise>
-                    </xsl:choose>
+                    <A id="time_difference">
+                      <xsl:choose>
+                        <xsl:when
+                          test="$playerTime &lt;= $results/standings/@time">
+                          <xsl:call-template name="time">
+                            <xsl:with-param name="time">
+                              <xsl:value-of
+                                select="$results/standings/@time - $playerTime" />
+                            </xsl:with-param>
+                          </xsl:call-template>
+                        </xsl:when>
+                        <xsl:when test="$results/awards/@END">
+                          OVER
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:value-of select="'-'" />
+                          <xsl:call-template name="time">
+                            <xsl:with-param name="time">
+                              <xsl:value-of
+                                select="$playerTime - $results/standings/@time" />
+                            </xsl:with-param>
+                          </xsl:call-template>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </A>
                   </center>
                 </td>
               </tr>
