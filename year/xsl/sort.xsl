@@ -279,6 +279,12 @@
           var difference = current - parseInt('<xsl:value-of select="$playerTime"/>');
           document.getElementById("time_difference").innerHTML = (difference &lt; 0 ? '-' : '') +
             timeToString(Math.abs(difference));
+          if (difference &gt;= 0) {
+            document.getElementById("time_guess").style.backgroundColor = 'limegreen';
+            document.getElementById("time_actual").style.backgroundColor = 'limegreen';
+            document.getElementById("time_score").style.backgroundColor = 'limegreen';
+          }
+            
 
           if (next > 0 &amp;&amp; current >= next) {
             document.getElementById("time_header").style.color = "red";

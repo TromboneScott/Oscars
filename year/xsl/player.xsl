@@ -127,12 +127,12 @@
                     select="$definitions/column[@name = 'Time']"
                     mode="tieBreaker" />
                 </td>
-                <td>
+                <td id="time_guess">
                   <center>
                     <xsl:apply-templates select="$playerResults" mode="time" />
                   </center>
                 </td>
-                <td>
+                <td id="time_actual">
                   <center>
                     <A id="time_value">
                       <xsl:call-template name="time">
@@ -143,7 +143,7 @@
                     </A>
                   </center>
                 </td>
-                <td>
+                <td id="time_score">
                   <center>
                     <xsl:variable name="playerTime"
                       select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
