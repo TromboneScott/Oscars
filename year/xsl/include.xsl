@@ -99,6 +99,29 @@
         <br />
       </center>
     </header>
+    <script>
+      if ('<xsl:value-of select="$results/awards/@END" />' == '') {
+        const url = <xsl:value-of select="$rootDir"/> + "data/updated.txt?_=";
+
+        const startHttp = new XMLHttpRequest();
+        startHttp.onload = function() {
+          var start = this.responseText;
+
+          var x = setInterval(function() {
+            const currentHttp = new XMLHttpRequest();
+            currentHttp.onload = function() {
+              if (this.responseText != start) {
+                window.location.reload();
+              }
+            }
+            currentHttp.open("GET", url + new Date().getTime());
+            currentHttp.send();
+          }, 5000);
+        }
+        startHttp.open("GET", url + new Date().getTime());
+        startHttp.send();
+      }
+    </script>
   </xsl:template>
   <xsl:template name="footer">
     <footer>
