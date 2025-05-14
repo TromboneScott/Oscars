@@ -272,6 +272,9 @@
         var x = setInterval(function() { 
           var current = Math.floor((new Date().getTime() - start) / 1000) + time;
           if (next > 0 &amp;&amp; current >= next) {
+            if (current &gt; time + 120) {
+              window.location.reload();
+            }
             document.getElementById("refresh").style.color = "red";
             document.getElementById("refresh_button").style.color = "red";
             document.getElementById("time_header").style.color = "red";
