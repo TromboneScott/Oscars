@@ -1,13 +1,8 @@
 package oscars;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.io.Files;
-
-import oscars.file.Directory;
 
 /** Write the results in a background thread so we can prompt for winners - Singleton */
 enum ResultsUpdater implements Runnable {
@@ -29,7 +24,7 @@ enum ResultsUpdater implements Runnable {
     public void run() {
         updated = ZonedDateTime.now();
         try {
-            Files.write(updated.toString().getBytes(), new File(Directory.DATA, "updated.txt"));
+            Results.writeUpdated();
             do {
                 writeResults();
                 Thread.sleep(waitTime());

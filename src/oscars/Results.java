@@ -1,5 +1,6 @@
 package oscars;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Files;
 
 import oscars.column.Category;
 import oscars.column.CategoryChart;
@@ -190,5 +192,11 @@ public class Results {
         String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
         RESULTS_FILE.write(new Element("results").setAttribute("updated", updated)
                 .addContent(ImmutableList.copyOf(inContent)));
+    }
+
+    /** Write the udpated timestamp */
+    public static void writeUpdated() throws IOException {
+        Files.write(ZonedDateTime.now().toString().getBytes(),
+                new File(Directory.DATA, "updated.txt"));
     }
 }

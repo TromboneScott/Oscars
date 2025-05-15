@@ -103,6 +103,8 @@ class Ballots {
                                             timestamp(player).toString()))
                                     .reduce(new Element("ballots"), Element::addContent));
                     lastTimestamp = maxTimestamp;
+
+                    Results.writeUpdated();
                 }
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
