@@ -257,7 +257,7 @@
         </xsl:variable>
 
         <xsl:variable name="time" select="$results/standings/@time" />
-        var time = parseInt('<xsl:value-of select="$time" />');
+        const time = parseInt('<xsl:value-of select="$time" />');
         <xsl:variable name="next">
           <xsl:value-of select="'0'" />
           <xsl:for-each select="$ballots/player[@time &gt; $time]">
@@ -267,24 +267,24 @@
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        var next = parseInt('<xsl:value-of select="$next" />');
-        var start = new Date().getTime();
-        var x = setInterval(function() { 
-          var current = Math.floor((new Date().getTime() - start) / 1000) + time;
+        const next = parseInt('<xsl:value-of select="$next" />');
+        const start = new Date().getTime();
+        const repeat = setInterval(function() { 
+          const current = Math.floor((new Date().getTime() - start) / 1000) + time;
           if (next > 0 &amp;&amp; current >= next) {
-            if (current &gt; time + 120) {
+            if (current &gt; time + 120)
               window.location.reload();
-            }
+              
             document.getElementById("refresh").style.color = "red";
             document.getElementById("refresh_button").style.color = "red";
             document.getElementById("time_header").style.color = "red";
           }
 
-          var text = timeToString(current);
+          const text = timeToString(current);
           document.getElementById("time_header").innerHTML = 'Time=' + text;
           document.getElementById("time_value").innerHTML = text;
 
-          var difference = current - parseInt('<xsl:value-of select="$playerTime"/>');
+          const difference = current - parseInt('<xsl:value-of select="$playerTime"/>');
           document.getElementById("time_difference").innerHTML = (difference &lt; 0 ? '-' : '') +
             timeToString(Math.abs(difference));
           if (difference &gt;= 0) {

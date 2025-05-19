@@ -1,5 +1,10 @@
 To start a new year:
 
+Upgrade account on site44.com to "Personal" level
+- With continuous polling and automatic page reloads
+  we may go over 100mb in the month
+- You might be able to downgrade back to free after a month
+
 Create Google Form:
 1. Open last year's form at forms.google.com
 2. Select the dots menu at top right and click "Make a copy"

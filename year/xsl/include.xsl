@@ -101,25 +101,23 @@
     </header>
     <script>
       if ('<xsl:value-of select="$results/awards/@END" />' == '') {
-        const url = <xsl:value-of select="$rootDir"/> + "data/updated.txt?_=";
-
-        const startHttp = new XMLHttpRequest();
-        startHttp.onload = function() {
-          var start = this.responseText;
-
-          var x = setInterval(function() {
-            const currentHttp = new XMLHttpRequest();
-            currentHttp.onload = function() {
-              if (this.responseText != start) {
-                window.location.reload();
-              }
-            }
-            currentHttp.open("GET", url + new Date().getTime());
-            currentHttp.send();
-          }, 5000);
+        function updated(action) {
+          const http = new XMLHttpRequest();
+          http.onload = action;
+          http.open("GET", <xsl:value-of select="$rootDir"/> + 
+            "data/updated.txt?_=" + new Date().getTime());
+          http.send();
         }
-        startHttp.open("GET", url + new Date().getTime());
-        startHttp.send();
+        
+        updated(function() {
+          const start = this.responseText;
+          const repeat = setInterval(function() {
+            updated(function() {
+              if (this.responseText != start)
+                window.location.reload();
+            })
+          }, 5000);
+        });
       }
     </script>
   </xsl:template>
