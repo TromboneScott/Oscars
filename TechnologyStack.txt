@@ -3,6 +3,7 @@ LANGUAGES
 CSS
 HTML
 Java 8
+JavaScript
 XML 1.0
 XSLT 1.0
 
