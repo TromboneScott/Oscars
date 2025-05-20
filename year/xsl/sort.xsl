@@ -268,21 +268,21 @@
             if (current &gt; time + 120)
               window.location.reload();
             else
-              for (let element of ["refresh", "refresh_button", "time_header"])
-                document.getElementById(element).style.color = "red";
+              for (let id of ["refresh", "refresh_button", "time_header"])
+                document.getElementById(id).style.color = "red";
 
           const text = timeToString(current);
           document.getElementById("time_header").innerHTML = 'Time=' + text;
-          document.getElementById("time_value").innerHTML = text;
-
           <xsl:if test="$inPlayer">
+            document.getElementById("time_value").innerHTML = text;
+
             const difference = current - parseInt('<xsl:value-of 
                 select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@time"/>');
             document.getElementById("time_difference").innerHTML = 
                 (difference &lt; 0 ? '-' : '') + timeToString(Math.abs(difference));
             if (difference &gt;= 0)
-              for (let element of ["time_guess", "time_actual", "time_score"])
-                document.getElementById(element).style.backgroundColor = 'limegreen';
+              for (let id of ["time_guess", "time_actual", "time_score"])
+                document.getElementById(id).style.backgroundColor = 'limegreen';
           </xsl:if>
         }, 1000);
       </script>
