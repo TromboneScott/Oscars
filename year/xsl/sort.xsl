@@ -241,32 +241,30 @@
         </xsl:choose>
       </tbody>
     </table>
-    <script>
-      function timeToString(time) {
-        return Math.trunc(time / 60 / 60) + ":" + 
-          String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
-          String(time % 60).padStart(2, '0');
-      }
-      
-      if ('<xsl:value-of select="$results/awards/@START" />' != ''
-        &amp;&amp; '<xsl:value-of select="$results/awards/@END" />' == '') {
-        <xsl:variable name="playerTime">
-          <xsl:if test="$inPlayer">
-            <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@time" />
+    <xsl:if test="$results/awards/@START and not($results/awards/@END)">
+      <xsl:variable name="playerTime">
+        <xsl:if test="$inPlayer">
+          <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@time" />
+        </xsl:if>
+      </xsl:variable>
+      <xsl:variable name="time" select="$results/standings/@time" />
+      <xsl:variable name="next">
+        <xsl:value-of select="'0'" />
+        <xsl:for-each select="$ballots/player[@time &gt; $time]">
+          <xsl:sort select="@time" />
+          <xsl:if test="position() = 1">
+            <xsl:value-of select="@time" />
           </xsl:if>
-        </xsl:variable>
-
-        <xsl:variable name="time" select="$results/standings/@time" />
+        </xsl:for-each>
+      </xsl:variable>
+      <script>
+        function timeToString(time) {
+          return Math.trunc(time / 60 / 60) + ":" + 
+            String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
+            String(time % 60).padStart(2, '0');
+        }
+      
         const time = parseInt('<xsl:value-of select="$time" />');
-        <xsl:variable name="next">
-          <xsl:value-of select="'0'" />
-          <xsl:for-each select="$ballots/player[@time &gt; $time]">
-            <xsl:sort select="@time" />
-            <xsl:if test="position() = 1">
-              <xsl:value-of select="@time" />
-            </xsl:if>
-          </xsl:for-each>
-        </xsl:variable>
         const next = parseInt('<xsl:value-of select="$next" />');
         const start = new Date().getTime();
         const repeat = setInterval(function() { 
@@ -293,8 +291,8 @@
             document.getElementById("time_score").style.backgroundColor = 'limegreen';
           }
         }, 1000);
-      }
-    </script>
+      </script>
+    </xsl:if>
   </xsl:template>
   <xsl:template name="player-table-column-header">
     <xsl:param name="text" />

@@ -99,8 +99,8 @@
         <br />
       </center>
     </header>
-    <script>
-      if ('<xsl:value-of select="$results/awards/@END" />' == '') {
+    <xsl:if test="not($results/awards/@END)">
+      <script>
         function updated(action) {
           const http = new XMLHttpRequest();
           http.onload = action;
@@ -118,8 +118,8 @@
             })
           }, 5000);
         });
-      }
-    </script>
+      </script>
+    </xsl:if>
   </xsl:template>
   <xsl:template name="footer">
     <footer>
