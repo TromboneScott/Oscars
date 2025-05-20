@@ -263,20 +263,18 @@
             String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
             String(time % 60).padStart(2, '0');
         }
-      
+
         const time = parseInt('<xsl:value-of select="$time" />');
         const next = parseInt('<xsl:value-of select="$next" />');
         const start = new Date().getTime();
         const repeat = setInterval(function() { 
           const current = Math.floor((new Date().getTime() - start) / 1000) + time;
-          if (next > 0 &amp;&amp; current >= next) {
+          if (next > 0 &amp;&amp; current >= next)
             if (current &gt; time + 120)
               window.location.reload();
-              
-            document.getElementById("refresh").style.color = "red";
-            document.getElementById("refresh_button").style.color = "red";
-            document.getElementById("time_header").style.color = "red";
-          }
+            else
+              for (let element of ["refresh", "refresh_button", "time_header"])
+                document.getElementById(element).style.color = "red";
 
           const text = timeToString(current);
           document.getElementById("time_header").innerHTML = 'Time=' + text;
@@ -285,11 +283,9 @@
           const difference = current - parseInt('<xsl:value-of select="$playerTime"/>');
           document.getElementById("time_difference").innerHTML = (difference &lt; 0 ? '-' : '') +
             timeToString(Math.abs(difference));
-          if (difference &gt;= 0) {
-            document.getElementById("time_guess").style.backgroundColor = 'limegreen';
-            document.getElementById("time_actual").style.backgroundColor = 'limegreen';
-            document.getElementById("time_score").style.backgroundColor = 'limegreen';
-          }
+          if (difference &gt;= 0)
+            for (let element of ["time_guess", "time_actual", "time_score"])
+              document.getElementById(element).style.backgroundColor = 'limegreen';
         }, 1000);
       </script>
     </xsl:if>
