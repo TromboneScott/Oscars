@@ -313,7 +313,7 @@
         <xsl:value-of select="$border" />
       </xsl:attribute>
       <xsl:attribute name="src">
-        <xsl:value-of select="@name" />
+        <xsl:value-of select="concat(@name, '.png?_=')" />
         <xsl:variable name="category" select="@name" />
         <xsl:variable name="awards"
           select="$results/awards/category[@name = $category]" />
@@ -328,7 +328,6 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:for-each>
-        <xsl:value-of select="'.png'" />
       </xsl:attribute>
       <xsl:attribute name="alt">
         <xsl:value-of select="@name" />

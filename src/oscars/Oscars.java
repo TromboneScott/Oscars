@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 import oscars.ballot.MappedBallots;
 import oscars.ballot.Player;
 import oscars.column.Category;
-import oscars.column.CategoryChart;
 import oscars.column.DataColumn;
 import oscars.file.Directory;
 import oscars.file.XMLFile;
@@ -49,7 +48,6 @@ public class Oscars {
 
         System.out.print("\nWriting final results...");
         ResultsUpdater.INSTANCE.writeResults(); // In case thread was interrupted
-        CategoryChart.deleteUnusedCharts();
         System.out.println(" DONE");
     }
 
@@ -79,7 +77,7 @@ public class Oscars {
                     + player.answer(DataColumn.LAST_NAME) + ".xml").write(player.toDOM());
 
         for (Category category : Category.ALL) {
-            new CategoryChart(category).write();
+            category.writeChart();
             new XMLFile(Directory.CATEGORY, category.name() + ".xml").write(category.toDOM());
         }
     }

@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
 import oscars.column.Category;
-import oscars.column.CategoryChart;
 import oscars.file.Directory;
 import oscars.file.XMLFile;
 
@@ -128,7 +127,7 @@ public class Results {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
-            new CategoryChart(inCategory).write();
+            inCategory.writeChart();
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             outputInvalidInput(input);
         }
