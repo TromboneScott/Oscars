@@ -265,7 +265,7 @@
         const repeat = setInterval(function() { 
           const current = Math.floor((new Date().getTime() - start) / 1000) + time;
           if (next > 0 &amp;&amp; current >= next)
-            if (current &gt; time + 120)
+            if (current &gt; time + 60)
               window.location.reload();
             else
               for (let id of ["refresh", "refresh_button", "time_header"])

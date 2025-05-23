@@ -315,18 +315,8 @@
       <xsl:attribute name="src">
         <xsl:value-of select="concat(@name, '.png?_=')" />
         <xsl:variable name="category" select="@name" />
-        <xsl:variable name="awards"
-          select="$results/awards/category[@name = $category]" />
-        <xsl:for-each select="nominee">
-          <xsl:variable name="nominee" select="@name" />
-          <xsl:choose>
-            <xsl:when test="$awards/nominee[@name = $nominee]">
-              <xsl:value-of select="'1'" />
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="'0'" />
-            </xsl:otherwise>
-          </xsl:choose>
+        <xsl:for-each select="$results/awards/category[@name = $category]/nominee">
+          <xsl:value-of select="concat(@name, '|')" />
         </xsl:for-each>
       </xsl:attribute>
       <xsl:attribute name="alt">
