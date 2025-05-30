@@ -277,8 +277,8 @@
               window.location.reload();
             else {
               document.getElementById("time_header").style.color = "red";
+              document.getElementById("reload_button").style.display = 'inline';
               document.getElementById("reload_warning").style.display = 'inline';
-              document.getElementById("time_refresh").style.display = 'inline';
             }
 
           <xsl:if test="$inPlayer">
@@ -327,7 +327,7 @@
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="$type = 'time'">
-      <A id="time_refresh" style="display:none">
+      <A id="reload_button" style="display:none">
         <xsl:value-of select="' '" />
         <button id="refresh_button" onClick="window.location.reload();">&#10227;</button>
       </A>
