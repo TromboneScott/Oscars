@@ -103,7 +103,11 @@
                 </table>
                 <br />
                 <br />
+                <br />
               </xsl:if>
+              <h3 style="display:inline">Rankings</h3>
+              <br />
+              <br />
               <div class="info">
                 <xsl:if test="$inProgress">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
@@ -122,7 +126,6 @@
                 category</a> plus .1 for tie breaker #1, .01 for #2, .001 for
                 #3, etc. </div>
               <br />
-              <br />
               <xsl:apply-templates select="." mode="player-table" />
             </xsl:otherwise>
           </xsl:choose>
@@ -133,6 +136,11 @@
   </xsl:template>
   <xsl:template match="/sort" mode="player-table">
     <xsl:param name="inPlayer" />
+    <A id="reload_warning" style="color:red; display:none">
+      Note: Page must be reloaded to update ranks based on elapsed time
+      <br />
+      <br />
+    </A>
     <table>
       <thead>
         <tr>
@@ -180,20 +188,18 @@
           </th>
           <th>
             <xsl:variable name="timeHeader">
-              <xsl:value-of select="'Time'" />
               <xsl:choose>
                 <xsl:when test="$results/awards/@END">
-                  <xsl:value-of select="'='" />
+                  <xsl:call-template name="time">
+                    <xsl:with-param name="time">
+                      <xsl:value-of select="$results/standings/@time" />
+                    </xsl:with-param>
+                  </xsl:call-template>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="'&gt;'" />
+                  <xsl:value-of select="'Time'" />
                 </xsl:otherwise>
               </xsl:choose>
-              <xsl:call-template name="time">
-                <xsl:with-param name="time">
-                  <xsl:value-of select="$results/standings/@time" />
-                </xsl:with-param>
-              </xsl:call-template>
             </xsl:variable>
             <xsl:call-template name="player-table-column-header">
               <xsl:with-param name="text" select="$timeHeader" />
@@ -264,17 +270,19 @@
         const start = new Date().getTime();
         const repeat = setInterval(function() { 
           const current = Math.floor((new Date().getTime() - start) / 1000) + time;
+          document.getElementById("time_header").innerHTML = timeToString(current);
+
           if (next > 0 &amp;&amp; current >= next)
             if (current &gt; time + 60)
               window.location.reload();
-            else
-              for (let id of ["refresh", "refresh_button", "time_header"])
-                document.getElementById(id).style.color = "red";
+            else {
+              document.getElementById("time_header").style.color = "red";
+              document.getElementById("reload_warning").style.display = 'inline';
+              document.getElementById("time_refresh").style.display = 'inline';
+            }
 
-          const text = timeToString(current);
-          document.getElementById("time_header").innerHTML = 'Time=' + text;
           <xsl:if test="$inPlayer">
-            document.getElementById("time_value").innerHTML = text;
+            document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
 
             const difference = current - parseInt('<xsl:value-of 
                 select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@time"/>');
@@ -318,6 +326,12 @@
         </A>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="$type = 'time'">
+      <A id="time_refresh" style="display:none">
+        <xsl:value-of select="' '" />
+        <button id="refresh_button" onClick="window.location.reload();">&#10227;</button>
+      </A>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="/results/standings/player">
     <xsl:param name="inPlayer" />

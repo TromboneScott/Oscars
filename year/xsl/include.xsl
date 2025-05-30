@@ -85,16 +85,7 @@
             <xsl:value-of select="concat($rootDir, 'category')" />
           </xsl:attribute>
         CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
-        <hr
-          width="500" />
-        <xsl:if test="$inProgress">
-          <A id="refresh">
-            <i>Refresh this page to get updated results during the contest.</i>
-            <br />
-            <button id="refresh_button" onClick="window.location.reload();">&#10227; Refresh &#10227;</button>
-            <br />
-          </A>
-        </xsl:if>
+        <hr width="500" />
         <br />
         <br />
       </center>
