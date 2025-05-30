@@ -277,8 +277,8 @@
               window.location.reload();
             else {
               document.getElementById("time_header").style.color = "red";
-              document.getElementById("reload_button").style.display = 'inline';
-              document.getElementById("reload_warning").style.display = 'inline';
+              for (let id of ["reload_button", "reload_warning"])
+                document.getElementById(id).style.display = 'inline';
             }
 
           <xsl:if test="$inPlayer">
