@@ -268,9 +268,8 @@
           }
 
           compareTo(other) {
-            if (this.lastName.toLowerCase() !== other.lastName.toLowerCase())
-              return this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' });
-            return this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' });
+            return this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' }) * 2
+              + this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' });
           }
         }
 
@@ -355,7 +354,7 @@
                 (((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
                   + a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />) * players.length
                   + a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
-                  * ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) + a.compareTo(b);
+                  * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
             });
 
             // Update the player table
