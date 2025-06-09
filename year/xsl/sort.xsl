@@ -262,7 +262,7 @@
             this.time = time;
             this.decided = decided;
           }
-          
+
           getScore() {
             return parseFloat(this.score);
           }
@@ -288,7 +288,7 @@
             '<xsl:value-of select="@decided"/>'
           ));
         </xsl:for-each>
-        
+
         const cells = document.getElementById("rankings").getElementsByTagName("td");
         const tableWidth = cells.length / players.length;
 
@@ -322,7 +322,7 @@
               players[player].rank = 1;
               players[player].bpr = 1;
               players[player].wpr = 1;
-              
+
               for (let opponent = 0; opponent &lt; players.length; opponent++) {
                 if (players[opponent].getScore() &gt; players[player].getScore() || 
                     players[opponent].getScore() === players[player].getScore() &amp;&amp;
@@ -345,7 +345,7 @@
                   players[player].wpr++;
               }
             }
-            
+
             // Sort the players
             const sortedPlayers = [...players];
             sortedPlayers.sort(function(a, b) {
@@ -535,7 +535,8 @@
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="timeValue">
     <xsl:variable name="player" select="." />
-    <xsl:value-of select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
+    <xsl:value-of
+      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
   </xsl:template>
   <xsl:template name="time">
     <xsl:param name="time" />

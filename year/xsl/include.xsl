@@ -85,7 +85,8 @@
             <xsl:value-of select="concat($rootDir, 'category')" />
           </xsl:attribute>
         CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
-        <hr width="500" />
+        <hr
+          width="500" />
         <br />
         <br />
       </center>
@@ -99,7 +100,7 @@
             "data/updated.txt?_=" + new Date().getTime());
           http.send();
         }
-        
+
         updated(function() {
           const start = this.responseText;
           const repeat = setInterval(function() {
