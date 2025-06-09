@@ -471,11 +471,7 @@
       </td>
       <td>
         <xsl:apply-templates select="." mode="attribute" />
-        <xsl:call-template name="time">
-          <xsl:with-param name="time">
-            <xsl:apply-templates select="." mode="timeValue" />
-          </xsl:with-param>
-        </xsl:call-template>
+        <xsl:apply-templates select="." mode="time" />
       </td>
     </tr>
   </xsl:template>
@@ -530,6 +526,13 @@
         </xsl:otherwise>
       </xsl:choose>
       time</xsl:attribute>
+  </xsl:template>
+  <xsl:template match="/results/standings/player" mode="time">
+    <xsl:call-template name="time">
+      <xsl:with-param name="time">
+        <xsl:apply-templates select="." mode="timeValue" />
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="timeValue">
     <xsl:variable name="player" select="." />

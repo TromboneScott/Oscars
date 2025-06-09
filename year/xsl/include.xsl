@@ -104,10 +104,10 @@
           const start = this.responseText;
           const repeat = setInterval(function() {
             updated(function() {
-              if (this.responseText != start)
+              if (this.responseText !== start)
                 window.location.reload();
             })
-          }, 5000);
+          }, 3000);
         });
       </script>
     </xsl:if>
