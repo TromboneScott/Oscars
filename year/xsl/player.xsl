@@ -20,19 +20,20 @@
           <table>
             <tr>
               <td id="rank">Rank <div id="rank">
-                  <xsl:value-of select="$playerResults/@rank" />
+                  <a id="player_rank"><xsl:value-of select="$playerResults/@rank" /></a>
                 </div>
                 Out of <xsl:value-of select="count($results/standings/player)" />
               </td>
             </tr>
           </table>
           <br />
-          <xsl:if test="$inProgress"> Possible Final Rank: <xsl:value-of
-              select="$playerResults/@bpr" />
-            <xsl:if
-              test="$playerResults/@bpr != $playerResults/@wpr"> to <xsl:value-of
-                select="$playerResults/@wpr" />
-            </xsl:if>
+          <xsl:if test="$inProgress">
+            <a id="possible_rank">
+              Possible Final Rank: <xsl:value-of select="$playerResults/@bpr" />
+              <xsl:if test="$playerResults/@bpr != $playerResults/@wpr">
+                to <xsl:value-of select="$playerResults/@wpr" />
+              </xsl:if>
+            </a>
             <br />
           </xsl:if>
           <br />
@@ -181,15 +182,35 @@
           <br />
           <br />
           <h3 style="display:inline">Rankings</h3>
-          <xsl:if test="contains($playerResults/@decided, 'L')">
+          <a id="player_lost">
+            <xsl:attribute name="style">
+              <xsl:choose>
+                <xsl:when test="contains($playerResults/@decided, 'L')">
+                  display:inline
+                </xsl:when>
+                <xsl:otherwise>
+                  display:none
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:attribute>
             <br /> All players in <font color="red">red</font> will finish above <xsl:value-of
               select="$playerName" />
-          </xsl:if>
-          <xsl:if test="contains($playerResults/@decided, 'W')">
+          </a>
+          <a id="player_won">
+            <xsl:attribute name="style">
+              <xsl:choose>
+                <xsl:when test="contains($playerResults/@decided, 'W')">
+                  display:inline
+                </xsl:when>
+                <xsl:otherwise>
+                  display:none
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:attribute>
             <br />
             <xsl:value-of select="$playerName" /> will finish above all
             players in <font color="green">green</font>
-          </xsl:if>
+          </a>
           <br />
           <br />
           <xsl:apply-templates

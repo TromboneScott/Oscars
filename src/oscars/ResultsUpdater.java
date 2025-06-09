@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 enum ResultsUpdater implements Runnable {
     INSTANCE;
 
-    private static final long MAX_WAIT = TimeUnit.SECONDS.toMillis(10);
+    private static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
 
     private long elapsedTime = 0; // Time since the start of the show
 
@@ -27,22 +27,13 @@ enum ResultsUpdater implements Runnable {
             Results.writeUpdated();
             do {
                 writeResults();
-                Thread.sleep(waitTime());
+                Thread.sleep(UPDATE_TIME);
             } while (Oscars.RESULTS.millisSinceStart() > 0 && !Oscars.RESULTS.showEnded());
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private long waitTime() {
-        long nextPlayerTime = Oscars.PLAYERS.stream().mapToLong(player -> player.time())
-                .filter(playerTime -> playerTime > elapsedTime).map(TimeUnit.SECONDS::toMillis)
-                .min().orElse(Long.MAX_VALUE);
-        long millisSinceStart = Oscars.RESULTS.millisSinceStart();
-        return Math.min(Math.max(nextPlayerTime - millisSinceStart, 0),
-                Math.max(MAX_WAIT - millisSinceStart, MAX_WAIT - millisSinceStart % MAX_WAIT));
     }
 
     /** Write the current results */

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="../../xsl/sort.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<sort name="time" order="ascending" />
+<sort name="time" column1="time" column2="time" column3="time" order="ascending" />

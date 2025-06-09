@@ -136,11 +136,6 @@
   </xsl:template>
   <xsl:template match="/sort" mode="player-table">
     <xsl:param name="inPlayer" />
-    <A id="reload_warning" style="color:red; display:none">
-      Note: Page must be reloaded to update ranks based on elapsed time
-      <br />
-      <br />
-    </A>
     <table>
       <thead>
         <tr>
@@ -186,7 +181,7 @@
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
           </th>
-          <th>
+          <th id="timeHeader_cell">
             <xsl:variable name="timeHeader">
               <xsl:choose>
                 <xsl:when test="$results/awards/@END">
@@ -210,7 +205,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="rankings">
         <xsl:choose>
           <xsl:when test="starts-with(@name, 'time')">
             <xsl:for-each select="$ballots/player">
@@ -248,16 +243,6 @@
       </tbody>
     </table>
     <xsl:if test="$results/awards/@START and not($results/awards/@END)">
-      <xsl:variable name="time" select="$results/standings/@time" />
-      <xsl:variable name="next">
-        <xsl:value-of select="'0'" />
-        <xsl:for-each select="$ballots/player[@time &gt; $time]">
-          <xsl:sort select="@time" />
-          <xsl:if test="position() = 1">
-            <xsl:value-of select="@time" />
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:variable>
       <script>
         function timeToString(time) {
           return Math.trunc(time / 60 / 60) + ":" + 
@@ -265,33 +250,151 @@
             String(time % 60).padStart(2, '0');
         }
 
-        const time = parseInt('<xsl:value-of select="$time" />');
-        const next = parseInt('<xsl:value-of select="$next" />');
+        class Player {
+          constructor(id, firstName, lastName, score, rank, bpr, wpr, time, decided) {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.score = score;
+            this.rank = rank;
+            this.bpr = bpr;
+            this.wpr = wpr;
+            this.time = time;
+            this.decided = decided;
+          }
+          
+          getScore() {
+            return parseFloat(this.score);
+          }
+
+          compareTo(other) {
+            if (this.lastName.toLowerCase() !== other.lastName.toLowerCase())
+              return this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' });
+            return this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' });
+          }
+        }
+
+        const players = [];
+        <xsl:for-each select="$results/standings/player">
+          <xsl:variable name="player" select="." />
+          players.push(new Player(
+            <xsl:value-of select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@id" />,
+            '<xsl:value-of select="@firstName"/>',
+            '<xsl:value-of select="@lastName"/>',
+            '<xsl:value-of select="@score"/>',
+            <xsl:value-of select="@rank"/>,
+            <xsl:value-of select="@bpr"/>,
+            <xsl:value-of select="@wpr"/>,
+            <xsl:apply-templates select="." mode="timeValue" />,
+            '<xsl:value-of select="@decided"/>'
+          ));
+        </xsl:for-each>
+        
+        const cells = document.getElementById("rankings").getElementsByTagName("td");
+        const tableWidth = cells.length / players.length;
+
+        let next = 0;
+        const time = parseInt('<xsl:value-of select="$results/standings/@time" />');
         const start = new Date().getTime();
         const repeat = setInterval(function() { 
-          const current = Math.floor((new Date().getTime() - start) / 1000) + time;
-          document.getElementById("time_header").innerHTML = timeToString(current);
-
-          if (next > 0 &amp;&amp; current >= next)
-            if (current &gt; time + 60)
-              window.location.reload();
-            else {
-              document.getElementById("time_header").style.color = "red";
-              for (let id of ["reload_button", "reload_warning"])
-                document.getElementById(id).style.display = 'inline';
-            }
+          const elapsed = Math.floor((new Date().getTime() - start) / 1000) + time;
+          document.getElementById("time_header").innerHTML = timeToString(elapsed);
+          document.getElementById("timeHeader_cell").style.backgroundColor = "white";
 
           <xsl:if test="$inPlayer">
-            document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
+            const inPlayer = players[<xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" /> - 1];
 
-            const difference = current - parseInt('<xsl:value-of 
-                select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@time"/>');
+            document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
             document.getElementById("time_difference").innerHTML = 
-                (difference &lt; 0 ? '-' : '') + timeToString(Math.abs(difference));
-            if (difference &gt;= 0)
-              for (let id of ["time_guess", "time_actual", "time_score"])
-                document.getElementById(id).style.backgroundColor = 'limegreen';
+              (elapsed &lt; inPlayer.time ? '-' : '') + timeToString(Math.abs(elapsed - inPlayer.time));
           </xsl:if>
+
+          // Process when next player's time is reached
+          if (elapsed >= next) {
+            if (next > 0)
+              document.getElementById("timeHeader_cell").style.backgroundColor = "limegreen";
+            next = Number.MAX_SAFE_INTEGER;
+            for (let player = 0; player &lt; players.length; player++)
+              if (players[player].time &gt; elapsed &amp;&amp; players[player].time &lt; next)
+                next = players[player].time;
+
+            // Recalculate rank, bpr and wpr
+            for (let player = 0; player &lt; players.length; player++) {
+              players[player].rank = 1;
+              players[player].bpr = 1;
+              players[player].wpr = 1;
+              
+              for (let opponent = 0; opponent &lt; players.length; opponent++) {
+                if (players[opponent].getScore() &gt; players[player].getScore() || 
+                    players[opponent].getScore() === players[player].getScore() &amp;&amp;
+                    players[opponent].time &lt;= elapsed &amp;&amp; (
+                      players[player].time &gt; elapsed || players[opponent].time &gt; players[player].time))
+                  players[player].rank++;
+
+                var decision = players[player].decided.substr(opponent, 1);
+                if (decision === 'T' &amp;&amp; players[player].time !== players[opponent].time &amp;&amp;
+                    players[player].time &lt;= elapsed &amp;&amp; players[opponent].time &lt;= elapsed) {
+                  decision = players[player].time &gt; players[opponent].time ? 'W' : 'L';
+                  players[player].decided = players[player].decided.substring(0, opponent) + decision + 
+                    players[player].decided.substring(opponent + 1);
+                }
+
+                if (decision === 'L')
+                  players[player].bpr++;
+                if (decision === 'L' || decision === '?' || decision === 'T' &amp;&amp; 
+                    (players[opponent].time &gt; players[player].time || players[player].time &gt; elapsed))
+                  players[player].wpr++;
+              }
+            }
+            
+            // Sort the players
+            const sortedPlayers = [...players];
+            sortedPlayers.sort(function(a, b) {
+              return '<xsl:value-of select="@name" />'.startsWith('name') ?
+                '<xsl:value-of select="@order" />' === 'descending' ? b.compareTo(a) : a.compareTo(b) :
+                (((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
+                  + a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />) * players.length
+                  + a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
+                  * ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) + a.compareTo(b);
+            });
+
+            // Update the player table
+            for (let player = 0; player &lt; players.length; player++) {
+              <xsl:if test="$inPlayer">
+                const decision = inPlayer.decided.substr(sortedPlayers[player].id - 1, 1);
+                cells[(player * tableWidth) + 0].style.backgroundColor = 
+                  decision === "W" ? "limegreen" : decision === "L" ? "red" : decision === "-" ? "white" : "silver";
+              </xsl:if>
+              cells[(player * tableWidth) + 0].innerHTML = 
+                '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
+                sortedPlayers[player].firstName + '_' + sortedPlayers[player].lastName + '.xml"' +
+                '&gt;' + [sortedPlayers[player].lastName, sortedPlayers[player].firstName].join(', ') +
+                '&lt;/a&gt;';
+              cells[(player * tableWidth) + 1].innerHTML = sortedPlayers[player].rank;
+              cells[(player * tableWidth) + 2].innerHTML = sortedPlayers[player].bpr;
+              cells[(player * tableWidth) + 3].innerHTML = sortedPlayers[player].wpr;
+              cells[(player * tableWidth) + 4].innerHTML = sortedPlayers[player].score;
+              cells[(player * tableWidth) + 5].innerHTML = timeToString(sortedPlayers[player].time);
+              cells[(player * tableWidth) + 5].style.backgroundColor = 
+                sortedPlayers[player].time &gt; elapsed ? 'silver' : 'limegreen';
+            }
+
+            <xsl:if test="$inPlayer">
+              document.getElementById('player_rank').innerHTML = inPlayer.rank;
+              document.getElementById('possible_rank').innerHTML = 'Possible Final Rank: ' +
+                inPlayer.bpr + (inPlayer.wpr === inPlayer.bpr ? '' : ' to ' + inPlayer.wpr);
+
+              if (elapsed &gt;= inPlayer.time)
+                for (let id of ["time_guess", "time_actual", "time_score"])
+                  document.getElementById(id).style.backgroundColor = 'limegreen';
+
+              // Show "will finish above" messages
+              if (inPlayer.decided.includes("L"))
+                document.getElementById("player_lost").style.display = 'inline';
+              if (inPlayer.decided.includes("W"))
+                document.getElementById("player_won").style.display = 'inline';
+            </xsl:if>
+          }
         }, 1000);
       </script>
     </xsl:if>
@@ -326,12 +429,6 @@
         </A>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="$type = 'time'">
-      <A id="reload_button" style="display:none">
-        <xsl:value-of select="' '" />
-        <button id="refresh_button" onClick="window.location.reload();">&#10227;</button>
-      </A>
-    </xsl:if>
   </xsl:template>
   <xsl:template match="/results/standings/player">
     <xsl:param name="inPlayer" />
@@ -344,7 +441,7 @@
             <xsl:choose>
               <xsl:when test="$decided = 'W'">correct</xsl:when>
               <xsl:when test="$decided = 'L'">incorrect</xsl:when>
-              <xsl:when test="$decided = '?'">unannounced</xsl:when>
+              <xsl:when test="$decided = '?' or $decided = 'T'">unannounced</xsl:when>
             </xsl:choose>
           </xsl:if>
         </xsl:attribute>
@@ -374,7 +471,11 @@
       </td>
       <td>
         <xsl:apply-templates select="." mode="attribute" />
-        <xsl:apply-templates select="." mode="time" />
+        <xsl:call-template name="time">
+          <xsl:with-param name="time">
+            <xsl:apply-templates select="." mode="timeValue" />
+          </xsl:with-param>
+        </xsl:call-template>
       </td>
     </tr>
   </xsl:template>
@@ -430,14 +531,9 @@
       </xsl:choose>
       time</xsl:attribute>
   </xsl:template>
-  <xsl:template match="/results/standings/player" mode="time">
+  <xsl:template match="/results/standings/player" mode="timeValue">
     <xsl:variable name="player" select="." />
-    <xsl:call-template name="time">
-      <xsl:with-param name="time">
-        <xsl:value-of
-          select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
-      </xsl:with-param>
-    </xsl:call-template>
+    <xsl:value-of select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
   </xsl:template>
   <xsl:template name="time">
     <xsl:param name="time" />

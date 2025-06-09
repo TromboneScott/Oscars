@@ -90,10 +90,14 @@ final class Standings {
     }
 
     private String decided(Player inPlayer) {
-        return scoreMap.keySet().stream()
-                .map(opponent -> opponent == inPlayer ? "-"
-                        : lostToMap.get(opponent).contains(inPlayer) ? "W"
-                                : lostToMap.get(inPlayer).contains(opponent) ? "L" : "?")
+        return scoreMap.keySet().stream().map(opponent -> opponent == inPlayer ? "-"
+                : lostToMap.get(opponent).contains(inPlayer) ? "W"
+                        : lostToMap.get(inPlayer).contains(opponent) ? "L"
+                                : scoreMap.get(opponent).equals(scoreMap.get(inPlayer))
+                                        && Category.ALL.stream().allMatch(
+                                                category -> !winners.get(category).isEmpty()
+                                                        || opponent.answer(category) == inPlayer
+                                                                .answer(category)) ? "T" : "?")
                 .collect(Collectors.joining());
     }
 }
