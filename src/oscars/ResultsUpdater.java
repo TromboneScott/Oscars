@@ -10,10 +10,6 @@ enum ResultsUpdater implements Runnable {
 
     private static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
 
-    private long elapsedTime = 0; // Time since the start of the show
-
-    private long validTimes = 0; // The number of players whose time guess has been reached
-
     private ZonedDateTime updated = ZonedDateTime.now(); // The last time the results changed
 
     /**
@@ -24,11 +20,10 @@ enum ResultsUpdater implements Runnable {
     public void run() {
         updated = ZonedDateTime.now();
         try {
-            Results.writeUpdated();
-            do {
-                writeResults();
+            writeResults();
+            for (Results.writeUpdated(); Oscars.RESULTS.millisSinceStart() > 0
+                    && !Oscars.RESULTS.showEnded(); writeResults())
                 Thread.sleep(UPDATE_TIME);
-            } while (Oscars.RESULTS.millisSinceStart() > 0 && !Oscars.RESULTS.showEnded());
         } catch (InterruptedException e) {
             // Ignore
         } catch (IOException e) {
@@ -38,12 +33,6 @@ enum ResultsUpdater implements Runnable {
 
     /** Write the current results */
     public void writeResults() throws IOException {
-        elapsedTime = Oscars.RESULTS.elapsedTimeSeconds();
-        long currentTimes = Oscars.PLAYERS.stream().filter(player -> player.time() <= elapsedTime)
-                .count();
-        if (validTimes != currentTimes)
-            updated = ZonedDateTime.now();
-        validTimes = currentTimes;
         Results.write(updated, Oscars.RESULTS.toDOM(), new Standings().toDOM());
     }
 }
