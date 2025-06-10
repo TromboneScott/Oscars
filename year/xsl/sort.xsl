@@ -255,16 +255,13 @@
             this.id = id;
             this.firstName = firstName;
             this.lastName = lastName;
-            this.score = score;
+            this.scoreText = score;
+            this.score = parseFloat(score);
             this.rank = rank;
             this.bpr = bpr;
             this.wpr = wpr;
             this.time = time;
             this.decided = decided;
-          }
-
-          getScore() {
-            return parseFloat(this.score);
           }
 
           compareTo(other) {
@@ -324,8 +321,8 @@
               players[player].wpr = 1;
 
               for (let opponent = 0; opponent &lt; players.length; opponent++) {
-                if (players[opponent].getScore() &gt; players[player].getScore() || 
-                    players[opponent].getScore() === players[player].getScore() &amp;&amp;
+                if (players[opponent].score &gt; players[player].score || 
+                    players[opponent].score === players[player].score &amp;&amp;
                     players[opponent].time &lt;= elapsed &amp;&amp; (
                       players[player].time &gt; elapsed || players[opponent].time &gt; players[player].time))
                   players[player].rank++;
@@ -372,7 +369,7 @@
               cells[(player * tableWidth) + 1].innerHTML = sortedPlayers[player].rank;
               cells[(player * tableWidth) + 2].innerHTML = sortedPlayers[player].bpr;
               cells[(player * tableWidth) + 3].innerHTML = sortedPlayers[player].wpr;
-              cells[(player * tableWidth) + 4].innerHTML = sortedPlayers[player].score;
+              cells[(player * tableWidth) + 4].innerHTML = sortedPlayers[player].scoreText;
               cells[(player * tableWidth) + 5].innerHTML = timeToString(sortedPlayers[player].time);
               cells[(player * tableWidth) + 5].style.backgroundColor = 
                 sortedPlayers[player].time &gt; elapsed ? 'silver' : 'limegreen';
