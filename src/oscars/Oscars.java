@@ -1,6 +1,7 @@
 package oscars;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.stream.IntStream;
 
 import org.jdom2.Element;
@@ -47,12 +48,12 @@ public class Oscars {
         while (prompt());
 
         System.out.print("\nWriting final results...");
-        ResultsUpdater.INSTANCE.writeResults(); // In case thread was interrupted
+        ResultsUpdater.writeResults(ZonedDateTime.now()); // In case thread was interrupted
         System.out.println(" DONE");
     }
 
     private static boolean prompt() throws Exception {
-        Thread thread = new Thread(ResultsUpdater.INSTANCE);
+        Thread thread = new ResultsUpdater();
         try {
             thread.start();
             return RESULTS.prompt();

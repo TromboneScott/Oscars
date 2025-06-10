@@ -4,25 +4,21 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
-/** Write the results in a background thread so we can prompt for winners - Singleton */
-enum ResultsUpdater implements Runnable {
-    INSTANCE;
-
+/** Write the results in a background thread so we can prompt for winners - Immutable */
+final class ResultsUpdater extends Thread {
     private static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
 
-    private ZonedDateTime updated = ZonedDateTime.now(); // The last time the results changed
-
     /**
-     * Write the results and wait until we need to update the times again. Continue until the main
-     * thread kills this thread or the show ends.
+     * Repeatedly write the results with the current elapsed time until until the main thread kills
+     * this thread or the show ends.
      */
     @Override
     public void run() {
-        updated = ZonedDateTime.now();
+        ZonedDateTime updated = ZonedDateTime.now();
         try {
-            writeResults();
+            writeResults(updated);
             for (Results.writeUpdated(); Oscars.RESULTS.millisSinceStart() > 0
-                    && !Oscars.RESULTS.showEnded(); writeResults())
+                    && !Oscars.RESULTS.showEnded(); writeResults(updated))
                 Thread.sleep(UPDATE_TIME);
         } catch (InterruptedException e) {
             // Ignore
@@ -32,7 +28,7 @@ enum ResultsUpdater implements Runnable {
     }
 
     /** Write the current results */
-    public void writeResults() throws IOException {
-        Results.write(updated, Oscars.RESULTS.toDOM(), new Standings().toDOM());
+    public static void writeResults(ZonedDateTime inUpdated) throws IOException {
+        Results.write(inUpdated, Oscars.RESULTS.toDOM(), new Standings().toDOM());
     }
 }
