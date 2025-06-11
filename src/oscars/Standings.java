@@ -97,7 +97,11 @@ final class Standings {
                                         && Category.ALL.stream().allMatch(
                                                 category -> !winners.get(category).isEmpty()
                                                         || opponent.answer(category) == inPlayer
-                                                                .answer(category)) ? "T" : "?")
+                                                                .answer(category)) ? opponent
+                                                                        .time() == inPlayer.time()
+                                                                                ? "T"
+                                                                                : "X"
+                                                                        : "?")
                 .collect(Collectors.joining());
     }
 }

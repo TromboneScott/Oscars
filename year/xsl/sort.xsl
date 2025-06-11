@@ -295,7 +295,8 @@
         const repeat = setInterval(function() { 
           const elapsed = Math.floor((new Date().getTime() - start) / 1000) + time;
           document.getElementById("time_header").innerHTML = timeToString(elapsed);
-          document.getElementById("timeHeader_cell").style.backgroundColor = "white";
+          document.getElementById("timeHeader_cell").style.backgroundColor = 
+              elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
 
           <xsl:if test="$inPlayer">
             const inPlayer = players[<xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" /> - 1];
@@ -306,38 +307,22 @@
           </xsl:if>
 
           // Process when next player's time is reached
-          if (elapsed >= next) {
-            if (next > 0)
-              document.getElementById("timeHeader_cell").style.backgroundColor = "limegreen";
-              next = Math.min(...players.map(player => player.time).filter(time => time > elapsed));
-
+          for (; elapsed >= next; 
+              next = Math.min(...players.map(player => player.time).filter(time => time > elapsed))) {
             // Recalculate rank, bpr and wpr
             for (const player of players) {
-              player.rank = 1;
-              player.bpr = 1;
-              player.wpr = 1;
-
+              player.rank = players.filter(opponent => opponent.score > player.score ||
+                    opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
+                        (player.time > elapsed || opponent.time > player.time)).length + 1;
+                        
               players.forEach((opponent, opponentId) => {
-                if (opponent.score &gt; player.score || 
-                    opponent.score === player.score &amp;&amp;
-                    opponent.time &lt;= elapsed &amp;&amp;
-                        (player.time &gt; elapsed || opponent.time &gt; player.time))
-                  player.rank++;
-
-                var decision = player.decided.substr(opponentId, 1);
-                if (decision === 'T' &amp;&amp; player.time !== opponent.time &amp;&amp;
-                    player.time &lt;= elapsed &amp;&amp; opponent.time &lt;= elapsed) {
-                  decision = player.time &gt; opponent.time ? 'W' : 'L';
-                  player.decided = player.decided.substring(0, opponentId) + decision + 
-                      player.decided.substring(opponentId + 1);
-                }
-
-                if (decision === 'L')
-                  player.bpr++;
-                if (decision === 'L' || decision === '?' || decision === 'T' &amp;&amp; 
-                    (opponent.time &gt; player.time || player.time &gt; elapsed))
-                  player.wpr++;
+                if (player.decided.substr(opponentId, 1) === 'X' &amp;&amp;
+                    elapsed >= player.time &amp;&amp; elapsed >= opponent.time)
+                  player.decided = player.decided.substring(0, opponentId) + 
+                      (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponentId + 1);
               });
+              player.bpr = (player.decided.match(/L/g) || []).length + 1;
+              player.wpr = (player.decided.match(/[L?X]/g) || []).length + 1;
             }
 
             // Sort the players
@@ -351,7 +336,7 @@
                     * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
             });
 
-            // Update the player table
+            // Update the rankings table
             sortedPlayers.forEach((player, playerId) => {
               <xsl:if test="$inPlayer">
                 const decision = inPlayer.decided.substr(player.id - 1, 1);
@@ -372,6 +357,7 @@
                   player.time &gt; elapsed ? 'silver' : 'limegreen';
             });
 
+            // Update the player page
             <xsl:if test="$inPlayer">
               document.getElementById('player_rank').innerHTML = inPlayer.rank;
               document.getElementById('possible_rank').innerHTML = 'Possible Final Rank: ' +
@@ -434,7 +420,7 @@
             <xsl:choose>
               <xsl:when test="$decided = 'W'">correct</xsl:when>
               <xsl:when test="$decided = 'L'">incorrect</xsl:when>
-              <xsl:when test="$decided = '?' or $decided = 'T'">unannounced</xsl:when>
+              <xsl:when test="$decided = '?' or $decided = 'X' or $decided = 'T'">unannounced</xsl:when>
             </xsl:choose>
           </xsl:if>
         </xsl:attribute>
