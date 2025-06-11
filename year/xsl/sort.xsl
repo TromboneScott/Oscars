@@ -246,8 +246,8 @@
       <script>
         function timeToString(time) {
           return Math.trunc(time / 60 / 60) + ":" + 
-            String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
-            String(time % 60).padStart(2, '0');
+              String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
+              String(time % 60).padStart(2, '0');
         }
 
         class Player {
@@ -266,7 +266,7 @@
 
           compareTo(other) {
             return this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' }) * 2
-              + this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' });
+                + this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' });
           }
         }
 
@@ -302,83 +302,80 @@
 
             document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
             document.getElementById("time_difference").innerHTML = 
-              (elapsed &lt; inPlayer.time ? '-' : '') + timeToString(Math.abs(elapsed - inPlayer.time));
+                (elapsed &lt; inPlayer.time ? '-' : '') + timeToString(Math.abs(elapsed - inPlayer.time));
           </xsl:if>
 
           // Process when next player's time is reached
           if (elapsed >= next) {
             if (next > 0)
               document.getElementById("timeHeader_cell").style.backgroundColor = "limegreen";
-            next = Number.MAX_SAFE_INTEGER;
-            for (let player = 0; player &lt; players.length; player++)
-              if (players[player].time &gt; elapsed &amp;&amp; players[player].time &lt; next)
-                next = players[player].time;
+              next = Math.min(...players.map(player => player.time).filter(time => time > elapsed));
 
             // Recalculate rank, bpr and wpr
-            for (let player = 0; player &lt; players.length; player++) {
-              players[player].rank = 1;
-              players[player].bpr = 1;
-              players[player].wpr = 1;
+            for (const player of players) {
+              player.rank = 1;
+              player.bpr = 1;
+              player.wpr = 1;
 
-              for (let opponent = 0; opponent &lt; players.length; opponent++) {
-                if (players[opponent].score &gt; players[player].score || 
-                    players[opponent].score === players[player].score &amp;&amp;
-                    players[opponent].time &lt;= elapsed &amp;&amp; (
-                      players[player].time &gt; elapsed || players[opponent].time &gt; players[player].time))
-                  players[player].rank++;
+              players.forEach((opponent, opponentId) => {
+                if (opponent.score &gt; player.score || 
+                    opponent.score === player.score &amp;&amp;
+                    opponent.time &lt;= elapsed &amp;&amp;
+                        (player.time &gt; elapsed || opponent.time &gt; player.time))
+                  player.rank++;
 
-                var decision = players[player].decided.substr(opponent, 1);
-                if (decision === 'T' &amp;&amp; players[player].time !== players[opponent].time &amp;&amp;
-                    players[player].time &lt;= elapsed &amp;&amp; players[opponent].time &lt;= elapsed) {
-                  decision = players[player].time &gt; players[opponent].time ? 'W' : 'L';
-                  players[player].decided = players[player].decided.substring(0, opponent) + decision + 
-                    players[player].decided.substring(opponent + 1);
+                var decision = player.decided.substr(opponentId, 1);
+                if (decision === 'T' &amp;&amp; player.time !== opponent.time &amp;&amp;
+                    player.time &lt;= elapsed &amp;&amp; opponent.time &lt;= elapsed) {
+                  decision = player.time &gt; opponent.time ? 'W' : 'L';
+                  player.decided = player.decided.substring(0, opponentId) + decision + 
+                      player.decided.substring(opponentId + 1);
                 }
 
                 if (decision === 'L')
-                  players[player].bpr++;
+                  player.bpr++;
                 if (decision === 'L' || decision === '?' || decision === 'T' &amp;&amp; 
-                    (players[opponent].time &gt; players[player].time || players[player].time &gt; elapsed))
-                  players[player].wpr++;
-              }
+                    (opponent.time &gt; player.time || player.time &gt; elapsed))
+                  player.wpr++;
+              });
             }
 
             // Sort the players
             const sortedPlayers = [...players];
             sortedPlayers.sort(function(a, b) {
               return '<xsl:value-of select="@name" />'.startsWith('name') ?
-                '<xsl:value-of select="@order" />' === 'descending' ? b.compareTo(a) : a.compareTo(b) :
-                (((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
-                  + a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />) * players.length
-                  + a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
-                  * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
+                  '<xsl:value-of select="@order" />' === 'descending' ? b.compareTo(a) : a.compareTo(b) :
+                  (((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
+                    + a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />) * players.length
+                    + a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
+                    * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
             });
 
             // Update the player table
-            for (let player = 0; player &lt; players.length; player++) {
+            sortedPlayers.forEach((player, playerId) => {
               <xsl:if test="$inPlayer">
-                const decision = inPlayer.decided.substr(sortedPlayers[player].id - 1, 1);
-                cells[(player * tableWidth) + 0].style.backgroundColor = 
-                  decision === "W" ? "limegreen" : decision === "L" ? "red" : decision === "-" ? "white" : "silver";
+                const decision = inPlayer.decided.substr(player.id - 1, 1);
+                cells[(playerId * tableWidth) + 0].style.backgroundColor = 
+                    decision === "W" ? "limegreen" : decision === "L" ? "red" : decision === "-" ? "white" : "silver";
               </xsl:if>
-              cells[(player * tableWidth) + 0].innerHTML = 
-                '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
-                sortedPlayers[player].firstName + '_' + sortedPlayers[player].lastName + '.xml"' +
-                '&gt;' + [sortedPlayers[player].lastName, sortedPlayers[player].firstName].join(', ') +
-                '&lt;/a&gt;';
-              cells[(player * tableWidth) + 1].innerHTML = sortedPlayers[player].rank;
-              cells[(player * tableWidth) + 2].innerHTML = sortedPlayers[player].bpr;
-              cells[(player * tableWidth) + 3].innerHTML = sortedPlayers[player].wpr;
-              cells[(player * tableWidth) + 4].innerHTML = sortedPlayers[player].scoreText;
-              cells[(player * tableWidth) + 5].innerHTML = timeToString(sortedPlayers[player].time);
-              cells[(player * tableWidth) + 5].style.backgroundColor = 
-                sortedPlayers[player].time &gt; elapsed ? 'silver' : 'limegreen';
-            }
+              cells[(playerId * tableWidth) + 0].innerHTML = 
+                  '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
+                  player.firstName + '_' + player.lastName + '.xml"' +
+                  '&gt;' + [player.lastName, player.firstName].join(', ') +
+                  '&lt;/a&gt;';
+              cells[(playerId * tableWidth) + 1].innerHTML = player.rank;
+              cells[(playerId * tableWidth) + 2].innerHTML = player.bpr;
+              cells[(playerId * tableWidth) + 3].innerHTML = player.wpr;
+              cells[(playerId * tableWidth) + 4].innerHTML = player.scoreText;
+              cells[(playerId * tableWidth) + 5].innerHTML = timeToString(player.time);
+              cells[(playerId * tableWidth) + 5].style.backgroundColor = 
+                  player.time &gt; elapsed ? 'silver' : 'limegreen';
+            });
 
             <xsl:if test="$inPlayer">
               document.getElementById('player_rank').innerHTML = inPlayer.rank;
               document.getElementById('possible_rank').innerHTML = 'Possible Final Rank: ' +
-                inPlayer.bpr + (inPlayer.wpr === inPlayer.bpr ? '' : ' to ' + inPlayer.wpr);
+                  inPlayer.bpr + (inPlayer.wpr === inPlayer.bpr ? '' : ' to ' + inPlayer.wpr);
 
               if (elapsed &gt;= inPlayer.time)
                 for (let id of ["time_guess", "time_actual", "time_score"])
