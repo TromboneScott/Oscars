@@ -285,6 +285,9 @@
             '<xsl:value-of select="@decided"/>'
           ));
         </xsl:for-each>
+        <xsl:if test="$inPlayer">
+          const inPlayer = players[<xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" /> - 1];
+        </xsl:if>
 
         const cells = document.getElementById("rankings").getElementsByTagName("td");
         const tableWidth = cells.length / players.length;
@@ -299,8 +302,6 @@
               elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
 
           <xsl:if test="$inPlayer">
-            const inPlayer = players[<xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" /> - 1];
-
             document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
             document.getElementById("time_difference").innerHTML = 
                 (elapsed &lt; inPlayer.time ? '-' : '') + timeToString(Math.abs(elapsed - inPlayer.time));
@@ -315,45 +316,42 @@
               player.rank = players.filter(opponent => opponent.score > player.score ||
                     opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
                         (player.time > elapsed || opponent.time > player.time)).length + 1;
-                        
-              players.forEach((opponent, opponentId) => {
-                if (player.decided.substr(opponentId, 1) === 'X' &amp;&amp;
+
+              for (const opponent of players)
+                if (player.decided.substr(opponent.id, 1) === 'X' &amp;&amp;
                     elapsed >= player.time &amp;&amp; elapsed >= opponent.time)
-                  player.decided = player.decided.substring(0, opponentId) + 
-                      (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponentId + 1);
-              });
+                  player.decided = player.decided.substring(0, opponent.id) + 
+                      (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponent.id + 1);
               player.bpr = (player.decided.match(/L/g) || []).length + 1;
               player.wpr = (player.decided.match(/[L?X]/g) || []).length + 1;
             }
 
             // Sort the players
-            const sortedPlayers = [...players];
-            sortedPlayers.sort(function(a, b) {
-              return '<xsl:value-of select="@name" />'.startsWith('name') ?
-                  '<xsl:value-of select="@order" />' === 'descending' ? b.compareTo(a) : a.compareTo(b) :
-                  (((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
+            players.sort(function(a, b) {
+              return ('<xsl:value-of select="@name" />'.startsWith('name') ? a.compareTo(b) :
+                    ((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
                     + a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />) * players.length
                     + a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
-                    * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
+                  * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
             });
 
             // Update the rankings table
-            sortedPlayers.forEach((player, playerId) => {
+            players.forEach((player, row) => {
               <xsl:if test="$inPlayer">
                 const decision = inPlayer.decided.substr(player.id - 1, 1);
-                cells[(playerId * tableWidth) + 0].style.backgroundColor = 
-                    decision === "W" ? "limegreen" : decision === "L" ? "red" : decision === "-" ? "white" : "silver";
+                cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
+                    decision === "W" ? "limegreen" : decision === "L" ? "red" : "silver";
               </xsl:if>
-              cells[(playerId * tableWidth) + 0].innerHTML = 
+              cells[row * tableWidth].innerHTML =
                   '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
                   player.firstName + '_' + player.lastName + '.xml">' +
                   [player.lastName, player.firstName].join(', ') + '&lt;/a>';
-              cells[(playerId * tableWidth) + 1].innerHTML = player.rank;
-              cells[(playerId * tableWidth) + 2].innerHTML = player.bpr;
-              cells[(playerId * tableWidth) + 3].innerHTML = player.wpr;
-              cells[(playerId * tableWidth) + 4].innerHTML = player.scoreText;
-              cells[(playerId * tableWidth) + 5].innerHTML = timeToString(player.time);
-              cells[(playerId * tableWidth) + 5].style.backgroundColor = 
+              cells[row * tableWidth + 1].innerHTML = player.rank;
+              cells[row * tableWidth + 2].innerHTML = player.bpr;
+              cells[row * tableWidth + 3].innerHTML = player.wpr;
+              cells[row * tableWidth + 4].innerHTML = player.scoreText;
+              cells[row * tableWidth + 5].innerHTML = timeToString(player.time);
+              cells[row * tableWidth + 5].style.backgroundColor = 
                   player.time > elapsed ? 'silver' : 'limegreen';
             });
 
