@@ -307,8 +307,9 @@
           </xsl:if>
 
           // Process when next player's time is reached
-          for (; elapsed >= next; 
-              next = Math.min(...players.map(player => player.time).filter(time => time > elapsed))) {
+          if (elapsed >= next) {
+            next = Math.min(...players.map(player => player.time).filter(time => time > elapsed));
+
             // Recalculate rank, bpr and wpr
             for (const player of players) {
               player.rank = players.filter(opponent => opponent.score > player.score ||
@@ -345,16 +346,15 @@
               </xsl:if>
               cells[(playerId * tableWidth) + 0].innerHTML = 
                   '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
-                  player.firstName + '_' + player.lastName + '.xml"' +
-                  '&gt;' + [player.lastName, player.firstName].join(', ') +
-                  '&lt;/a&gt;';
+                  player.firstName + '_' + player.lastName + '.xml">' +
+                  [player.lastName, player.firstName].join(', ') + '&lt;/a>';
               cells[(playerId * tableWidth) + 1].innerHTML = player.rank;
               cells[(playerId * tableWidth) + 2].innerHTML = player.bpr;
               cells[(playerId * tableWidth) + 3].innerHTML = player.wpr;
               cells[(playerId * tableWidth) + 4].innerHTML = player.scoreText;
               cells[(playerId * tableWidth) + 5].innerHTML = timeToString(player.time);
               cells[(playerId * tableWidth) + 5].style.backgroundColor = 
-                  player.time &gt; elapsed ? 'silver' : 'limegreen';
+                  player.time > elapsed ? 'silver' : 'limegreen';
             });
 
             // Update the player page
@@ -363,7 +363,7 @@
               document.getElementById('possible_rank').innerHTML = 'Possible Final Rank: ' +
                   inPlayer.bpr + (inPlayer.wpr === inPlayer.bpr ? '' : ' to ' + inPlayer.wpr);
 
-              if (elapsed &gt;= inPlayer.time)
+              if (elapsed >= inPlayer.time)
                 for (let id of ["time_guess", "time_actual", "time_score"])
                   document.getElementById(id).style.backgroundColor = 'limegreen';
 
@@ -460,7 +460,7 @@
       <xsl:variable name="end" select="$start + 6" />
       <tr class="unannounced">
         <xsl:for-each
-          select="$results/awards/category[position() &gt; $start and position() &lt;= $end]">
+          select="$results/awards/category[position() > $start and position() &lt;= $end]">
           <td style="text-align:center; vertical-align:top; white-space:normal">
             <a>
               <xsl:attribute name="id">

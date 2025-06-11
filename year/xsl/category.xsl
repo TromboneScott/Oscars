@@ -19,7 +19,7 @@
                   <br />
                   <table style="border-collapse:collapse">
                     <xsl:for-each
-                      select="$definitions/column[count(nominee) &gt; 0]">
+                      select="$definitions/column[count(nominee) > 0]">
                       <tr>
                         <xsl:attribute name="style">
                           <xsl:if test="count(nominee) &lt;= 5">
@@ -47,7 +47,7 @@
                         </xsl:apply-templates>
                       </tr>
                       <tr style="border-bottom:3pt solid black">
-                        <xsl:apply-templates select="nominee[position() &gt; 5]">
+                        <xsl:apply-templates select="nominee[position() > 5]">
                           <xsl:with-param name="category" select="@name" />
                         </xsl:apply-templates>
                       </tr>
@@ -212,7 +212,7 @@
               <br /> Point Value: <xsl:apply-templates
                 select="$categoryDefinition" mode="value" />
               <xsl:if
-                test="count($awards/nominee) &gt; 1">
+                test="count($awards/nominee) > 1">
                 <br />
                 <br />
                 <b>TIE</b> - Everyone who selected one of the
