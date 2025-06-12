@@ -286,7 +286,8 @@
           ));
         </xsl:for-each>
         <xsl:if test="$inPlayer">
-          const inPlayer = players[<xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" /> - 1];
+          const inPlayer = players.find(player => player.id ===
+              <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" />);
         </xsl:if>
 
         const cells = document.getElementById("rankings").getElementsByTagName("td");
@@ -318,10 +319,10 @@
                         (player.time > elapsed || opponent.time > player.time)).length + 1;
 
               for (const opponent of players)
-                if (player.decided.substr(opponent.id, 1) === 'X' &amp;&amp;
+                if (player.decided.substr(opponent.id - 1, 1) === 'X' &amp;&amp;
                     elapsed >= player.time &amp;&amp; elapsed >= opponent.time)
-                  player.decided = player.decided.substring(0, opponent.id) + 
-                      (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponent.id + 1);
+                  player.decided = player.decided.substring(0, opponent.id - 1) + 
+                      (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponent.id);
               player.bpr = (player.decided.match(/L/g) || []).length + 1;
               player.wpr = (player.decided.match(/[L?X]/g) || []).length + 1;
             }
