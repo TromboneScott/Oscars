@@ -324,7 +324,7 @@
                   player.decided = player.decided.substring(0, opponent.id - 1) + 
                       (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponent.id);
               player.bpr = (player.decided.match(/L/g) || []).length + 1;
-              player.wpr = (player.decided.match(/[L?X]/g) || []).length + 1;
+              player.wpr = players.length - (player.decided.match(/[WT]/g) || []).length;
             }
 
             // Sort the players
