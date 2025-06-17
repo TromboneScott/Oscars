@@ -347,7 +347,8 @@
               <xsl:if test="$inPlayer">
                 const decision = inPlayer.decided.substr(player.id - 1, 1);
                 cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
-                    decision === "W" ? "limegreen" : decision === "L" ? "red" : "silver";
+                    decision === "W" ? "limegreen" : decision === "L" ? "red" :
+                    decision === "T" ? "tan" : "silver";
               </xsl:if>
               cells[row * tableWidth].innerHTML =
                   '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
@@ -377,6 +378,8 @@
                 document.getElementById("player_lost").style.display = 'inline';
               if (inPlayer.decided.includes("W"))
                 document.getElementById("player_won").style.display = 'inline';
+              if (inPlayer.decided.includes("T"))
+                document.getElementById("player_tied").style.display = 'inline';
             </xsl:if>
           }
         }, 1000);

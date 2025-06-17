@@ -211,6 +211,21 @@
             <xsl:value-of select="$playerName" /> will finish above all
             players in <font color="green">green</font>
           </a>
+          <a id="player_tied">
+            <xsl:attribute name="style">
+              <xsl:choose>
+                <xsl:when test="contains($playerResults/@decided, 'T')">
+                  display:inline
+                </xsl:when>
+                <xsl:otherwise>
+                  display:none
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:attribute>
+            <br />
+            <xsl:value-of select="$playerName" /> will tie with all
+            players in <font color="SaddleBrown">brown</font>
+          </a>
           <br />
           <br />
           <xsl:apply-templates
