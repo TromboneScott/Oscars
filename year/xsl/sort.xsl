@@ -244,10 +244,16 @@
     </table>
     <xsl:if test="$results/awards/@START and not($results/awards/@END)">
       <script>
+        // Format the time value as: H:MM:SS
         function timeToString(time) {
           return Math.trunc(time / 60 / 60) + ":" + 
               String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
               String(time % 60).padStart(2, '0');
+        }
+        
+        // Math.sign isn't available in Internet Explorer
+        function sign(value) {
+          return value &lt; 0 ? -1 : value > 0 ? 1 : 0;
         }
 
         class Player {
@@ -265,8 +271,8 @@
           }
 
           compareTo(other) {
-            return this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' }) * 2
-                + this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' });
+            return sign(this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' }) * 2
+                + this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' }));
           }
         }
 
@@ -330,10 +336,10 @@
             // Sort the players
             players.sort(function(a, b) {
               return ('<xsl:value-of select="@name" />'.startsWith('name') ? a.compareTo(b) :
-                    ((a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * players.length
-                    + a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />) * players.length
-                    + a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
-                  * ('<xsl:value-of select="@order" />' === 'descending' ? -4 : 4) + a.compareTo(b);
+                    (sign(a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * 2 +
+                    sign(a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />)) * 2 +
+                    sign(a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
+                  ) * ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) + a.compareTo(b);
             });
 
             // Update the rankings table
