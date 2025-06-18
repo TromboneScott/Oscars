@@ -257,15 +257,12 @@
         }
 
         class Player {
-          constructor(id, firstName, lastName, score, rank, bpr, wpr, time, decided) {
+          constructor(id, firstName, lastName, score, time, decided) {
             this.id = id;
             this.firstName = firstName;
             this.lastName = lastName;
             this.scoreText = score;
             this.score = parseFloat(score);
-            this.rank = rank;
-            this.bpr = bpr;
-            this.wpr = wpr;
             this.time = time;
             this.decided = decided.split('');
           }
@@ -284,9 +281,6 @@
             '<xsl:value-of select="@firstName"/>',
             '<xsl:value-of select="@lastName"/>',
             '<xsl:value-of select="@score"/>',
-            <xsl:value-of select="@rank"/>,
-            <xsl:value-of select="@bpr"/>,
-            <xsl:value-of select="@wpr"/>,
             <xsl:apply-templates select="." mode="timeValue" />,
             '<xsl:value-of select="@decided"/>'
           ));
