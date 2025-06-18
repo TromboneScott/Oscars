@@ -56,6 +56,9 @@ table#header th {
 .unannounced {
   background-color: silver;
 }
+.tied {
+  background-color: tan;
+}
 th {
   border-top-width: 3px;
   border-bottom-width: 3px;

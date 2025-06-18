@@ -267,7 +267,7 @@
             this.bpr = bpr;
             this.wpr = wpr;
             this.time = time;
-            this.decided = decided;
+            this.decided = decided.split('');
           }
 
           compareTo(other) {
@@ -325,12 +325,11 @@
                         (player.time > elapsed || opponent.time > player.time)).length + 1;
 
               for (const opponent of players)
-                if (player.decided.substr(opponent.id - 1, 1) === 'X' &amp;&amp;
+                if (player.decided[opponent.id - 1] === 'X' &amp;&amp;
                     elapsed >= player.time &amp;&amp; elapsed >= opponent.time)
-                  player.decided = player.decided.substring(0, opponent.id - 1) + 
-                      (player.time > opponent.time ? 'W' : 'L') + player.decided.substring(opponent.id);
-              player.bpr = (player.decided.match(/L/g) || []).length + 1;
-              player.wpr = players.length - (player.decided.match(/[WT]/g) || []).length;
+                  player.decided[opponent.id - 1] = player.time > opponent.time ? 'W' : 'L';
+              player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
+              player.wpr = players.length - player.decided.filter(decision => 'WT'.includes(decision)).length;
             }
 
             // Sort the players
@@ -345,7 +344,7 @@
             // Update the rankings table
             players.forEach((player, row) => {
               <xsl:if test="$inPlayer">
-                const decision = inPlayer.decided.substr(player.id - 1, 1);
+                const decision = inPlayer.decided[player.id - 1];
                 cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
                     decision === "W" ? "limegreen" : decision === "L" ? "red" :
                     decision === "T" ? "tan" : "silver";
@@ -374,11 +373,11 @@
                   document.getElementById(id).style.backgroundColor = 'limegreen';
 
               // Show "will finish above" messages
-              if (inPlayer.decided.includes("L"))
+              if (inPlayer.decided.includes('L'))
                 document.getElementById("player_lost").style.display = 'inline';
-              if (inPlayer.decided.includes("W"))
+              if (inPlayer.decided.includes('W'))
                 document.getElementById("player_won").style.display = 'inline';
-              if (inPlayer.decided.includes("T"))
+              if (inPlayer.decided.includes('T'))
                 document.getElementById("player_tied").style.display = 'inline';
             </xsl:if>
           }
@@ -428,7 +427,8 @@
             <xsl:choose>
               <xsl:when test="$decided = 'W'">correct</xsl:when>
               <xsl:when test="$decided = 'L'">incorrect</xsl:when>
-              <xsl:when test="$decided = '?' or $decided = 'X' or $decided = 'T'">unannounced</xsl:when>
+              <xsl:when test="$decided = 'T'">tied</xsl:when>
+              <xsl:when test="$decided = '?' or $decided = 'X'">unannounced</xsl:when>
             </xsl:choose>
           </xsl:if>
         </xsl:attribute>

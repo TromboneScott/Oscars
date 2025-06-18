@@ -99,8 +99,7 @@ final class Standings {
                                                         || opponent.answer(category) == inPlayer
                                                                 .answer(category)) ? opponent
                                                                         .time() == inPlayer.time()
-                                                                                ? "T"
-                                                                                : "X"
+                                                                        || showEnded ? "T" : "X"
                                                                         : "?")
                 .collect(Collectors.joining());
     }
