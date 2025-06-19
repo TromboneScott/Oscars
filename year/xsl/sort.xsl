@@ -268,8 +268,8 @@
           }
 
           compareTo(other) {
-            return sign(this.lastName.localeCompare(other.lastName, undefined, { sensitivity: 'base' }) * 2
-                + this.firstName.localeCompare(other.firstName, undefined, { sensitivity: 'base' }));
+            return sign(this.lastName.localeCompare(other.lastName, undefined, {sensitivity: 'base'}) * 2
+                + this.firstName.localeCompare(other.firstName, undefined, {sensitivity: 'base'}));
           }
         }
 
@@ -343,16 +343,13 @@
                     decision === "W" ? "limegreen" : decision === "L" ? "red" :
                     decision === "T" ? "tan" : "silver";
               </xsl:if>
-              cells[row * tableWidth].innerHTML =
-                  '&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
+              const values = ['&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
                   player.firstName + '_' + player.lastName + '.xml">' +
-                  [player.lastName, player.firstName].join(', ') + '&lt;/a>';
-              cells[row * tableWidth + 1].innerHTML = player.rank;
-              cells[row * tableWidth + 2].innerHTML = player.bpr;
-              cells[row * tableWidth + 3].innerHTML = player.wpr;
-              cells[row * tableWidth + 4].innerHTML = player.scoreText;
-              cells[row * tableWidth + 5].innerHTML = timeToString(player.time);
-              cells[row * tableWidth + 5].style.backgroundColor = 
+                  [player.lastName, player.firstName].filter(Boolean).join(', ') + '&lt;/a>',
+                player.rank, player.bpr, player.wpr, player.scoreText, timeToString(player.time)
+              ];
+              values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
+              cells[row * tableWidth + values.length - 1].style.backgroundColor = 
                   player.time > elapsed ? 'silver' : 'limegreen';
             });
 
@@ -363,16 +360,12 @@
                   inPlayer.bpr + (inPlayer.wpr === inPlayer.bpr ? '' : ' to ' + inPlayer.wpr);
 
               if (elapsed >= inPlayer.time)
-                for (let id of ["time_guess", "time_actual", "time_score"])
-                  document.getElementById(id).style.backgroundColor = 'limegreen';
+                for (let id of ["guess", "actual", "score"])
+                  document.getElementById("time_" + id).style.backgroundColor = 'limegreen';
 
-              // Show "will finish above" messages
-              if (inPlayer.decided.includes('L'))
-                document.getElementById("player_lost").style.display = 'inline';
-              if (inPlayer.decided.includes('W'))
-                document.getElementById("player_won").style.display = 'inline';
-              if (inPlayer.decided.includes('T'))
-                document.getElementById("player_tied").style.display = 'inline';
+              for (let map of [{decision: 'L', id: 'lost'}, {decision: 'W', id: 'won'}, {decision: 'T', id: 'tied'}])
+                if (inPlayer.decided.includes(map.decision))
+                  document.getElementById("player_" + map.id).style.display = 'inline';
             </xsl:if>
           }
         }, 1000);
