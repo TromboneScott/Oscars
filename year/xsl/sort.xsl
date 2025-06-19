@@ -363,7 +363,7 @@
                 for (let id of ["guess", "actual", "score"])
                   document.getElementById("time_" + id).style.backgroundColor = 'limegreen';
 
-              for (let map of [{decision: 'L', id: 'lost'}, {decision: 'W', id: 'won'}, {decision: 'T', id: 'tied'}])
+              for (let map of [{decision: 'W', id: 'won'}, {decision: 'L', id: 'lost'}])
                 if (inPlayer.decided.includes(map.decision))
                   document.getElementById("player_" + map.id).style.display = 'inline';
             </xsl:if>
