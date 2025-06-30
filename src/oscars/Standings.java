@@ -1,7 +1,6 @@
 package oscars;
 
 import java.math.BigDecimal;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,8 +22,6 @@ final class Standings {
 
     private final ImmutableMap<Player, BigDecimal> scoreMap;
 
-    private final ImmutableMap<Player, ImmutableSet<Player>> lostToMap;
-
     /** The Standings based on the current Results */
     public Standings() {
         elapsedTime = Oscars.RESULTS.elapsedTimeSeconds();
@@ -33,9 +30,6 @@ final class Standings {
                 ImmutableMap.toImmutableMap(category -> category, Oscars.RESULTS::winners));
         scoreMap = Oscars.PLAYERS.stream()
                 .collect(ImmutableMap.toImmutableMap(player -> player, this::score));
-        lostToMap = scoreMap.keySet().stream().collect(ImmutableMap.toImmutableMap(player -> player,
-                player -> lostToStream(player, possibleScores(player, true), elapsedTime, showEnded)
-                        .map(Entry::getKey).collect(ImmutableSet.toImmutableSet())));
     }
 
     private BigDecimal score(Player inPlayer) {
@@ -48,59 +42,54 @@ final class Standings {
     public Element toDOM() {
         int scale = Category.ALL.stream().map(Category::value).mapToInt(BigDecimal::scale).max()
                 .orElse(0);
+        ImmutableMap<Player, ImmutableSet<Player>> lostToMap = scoreMap.keySet().stream()
+                .collect(ImmutableMap.toImmutableMap(player -> player, this::lostTo));
         return scoreMap.keySet().stream()
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
-                        .setAttribute("rank", String.valueOf(
-                                lostToStream(player, scoreMap, elapsedTime, true).count() + 1))
-                        .setAttribute("bpr", String.valueOf(lostToMap.get(player).size() + 1))
-                        .setAttribute("wpr", String.valueOf(worstPossibleRank(player)))
-                        .setAttribute("decided", decided(player)))
+                        .setAttribute("decided", decided(player, lostToMap)))
                 .reduce(new Element("standings"), Element::addContent)
                 .setAttribute("time", String.valueOf(elapsedTime));
     }
 
-    private static Stream<Entry<Player, BigDecimal>> lostToStream(Player inPlayer,
-            ImmutableMap<Player, BigDecimal> inScoreMap, long inElapsedTime,
-            boolean inCheckOverTime) {
-        return inScoreMap.entrySet().stream()
-                .filter(scoreEntry -> inScoreMap.get(inPlayer).compareTo(scoreEntry.getValue()) < 0
-                        || inScoreMap.get(inPlayer).equals(scoreEntry.getValue())
-                                && scoreEntry.getKey().time() <= inElapsedTime
-                                && (inPlayer.time() < scoreEntry.getKey().time()
-                                        || inCheckOverTime && inPlayer.time() > inElapsedTime));
+    private ImmutableSet<Player> lostTo(Player inPlayer) {
+        BigDecimal possibleScore = possibleScore(inPlayer, inPlayer);
+        return scoreMap.keySet().stream()
+                .filter(opponent -> (possibleScore(opponent, inPlayer).compareTo(possibleScore) > 0
+                        || possibleScore(opponent, inPlayer).compareTo(possibleScore) == 0
+                                && opponent.time() <= elapsedTime
+                                && (inPlayer.time() < opponent.time()
+                                        || showEnded && inPlayer.time() > elapsedTime)))
+                .collect(ImmutableSet.toImmutableSet());
     }
 
-    private ImmutableMap<Player, BigDecimal> possibleScores(Player inPlayer, boolean inBest) {
-        return scoreMap.entrySet().stream().collect(ImmutableMap.toImmutableMap(Entry::getKey,
-                scoreEntry -> Category.ALL.stream()
-                        .filter(category -> winners.get(category).isEmpty() && inBest == scoreEntry
-                                .getKey().answer(category).equals(inPlayer.answer(category)))
-                        .map(Category::value).reduce(scoreEntry.getValue(), BigDecimal::add)));
+    private BigDecimal possibleScore(Player inPlayer, Player inCompare) {
+        return Category.ALL.stream()
+                .filter(category -> winners.get(category).isEmpty()
+                        && inPlayer.answer(category) == inCompare.answer(category))
+                .map(Category::value).reduce(scoreMap.get(inPlayer), BigDecimal::add);
     }
 
-    private long worstPossibleRank(Player inPlayer) {
-        ImmutableMap<Player, BigDecimal> worstPossibleScores = possibleScores(inPlayer, false);
-        return 1 + Math.max(
-                lostToStream(inPlayer, worstPossibleScores,
-                        showEnded ? elapsedTime : Long.MAX_VALUE, showEnded).count(),
-                showEnded || inPlayer.time() <= elapsedTime ? 0
-                        : lostToStream(inPlayer, worstPossibleScores, inPlayer.time() - 1, true)
-                                .count());
-    }
-
-    private String decided(Player inPlayer) {
+    /** Values: - = This Player, W = Won, L = Lost, T = Tied, X = Score could tie, ? = Undecided */
+    private String decided(Player inPlayer,
+            ImmutableMap<Player, ImmutableSet<Player>> inLostToMap) {
         return scoreMap.keySet().stream().map(opponent -> opponent == inPlayer ? "-"
-                : lostToMap.get(opponent).contains(inPlayer) ? "W"
-                        : lostToMap.get(inPlayer).contains(opponent) ? "L"
-                                : scoreMap.get(opponent).equals(scoreMap.get(inPlayer))
-                                        && Category.ALL.stream().allMatch(
-                                                category -> !winners.get(category).isEmpty()
-                                                        || opponent.answer(category) == inPlayer
-                                                                .answer(category)) ? opponent
-                                                                        .time() == inPlayer.time()
-                                                                        || showEnded ? "T" : "X"
-                                                                        : "?")
+                : inLostToMap.get(opponent).contains(inPlayer) ? "W"
+                        : inLostToMap.get(inPlayer).contains(opponent) ? "L"
+                                : !disagreementStream(inPlayer, opponent).findAny().isPresent()
+                                        && (showEnded || opponent.time() == inPlayer.time()) ? "T"
+                                                : couldTieScore(inPlayer, opponent) ? "X" : "?")
                 .collect(Collectors.joining());
+    }
+
+    private boolean couldTieScore(Player inPlayer, Player inOpponent) {
+        return scoreMap.get(inPlayer).subtract(scoreMap.get(inOpponent)).abs()
+                .compareTo(disagreementStream(inPlayer, inOpponent).map(Category::value)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)) == 0;
+    }
+
+    private Stream<Category> disagreementStream(Player inPlayer, Player inOpponent) {
+        return Category.ALL.stream().filter(category -> winners.get(category).isEmpty()
+                && !inPlayer.answer(category).equals(inOpponent.answer(category)));
     }
 }

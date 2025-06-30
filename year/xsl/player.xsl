@@ -20,7 +20,9 @@
           <table>
             <tr>
               <td id="rank">Rank <div id="rank">
-                  <a id="player_rank"><xsl:value-of select="$playerResults/@rank" /></a>
+                  <a id="player_rank">
+                    <xsl:value-of select="$playerResults/@rank" />
+                  </a>
                 </div>
                 Out of <xsl:value-of select="count($results/standings/player)" />
               </td>
@@ -28,12 +30,7 @@
           </table>
           <br />
           <xsl:if test="$inProgress">
-            <a id="possible_rank">
-              Possible Final Rank: <xsl:value-of select="$playerResults/@bpr" />
-              <xsl:if test="$playerResults/@bpr != $playerResults/@wpr">
-                to <xsl:value-of select="$playerResults/@wpr" />
-              </xsl:if>
-            </a>
+            <a id="possible_rank" />
             <br />
           </xsl:if>
           <br />
@@ -121,7 +118,20 @@
                 </th>
               </tr>
               <tr>
-                <xsl:apply-templates select="$playerResults" mode="attribute" />
+                <xsl:attribute name="class">
+                  <xsl:choose>
+                    <xsl:when
+                      test="$ballots/player[@firstName = $playerResults/@firstName and @lastName = $playerResults/@lastName]/@time &lt;= $results/standings/@time">
+                  correct
+                    </xsl:when>
+                    <xsl:when test="not($inProgress)">
+                      incorrect
+                    </xsl:when>
+                    <xsl:otherwise>
+                      unannounced
+                    </xsl:otherwise>
+                  </xsl:choose>
+                  time</xsl:attribute>
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
                   <xsl:apply-templates
@@ -130,49 +140,17 @@
                 </td>
                 <td id="time_guess">
                   <center>
-                    <xsl:apply-templates select="$playerResults" mode="time" />
+                    <A id="time_player" />
                   </center>
                 </td>
                 <td id="time_actual">
                   <center>
-                    <A id="time_value">
-                      <xsl:call-template name="time">
-                        <xsl:with-param name="time">
-                          <xsl:value-of select="$results/standings/@time" />
-                        </xsl:with-param>
-                      </xsl:call-template>
-                    </A>
+                    <A id="time_value" />
                   </center>
                 </td>
                 <td id="time_score">
                   <center>
-                    <xsl:variable name="playerTime"
-                      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />
-                    <A id="time_difference">
-                      <xsl:choose>
-                        <xsl:when
-                          test="$playerTime &lt;= $results/standings/@time">
-                          <xsl:call-template name="time">
-                            <xsl:with-param name="time">
-                              <xsl:value-of
-                                select="$results/standings/@time - $playerTime" />
-                            </xsl:with-param>
-                          </xsl:call-template>
-                        </xsl:when>
-                        <xsl:when test="$results/awards/@END">
-                          OVER
-                        </xsl:when>
-                        <xsl:otherwise>
-                          <xsl:value-of select="'-'" />
-                          <xsl:call-template name="time">
-                            <xsl:with-param name="time">
-                              <xsl:value-of
-                                select="$playerTime - $results/standings/@time" />
-                            </xsl:with-param>
-                          </xsl:call-template>
-                        </xsl:otherwise>
-                      </xsl:choose>
-                    </A>
+                    <A id="time_difference" />
                   </center>
                 </td>
               </tr>
@@ -186,21 +164,22 @@
             <xsl:attribute name="style">
               <xsl:choose>
                 <xsl:when test="contains($playerResults/@decided, 'L')">
-                  display:inline
+            display:inline
                 </xsl:when>
                 <xsl:otherwise>
                   display:none
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:attribute>
-            <br /> All players in <font color="red">red</font> will finish above <xsl:value-of
+            <br />
+            All players in <font color="red">red</font> will finish above <xsl:value-of
               select="$playerName" />
           </a>
           <a id="player_won">
             <xsl:attribute name="style">
               <xsl:choose>
                 <xsl:when test="contains($playerResults/@decided, 'W')">
-                  display:inline
+            display:inline
                 </xsl:when>
                 <xsl:otherwise>
                   display:none
@@ -208,24 +187,15 @@
               </xsl:choose>
             </xsl:attribute>
             <br />
-            <xsl:value-of select="$playerName" /> will finish above all
-            players in <font color="green">green</font>
+            <xsl:value-of
+              select="$playerName" /> will finish above all players in <font
+              color="green">green</font>
           </a>
-          <a id="player_tied">
-            <xsl:attribute name="style">
-              <xsl:choose>
-                <xsl:when test="contains($playerResults/@decided, 'T')">
-                  display:inline
-                </xsl:when>
-                <xsl:otherwise>
-                  display:none
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:attribute>
+          <xsl:if test="contains($playerResults/@decided, 'T')">
             <br />
             <xsl:value-of select="$playerName" /> will tie with all
             players in <font color="SaddleBrown">brown</font>
-          </a>
+          </xsl:if>
           <br />
           <br />
           <xsl:apply-templates
