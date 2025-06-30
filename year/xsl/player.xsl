@@ -187,14 +187,13 @@
               </xsl:choose>
             </xsl:attribute>
             <br />
-            <xsl:value-of
-              select="$playerName" /> will finish above all players in <font
-              color="green">green</font>
+            All players in <font color="green">green</font> will finish below <xsl:value-of
+              select="$playerName" />
           </a>
           <xsl:if test="contains($playerResults/@decided, 'T')">
             <br />
-            <xsl:value-of select="$playerName" /> will tie with all
-            players in <font color="SaddleBrown">brown</font>
+            All players in <font color="SaddleBrown">brown</font> will finish tied with <xsl:value-of
+              select="$playerName" />
           </xsl:if>
           <br />
           <br />
