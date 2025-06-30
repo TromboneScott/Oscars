@@ -249,8 +249,6 @@
         const inPlayer = players.find(player => player.id ===
             <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" />);
         document.getElementById("time_player").innerHTML = timeToString(inPlayer.time);
-        document.getElementById("time_value").innerHTML = timeToString(0);
-        document.getElementById("time_difference").innerHTML = '-' + document.getElementById("time_player").innerHTML;
       </xsl:if>
 
       const cells = document.getElementById("rankings").getElementsByTagName("td");
