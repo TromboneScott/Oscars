@@ -102,11 +102,11 @@
 
         updated(function() {
           const start = this.responseText;
-          const repeat = setInterval(function() {
+          setInterval(function() {
             updated(function() {
               if (this.responseText !== start)
                 window.location.reload();
-            })
+            });
           }, 3000);
         });
       </script>
