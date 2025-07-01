@@ -1,6 +1,7 @@
 package oscars;
 
 import java.math.BigDecimal;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,21 +54,18 @@ final class Standings {
     }
 
     private ImmutableSet<Player> lostTo(Player inPlayer) {
-        BigDecimal possibleScore = possibleScore(inPlayer, inPlayer);
-        return scoreMap.keySet().stream()
-                .filter(opponent -> (possibleScore(opponent, inPlayer).compareTo(possibleScore) > 0
-                        || possibleScore(opponent, inPlayer).compareTo(possibleScore) == 0
-                                && opponent.time() <= elapsedTime
-                                && (inPlayer.time() < opponent.time()
-                                        || showEnded && inPlayer.time() > elapsedTime)))
+        ImmutableMap<Player, BigDecimal> possibleScoreMap = scoreMap.entrySet().stream()
+                .collect(ImmutableMap.toImmutableMap(Entry::getKey, entry -> Category.ALL.stream()
+                        .filter(category -> winners.get(category).isEmpty()
+                                && entry.getKey().answer(category) == inPlayer.answer(category))
+                        .map(Category::value).reduce(entry.getValue(), BigDecimal::add)));
+        return scoreMap.keySet().stream().filter(opponent -> possibleScoreMap.get(opponent)
+                .compareTo(possibleScoreMap.get(inPlayer)) > 0
+                || possibleScoreMap.get(opponent).compareTo(possibleScoreMap.get(inPlayer)) == 0
+                        && opponent.time() <= elapsedTime
+                        && (inPlayer.time() < opponent.time()
+                                || showEnded && inPlayer.time() > elapsedTime))
                 .collect(ImmutableSet.toImmutableSet());
-    }
-
-    private BigDecimal possibleScore(Player inPlayer, Player inCompare) {
-        return Category.ALL.stream()
-                .filter(category -> winners.get(category).isEmpty()
-                        && inPlayer.answer(category) == inCompare.answer(category))
-                .map(Category::value).reduce(scoreMap.get(inPlayer), BigDecimal::add);
     }
 
     /** Values: - = This Player, W = Won, L = Lost, T = Tied, X = Score could tie, ? = Undecided */
