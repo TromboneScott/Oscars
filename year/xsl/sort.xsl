@@ -215,10 +215,11 @@
       }
 
       class Player {
-        constructor(id, firstName, lastName, score, time, decided) {
+        constructor(id, firstName, lastName, link, score, time, decided) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
+          this.link = link;
           this.scoreText = score;
           this.score = parseFloat(score);
           this.time = time;
@@ -239,6 +240,8 @@
           <xsl:value-of select="$ballot/@id" />,
           '<xsl:value-of select="@firstName"/>',
           '<xsl:value-of select="@lastName"/>',
+          '&lt;a href="<xsl:apply-templates select="." mode="playerLink" />">' +
+              '<xsl:apply-templates select="." mode="playerName" />&lt;/a>',
           '<xsl:value-of select="@score"/>',
           <xsl:value-of select="$ballot/@time" />,
           '<xsl:value-of select="@decided"/>'
@@ -316,10 +319,7 @@
                   decision === "W" ? "limegreen" : decision === "L" ? "red" :
                   decision === "T" ? "tan" : "silver";
             </xsl:if>
-            const values = ['&lt;a href="<xsl:value-of select="$rootDir" />player/' + 
-                player.firstName + '_' + player.lastName + '.xml">' +
-                [player.lastName, player.firstName].filter(Boolean).join(', ') + '&lt;/a>',
-                player.rank, 
+            const values = [player.link, player.rank,
                 <xsl:if test="$inProgress">
                   player.bpr, player.wpr,
                 </xsl:if>

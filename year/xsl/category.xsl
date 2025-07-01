@@ -261,7 +261,12 @@
                         <xsl:with-param name="nominee" select="$guess" />
                       </xsl:apply-templates>
                       <td class="header">
-                        <xsl:apply-templates select="." mode="playerLink" />
+                        <a>
+                          <xsl:attribute name="href">
+                            <xsl:apply-templates select="." mode="playerLink" />
+                          </xsl:attribute>
+                          <xsl:apply-templates select="." mode="playerName" />
+                        </a>
                       </td>
                       <xsl:for-each select="$categoryDefinition/nominee">
                         <td id="selection">
@@ -315,7 +320,8 @@
       <xsl:attribute name="src">
         <xsl:value-of select="concat(@name, '.png?_=')" />
         <xsl:variable name="category" select="@name" />
-        <xsl:for-each select="$results/awards/category[@name = $category]/nominee">
+        <xsl:for-each
+          select="$results/awards/category[@name = $category]/nominee">
           <xsl:value-of select="concat(@name, '|')" />
         </xsl:for-each>
       </xsl:attribute>
