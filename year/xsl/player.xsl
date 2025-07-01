@@ -29,7 +29,7 @@
             </tr>
           </table>
           <br />
-          <xsl:if test="$inProgress">
+          <xsl:if test="not($ended)">
             <a id="possible_rank" />
             <br />
           </xsl:if>
@@ -124,7 +124,7 @@
                       test="$ballots/player[@firstName = $playerResults/@firstName and @lastName = $playerResults/@lastName]/@time &lt;= $results/standings/@time">
                   correct
                     </xsl:when>
-                    <xsl:when test="not($inProgress)">
+                    <xsl:when test="$ended">
                       incorrect
                     </xsl:when>
                     <xsl:otherwise>
@@ -191,8 +191,8 @@
               select="$playerName" />
           </a>
           <xsl:if test="contains($playerResults/@decided, 'T')">
-            <br />
-            All players in <font color="SaddleBrown">brown</font> will finish tied with <xsl:value-of
+            <br /> All players in <font color="SaddleBrown">brown</font> will
+            finish tied with <xsl:value-of
               select="$playerName" />
           </xsl:if>
           <br />

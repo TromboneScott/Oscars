@@ -10,7 +10,7 @@
     select="document(concat($rootDir, 'data/mappings.xml'))/mappings" />
   <xsl:variable name="ballots"
     select="document(concat($rootDir, 'data/ballots.xml'))/ballots" />
-  <xsl:variable name="inProgress" select="$results/awards[not(@END)]" />
+  <xsl:variable name="ended" select="$results/awards/@END" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="header">
@@ -90,7 +90,7 @@
         <br />
       </center>
     </header>
-    <xsl:if test="$inProgress">
+    <xsl:if test="not($ended)">
       <script>
         function updated(action) {
           const http = new XMLHttpRequest();

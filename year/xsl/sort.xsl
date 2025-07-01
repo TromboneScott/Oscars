@@ -109,7 +109,7 @@
               <br />
               <br />
               <div class="info">
-                <xsl:if test="$inProgress">
+                <xsl:if test="not($ended)">
                   <u>BPR / WPR</u> - Best Possible Rank / Worst Possible Rank:
                 If guesses for all remaining <a>
                     <xsl:attribute name="href">
@@ -155,7 +155,7 @@
               <xsl:with-param name="inPlayer" select="$inPlayer" />
             </xsl:call-template>
           </th>
-          <xsl:if test="$inProgress">
+          <xsl:if test="not($ended)">
             <th>
               <xsl:call-template name="player-table-column-header">
                 <xsl:with-param name="text" select="'BPR'" />
@@ -196,7 +196,7 @@
           <tr>
             <td class="header" />
             <td class="rank" />
-            <xsl:if test="$inProgress">
+            <xsl:if test="not($ended)">
               <td class="rank" />
               <td class="rank" />
             </xsl:if>
@@ -263,14 +263,14 @@
       function update() {
         const elapsed = Math.floor((new Date().getTime() - start) / 1000) + time;
 
-        <xsl:if test="$results/awards[@START]">
+        <xsl:if test="$results/awards/@START">
           document.getElementById("time_header").innerHTML = timeToString(elapsed);
           document.getElementById("timeHeader_cell").style.backgroundColor =
               elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
           <xsl:if test="$inPlayer">
             document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
             document.getElementById("time_difference").innerHTML = 
-                <xsl:if test="not($inProgress)">
+                <xsl:if test="$ended">
                   inPlayer.time > elapsed ? 'OVER' :
                 </xsl:if>
                 (elapsed &lt; inPlayer.time ? '-' : '') + timeToString(Math.abs(elapsed - inPlayer.time));
@@ -320,13 +320,13 @@
                   decision === "T" ? "tan" : "silver";
             </xsl:if>
             const values = [player.link, player.rank,
-                <xsl:if test="$inProgress">
+                <xsl:if test="not($ended)">
                   player.bpr, player.wpr,
                 </xsl:if>
                 player.scoreText, timeToString(player.time)];
             values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
             <xsl:choose>
-              <xsl:when test="$inProgress">
+              <xsl:when test="not($ended)">
                 for (let column = 2; column &lt; 4; column++)
                   cells[row * tableWidth + column].style.backgroundColor =
                       player.bpr === player.wpr ? 'silver': 'transparent';
@@ -357,7 +357,7 @@
         }
       }
       update();
-      <xsl:if test="$results/awards/@START and $inProgress">
+      <xsl:if test="$results/awards/@START and not($ended)">
         setInterval(update, 1000);
       </xsl:if>
     </script>
