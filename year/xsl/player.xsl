@@ -160,7 +160,7 @@
           <br />
           <br />
           <h3 style="display:inline">Rankings</h3>
-          <a id="player_lost">
+          <a id="decided_L">
             <xsl:attribute name="style">
               <xsl:choose>
                 <xsl:when test="contains($playerResults/@decided, 'L')">
@@ -175,7 +175,7 @@
             All players in <font color="red">red</font> will finish above <xsl:value-of
               select="$playerName" />
           </a>
-          <a id="player_won">
+          <a id="decided_W">
             <xsl:attribute name="style">
               <xsl:choose>
                 <xsl:when test="contains($playerResults/@decided, 'W')">

@@ -45,7 +45,7 @@
                   <tr>
                     <th>
                       <xsl:call-template name="player-table-column-header">
-                        <xsl:with-param name="text" select="'Timestamp'" />
+                        <xsl:with-param name="text" select="'Received'" />
                         <xsl:with-param name="type" select="'default'" />
                         <xsl:with-param name="sort" select="@name" />
                       </xsl:call-template>
@@ -208,7 +208,7 @@
     </table>
     <script>
       // Format the time value as: H:MM:SS
-      function timeToString(time) {
+      function formatTime(time) {
         return Math.trunc(time / 60 / 60) + ":" + 
             String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
             String(time % 60).padStart(2, '0');
@@ -251,7 +251,7 @@
       <xsl:if test="$inPlayer">
         const inPlayer = players.find(player => player.id ===
             <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" />);
-        document.getElementById("time_player").innerHTML = timeToString(inPlayer.time);
+        document.getElementById("time_player").innerHTML = formatTime(inPlayer.time);
       </xsl:if>
 
       const cells = document.getElementById("rankings").getElementsByTagName("td");
@@ -264,7 +264,7 @@
         const elapsed = Math.floor((new Date().getTime() - start) / 1000) + time;
 
         <xsl:if test="$results/awards/@START">
-          document.getElementById("time_header").innerHTML = timeToString(elapsed);
+          document.getElementById("time_header").innerHTML = formatTime(elapsed);
           document.getElementById("timeHeader_cell").style.backgroundColor =
               elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
           <xsl:if test="$inPlayer">
@@ -273,7 +273,7 @@
                 <xsl:if test="$ended">
                   inPlayer.time > elapsed ? 'OVER' :
                 </xsl:if>
-                (elapsed &lt; inPlayer.time ? '-' : '') + timeToString(Math.abs(elapsed - inPlayer.time));
+                (elapsed &lt; inPlayer.time ? '-' : '') + formatTime(Math.abs(elapsed - inPlayer.time));
           </xsl:if>
         </xsl:if>
 
@@ -323,19 +323,19 @@
                 <xsl:if test="not($ended)">
                   player.bpr, player.wpr,
                 </xsl:if>
-                player.scoreText, timeToString(player.time)];
+                player.scoreText, formatTime(player.time)];
             values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
             <xsl:choose>
-              <xsl:when test="not($ended)">
+              <xsl:when test="$ended">
+                cells[row * tableWidth + 3].style.backgroundColor = 
+                    player.time > elapsed ? 'red' : 'limegreen';
+              </xsl:when>
+              <xsl:otherwise>
                 for (let column = 2; column &lt; 4; column++)
                   cells[row * tableWidth + column].style.backgroundColor =
                       player.bpr === player.wpr ? 'silver': 'transparent';
                 cells[row * tableWidth + 5].style.backgroundColor = 
                     player.time > elapsed ? 'silver' : 'limegreen';
-              </xsl:when>
-              <xsl:otherwise>
-                cells[row * tableWidth + 3].style.backgroundColor = 
-                    player.time > elapsed ? 'red' : 'limegreen';
               </xsl:otherwise>
             </xsl:choose>
           });
@@ -350,9 +350,8 @@
               for (let id of ["guess", "actual", "score"])
                 document.getElementById("time_" + id).style.backgroundColor = 'limegreen';
 
-            for (let map of [{decision: 'W', id: 'won'}, {decision: 'L', id: 'lost'}])
-              if (inPlayer.decided.includes(map.decision))
-                document.getElementById("player_" + map.id).style.display = 'inline';
+            for (let decision of ['W', 'L'].filter(decision => inPlayer.decided.includes(decision)))
+              document.getElementById("decided_" + decision).style.display = 'inline';
           </xsl:if>
         }
       }
