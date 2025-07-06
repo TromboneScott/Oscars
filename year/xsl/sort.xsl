@@ -20,7 +20,8 @@
                       <img
                         src="https://lh7-us.googleusercontent.com/9tsl1dpGEmRGVe77r7hNNZqUxK8zNCRGeHEzQOm6bxeJ-8mPknIrB0PtexESrvvf9Ty4jf1r1Sbuof9oyLmLmC9pfN-WXj3umHvHcQZ9BsX6a0VK8gykda1TgBvNFNsrzEzQFklGwS7yRp1Foyl8oR6fIyCvwA"
                         alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
-                        title="Counting Ballots" />
+                        title="Counting Ballots" 
+                        width="200" />
                       <br />
                       <br />Ballot names will
                       appear here a few minutes after being cast.<br />The

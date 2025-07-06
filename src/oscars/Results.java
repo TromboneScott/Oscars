@@ -2,11 +2,11 @@ package oscars;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +35,13 @@ public class Results {
     /** Get user input from the system's standard input */
     public static final Scanner STDIN = new Scanner(System.in);
 
+    public static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
+
     private static final XMLFile RESULTS_FILE = new XMLFile(Directory.DATA, "results.xml");
+
+    private static final ZonedDateTime CURTAIN = LocalDateTime
+            .parse(XMLFile.readDefinitionsFile().getAttributeValue("curtain"))
+            .atZone(ZoneId.systemDefault());
 
     private static final String WINNER_DELIMITER = ",";
 
@@ -187,13 +193,14 @@ public class Results {
     }
 
     /** Write the given content to the results XML file */
-    public static void write(ZonedDateTime inUpdated, Content... inContent) throws IOException {
-        String updated = inUpdated.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a - z"));
-        RESULTS_FILE.write(new Element("results").setAttribute("updated", updated)
-                .addContent(ImmutableList.copyOf(inContent)));
+    public static void write(Content... inContent) throws IOException {
+        long countdown = Duration.between(ZonedDateTime.now(), CURTAIN).getSeconds();
+        RESULTS_FILE
+                .write(new Element("results").setAttribute("countdown", String.valueOf(countdown))
+                        .addContent(ImmutableList.copyOf(inContent)));
     }
 
-    /** Write the udpated timestamp */
+    /** Write the updated timestamp */
     public static void writeUpdated() throws IOException {
         Files.write(ZonedDateTime.now().toString().getBytes(),
                 new File(Directory.DATA, "updated.txt"));

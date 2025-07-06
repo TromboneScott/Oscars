@@ -1,6 +1,7 @@
 package oscars.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,8 @@ import com.google.common.collect.ImmutableMap;
 /** An XML file - Immutable (though the file system itself can change) */
 @SuppressWarnings("serial")
 public final class XMLFile extends File {
+    private static final XMLFile DEFINITIONS_FILE = new XMLFile(Directory.DATA, "definitions.xml");
+
     public XMLFile(Directory inDirectory, String inFilename) {
         super(inDirectory, inFilename);
     }
@@ -39,6 +42,14 @@ public final class XMLFile extends File {
                                     "../xsl/" + inRootElement.getName() + ".xsl")))
                     .addContent(new Comment("OSCARS website created by Scott McDonald"))
                     .addContent(inRootElement), writer);
+        }
+    }
+
+    public static Element readDefinitionsFile() {
+        try {
+            return DEFINITIONS_FILE.read().orElseThrow(FileNotFoundException::new);
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
         }
     }
 }

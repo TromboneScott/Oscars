@@ -88,6 +88,19 @@
           width="500" />
         <br />
         <br />
+        <xsl:if
+          test="not($results/awards/@START) and $results/@countdown > 0">
+          <A id="countdown">
+            <B style="font-size: 30px">Countdown to the Oscars</B>
+            <br />
+            <br />
+            <table style="table-layout: fixed; background-color: white">
+              <tr id="countdown_row" />
+            </table>
+            <br />
+          </A>
+        </xsl:if>
+        <br />
       </center>
     </header>
     <xsl:if test="not($ended)">
@@ -99,15 +112,35 @@
             "data/updated.txt?_=" + new Date().getTime());
           http.send();
         }
-
+        
         updated(function() {
           const start = this.responseText;
-          setInterval(function() {
-            updated(function() {
-              if (this.responseText !== start)
-                window.location.reload();
-            });
-          }, 3000);
+          let countdown = parseInt('<xsl:value-of select="$results/@countdown" />');
+          
+          function td(value, unit) {
+            return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
+                value + '&lt;/B>&lt;br/>' + unit + (value === 1 ? '' : 's') + '&lt;/td>';
+          }
+
+          function repeat() {
+            if (countdown > 0)
+              document.getElementById("countdown_row").innerHTML = 
+                  (countdown >= 24 * 60 * 60 ? td(Math.trunc(countdown / 24 / 60 / 60), "Day") : '') +
+                  (countdown >= 60 * 60 ? td(Math.trunc((countdown / 60 / 60) % 24), "Hour") : '') +
+                  (countdown >= 60 ? td(Math.trunc((countdown / 60 ) % 60), "Minute") : '') +
+                  td(countdown % 60, "Second");
+            else
+              document.getElementById("countdown").style.display = 'none';
+            
+            if (--countdown % 3 === 0)
+              updated(function() {
+                if (this.responseText !== start)
+                  window.location.reload();
+              });
+          }
+
+          repeat();
+          setInterval(repeat, 1000);
         });
       </script>
     </xsl:if>
@@ -115,11 +148,8 @@
   <xsl:template name="footer">
     <footer>
       <center>
-        <br />Last updated: <xsl:value-of select="$results/@updated" />
         <br />
-        <br />
-        <font
-          color="gray">
+        <font color="gray">
           <i>Contest by Scott Takeda | Website by Scott McDonald</i>
         </font>
       </center>

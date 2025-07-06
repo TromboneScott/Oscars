@@ -9,11 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
@@ -87,9 +85,13 @@ class Ballots {
     }
 
     private static void writeNewBallots() throws Exception {
-        for (LocalDateTime lastTimestamp = null;; Thread.sleep(TimeUnit.SECONDS.toMillis(10)))
+        for (LocalDateTime lastTimestamp = null;; Thread.sleep(Results.UPDATE_TIME))
             try {
                 ImmutableCollection<Ballot> answers = new Ballots().answers();
+                Results.write(answers.stream()
+                        .map(player -> player.toDOM().setAttribute("timestamp",
+                                timestamp(player).toString()))
+                        .reduce(new Element("ballots"), Element::addContent));
                 LocalDateTime maxTimestamp = answers.stream().map(Ballots::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
@@ -97,11 +99,6 @@ class Ballots {
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
-                    Results.write(ZonedDateTime.now(),
-                            answers.stream()
-                                    .map(player -> player.toDOM().setAttribute("timestamp",
-                                            timestamp(player).toString()))
-                                    .reduce(new Element("ballots"), Element::addContent));
                     lastTimestamp = maxTimestamp;
 
                     Results.writeUpdated();

@@ -1,6 +1,5 @@
 package oscars.column;
 
-import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -8,13 +7,10 @@ import org.jdom2.Element;
 
 import com.google.common.collect.ImmutableList;
 
-import oscars.file.Directory;
 import oscars.file.XMLFile;
 
 /** A column from the survey - Immutable */
 public class Column {
-    private static final XMLFile DEFINITIONS_FILE = new XMLFile(Directory.DATA, "definitions.xml");
-
     /** All the columns in survey order */
     public static final ImmutableList<Column> ALL = readFile().map(Column::new)
             .collect(ImmutableList.toImmutableList());
@@ -23,7 +19,7 @@ public class Column {
 
     Column(Element inColumn) {
         name = Objects.requireNonNull(inColumn.getAttributeValue("name"),
-                DEFINITIONS_FILE + " - Missing column attribute: name");
+                "Definitions file missing column attribute: name");
     }
 
     /** The name of this Column */
@@ -48,11 +44,6 @@ public class Column {
     }
 
     static Stream<Element> readFile() {
-        try {
-            return DEFINITIONS_FILE.read().orElseThrow(FileNotFoundException::new)
-                    .getChildren("column").stream();
-        } catch (Exception e) {
-            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
-        }
+        return XMLFile.readDefinitionsFile().getChildren("column").stream();
     }
 }
