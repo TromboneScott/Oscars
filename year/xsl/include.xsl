@@ -91,7 +91,7 @@
         <xsl:if
           test="not($results/awards/@START) and $results/@countdown > 0">
           <A id="countdown">
-            <B style="font-size: 30px">Countdown to the Oscars</B>
+            <B style="font-size: 30px">Oscars Countdown</B>
             <br />
             <br />
             <table style="table-layout: fixed; background-color: white">
@@ -105,7 +105,7 @@
     </header>
     <xsl:if test="not($ended)">
       <script>
-        function updated(action) {
+        function read(action) {
           const http = new XMLHttpRequest();
           http.onload = action;
           http.open("GET", <xsl:value-of select="$rootDir"/> + 
@@ -113,28 +113,29 @@
           http.send();
         }
         
-        updated(function() {
-          const start = this.responseText;
+        read(function() {
+          const start = new Date().getTime();
+          const updated = this.responseText;
           let countdown = parseInt('<xsl:value-of select="$results/@countdown" />');
           
           function td(value, unit) {
             return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
-                value + '&lt;/B>&lt;br/>' + unit + (value === 1 ? '' : 's') + '&lt;/td>';
+                Math.trunc(value) + '&lt;/B>&lt;br/>' + unit + (value === 1 ? '' : 's') + '&lt;/td>';
           }
 
           function repeat() {
             if (countdown > 0)
               document.getElementById("countdown_row").innerHTML = 
-                  (countdown >= 24 * 60 * 60 ? td(Math.trunc(countdown / 24 / 60 / 60), "Day") : '') +
-                  (countdown >= 60 * 60 ? td(Math.trunc((countdown / 60 / 60) % 24), "Hour") : '') +
-                  (countdown >= 60 ? td(Math.trunc((countdown / 60 ) % 60), "Minute") : '') +
+                  (countdown >= 24 * 60 * 60 ? td(countdown / 60 / 60 / 24, "Day") : '') +
+                  (countdown >= 60 * 60 ? td(countdown / 60 / 60 % 24, "Hour") : '') +
+                  (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
                   td(countdown % 60, "Second");
             else
               document.getElementById("countdown").style.display = 'none';
-            
+
             if (--countdown % 3 === 0)
-              updated(function() {
-                if (this.responseText !== start)
+              read(function() {
+                if (this.responseText !== updated || new Date().getTime() - start > 30 * 60 * 1000)
                   window.location.reload();
               });
           }
