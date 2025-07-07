@@ -114,9 +114,9 @@
         }
         
         read(function() {
-          const start = new Date().getTime();
           const updated = this.responseText;
-          let countdown = parseInt('<xsl:value-of select="$results/@countdown" />');
+          const start = parseInt('<xsl:value-of select="$results/@countdown" />');
+          let countdown = start;
           
           function td(value, unit) {
             return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
@@ -135,7 +135,7 @@
 
             if (--countdown % 3 === 0)
               read(function() {
-                if (this.responseText !== updated || new Date().getTime() - start > 30 * 60 * 1000)
+                if (this.responseText !== updated || start - countdown > 30 * 60)
                   window.location.reload();
               });
           }
