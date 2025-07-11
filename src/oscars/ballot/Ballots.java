@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
@@ -87,21 +88,20 @@ class Ballots {
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(Results.UPDATE_TIME))
             try {
+                Results.writeElapsed(Duration.between(Results.CURTAIN, ZonedDateTime.now()));
                 ImmutableCollection<Ballot> answers = new Ballots().answers();
-                Results.write(answers.stream()
-                        .map(player -> player.toDOM().setAttribute("timestamp",
-                                timestamp(player).toString()))
-                        .reduce(new Element("ballots"), Element::addContent));
                 LocalDateTime maxTimestamp = answers.stream().map(Ballots::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
+                    Results.write(answers.stream()
+                            .map(player -> player.toDOM().setAttribute("timestamp",
+                                    timestamp(player).toString()))
+                            .reduce(new Element("ballots"), Element::addContent));
                     System.err.println(LocalDateTime.now() + " - Downloaded: " + answers.size()
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
                     lastTimestamp = maxTimestamp;
-
-                    Results.writeUpdated();
                 }
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);

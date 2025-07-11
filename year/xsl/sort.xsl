@@ -258,108 +258,110 @@
       const cells = document.getElementById("rankings").getElementsByTagName("td");
       const tableWidth = cells.length / players.length;
 
-      let next = 0;
-      const time = parseInt('<xsl:value-of select="$results/standings/@time" />');
-      const start = new Date().getTime();
-      function update() {
-        const elapsed = Math.floor((new Date().getTime() - start) / 1000) + time;
-
-        <xsl:if test="$results/awards/@START">
-          document.getElementById("time_header").innerHTML = formatTime(elapsed);
-          document.getElementById("timeHeader_cell").style.backgroundColor =
-              elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
-          <xsl:if test="$inPlayer">
-            document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
-            document.getElementById("time_difference").innerHTML = 
-                <xsl:if test="$ended">
-                  inPlayer.time > elapsed ? 'OVER' :
-                </xsl:if>
-                (elapsed &lt; inPlayer.time ? '-' : '') + formatTime(Math.abs(elapsed - inPlayer.time));
-          </xsl:if>
-        </xsl:if>
-
-        // Process when next player's time is reached
-        if (elapsed >= next) {
-          next = Math.min(...players.map(player => player.time).filter(time => time > elapsed));
-
-          // Recalculate rank, bpr and wpr
-          for (const player of players) {
-            player.rank = players.filter(opponent => opponent.score > player.score ||
-                  opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
-                      (player.time > elapsed || opponent.time > player.time)).length + 1;
-
-            for (const opponent of players.filter(opponent => player.decided[opponent.id - 1] === 'X' &amp;&amp;
-                  elapsed >= player.time &amp;&amp; elapsed >= opponent.time &amp;&amp; player.time !== opponent.time))
-              player.decided[opponent.id - 1] = 
-                  player.time > opponent.time &amp;&amp; player.score >= opponent.score ? 'W' :
-                  opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' : '?';
-            player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
-
-            const undecided = players.filter(opponent => player.decided[opponent.id - 1] === 'X');
-            const timeWillTell = undecided.filter(opponent => player.score >= opponent.score);
-            player.wpr = player.bpr + players.filter(opponent => player.decided[opponent.id - 1] === '?').length +
-                undecided.filter(opponent => opponent.score > player.score).length +
-                Math.max(timeWillTell.filter(opponent => player.time > opponent.time).length,
-                         timeWillTell.filter(opponent => opponent.time > player.time).length);
-          }
-
-          // Sort the players
-          players.sort(function(a, b) {
-            return ('<xsl:value-of select="@name" />'.startsWith('name') ? a.compareTo(b) :
-                  (Math.sign(a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * 2 +
-                  Math.sign(a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />)) * 2 +
-                  Math.sign(a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
-                ) * ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) + a.compareTo(b);
-          });
-
-          // Update the rankings table
-          players.forEach((player, row) => {
+      read('elapsed', function() {
+        let elapsed = Math.max(parseInt(this.responseText), 0);
+        let next = 0;
+        function update() {
+          <xsl:if test="$results/awards/@START">
+            document.getElementById("time_header").innerHTML = formatTime(elapsed);
+            document.getElementById("timeHeader_cell").style.backgroundColor =
+                elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
             <xsl:if test="$inPlayer">
-              const decision = inPlayer.decided[player.id - 1];
-              cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
-                  decision === "W" ? "limegreen" : decision === "L" ? "red" :
-                  decision === "T" ? "tan" : "silver";
+              document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
+              document.getElementById("time_difference").innerHTML = 
+                  <xsl:if test="$ended">
+                    inPlayer.time > elapsed ? 'OVER' :
+                  </xsl:if>
+                  (elapsed &lt; inPlayer.time ? '-' : '') + formatTime(Math.abs(elapsed - inPlayer.time));
             </xsl:if>
-            const values = [player.link, player.rank,
-                <xsl:if test="not($ended)">
-                  player.bpr, player.wpr,
-                </xsl:if>
-                player.scoreText, formatTime(player.time)];
-            values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
-            <xsl:choose>
-              <xsl:when test="$ended">
-                cells[row * tableWidth + 3].style.backgroundColor = 
-                    player.time > elapsed ? 'red' : 'limegreen';
-              </xsl:when>
-              <xsl:otherwise>
-                for (let column = 2; column &lt; 4; column++)
-                  cells[row * tableWidth + column].style.backgroundColor =
-                      player.bpr === player.wpr ? 'silver': 'transparent';
-                cells[row * tableWidth + 5].style.backgroundColor = 
-                    player.time > elapsed ? 'silver' : 'limegreen';
-              </xsl:otherwise>
-            </xsl:choose>
-          });
-
-          // Update the player page
-          <xsl:if test="$inPlayer">
-            document.getElementById('player_rank').innerHTML = inPlayer.rank;
-            document.getElementById('possible_rank').innerHTML = inPlayer.wpr === inPlayer.bpr ?
-                'Rank is Final' : 'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
-
-            if (elapsed >= inPlayer.time)
-              for (let id of ["guess", "actual", "score"])
-                document.getElementById("time_" + id).style.backgroundColor = 'limegreen';
-
-            for (let decision of ['W', 'L'].filter(decision => inPlayer.decided.includes(decision)))
-              document.getElementById("decided_" + decision).style.display = 'inline';
           </xsl:if>
+
+          // Process when next player's time is reached
+          if (elapsed >= next) {
+            next = Math.min(...players.map(player => player.time).filter(time => time > elapsed));
+
+            // Recalculate rank, bpr and wpr
+            for (const player of players) {
+              player.rank = players.filter(opponent => opponent.score > player.score ||
+                    opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
+                        (player.time > elapsed || opponent.time > player.time)).length + 1;
+
+              for (const opponent of players.filter(opponent => player.decided[opponent.id - 1] === 'X' &amp;&amp;
+                    elapsed >= player.time &amp;&amp; elapsed >= opponent.time &amp;&amp; player.time !== opponent.time))
+                player.decided[opponent.id - 1] = 
+                    player.time > opponent.time &amp;&amp; player.score >= opponent.score ? 'W' :
+                    opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' : '?';
+              player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
+
+              const undecided = players.filter(opponent => player.decided[opponent.id - 1] === 'X');
+              const timeWillTell = undecided.filter(opponent => player.score >= opponent.score);
+              player.wpr = player.bpr + players.filter(opponent => player.decided[opponent.id - 1] === '?').length +
+                  undecided.filter(opponent => opponent.score > player.score).length +
+                  Math.max(timeWillTell.filter(opponent => player.time > opponent.time).length,
+                           timeWillTell.filter(opponent => opponent.time > player.time).length);
+            }
+
+            // Sort the players
+            players.sort(function(a, b) {
+              return ('<xsl:value-of select="@name" />'.startsWith('name') ? a.compareTo(b) :
+                    (Math.sign(a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * 2 +
+                    Math.sign(a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />)) * 2 +
+                    Math.sign(a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
+                  ) * ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) + a.compareTo(b);
+            });
+
+            // Update the rankings table
+            players.forEach((player, row) => {
+              <xsl:if test="$inPlayer">
+                const decision = inPlayer.decided[player.id - 1];
+                cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
+                    decision === "W" ? "limegreen" : decision === "L" ? "red" :
+                    decision === "T" ? "tan" : "silver";
+              </xsl:if>
+              const values = [player.link, player.rank,
+                  <xsl:if test="not($ended)">
+                    player.bpr, player.wpr,
+                  </xsl:if>
+                  player.scoreText, formatTime(player.time)];
+              values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
+              <xsl:choose>
+                <xsl:when test="$ended">
+                  cells[row * tableWidth + 3].style.backgroundColor = 
+                      player.time > elapsed ? 'red' : 'limegreen';
+                </xsl:when>
+                <xsl:otherwise>
+                  for (let column = 2; column &lt; 4; column++)
+                    cells[row * tableWidth + column].style.backgroundColor =
+                        player.bpr === player.wpr ? 'silver': 'transparent';
+                  cells[row * tableWidth + 5].style.backgroundColor = 
+                      player.time > elapsed ? 'silver' : 'limegreen';
+                </xsl:otherwise>
+              </xsl:choose>
+            });
+
+            // Update the player page
+            <xsl:if test="$inPlayer">
+              document.getElementById('player_rank').innerHTML = inPlayer.rank;
+              document.getElementById('possible_rank').innerHTML = inPlayer.wpr === inPlayer.bpr ?
+                  'Rank is Final' : 'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
+
+              if (elapsed >= inPlayer.time)
+                for (let id of ["guess", "actual", "score"])
+                  document.getElementById("time_" + id).style.backgroundColor = 'limegreen';
+
+              for (let decision of ['W', 'L'].filter(decision => inPlayer.decided.includes(decision)))
+                document.getElementById("decided_" + decision).style.display = 'inline';
+            </xsl:if>
+          }
         }
-      }
-      update();
-      <xsl:if test="$results/awards/@START and not($ended)">
-        setInterval(update, 1000);
-      </xsl:if>
+        update();
+        <xsl:if test="$results/awards/@START and not($ended)">
+          setInterval(function() {
+            elapsed++;
+            update();
+          }, 1000);
+        </xsl:if>
+      });
     </script>
   </xsl:template>
   <xsl:template name="player-table-column-header">

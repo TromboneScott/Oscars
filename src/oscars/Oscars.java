@@ -42,24 +42,10 @@ public class Oscars {
 
     /** Prompt for Oscars results, store them and create output files */
     public static void main(String[] inArgs) throws Exception {
-        do
+        do {
+            Results.write(RESULTS.toDOM(), new Standings().toDOM());
             System.out.println();
-        while (prompt());
-
-        System.out.print("\nWriting final results...");
-        ResultsUpdater.writeResults(); // In case thread was interrupted
-        System.out.println(" DONE");
-    }
-
-    private static boolean prompt() throws Exception {
-        Thread thread = new ResultsUpdater();
-        try {
-            thread.start();
-            return RESULTS.prompt();
-        } finally {
-            thread.interrupt(); // Stop file I/O thread
-            thread.join(); // Wait for it to finish
-        }
+        } while (RESULTS.prompt());
     }
 
     private static void writeStaticFiles() throws IOException {

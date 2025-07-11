@@ -37,11 +37,11 @@ public class Results {
 
     public static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
 
-    private static final XMLFile RESULTS_FILE = new XMLFile(Directory.DATA, "results.xml");
-
-    private static final ZonedDateTime CURTAIN = LocalDateTime
+    public static final ZonedDateTime CURTAIN = LocalDateTime
             .parse(XMLFile.readDefinitionsFile().getAttributeValue("curtain"))
             .atZone(ZoneId.systemDefault());
+
+    private static final XMLFile RESULTS_FILE = new XMLFile(Directory.DATA, "results.xml");
 
     private static final String WINNER_DELIMITER = ",";
 
@@ -55,6 +55,22 @@ public class Results {
     private final Map<Category, ImmutableSet<String>> winners;
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
+
+    private final Thread elapsedUpdater = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    writeElapsed();
+                    Thread.sleep(UPDATE_TIME);
+                }
+            } catch (InterruptedException e) {
+                // Ignore
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    });
 
     /** Read existing Results or create new Results including the given nominee descriptions */
     public Results(ImmutableMap<Category, ImmutableMap<String, String>> inNomineeMap)
@@ -76,6 +92,7 @@ public class Results {
         } catch (Exception e) {
             throw new IOException("Error reading results file: " + RESULTS_FILE, e);
         }
+        elapsedUpdater.start();
     }
 
     /** Prompt for results and return whether or not the user wants to continue entering results */
@@ -88,8 +105,10 @@ public class Results {
 
         System.out.print(Font.BROWN.apply("Enter number (0 to exit): "));
         String input = STDIN.nextLine();
-        if ("0".equals(input))
+        if ("0".equals(input)) {
+            elapsedUpdater.interrupt();
             return false;
+        }
         try {
             int entry = Integer.parseInt(input) - 1;
             if (entry < Category.ALL.size())
@@ -139,7 +158,7 @@ public class Results {
         }
     }
 
-    private void promptTime(ShowTimeType inShowTimeType) {
+    private void promptTime(ShowTimeType inShowTimeType) throws IOException {
         System.out.println("\n" + toHeader(inShowTimeType, true));
         System.out.println("Format: " + Font.CYAN.apply(LocalDateTime.now() + "\n")
                 + Font.BROWN.apply("Enter time (use * for system time or leave blank to remove):"));
@@ -153,6 +172,7 @@ public class Results {
             } catch (DateTimeParseException e) {
                 outputInvalidInput(input);
             }
+        writeElapsed();
     }
 
     /** Get whether or not the Oscars broadcast has ended */
@@ -194,15 +214,20 @@ public class Results {
 
     /** Write the given content to the results XML file */
     public static void write(Content... inContent) throws IOException {
-        long countdown = Duration.between(ZonedDateTime.now(), CURTAIN).getSeconds();
-        RESULTS_FILE
-                .write(new Element("results").setAttribute("countdown", String.valueOf(countdown))
-                        .addContent(ImmutableList.copyOf(inContent)));
-    }
-
-    /** Write the updated timestamp */
-    public static void writeUpdated() throws IOException {
+        RESULTS_FILE.write(new Element("results").addContent(ImmutableList.copyOf(inContent)));
         Files.write(ZonedDateTime.now().toString().getBytes(),
                 new File(Directory.DATA, "updated.txt"));
+    }
+
+    /** Write the elapsed time of the broadcast */
+    private void writeElapsed() throws IOException {
+        writeElapsed(Duration.between(showTimes.getOrDefault(ShowTimeType.START, CURTAIN),
+                showTimes.getOrDefault(ShowTimeType.END, ZonedDateTime.now())));
+    }
+
+    /** Write the elapsed time of the broadcast */
+    public static void writeElapsed(Duration inElapsed) throws IOException {
+        Files.write(String.valueOf(inElapsed.getSeconds()).getBytes(),
+                new File(Directory.DATA, "elapsed.txt"));
     }
 }
