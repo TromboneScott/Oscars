@@ -1,10 +1,5 @@
 To start a new year:
 
-Upgrade account on site44.com to "Personal" level
-- With continuous polling and automatic page reloads
-  we may go over 100mb in the month
-- You might be able to downgrade back to free after a month
-
 Create Google Form:
 1. Open last year's form at forms.google.com
 2. Select the dots menu at top right and click "Make a copy"
@@ -42,13 +37,14 @@ Download 100x148 pixel pictures for Google Form for all categories
 
 Edit year/data/definitions.xml using Eclipse
 1. Update the year
-2. Update the categories as a few change each year
-3. Make sure the categories are in the same order as the Google Form
-4. Update the tieBreaker values as indicated in Google Form steps above
-5. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
-6. Add all the nominees under each category in the order you want them (usually alphabetical)
+2. Update the curtain date and time for the start of the broadcast in local time
+3. Update the categories as a few change each year
+4. Make sure the categories are in the same order as the Google Form
+5. Update the tieBreaker values as indicated in Google Form steps above
+6. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
+7. Add all the nominees under each category in the order you want them (usually alphabetical)
   a. Using Eclipse will put all special characters such as á and é in UTF-8 format
-7. Set the img value for each nominee
+8. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
 
