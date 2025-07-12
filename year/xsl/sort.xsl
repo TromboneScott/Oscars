@@ -259,9 +259,11 @@
       const tableWidth = cells.length / players.length;
 
       read('elapsed', function() {
-        let elapsed = Math.max(parseInt(this.responseText), 0);
+        const start = new Date().getTime() / 1000 - Math.max(parseInt(this.responseText), 0);
         let next = 0;
         function update() {
+          const elapsed = Math.trunc(new Date().getTime() / 1000 - start);
+
           <xsl:if test="$results/awards/@START">
             document.getElementById("time_header").innerHTML = formatTime(elapsed);
             document.getElementById("timeHeader_cell").style.backgroundColor =
@@ -356,10 +358,7 @@
         }
         update();
         <xsl:if test="$results/awards/@START and not($ended)">
-          setInterval(function() {
-            elapsed++;
-            update();
-          }, 1000);
+          setInterval(update, 1000);
         </xsl:if>
       });
     </script>

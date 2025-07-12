@@ -112,11 +112,9 @@
       }
 
       <xsl:if test="not($ended)">
-        read('updated', function() {
-          const updated = this.responseText;
-          
+        <xsl:if test="not($results/awards/@START)">
           read('elapsed', function() {
-            let countdown = -parseInt(this.responseText);
+            const start = new Date().getTime() / 1000 - parseInt(this.responseText);
             
             function td(value, unit) {
               return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
@@ -124,25 +122,27 @@
             }
 
             function repeat() {
-              <xsl:if test="not($results/awards/@START)">
-                document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
-                document.getElementById("countdown_row").innerHTML =
-                    (countdown >= 24 * 60 * 60 ? td(countdown / 60 / 60 / 24, "Day") : '') +
-                    (countdown >= 60 * 60 ? td(countdown / 60 / 60 % 24, "Hour") : '') +
-                    (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
-                    td(countdown % 60, "Second");
-              </xsl:if>
-
-              if (--countdown % 3 === 0)
-                read('updated', function() {
-                  if (this.responseText !== updated || countdown % (30 * 60) === 0)
-                    window.location.reload();
-                });
+              const countdown = Math.trunc(start - new Date().getTime() / 1000);
+              document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
+              document.getElementById("countdown_row").innerHTML =
+                  (countdown >= 24 * 60 * 60 ? td(countdown / 60 / 60 / 24, "Day") : '') +
+                  (countdown >= 60 * 60 ? td(countdown / 60 / 60 % 24, "Hour") : '') +
+                  (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
+                  td(countdown % 60, "Second");
             }
-
             repeat();
             setInterval(repeat, 1000);
           });
+        </xsl:if>
+
+        read('updated', function() {
+          const updated = this.responseText;
+          setInterval(function() {
+            read('updated', function() {
+              if (this.responseText !== updated)
+                window.location.reload();
+            });
+          }, 3000);
         });
       </xsl:if>
     </script>

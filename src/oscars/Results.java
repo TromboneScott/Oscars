@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
+import com.google.common.primitives.Longs;
 
 import oscars.column.Category;
 import oscars.file.Directory;
@@ -215,7 +216,7 @@ public class Results {
     /** Write the given content to the results XML file */
     public static void write(Content... inContent) throws IOException {
         RESULTS_FILE.write(new Element("results").addContent(ImmutableList.copyOf(inContent)));
-        Files.write(ZonedDateTime.now().toString().getBytes(),
+        Files.write(Longs.toByteArray(ZonedDateTime.now().toInstant().getEpochSecond()),
                 new File(Directory.DATA, "updated.txt"));
     }
 
