@@ -138,10 +138,11 @@
         read('updated', function() {
           const updated = this.responseText;
           setInterval(function() {
-            read('updated', function() {
-              if (this.responseText !== updated)
-                window.location.reload();
-            });
+            if (document.visibilityState === "visible")
+              read('updated', function() {
+                if (this.responseText !== updated)
+                  window.location.reload();
+              });
           }, 3000);
         });
       </xsl:if>
