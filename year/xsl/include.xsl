@@ -112,16 +112,16 @@
       }
 
       <xsl:if test="not($ended)">
-        <xsl:if test="not($results/awards/@START)">
-          read('elapsed', function() {
-            const start = new Date().getTime() / 1000 - parseInt(this.responseText);
+        read('elapsed', function() {
+          const start = new Date().getTime() / 1000 - parseInt(this.responseText);
             
+          <xsl:if test="not($results/awards/@START)">
             function td(value, unit) {
               return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
                   Math.trunc(value) + '&lt;/B>&lt;br/>' + unit + (Math.trunc(value) === 1 ? '' : 's') + '&lt;/td>';
             }
 
-            function repeat() {
+            function update() {
               const countdown = Math.trunc(start - new Date().getTime() / 1000);
               document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
               document.getElementById("countdown_row").innerHTML =
@@ -130,20 +130,23 @@
                   (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
                   td(countdown % 60, "Second");
             }
-            repeat();
-            setInterval(repeat, 1000);
-          });
-        </xsl:if>
+            update();
+            setInterval(update, 1000);
+          </xsl:if>
 
-        read('updated', function() {
-          const updated = this.responseText;
-          setInterval(function() {
-            if (document.visibilityState === "visible")
-              read('updated', function() {
-                if (this.responseText !== updated)
-                  window.location.reload();
-              });
-          }, 3000);
+          read('updated', function() {
+            const updated = this.responseText;
+            setInterval(async function() {
+              if (document.visibilityState === "visible") {
+                read('updated', function() {
+                  if (this.responseText !== updated)
+                    window.location.reload();
+                });
+                if (start > new Date().getTime() / 1000 + 10 * 60)
+                  await new Promise(r => setTimeout(r, 60 * 1000));
+              }
+            }, 3000);
+          });
         });
       </xsl:if>
     </script>
