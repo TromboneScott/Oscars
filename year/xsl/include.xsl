@@ -87,7 +87,6 @@
         <hr
           width="500" />
         <br />
-R01
         <br />
         <xsl:if test="not($results/awards/@START)">
           <A id="countdown" style="display:none">
@@ -150,7 +149,7 @@ R01
             setInterval(function() {
               if (document.visibilityState === "visible" &amp;&amp; (
                   start - new Date().getTime() / 1000 &lt; 10 * 60 ||
-                  new Date().getTime() % (15 * 1000) &lt; interval
+                  new Date().getTime() % (60 * 1000) &lt; interval
               ))
                 modified(function() {
                   if (this.getResponseHeader('Last-Modified') !== updated)
