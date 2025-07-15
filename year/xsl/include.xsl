@@ -4,8 +4,8 @@
   <xsl:variable name="definitions"
     select="document('../data/definitions.xml')/definitions" />
   <xsl:variable name="rootDir" select="concat('/', $definitions/@year, '/')" />
-  <xsl:variable name="results"
-    select="document(concat($rootDir, 'data/results.xml'))/results" />
+  <xsl:variable name="resultsFile" select="concat($rootDir, 'data/results.xml')" />
+  <xsl:variable name="results" select="document($resultsFile)/results" />
   <xsl:variable name="mappings"
     select="document(concat($rootDir, 'data/mappings.xml'))/mappings" />
   <xsl:variable name="ballots"
@@ -87,6 +87,7 @@
         <hr
           width="500" />
         <br />
+R01
         <br />
         <xsl:if test="not($results/awards/@START)">
           <A id="countdown" style="display:none">
@@ -103,49 +104,59 @@
       </center>
     </header>
     <script>
-      function read(file, action) {
+      function elapsed(action) {
         const http = new XMLHttpRequest();
         http.onload = action;
         http.open("GET", <xsl:value-of select="$rootDir"/> + 
-          "data/" + file + ".txt?_=" + new Date().getTime());
+            "data/elapsed.txt?_=" + new Date().getTime());
         http.send();
       }
-
+      
       <xsl:if test="not($ended)">
-        read('elapsed', function() {
-          const start = new Date().getTime() / 1000 - parseInt(this.responseText);
+        function modified(action) {
+          const http = new XMLHttpRequest();
+          http.onload = action;
+          http.open("HEAD", "<xsl:value-of select="$resultsFile"/>" + 
+              "?_=" + new Date().getTime());
+          http.send();
+        }
+
+        modified(function() {
+          const updated = this.getResponseHeader('Last-Modified');
+
+          elapsed(function() {
+            const start = new Date().getTime() / 1000 - parseInt(this.responseText);
             
-          <xsl:if test="not($results/awards/@START)">
-            function td(value, unit) {
-              return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
-                  Math.trunc(value) + '&lt;/B>&lt;br/>' + unit + (Math.trunc(value) === 1 ? '' : 's') + '&lt;/td>';
-            }
+            <xsl:if test="not($results/awards/@START)">
+              function td(value, unit) {
+                return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
+                    Math.trunc(value) + '&lt;/B>&lt;br/>' + unit + (Math.trunc(value) === 1 ? '' : 's') + '&lt;/td>';
+              }
 
-            function update() {
-              const countdown = Math.trunc(start - new Date().getTime() / 1000);
-              document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
-              document.getElementById("countdown_row").innerHTML =
-                  (countdown >= 24 * 60 * 60 ? td(countdown / 60 / 60 / 24, "Day") : '') +
-                  (countdown >= 60 * 60 ? td(countdown / 60 / 60 % 24, "Hour") : '') +
-                  (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
-                  td(countdown % 60, "Second");
-            }
-            update();
-            setInterval(update, 1000);
-          </xsl:if>
+              function update() {
+                const countdown = Math.trunc(start - new Date().getTime() / 1000);
+                document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
+                document.getElementById("countdown_row").innerHTML =
+                    (countdown >= 24 * 60 * 60 ? td(countdown / 60 / 60 / 24, "Day") : '') +
+                    (countdown >= 60 * 60 ? td(countdown / 60 / 60 % 24, "Hour") : '') +
+                    (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
+                    td(countdown % 60, "Second");
+              }
+              update();
+              setInterval(update, 1000);
+            </xsl:if>
 
-          read('updated', function() {
-            const updated = this.responseText;
-            setInterval(async function() {
-              if (document.visibilityState === "visible") {
-                read('updated', function() {
-                  if (this.responseText !== updated)
+            const interval = 3000;
+            setInterval(function() {
+              if (document.visibilityState === "visible" &amp;&amp; (
+                  start - new Date().getTime() / 1000 &lt; 10 * 60 ||
+                  new Date().getTime() % (15 * 1000) &lt; interval
+              ))
+                modified(function() {
+                  if (this.getResponseHeader('Last-Modified') !== updated)
                     window.location.reload();
                 });
-                if (start > new Date().getTime() / 1000 + 10 * 60)
-                  await new Promise(r => setTimeout(r, 60 * 1000));
-              }
-            }, 3000);
+            }, interval);
           });
         });
       </xsl:if>

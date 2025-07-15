@@ -20,15 +20,15 @@
                       <img
                         src="https://lh7-us.googleusercontent.com/9tsl1dpGEmRGVe77r7hNNZqUxK8zNCRGeHEzQOm6bxeJ-8mPknIrB0PtexESrvvf9Ty4jf1r1Sbuof9oyLmLmC9pfN-WXj3umHvHcQZ9BsX6a0VK8gykda1TgBvNFNsrzEzQFklGwS7yRp1Foyl8oR6fIyCvwA"
                         alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
-                        title="Counting Ballots" 
+                        title="Counting Ballots"
                         width="200" />
                       <br />
-                      <br />Ballot names will
-                      appear here a few minutes after being cast.<br />The
-                      actual guesses will be loaded after all ballots have been
-                      collected.<br />
+                      <br />Ballot names will appear here
+                      a few minutes after being cast.<br />The actual guesses
+                      will be loaded after all ballots have been collected.<br />
                       <br />
-                      <i>Check here for live results
+                      <i>Check
+                      here for live results
                         during the Oscars broadcast.</i>
                       <br />
                       <br />
@@ -258,7 +258,7 @@
       const cells = document.getElementById("rankings").getElementsByTagName("td");
       const tableWidth = cells.length / players.length;
 
-      read('elapsed', function() {
+      elapsed(function() {
         const start = new Date().getTime() / 1000 - Math.max(parseInt(this.responseText), 0);
         let next = 0;
         function update() {
