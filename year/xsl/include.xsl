@@ -103,22 +103,20 @@
       </center>
     </header>
     <script>
-      function send(action, open) {
+      function send(action, method, url) {
         const http = new XMLHttpRequest();
         http.onload = action;
-        open(http);
+        http.open(method, url + "?_=" + new Date().getTime());
         http.send();
       }
 
       function elapsed(action) {
-        send(action, http => http.open("GET", "<xsl:value-of select="$rootDir"/>" +
-            "data/elapsed.txt?_=" + new Date().getTime()));
+        send(action, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
       }
 
       <xsl:if test="not($ended)">
         function modified(action) {
-          send(action, http => http.open("HEAD", "<xsl:value-of select="$resultsFile"/>" +
-              "?_=" + new Date().getTime()));
+          send(action, "HEAD", "<xsl:value-of select="$resultsFile"/>");
         }
 
         modified(function() {
