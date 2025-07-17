@@ -103,21 +103,22 @@
       </center>
     </header>
     <script>
-      function elapsed(action) {
+      function send(action, open) {
         const http = new XMLHttpRequest();
         http.onload = action;
-        http.open("GET", <xsl:value-of select="$rootDir"/> + 
-            "data/elapsed.txt?_=" + new Date().getTime());
+        open(http);
         http.send();
       }
-      
+
+      function elapsed(action) {
+        send(action, http => http.open("GET", "<xsl:value-of select="$rootDir"/>" +
+            "data/elapsed.txt?_=" + new Date().getTime()));
+      }
+
       <xsl:if test="not($ended)">
         function modified(action) {
-          const http = new XMLHttpRequest();
-          http.onload = action;
-          http.open("HEAD", "<xsl:value-of select="$resultsFile"/>" + 
-              "?_=" + new Date().getTime());
-          http.send();
+          send(action, http => http.open("HEAD", "<xsl:value-of select="$resultsFile"/>" +
+              "?_=" + new Date().getTime()));
         }
 
         modified(function() {
@@ -125,7 +126,7 @@
 
           elapsed(function() {
             const start = new Date().getTime() / 1000 - parseInt(this.responseText);
-            
+
             <xsl:if test="not($results/awards/@START)">
               function td(value, unit) {
                 return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +

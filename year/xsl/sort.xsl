@@ -210,8 +210,8 @@
     <script>
       // Format the time value as: H:MM:SS
       function formatTime(time) {
-        return Math.trunc(time / 60 / 60) + ":" + 
-            String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" + 
+        return Math.trunc(time / 60 / 60) + ":" +
+            String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" +
             String(time % 60).padStart(2, '0');
       }
 
@@ -270,7 +270,7 @@
                 elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
             <xsl:if test="$inPlayer">
               document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
-              document.getElementById("time_difference").innerHTML = 
+              document.getElementById("time_difference").innerHTML =
                   <xsl:if test="$ended">
                     inPlayer.time > elapsed ? 'OVER' :
                   </xsl:if>
@@ -290,7 +290,7 @@
 
               for (const opponent of players.filter(opponent => player.decided[opponent.id - 1] === 'X' &amp;&amp;
                     elapsed >= player.time &amp;&amp; elapsed >= opponent.time &amp;&amp; player.time !== opponent.time))
-                player.decided[opponent.id - 1] = 
+                player.decided[opponent.id - 1] =
                     player.time > opponent.time &amp;&amp; player.score >= opponent.score ? 'W' :
                     opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' : '?';
               player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
@@ -328,14 +328,14 @@
               values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
               <xsl:choose>
                 <xsl:when test="$ended">
-                  cells[row * tableWidth + 3].style.backgroundColor = 
+                  cells[row * tableWidth + 3].style.backgroundColor =
                       player.time > elapsed ? 'red' : 'limegreen';
                 </xsl:when>
                 <xsl:otherwise>
                   for (let column = 2; column &lt; 4; column++)
                     cells[row * tableWidth + column].style.backgroundColor =
                         player.bpr === player.wpr ? 'silver': 'transparent';
-                  cells[row * tableWidth + 5].style.backgroundColor = 
+                  cells[row * tableWidth + 5].style.backgroundColor =
                       player.time > elapsed ? 'silver' : 'limegreen';
                 </xsl:otherwise>
               </xsl:choose>
