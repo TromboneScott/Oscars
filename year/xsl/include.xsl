@@ -145,17 +145,17 @@
               setInterval(update, 1000);
             </xsl:if>
 
-            const interval = 3000;
+            const interval = 3;
+            let skips = 0;
             setInterval(function() {
-              if (document.visibilityState === "visible" &amp;&amp; (
-                  start - new Date().getTime() / 1000 &lt; 10 * 60 ||
-                  new Date().getTime() % (60 * 1000) &lt; interval
-              ))
+              if ((++skips >= 60 / interval || start - new Date().getTime() / 1000 &lt; 10 * 60)
+                  &amp;&amp; document.visibilityState === "visible")
                 modified(function() {
                   if (this.getResponseHeader('Last-Modified') !== updated)
                     window.location.reload();
+                  skips = 0;
                 });
-            }, interval);
+            }, interval * 1000);
           });
         });
       </xsl:if>
