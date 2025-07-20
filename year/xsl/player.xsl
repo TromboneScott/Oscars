@@ -160,40 +160,17 @@
           <br />
           <br />
           <h3 style="display:inline">Rankings</h3>
-          <a id="decided_L">
-            <xsl:attribute name="style">
-              <xsl:choose>
-                <xsl:when test="contains($playerResults/@decided, 'L')">
-            display:inline
-                </xsl:when>
-                <xsl:otherwise>
-                  display:none
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:attribute>
-            <br />
-            All players in <font color="red">red</font> will finish above <xsl:value-of
+          <a id="decided_L" style="display:none">
+            <br /> All players in <font color="red">red</font> will finish above <xsl:value-of
               select="$playerName" />
           </a>
-          <a id="decided_W">
-            <xsl:attribute name="style">
-              <xsl:choose>
-                <xsl:when test="contains($playerResults/@decided, 'W')">
-            display:inline
-                </xsl:when>
-                <xsl:otherwise>
-                  display:none
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:attribute>
-            <br />
-            All players in <font color="green">green</font> will finish below <xsl:value-of
-              select="$playerName" />
+          <a id="decided_W" style="display:none">
+            <br /> All players in <font color="green">green</font> will finish
+            below <xsl:value-of select="$playerName" />
           </a>
           <xsl:if test="contains($playerResults/@decided, 'T')">
             <br /> All players in <font color="SaddleBrown">brown</font> will
-            finish tied with <xsl:value-of
-              select="$playerName" />
+            finish tied with <xsl:value-of select="$playerName" />
           </xsl:if>
           <br />
           <br />
