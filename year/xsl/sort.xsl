@@ -224,6 +224,7 @@
           this.scoreText = score;
           this.score = parseFloat(score);
           this.time = time;
+          this.timeText = formatTime(time);
           this.decided = decided.split('');
         }
 
@@ -245,14 +246,14 @@
               '<xsl:apply-templates select="." mode="playerName" />&lt;/a>',
           '<xsl:value-of select="@score"/>',
           <xsl:value-of select="$ballot/@time" />,
-          '<xsl:value-of select="@decided"/>'
+          '-<xsl:value-of select="@decided"/>'
         ));
       </xsl:for-each>
 
       <xsl:if test="$inPlayer">
         const inPlayer = players.find(player => player.id ===
             <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" />);
-        document.getElementById("time_player").innerHTML = formatTime(inPlayer.time);
+        document.getElementById("time_player").innerHTML = inPlayer.timeText;
       </xsl:if>
 
       const cells = document.getElementById("rankings").getElementsByTagName("td");
@@ -288,16 +289,16 @@
                     opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
                         (player.time > elapsed || opponent.time > player.time)).length + 1;
 
-              for (const opponent of players.filter(opponent => player.decided[opponent.id - 1] === 'X' &amp;&amp;
+              for (const opponent of players.filter(opponent => player.decided[opponent.id] === 'X' &amp;&amp;
                     elapsed >= player.time &amp;&amp; elapsed >= opponent.time &amp;&amp; player.time !== opponent.time))
-                player.decided[opponent.id - 1] =
+                player.decided[opponent.id] =
                     player.time > opponent.time &amp;&amp; player.score >= opponent.score ? 'W' :
                     opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' : '?';
               player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
 
-              const undecided = players.filter(opponent => player.decided[opponent.id - 1] === 'X');
+              const undecided = players.filter(opponent => player.decided[opponent.id] === 'X');
               const timeWillTell = undecided.filter(opponent => player.score >= opponent.score);
-              player.wpr = player.bpr + players.filter(opponent => player.decided[opponent.id - 1] === '?').length +
+              player.wpr = player.bpr + players.filter(opponent => player.decided[opponent.id] === '?').length +
                   undecided.filter(opponent => opponent.score > player.score).length +
                   Math.max(timeWillTell.filter(opponent => player.time > opponent.time).length,
                            timeWillTell.filter(opponent => opponent.time > player.time).length);
@@ -315,7 +316,7 @@
             // Update the rankings table
             players.forEach((player, row) => {
               <xsl:if test="$inPlayer">
-                const decision = inPlayer.decided[player.id - 1];
+                const decision = inPlayer.decided[player.id];
                 cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
                     decision === "W" ? "limegreen" : decision === "L" ? "red" :
                     decision === "T" ? "tan" : "silver";
@@ -324,7 +325,7 @@
                   <xsl:if test="not($ended)">
                     player.bpr, player.wpr,
                   </xsl:if>
-                  player.scoreText, formatTime(player.time)];
+                  player.scoreText, player.timeText];
               values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
               <xsl:choose>
                 <xsl:when test="$ended">
