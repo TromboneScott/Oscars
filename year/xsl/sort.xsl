@@ -208,7 +208,7 @@
       </tbody>
     </table>
     <script>
-      // Format the time value as: H:MM:SS
+      // Formats the time value as: H:MM:SS
       function formatTime(time) {
         return Math.trunc(time / 60 / 60) + ":" +
             String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" +
@@ -234,6 +234,7 @@
         }
       }
 
+      // Load the players from XML files
       const players = [];
       <xsl:for-each select="$results/standings/player">
         <xsl:variable name="player" select="." />
@@ -251,6 +252,7 @@
       </xsl:for-each>
 
       <xsl:if test="$inPlayer">
+        // Find the instance for this player
         const inPlayer = players.find(player => player.id ===
             <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" />);
         document.getElementById("time_player").innerHTML = inPlayer.timeText;
@@ -259,6 +261,7 @@
       const cells = document.getElementById("rankings").getElementsByTagName("td");
       const tableWidth = cells.length / players.length;
 
+      // Calculate and popluate values for player grid
       elapsed(function() {
         const start = new Date().getTime() / 1000 - Math.max(parseInt(this.responseText), 0);
         let next = 0;
@@ -266,6 +269,7 @@
           const elapsed = Math.trunc(new Date().getTime() / 1000 - start);
 
           <xsl:if test="$results/awards/@START">
+            // Update the running time
             document.getElementById("time_header").innerHTML = formatTime(elapsed);
             document.getElementById("timeHeader_cell").style.backgroundColor =
                 elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";

@@ -103,6 +103,7 @@
       </center>
     </header>
     <script>
+      // Sends the HTML request, avoiding cached responses, and performs the action
       function send(action, method, url) {
         const http = new XMLHttpRequest();
         http.onload = action;
@@ -110,40 +111,47 @@
         http.send();
       }
 
+      // Fetches the elapsed time and performs the action
       function elapsed(action) {
         send(action, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
       }
 
       <xsl:if test="not($ended)">
+        // Fetches the HTML headers of the results files to provide the last-modified timestamp
         function modified(action) {
           send(action, "HEAD", "<xsl:value-of select="$resultsFile"/>");
         }
 
+        // Get the last modified timestamp
         modified(function() {
           const updated = this.getResponseHeader('Last-Modified');
 
+          // Get the start time (actual or scheduled) of the broadcast
           elapsed(function() {
             const start = new Date().getTime() / 1000 - parseInt(this.responseText);
 
             <xsl:if test="not($results/awards/@START)">
-              function td(value, unit) {
-                return '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
-                    Math.trunc(value) + '&lt;/B>&lt;br/>' + unit + (Math.trunc(value) === 1 ? '' : 's') + '&lt;/td>';
+              // Defines the TD element for the time unit of the countdown timer
+              function td(countdown, magnitude, precision, unit) {
+                const value = Math.trunc(countdown / magnitude % precision);
+                return countdown &lt; magnitude ? '' :
+                    '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
+                    value + '&lt;/B>&lt;br/>' + unit + (value === 1 ? '' : 's') + '&lt;/td>';
               }
 
+              // Update the countdown timer every second
               function update() {
                 const countdown = Math.trunc(start - new Date().getTime() / 1000);
                 document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
                 document.getElementById("countdown_row").innerHTML =
-                    (countdown >= 24 * 60 * 60 ? td(countdown / 60 / 60 / 24, "Day") : '') +
-                    (countdown >= 60 * 60 ? td(countdown / 60 / 60 % 24, "Hour") : '') +
-                    (countdown >= 60 ? td(countdown / 60 % 60, "Minute") : '') +
-                    td(countdown % 60, "Second");
+                    td(countdown, 24 * 60 * 60, countdown, "Day") + td(countdown, 60 * 60, 24, "Hour") +
+                    td(countdown, 60, 60, "Minute") + td(countdown, 1, 60, "Second");
               }
               update();
               setInterval(update, 1000);
             </xsl:if>
 
+            // Repeatedly check for updates and reload the page when results are updated
             const interval = 3;
             let skips = 0;
             setInterval(function() {
