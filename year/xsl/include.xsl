@@ -131,9 +131,11 @@
             const start = new Date().getTime() / 1000 - parseInt(this.responseText);
 
             <xsl:if test="not($results/awards/@START)">
+              let countdown = 0;
+
               // Defines the TD element for the time unit of the countdown timer
-              function td(countdown, magnitude, precision, unit) {
-                const value = Math.trunc(countdown / magnitude % precision);
+              function td(unit, magnitude, precision) {
+                const value = Math.trunc(countdown / magnitude) % precision;
                 return countdown &lt; magnitude ? '' :
                     '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
                     value + '&lt;/B>&lt;br/>' + unit + (value === 1 ? '' : 's') + '&lt;/td>';
@@ -141,11 +143,10 @@
 
               // Update the countdown timer every second
               function update() {
-                const countdown = Math.trunc(start - new Date().getTime() / 1000);
-                document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
-                document.getElementById("countdown_row").innerHTML =
-                    td(countdown, 24 * 60 * 60, countdown, "Day") + td(countdown, 60 * 60, 24, "Hour") +
-                    td(countdown, 60, 60, "Minute") + td(countdown, 1, 60, "Second");
+                countdown = start - new Date().getTime() / 1000;
+                document.getElementById("countdown").style.display = countdown >= 1 ? 'inline' : 'none';
+                document.getElementById("countdown_row").innerHTML = td("Day", 24 * 60 * 60, countdown) +
+                    td("Hour", 60 * 60, 24) + td("Minute", 60, 60) + td("Second", 1, 60);
               }
               update();
               setInterval(update, 1000);
