@@ -210,9 +210,9 @@
     <script>
       // Formats the time value as: H:MM:SS
       function formatTime(time) {
-        return Math.trunc(time / 60 / 60) + ":" +
-            String(Math.trunc(time / 60) % 60).padStart(2, '0') + ":" +
-            String(time % 60).padStart(2, '0');
+        return [Math.trunc(time / 60 / 60),
+            String(Math.trunc(time / 60) % 60).padStart(2, '0'),
+            String(time % 60).padStart(2, '0')].join(':');
       }
 
       class Player {
