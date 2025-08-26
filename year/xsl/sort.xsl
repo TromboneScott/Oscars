@@ -325,12 +325,12 @@
                     decision === "W" ? "limegreen" : decision === "L" ? "red" :
                     decision === "T" ? "tan" : "silver";
               </xsl:if>
-              const values = [player.link, player.rank,
+              [player.link, player.rank,
                   <xsl:if test="not($ended)">
                     player.bpr, player.wpr,
                   </xsl:if>
-                  player.scoreText, player.timeText];
-              values.forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
+                  player.scoreText, player.timeText
+              ].forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
               <xsl:choose>
                 <xsl:when test="$ended">
                   cells[row * tableWidth + 3].style.backgroundColor =
