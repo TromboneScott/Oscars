@@ -310,11 +310,17 @@
 
             // Sort the players
             players.sort(function(a, b) {
-              return ('<xsl:value-of select="@name" />'.startsWith('name') ? a.compareTo(b) :
-                    (Math.sign(a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * 2 +
-                    Math.sign(a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />)) * 2 +
-                    Math.sign(a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />)
-                  ) * ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) + a.compareTo(b);
+              return a.compareTo(b) + ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) *
+              <xsl:choose>
+                <xsl:when test="starts-with(@name, 'name')">
+                  a.compareTo(b);
+                </xsl:when>
+                <xsl:otherwise>
+                  ((Math.sign(a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * 2 +
+                      Math.sign(a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />)) * 2 +
+                      Math.sign(a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />));
+                </xsl:otherwise>
+              </xsl:choose>
             });
 
             // Update the rankings table
