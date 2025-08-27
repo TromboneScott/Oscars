@@ -316,9 +316,8 @@
                   a.compareTo(b);
                 </xsl:when>
                 <xsl:otherwise>
-                  ((Math.sign(a.<xsl:value-of select="@column1" /> - b.<xsl:value-of select="@column1" />) * 2 +
-                      Math.sign(a.<xsl:value-of select="@column2" /> - b.<xsl:value-of select="@column2" />)) * 2 +
-                      Math.sign(a.<xsl:value-of select="@column3" /> - b.<xsl:value-of select="@column3" />));
+                  '<xsl:value-of select="@columns" />'.split(',')
+                      .reduce((total, column) => total * 2 + Math.sign(a[column] - b[column]), 0);
                 </xsl:otherwise>
               </xsl:choose>
             });
