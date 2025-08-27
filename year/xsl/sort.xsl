@@ -229,8 +229,8 @@
         }
 
         compareTo(other) {
-          return Math.sign(this.lastName.localeCompare(other.lastName, undefined, {sensitivity: 'base'}) * 2
-              + this.firstName.localeCompare(other.firstName, undefined, {sensitivity: 'base'}));
+          return ["lastName", "firstName"].reduce((total, column) => total * 2 +
+              this[column].localeCompare(other[column], undefined, {sensitivity: 'base'}), 0);
         }
       }
 
@@ -310,16 +310,12 @@
 
             // Sort the players
             players.sort(function(a, b) {
-              return a.compareTo(b) + ('<xsl:value-of select="@order" />' === 'descending' ? -2 : 2) *
-              <xsl:choose>
-                <xsl:when test="starts-with(@name, 'name')">
-                  a.compareTo(b);
-                </xsl:when>
-                <xsl:otherwise>
-                  '<xsl:value-of select="@columns" />'.split(',')
-                      .reduce((total, column) => total * 2 + Math.sign(a[column] - b[column]), 0);
-                </xsl:otherwise>
-              </xsl:choose>
+              for (const column of '<xsl:value-of select="@columns" />'.split(',')) {
+                const diff = column === 'name' ? a.compareTo(b) : a[column] - b[column];
+                if (diff !== 0)
+                  return '<xsl:value-of select="@order" />' === 'descending' ? -diff : diff;
+              }
+              return a.compareTo(b);
             });
 
             // Update the rankings table
