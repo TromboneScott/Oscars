@@ -226,11 +226,6 @@
           this.timeText = formatTime(time);
           this.decided = decided.split('');
         }
-
-        compareTo(other) {
-          return ["lastName", "firstName"].reduce((total, column) => total * 2 +
-              this[column].localeCompare(other[column], undefined, {sensitivity: 'base'}), 0);
-        }
       }
 
       // Load the players from XML files
@@ -308,13 +303,14 @@
             }
 
             // Sort the players
+            const baseColumns = '<xsl:value-of select="@columns" />'.split(',');
+            const columns = baseColumns.concat(['lastName', 'firstName']);
             players.sort(function(a, b) {
-              for (const column of '<xsl:value-of select="@columns" />'.split(',')) {
-                const diff = column === 'name' ? a.compareTo(b) : a[column] - b[column];
-                if (diff !== 0)
-                  return '<xsl:value-of select="@order" />' === 'descending' ? -diff : diff;
-              }
-              return a.compareTo(b);
+              return columns.reduce((total, column, index) => total !== 0 ? total :
+                  (typeof a[column] === 'number' ? a[column] - b[column] :
+                      a[column].localeCompare(b[column], undefined, {sensitivity: 'base'})) *
+                  (index &lt; baseColumns.length &amp;&amp;
+                      '<xsl:value-of select="@order" />' === 'descending' ? -1 : 1), 0);
             });
 
             // Update the rankings table
