@@ -307,10 +307,11 @@
             const columns = baseColumns.concat(['lastName', 'firstName']);
             players.sort(function(a, b) {
               return columns.reduce((total, column, index) => total !== 0 ? total :
+                  <xsl:if test="@order = 'descending'">
+                    (index &lt; baseColumns.length ? -1 : 1) *
+                  </xsl:if>    
                   (typeof a[column] === 'number' ? a[column] - b[column] :
-                      a[column].localeCompare(b[column], undefined, {sensitivity: 'base'})) *
-                  (index &lt; baseColumns.length &amp;&amp;
-                      '<xsl:value-of select="@order" />' === 'descending' ? -1 : 1), 0);
+                      a[column].localeCompare(b[column], undefined, {sensitivity: 'base'})), 0);
             });
 
             // Update the rankings table
