@@ -49,8 +49,7 @@ final class Standings {
                 .map(player -> player.toDOM()
                         .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
                         .setAttribute("decided", decided(player, lostToMap)))
-                .reduce(new Element("standings"), Element::addContent)
-                .setAttribute("time", String.valueOf(elapsedTime));
+                .reduce(new Element("standings"), Element::addContent);
     }
 
     private ImmutableSet<Player> lostTo(Player inPlayer) {

@@ -117,21 +117,7 @@
                   <xsl:value-of select="$playerResults/@score" />
                 </th>
               </tr>
-              <tr>
-                <xsl:attribute name="class">
-                  <xsl:choose>
-                    <xsl:when
-                      test="$ballots/player[@firstName = $playerResults/@firstName and @lastName = $playerResults/@lastName]/@time &lt;= $results/standings/@time">
-                  correct
-                    </xsl:when>
-                    <xsl:when test="$ended">
-                      incorrect
-                    </xsl:when>
-                    <xsl:otherwise>
-                      unannounced
-                    </xsl:otherwise>
-                  </xsl:choose>
-                  time</xsl:attribute>
+              <tr class="time">
                 <td class="header">
                   <xsl:value-of select="'Show Running Time'" />
                   <xsl:apply-templates

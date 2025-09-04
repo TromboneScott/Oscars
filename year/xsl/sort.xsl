@@ -254,6 +254,10 @@
 
       const cells = document.getElementById("rankings").getElementsByTagName("td");
       const tableWidth = cells.length / players.length;
+      const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
+          ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
+      const baseSortColumns = '<xsl:value-of select="@columns" />'.split(',');
+      const sortColumns = baseSortColumns.concat(['lastName', 'firstName']);
 
       // Calculate and popluate values for player grid
       elapsed(function() {
@@ -266,7 +270,7 @@
             // Update the running time
             document.getElementById("time_header").innerHTML = formatTime(elapsed);
             document.getElementById("timeHeader_cell").style.backgroundColor =
-                elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
+                colors.get(elapsed >= next &amp;&amp; next > 0 ? "W" : "-");
             <xsl:if test="$inPlayer">
               document.getElementById("time_value").innerHTML = document.getElementById("time_header").innerHTML;
               document.getElementById("time_difference").innerHTML =
@@ -303,12 +307,10 @@
             }
 
             // Sort the players
-            const baseColumns = '<xsl:value-of select="@columns" />'.split(',');
-            const columns = baseColumns.concat(['lastName', 'firstName']);
             players.sort(function(a, b) {
-              return columns.reduce((total, column, index) => total !== 0 ? total :
+              return sortColumns.reduce((total, column, index) => total !== 0 ? total :
                   <xsl:if test="@order = 'descending'">
-                    (index &lt; baseColumns.length ? -1 : 1) *
+                    (index &lt; baseSortColumns.length ? -1 : 1) *
                   </xsl:if>    
                   (typeof a[column] === 'number' ? a[column] - b[column] :
                       a[column].localeCompare(b[column], undefined, {sensitivity: 'base'})), 0);
@@ -317,10 +319,8 @@
             // Update the rankings table
             players.forEach((player, row) => {
               <xsl:if test="$inPlayer">
-                const decision = inPlayer.decided[player.id];
-                cells[row * tableWidth].style.backgroundColor = decision === "-" ? "white" :
-                    decision === "W" ? "limegreen" : decision === "L" ? "red" :
-                    decision === "T" ? "tan" : "silver";
+                cells[row * tableWidth].style.backgroundColor =
+                    colors.get(inPlayer.decided[player.id]);
               </xsl:if>
               [player.link, player.rank,
                   <xsl:if test="not($ended)">
@@ -331,14 +331,14 @@
               <xsl:choose>
                 <xsl:when test="$ended">
                   cells[row * tableWidth + 3].style.backgroundColor =
-                      player.time > elapsed ? 'red' : 'limegreen';
+                      colors.get(player.time > elapsed ? "L" : "W");
                 </xsl:when>
                 <xsl:otherwise>
                   for (let column = 2; column &lt; 4; column++)
                     cells[row * tableWidth + column].style.backgroundColor =
-                        player.bpr === player.wpr ? 'silver': 'transparent';
+                        colors.get(player.bpr === player.wpr ? "?" : "none");
                   cells[row * tableWidth + 5].style.backgroundColor =
-                      player.time > elapsed ? 'silver' : 'limegreen';
+                      colors.get(player.time > elapsed ? "?" : "W");
                 </xsl:otherwise>
               </xsl:choose>
             });
@@ -346,12 +346,18 @@
             // Update the player page
             <xsl:if test="$inPlayer">
               document.getElementById('player_rank').innerHTML = inPlayer.rank;
-              document.getElementById('possible_rank').innerHTML = inPlayer.wpr === inPlayer.bpr ?
-                  'Rank is Final' : 'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
+              <xsl:if test="not($ended)">
+                document.getElementById('possible_rank').innerHTML =
+                    inPlayer.wpr === inPlayer.bpr ? 'Rank is Final' :
+                        'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
+              </xsl:if>
 
-              if (elapsed >= inPlayer.time)
-                for (let id of ["guess", "actual", "score"])
-                  document.getElementById("time_" + id).style.backgroundColor = 'limegreen';
+              for (let id of ["guess", "actual", "score"])
+                document.getElementById("time_" + id).style.backgroundColor = colors.get(
+                    <xsl:if test="$ended">
+                      inPlayer.time > elapsed ? "L" :
+                    </xsl:if>
+                    inPlayer.time > elapsed ? "?" : "W");
 
               for (let decision of ['W', 'L'].filter(decision => inPlayer.decided.includes(decision)))
                 document.getElementById("decided_" + decision).style.display = 'inline';
