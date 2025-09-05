@@ -352,12 +352,13 @@
                         'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
               </xsl:if>
 
+              const timeColor =  colors.get(
+                  <xsl:if test="$ended">
+                    inPlayer.time > elapsed ? "L" :
+                  </xsl:if>
+                  inPlayer.time > elapsed ? "?" : "W");
               for (let id of ["guess", "actual", "score"])
-                document.getElementById("time_" + id).style.backgroundColor = colors.get(
-                    <xsl:if test="$ended">
-                      inPlayer.time > elapsed ? "L" :
-                    </xsl:if>
-                    inPlayer.time > elapsed ? "?" : "W");
+                document.getElementById("time_" + id).style.backgroundColor = timeColor;
 
               for (let decision of ['W', 'L'].filter(decision => inPlayer.decided.includes(decision)))
                 document.getElementById("decided_" + decision).style.display = 'inline';
