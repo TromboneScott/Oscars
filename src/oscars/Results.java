@@ -56,19 +56,16 @@ public class Results {
 
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
-    private final Thread elapsedUpdater = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                while (true) {
-                    writeElapsed();
-                    Thread.sleep(UPDATE_TIME);
-                }
-            } catch (InterruptedException e) {
-                // Ignore
-            } catch (IOException e) {
-                e.printStackTrace();
+    private final Thread elapsedUpdater = new Thread(() -> {
+        try {
+            while (true) {
+                writeElapsed();
+                Thread.sleep(UPDATE_TIME);
             }
+        } catch (InterruptedException e) {
+            // Ignore - This means we're exiting gracefully
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     });
 
