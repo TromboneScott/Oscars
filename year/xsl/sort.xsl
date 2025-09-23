@@ -241,7 +241,7 @@
               '<xsl:apply-templates select="." mode="playerName" />&lt;/a>',
           '<xsl:value-of select="@score"/>',
           <xsl:value-of select="$ballot/@time" />,
-          '-<xsl:value-of select="@decided"/>'
+          '<xsl:value-of select="@decided"/>'
         ));
       </xsl:for-each>
 

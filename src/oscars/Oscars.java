@@ -54,7 +54,7 @@ public class Oscars {
                         .map(category -> category.toDOM().setAttribute("nominee",
                                 PLAYERS.get(playerNum).answer(category)))
                         .reduce(PLAYERS.get(playerNum).toDOM(), Element::addContent)
-                        .setAttribute("id", String.valueOf(playerNum + 1))
+                        .setAttribute("id", String.valueOf(playerNum))
                         .setAttribute("time", String.valueOf(PLAYERS.get(playerNum).time())))
                 .reduce(new Element("ballots"), Element::addContent));
 
