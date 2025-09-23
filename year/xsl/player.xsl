@@ -20,11 +20,9 @@
           <table>
             <tr>
               <td id="rank">Rank <div id="rank">
-                  <a id="player_rank">
-                    <xsl:value-of select="$playerResults/@rank" />
-                  </a>
-                </div>
-                Out of <xsl:value-of select="count($results/standings/player)" />
+                  <a id="player_rank" />
+                </div> Out of <xsl:value-of
+                  select="count($results/standings/player)" />
               </td>
             </tr>
           </table>
