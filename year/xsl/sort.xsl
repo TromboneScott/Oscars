@@ -208,7 +208,7 @@
       </tbody>
     </table>
     <script>
-      // Formats the time value as: H:MM:SS
+      // Formats the time value (in seconds) as: H:MM:SS
       function formatTime(time) {
         return [time / 60 / 60, time / 60 % 60, time % 60].map((value, pos) =>
             String(Math.trunc(value)).padStart(pos > 0 ? 2 : 1, '0')).join(':');
@@ -287,19 +287,18 @@
 
             // Recalculate rank, bpr and wpr
             for (const player of players) {
-              player.rank = players.filter(opponent => opponent.score > player.score ||
-                    opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
-                        (player.time > elapsed || opponent.time > player.time)).length + 1;
-
               for (const opponent of players.filter(opponent => player.decided[opponent.id] === 'X' &amp;&amp;
                     elapsed >= player.time &amp;&amp; elapsed >= opponent.time &amp;&amp; player.time !== opponent.time))
                 player.decided[opponent.id] =
                     player.time > opponent.time &amp;&amp; player.score >= opponent.score ? 'W' :
                     opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' : '?';
-              player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
-
               const undecided = players.filter(opponent => player.decided[opponent.id] === 'X');
               const timeWillTell = undecided.filter(opponent => player.score >= opponent.score);
+
+              player.rank = players.filter(opponent => opponent.score > player.score ||
+                    opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
+                        (player.time > elapsed || opponent.time > player.time)).length + 1;
+              player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
               player.wpr = player.bpr + players.filter(opponent => player.decided[opponent.id] === '?').length +
                   undecided.filter(opponent => opponent.score > player.score).length +
                   Math.max(timeWillTell.filter(opponent => player.time > opponent.time).length,
