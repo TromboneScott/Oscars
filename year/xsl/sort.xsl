@@ -215,8 +215,10 @@
       }
 
       class Player {
-        constructor(id, firstName, lastName, link, score, time, decided) {
-          this.id = id;
+        static #nextId = 0;
+        
+        constructor(firstName, lastName, link, score, time, decided) {
+          this.id = Player.#nextId++;
           this.firstName = firstName;
           this.lastName = lastName;
           this.link = link;
@@ -232,23 +234,21 @@
       const players = [];
       <xsl:for-each select="$results/standings/player">
         <xsl:variable name="player" select="." />
-        <xsl:variable name="ballot" select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
         players.push(new Player(
-          <xsl:value-of select="$ballot/@id" />,
           '<xsl:value-of select="@firstName"/>',
           '<xsl:value-of select="@lastName"/>',
           '&lt;a href="<xsl:apply-templates select="." mode="playerLink" />">' +
               '<xsl:apply-templates select="." mode="playerName" />&lt;/a>',
           '<xsl:value-of select="@score"/>',
-          <xsl:value-of select="$ballot/@time" />,
+          <xsl:value-of select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />,
           '<xsl:value-of select="@decided"/>'
         ));
       </xsl:for-each>
 
       <xsl:if test="$inPlayer">
         // Find the instance for this player
-        const inPlayer = players.find(player => player.id ===
-            <xsl:value-of select="$ballots/player[@firstName = $inPlayer/@firstName and @lastName = $inPlayer/@lastName]/@id" />);
+        const inPlayer = players.find(player => player.firstName === '<xsl:value-of select="$inPlayer/@firstName" />'
+            &amp;&amp; player.lastName === '<xsl:value-of select="$inPlayer/@lastName" />');
         document.getElementById("time_player").innerHTML = inPlayer.timeText;
       </xsl:if>
 

@@ -1,7 +1,6 @@
 package oscars;
 
 import java.io.IOException;
-import java.util.stream.IntStream;
 
 import org.jdom2.Element;
 
@@ -49,13 +48,11 @@ public class Oscars {
     }
 
     private static void writeStaticFiles() throws IOException {
-        new XMLFile(Directory.DATA, "ballots.xml").write(IntStream.range(0, PLAYERS.size())
-                .mapToObj(playerNum -> Category.ALL.stream()
-                        .map(category -> category.toDOM().setAttribute("nominee",
-                                PLAYERS.get(playerNum).answer(category)))
-                        .reduce(PLAYERS.get(playerNum).toDOM(), Element::addContent)
-                        .setAttribute("id", String.valueOf(playerNum))
-                        .setAttribute("time", String.valueOf(PLAYERS.get(playerNum).time())))
+        new XMLFile(Directory.DATA, "ballots.xml").write(PLAYERS.stream().map(player -> Category.ALL
+                .stream()
+                .map(category -> category.toDOM().setAttribute("nominee", player.answer(category)))
+                .reduce(player.toDOM(), Element::addContent)
+                .setAttribute("time", String.valueOf(player.time())))
                 .reduce(new Element("ballots"), Element::addContent));
 
         for (Player player : PLAYERS)
