@@ -307,12 +307,12 @@
 
             // Sort the players
             players.sort(function(a, b) {
-              return sortColumns.reduce((total, column, index) => total !== 0 ? total :
+              return sortColumns.reduce((total, field, index) => total !== 0 ? total :
                   <xsl:if test="@order = 'descending'">
                     (index &lt; baseSortColumns.length ? -1 : 1) *
                   </xsl:if>    
-                  (typeof a[column] === 'number' ? a[column] - b[column] :
-                      a[column].localeCompare(b[column], undefined, {sensitivity: 'base'})), 0);
+                  (typeof a[field] === 'number' ? a[field] - b[field] :
+                      a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
             });
 
             // Update the rankings table
@@ -321,12 +321,13 @@
                 cells[row * tableWidth].style.backgroundColor =
                     colors.get(inPlayer.decided[player.id]);
               </xsl:if>
-              [player.link, player.rank,
+              ["link", "rank",
                   <xsl:if test="not($ended)">
-                    player.bpr, player.wpr,
+                    "bpr", "wpr",
                   </xsl:if>
-                  player.scoreText, player.timeText
-              ].forEach((value, column) => cells[row * tableWidth + column].innerHTML = value);
+                  "scoreText", "timeText"
+              ].forEach((field, column) =>
+                  cells[row * tableWidth + column].innerHTML = player[field]);
               <xsl:choose>
                 <xsl:when test="$ended">
                   cells[row * tableWidth + 3].style.backgroundColor =
