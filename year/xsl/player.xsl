@@ -8,8 +8,6 @@
       <body>
         <center>
           <xsl:variable name="player" select="." />
-          <xsl:variable name="playerResults"
-            select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]" />
           <xsl:variable
             name="playerName" select="concat(@firstName, ' ', @lastName)" />
           <div
@@ -103,16 +101,18 @@
             </tbody>
             <tfoot>
               <tr>
+                <xsl:variable name="playerScore"
+                  select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@score" />
                 <th class="header">Total</th>
                 <th>
-                  <xsl:value-of select="floor($playerResults/@score)" />
+                  <xsl:value-of select="floor($playerScore)" />
                 </th>
                 <th>
                   <xsl:value-of
                     select="count($results/awards/category[nominee])" />
                 </th>
                 <th>
-                  <xsl:value-of select="$playerResults/@score" />
+                  <xsl:value-of select="$playerScore" />
                 </th>
               </tr>
               <tr class="time">
@@ -152,10 +152,10 @@
             <br /> All players in <font color="green">green</font> will finish
             below <xsl:value-of select="$playerName" />
           </a>
-          <xsl:if test="contains($playerResults/@decided, 'T')">
+          <a id="decided_T" style="display:none">
             <br /> All players in <font color="SaddleBrown">brown</font> will
             finish tied with <xsl:value-of select="$playerName" />
-          </xsl:if>
+          </a>
           <br />
           <br />
           <xsl:apply-templates

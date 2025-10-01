@@ -360,7 +360,7 @@
               for (let id of ["guess", "actual", "score"])
                 document.getElementById("time_" + id).style.backgroundColor = timeColor;
 
-              for (let decision of ['W', 'L'].filter(decision => inPlayer.decided.includes(decision)))
+              for (let decision of ['W', 'L', 'T'].filter(decision => inPlayer.decided.includes(decision)))
                 document.getElementById("decided_" + decision).style.display = 'inline';
             </xsl:if>
           }
