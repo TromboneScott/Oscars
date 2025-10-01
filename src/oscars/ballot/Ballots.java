@@ -65,6 +65,12 @@ class Ballots {
                             + " does not match number of defined columns: " + Column.ALL.size());
                 all = reader.readAll().stream().map(Ballot::new)
                         .collect(ImmutableList.toImmutableList());
+                all.stream()
+                        .map(answers -> answers.answer(DataColumn.FIRST_NAME) + " "
+                                + answers.answer(DataColumn.FIRST_NAME))
+                        .filter(name -> name.contains("_")).forEach(name -> System.out.println(
+                                "Warning: Separator character '_' found in player name: " + name));
+                ;
             }
         }
     }
@@ -78,8 +84,8 @@ class Ballots {
     protected final ImmutableCollection<Ballot> answers() {
         return all.stream()
                 .collect(ImmutableMap.toImmutableMap(
-                        answers -> answers.answer(DataColumn.LAST_NAME) + "|"
-                                + answers.answer(DataColumn.FIRST_NAME),
+                        answers -> answers.answer(DataColumn.FIRST_NAME) + "_"
+                                + answers.answer(DataColumn.LAST_NAME),
                         answers -> answers,
                         BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
                 .values();
