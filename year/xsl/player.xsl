@@ -161,7 +161,7 @@
           <xsl:apply-templates
             select="document(concat($rootDir, 'player/sort/default.xml'))/sort"
             mode="player-table">
-            <xsl:with-param name="inPlayer" select="$playerResults" />
+            <xsl:with-param name="inPlayer" select="." />
           </xsl:apply-templates>
         </center>
       </body>
