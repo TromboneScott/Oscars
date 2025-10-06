@@ -208,10 +208,17 @@
       </tbody>
     </table>
     <script>
+      const table = Array.from(document.getElementById("rankings").getElementsByTagName("tr"))
+          .map(row => row.getElementsByTagName("td"));
+      const baseSortColumns = '<xsl:value-of select="@columns" />'.split(',');
+      const sortColumns = baseSortColumns.concat(['lastName', 'firstName']);
+      const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
+          ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
+
       // Formats the time value (in seconds) as: H:MM:SS
       function formatTime(time) {
-        return [time / 60 / 60, time / 60 % 60, time % 60].map((value, pos) =>
-            String(Math.trunc(value)).padStart(pos > 0 ? 2 : 1, '0')).join(':');
+        return [time / 60 / 60, time / 60 % 60, time % 60].map((value, index) =>
+            String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
       }
 
       class Player {
@@ -251,13 +258,6 @@
             &amp;&amp; player.lastName === '<xsl:value-of select="$inPlayer/@lastName" />');
         document.getElementById("time_player").innerHTML = inPlayer.timeText;
       </xsl:if>
-
-      const cells = document.getElementById("rankings").getElementsByTagName("td");
-      const tableWidth = cells.length / players.length;
-      const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
-          ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
-      const baseSortColumns = '<xsl:value-of select="@columns" />'.split(',');
-      const sortColumns = baseSortColumns.concat(['lastName', 'firstName']);
 
       // Calculate and popluate values for player grid
       elapsed(function() {
@@ -318,26 +318,24 @@
             // Update the rankings table
             players.forEach((player, row) => {
               <xsl:if test="$inPlayer">
-                cells[row * tableWidth].style.backgroundColor =
-                    colors.get(inPlayer.decided[player.id]);
+                table[row][0].style.backgroundColor = colors.get(inPlayer.decided[player.id]);
               </xsl:if>
               ["link", "rank",
                   <xsl:if test="not($ended)">
                     "bpr", "wpr",
                   </xsl:if>
                   "scoreText", "timeText"
-              ].forEach((field, column) =>
-                  cells[row * tableWidth + column].innerHTML = player[field]);
+              ].forEach((field, column) => table[row][column].innerHTML = player[field]);
               <xsl:choose>
                 <xsl:when test="$ended">
-                  cells[row * tableWidth + 3].style.backgroundColor =
+                  table[row][3].style.backgroundColor =
                       colors.get(player.time > elapsed ? "L" : "W");
                 </xsl:when>
                 <xsl:otherwise>
                   for (let column = 2; column &lt; 4; column++)
-                    cells[row * tableWidth + column].style.backgroundColor =
+                    table[row][column].style.backgroundColor =
                         colors.get(player.bpr === player.wpr ? "?" : "none");
-                  cells[row * tableWidth + 5].style.backgroundColor =
+                  table[row][5].style.backgroundColor =
                       colors.get(player.time > elapsed ? "?" : "W");
                 </xsl:otherwise>
               </xsl:choose>
