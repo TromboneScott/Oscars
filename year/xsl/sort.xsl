@@ -317,15 +317,15 @@
 
             // Update the rankings table
             players.forEach((player, row) => {
-              <xsl:if test="$inPlayer">
-                table[row][0].style.backgroundColor = colors.get(inPlayer.decided[player.id]);
-              </xsl:if>
               ["link", "rank",
                   <xsl:if test="not($ended)">
                     "bpr", "wpr",
                   </xsl:if>
                   "scoreText", "timeText"
               ].forEach((field, column) => table[row][column].innerHTML = player[field]);
+              <xsl:if test="$inPlayer">
+                table[row][0].style.backgroundColor = colors.get(inPlayer.decided[player.id]);
+              </xsl:if>
               <xsl:choose>
                 <xsl:when test="$ended">
                   table[row][3].style.backgroundColor =
