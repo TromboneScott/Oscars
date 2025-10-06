@@ -316,30 +316,30 @@
             });
 
             // Update the rankings table
-            players.forEach((player, row) => {
-              ["link", "rank",
-                  <xsl:if test="not($ended)">
-                    "bpr", "wpr",
-                  </xsl:if>
-                  "scoreText", "timeText"
-              ].forEach((field, column) => table[row][column].innerHTML = player[field]);
-              <xsl:if test="$inPlayer">
-                table[row][0].style.backgroundColor = colors.get(inPlayer.decided[player.id]);
-              </xsl:if>
-              <xsl:choose>
-                <xsl:when test="$ended">
-                  table[row][3].style.backgroundColor =
-                      colors.get(player.time > elapsed ? "L" : "W");
-                </xsl:when>
-                <xsl:otherwise>
-                  for (let column = 2; column &lt; 4; column++)
-                    table[row][column].style.backgroundColor =
-                        colors.get(player.bpr === player.wpr ? "?" : "none");
-                  table[row][5].style.backgroundColor =
-                      colors.get(player.time > elapsed ? "?" : "W");
-                </xsl:otherwise>
-              </xsl:choose>
-            });
+            players.forEach((player, row) =>
+                ["link", "rank",
+                    <xsl:if test="not($ended)">
+                      "bpr", "wpr",
+                    </xsl:if>
+                    "scoreText", "timeText"
+                ].forEach((field, column) => {
+                  table[row][column].innerHTML = player[field];
+                  table[row][column].style.backgroundColor = colors.get(
+                      field === "link" ?
+                          <xsl:if test="$inPlayer">
+                            true ? inPlayer.decided[player.id] :
+                          </xsl:if>
+                          "-" :
+                      field === "timeText" ?
+                          <xsl:if test="$ended">
+                            player.time > elapsed ? "L" :
+                          </xsl:if>
+                          player.time > elapsed ? "?" : "W" :
+                      (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
+                          "?" : "none"
+                  );
+                })
+            );
 
             // Update the player page
             <xsl:if test="$inPlayer">
