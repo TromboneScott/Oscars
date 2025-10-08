@@ -111,23 +111,23 @@
         http.send();
       }
 
-      // Fetches the elapsed time and performs the action
-      function elapsed(action) {
+      // Reads the elapsed time and performs the action
+      function readElapsed(action) {
         send(action, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
       }
 
       <xsl:if test="not($ended)">
-        // Fetches the HTML headers of the results files to provide the last-modified timestamp
-        function modified(action) {
+        // Reads the HTML headers of the results files to provide the last-modified timestamp
+        function readModified(action) {
           send(action, "HEAD", "<xsl:value-of select="$resultsFile"/>");
         }
 
         // Get the last modified timestamp
-        modified(function() {
+        readModified(function() {
           const updated = this.getResponseHeader('Last-Modified');
 
           // Get the start time (actual or scheduled) of the broadcast
-          elapsed(function() {
+          readElapsed(function() {
             const start = new Date().getTime() / 1000 - parseInt(this.responseText);
 
             <xsl:if test="not($results/awards/@START)">
@@ -159,7 +159,7 @@
             setInterval(function() {
               if ((++skips >= 60 / interval || start - new Date().getTime() / 1000 &lt; 10 * 60)
                   &amp;&amp; document.visibilityState === "visible")
-                modified(function() {
+                readModified(function() {
                   if (this.getResponseHeader('Last-Modified') !== updated)
                     window.location.reload();
                   skips = 0;
