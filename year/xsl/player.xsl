@@ -7,6 +7,21 @@
       <xsl:call-template name="header" />
       <body>
         <center>
+          <script>
+            function getTable(id) {
+              return Array.from(document.getElementById(id).getElementsByTagName("tr"))
+                  .map(row => row.getElementsByTagName("td"));
+            }
+
+            function sortArray(array, descending, columns) {
+              array.sort(function(a, b) {
+                return columns.concat(['lastName', 'firstName']).reduce((total, field, index) =>
+                    total !== 0 ? total : (descending &amp;&amp; index &lt; columns.length ? -1 : 1) *
+                        (typeof a[field] === 'number' ? a[field] - b[field] :
+                            a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
+              });
+            }
+          </script>
           <xsl:choose>
             <xsl:when test="@type = 'all'">
               <xsl:choose>
@@ -73,8 +88,7 @@
                       </tbody>
                     </table>
                     <script>
-                      const table = Array.from(document.getElementById("ballots").getElementsByTagName("tr"))
-                          .map(row => row.getElementsByTagName("td"));
+                      const table = getTable("ballots");
 
                       class Ballot {
                         constructor(received, firstName, lastName, nameText) {
@@ -89,7 +103,7 @@
                           this.nameText = nameText;
                         }
                       }
-                            
+
                       // Load the ballots from XML files
                       const ballots = [];
                       <xsl:for-each select="$results/ballots/player">
@@ -101,7 +115,6 @@
                           '<xsl:apply-templates select="." mode="playerName" />'
                         ));
                       </xsl:for-each>
-        
 
                       // Sorts the ballots based on the column clicked by the user
                       let sort;
@@ -109,16 +122,10 @@
                       function sortBallots(column) {
                         descending = column === sort ? !descending : false;
                         sort = column;
-        
+
                         // Sort the ballots
-                        const columns = (sort === 'name' ? 'lastName,firstName' : 'received')
-                            .split(',');
-                        ballots.sort(function(a, b) {
-                          return columns.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-                              total !== 0 ? total : (descending &amp;&amp; index &lt; columns.length ? -1 : 1) *
-                                  (typeof a[field] === 'number' ? a[field] - b[field] :
-                                      a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
-                        });
+                        sortArray(ballots, descending,
+                            (sort === 'name' ? 'lastName,firstName' : 'received').split(','));
 
                         // Update the ballots table
                         ballots.forEach((ballot, row) => {
@@ -391,10 +398,8 @@
       </tbody>
     </table>
     <script>
-      const table = Array.from(document.getElementById("rankings").getElementsByTagName("tr"))
-          .map(row => row.getElementsByTagName("td"));
-      const baseSortColumns = '<xsl:value-of select="@columns" />'.split(',');
-      const sortColumns = baseSortColumns.concat(['lastName', 'firstName']);
+      const table = getTable("rankings");
+
       const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
           ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
       let elapsed = 0;
@@ -407,17 +412,11 @@
           descending = column === sort ? !descending : false;
           sort = column;
         }
-        
+
         // Sort the players
-        const columns = (sort === 'name' ? 'lastName,firstName' :
+        sortArray(players, descending, (sort === 'name' ? 'lastName,firstName' :
             sort === 'bpr' ? 'bpr,rank,wpr' : sort === 'wpr' ? 'wpr,rank,bpr' :
-            sort === 'time' ? 'time' : 'rank,bpr,wpr').split(',');
-        players.sort(function(a, b) {
-          return columns.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-              total !== 0 ? total : (descending &amp;&amp; index &lt; columns.length ? -1 : 1) *
-                  (typeof a[field] === 'number' ? a[field] - b[field] :
-                      a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
-        });
+            sort === 'time' ? 'time' : 'rank,bpr,wpr').split(','));
 
         // Update the rankings table
         players.forEach((player, row) =>
@@ -454,7 +453,7 @@
 
       class Player {
         static #nextId = 0;
-        
+
         constructor(firstName, lastName, link, score, time, decided) {
           this.id = Player.#nextId++;
           this.firstName = firstName;
@@ -536,7 +535,7 @@
                   Math.max(timeWillTell.filter(opponent => player.time > opponent.time).length,
                            timeWillTell.filter(opponent => opponent.time > player.time).length);
             }
-            
+
             sortTable();
 
             // Update the player page
