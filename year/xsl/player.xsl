@@ -63,18 +63,10 @@
                     <table>
                       <thead>
                         <tr>
-                          <th onclick="sortBallots('received')"
-                            style="cursor:pointer">
-                            <u>
-                              Received
-                            </u>
-                          </th>
-                          <th onclick="sortBallots('name')"
-                            style="cursor:pointer">
-                            <u>
-                              Name
-                            </u>
-                          </th>
+                          <th id="received_header" onclick="sortBallots('received')"
+                            style="cursor:pointer" />
+                          <th id="name_header" onclick="sortBallots('name')"
+                            style="cursor:pointer"/>
                         </tr>
                       </thead>
                       <tbody id="ballots">
@@ -122,6 +114,12 @@
                       function sortBallots(column) {
                         descending = column === sort ? !descending : false;
                         sort = column;
+                        for (const header of ["received", "name"]) {
+                          const arrow = header === sort ? descending ? '↓' : '↑' : '';
+                          document.getElementById(header + '_header').innerHTML =
+                              arrow + ' &lt;u>' + (header === 'received' ? 'Received' : 'Name') +
+                              '&lt;/u> ' + arrow;
+                        }
 
                         // Sort the ballots
                         sortArray(ballots, descending,
