@@ -347,34 +347,34 @@
     <table>
       <thead>
         <tr>
-          <th class="header" onclick="sortTable('name')" style="cursor:pointer">
+          <th id="link_header" class="header" onclick="sortTable('link')" style="cursor:pointer">
             <u>
               Name
             </u>
           </th>
-          <th onclick="sortTable('rank')" style="cursor:pointer">
+          <th id="rank_header" onclick="sortTable('rank')" style="cursor:pointer">
             <u>
               Rank
             </u>
           </th>
           <xsl:if test="not($ended)">
-            <th onclick="sortTable('bpr')" style="cursor:pointer">
+            <th id="bpr_header" onclick="sortTable('bpr')" style="cursor:pointer">
               <u>
                 BPR
               </u>
             </th>
-            <th onclick="sortTable('wpr')" style="cursor:pointer">
+            <th id="wpr_header" onclick="sortTable('wpr')" style="cursor:pointer">
               <u>
                 WPR
               </u>
             </th>
           </xsl:if>
-          <th onclick="sortTable('score')" style="cursor:pointer">
+          <th id="scoreText_header" onclick="sortTable('scoreText')" style="cursor:pointer">
             <u>
               Score
             </u>
           </th>
-          <th id="time_header" onclick="sortTable('time')"
+          <th id="timeText_header" onclick="sortTable('timeText')"
             style="cursor:pointer">
             <u>
               Time
@@ -399,33 +399,35 @@
     </table>
     <script>
       const table = getTable("rankings");
-
       const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
           ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
+      const columns = ["link", "rank",
+                <xsl:if test="not($ended)">
+                  "bpr", "wpr",
+                </xsl:if>
+                "scoreText", "timeText"
+            ];
       let elapsed = 0;
 
       // Sorts the table based on the column clicked by the user
       let sort = 'rank';
       let descending = false;
+      document.getElementById('rank_header').style.backgroundColor = colors.get("?");
       function sortTable(column) {
         if (column !== undefined) {
           descending = column === sort ? !descending : false;
           sort = column;
+          columns.forEach(column => document.getElementById(column + '_header').style.backgroundColor =
+              colors.get(column === sort ? "?" : "-"));
         }
 
         // Sort the players
-        sortArray(players, descending, (sort === 'name' ? 'lastName,firstName' :
+        sortArray(players, descending, (sort === 'link' ? 'lastName,firstName' :
             sort === 'bpr' ? 'bpr,rank,wpr' : sort === 'wpr' ? 'wpr,rank,bpr' :
-            sort === 'time' ? 'time' : 'rank,bpr,wpr').split(','));
+            sort === 'timeText' ? 'time' : 'rank,bpr,wpr').split(','));
 
         // Update the rankings table
-        players.forEach((player, row) =>
-            ["link", "rank",
-                <xsl:if test="not($ended)">
-                  "bpr", "wpr",
-                </xsl:if>
-                "scoreText", "timeText"
-            ].forEach((field, column) => {
+        players.forEach((player, row) => columns.forEach((field, column) => {
               table[row][column].innerHTML = player[field];
               table[row][column].style.backgroundColor = colors.get(
                   field === "link" ?
@@ -498,10 +500,10 @@
 
           <xsl:if test="$results/awards/@START">
             // Update the running time
-            document.getElementById("time_header").innerHTML =
+            document.getElementById("timeText_header").innerHTML =
                 '&lt;u>' + formatTime(elapsed) + '&lt;/u>';
-            document.getElementById("time_header").style.backgroundColor =
-                colors.get(elapsed >= next &amp;&amp; next > 0 ? "W" : "-");
+            document.getElementById("timeText_header").style.backgroundColor = colors.get(
+                elapsed >= next &amp;&amp; next > 0 ? "W" : sort === "timeText" ? "?" : "-");
             <xsl:if test="$inPlayer">
               document.getElementById("time_value").innerHTML = formatTime(elapsed);
               document.getElementById("time_difference").innerHTML =
