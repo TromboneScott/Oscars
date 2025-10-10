@@ -8,15 +8,19 @@
       <body>
         <center>
           <script>
+            // Gets the table of cells for the given table id
             function getTable(id) {
               return Array.from(document.getElementById(id).getElementsByTagName("tr"))
                   .map(row => row.getElementsByTagName("td"));
             }
 
-            function sortArray(array, descending, columns) {
+            // Sorts the given array by the given comma-delimited field names, descending or not,
+            // then by lastName and firstName in ascending order
+            function sortArray(array, descending, fieldNames) {
+              const fields = fieldNames.split(',');
               array.sort(function(a, b) {
-                return columns.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-                    total !== 0 ? total : (descending &amp;&amp; index &lt; columns.length ? -1 : 1) *
+                return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
+                    total !== 0 ? total : (descending &amp;&amp; index &lt; fields.length ? -1 : 1) *
                         (typeof a[field] === 'number' ? a[field] - b[field] :
                             a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
               });
@@ -99,7 +103,6 @@
                       // Load the ballots from XML files
                       const ballots = [];
                       <xsl:for-each select="$results/ballots/player">
-                        <xsl:variable name="player" select="." />
                         ballots.push(new Ballot(
                           '<xsl:value-of select="@timestamp"/>',
                           '<xsl:value-of select="@firstName"/>',
@@ -114,6 +117,7 @@
                       function sortBallots(column) {
                         descending = column === sort ? !descending : false;
                         sort = column;
+
                         for (const header of ["received", "name"]) {
                           const arrow = header === sort ? descending ? '↓' : '↑' : '';
                           document.getElementById(header + '_header').innerHTML =
@@ -123,7 +127,7 @@
 
                         // Sort the ballots
                         sortArray(ballots, descending,
-                            (sort === 'name' ? 'lastName,firstName' : 'received').split(','));
+                            sort === 'name' ? 'lastName,firstName' : 'received');
 
                         // Update the ballots table
                         ballots.forEach((ballot, row) => {
@@ -420,9 +424,9 @@
         }
 
         // Sort the players
-        sortArray(players, descending, (sort === 'link' ? 'lastName,firstName' :
+        sortArray(players, descending, sort === 'link' ? 'lastName,firstName' :
             sort === 'bpr' ? 'bpr,rank,wpr' : sort === 'wpr' ? 'wpr,rank,bpr' :
-            sort === 'timeText' ? 'time' : 'rank,bpr,wpr').split(','));
+            sort === 'timeText' ? 'time' : 'rank,bpr,wpr');
 
         // Update the rankings table
         players.forEach((player, row) => columns.forEach((field, column) => {
