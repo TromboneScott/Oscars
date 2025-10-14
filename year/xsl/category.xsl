@@ -74,10 +74,7 @@
                         <xsl:variable name="name" select="@name" />
                         <tr>
                           <td class="header">
-                            <a>
-                              <xsl:attribute name="href">
-                                <xsl:value-of select="concat('#', @name)" />
-                              </xsl:attribute>
+                            <a href="#{@name}">
                               <xsl:value-of select="@name" />
                             </a>
                             <xsl:apply-templates
@@ -106,11 +103,8 @@
                               <td>
                                 <xsl:variable name="greenWidth"
                                   select="$graphWidth * $correct div $playerCount" />
-                                <img src="/bar_green.bmp" height="15">
-                                  <xsl:attribute name="width">
-                                    <xsl:value-of select="$greenWidth" />
-                                  </xsl:attribute>
-                                </img>
+                                <img src="/bar_green.bmp" height="15"
+                                  width="{$greenWidth}" />
                                 <img src="/bar_red.bmp" height="15">
                                   <xsl:attribute name="width">
                                     <xsl:value-of
@@ -123,11 +117,8 @@
                               <td class="unannounced" />
                               <td class="unannounced" />
                               <td>
-                                <img src="/bar_grey.bmp" height="15">
-                                  <xsl:attribute name="width">
-                                    <xsl:value-of select="$graphWidth" />
-                                  </xsl:attribute>
-                                </img>
+                                <img src="/bar_grey.bmp" height="15"
+                                  width="{$graphWidth}" />
                               </td>
                             </xsl:otherwise>
                           </xsl:choose>
@@ -144,13 +135,7 @@
                       <tr>
                         <th>
                           <br />
-                          <a>
-                            <xsl:attribute name="id">
-                              <xsl:value-of select="@name" />
-                            </xsl:attribute>
-                            <xsl:attribute name="href">
-                              <xsl:value-of select="concat(@name, '.xml')" />
-                            </xsl:attribute>
+                          <a id="{@name}" href="{@name}.xml">
                             <xsl:value-of select="@name" />
                           </a>
                           <xsl:variable name="tieBreaker" select="@tieBreaker" />
@@ -166,13 +151,7 @@
                       </tr>
                       <tr>
                         <td id="rank">
-                          <a>
-                            <xsl:attribute name="id">
-                              <xsl:value-of select="@name" />
-                            </xsl:attribute>
-                            <xsl:attribute name="href">
-                              <xsl:value-of select="concat(@name, '.xml')" />
-                            </xsl:attribute>
+                          <a id="{@name}" href="{@name}.xml">
                             <xsl:variable name="categoryDefinition" select="." />
                             <xsl:apply-templates select="nominee" mode="poster">
                               <xsl:with-param name="category"
@@ -313,10 +292,7 @@
   </xsl:template>
   <xsl:template match="/definitions/column" mode="chart">
     <xsl:param name="border" />
-    <img>
-      <xsl:attribute name="border">
-        <xsl:value-of select="$border" />
-      </xsl:attribute>
+    <img border="{$border}" alt="{@name}" title="{@name}">
       <xsl:attribute name="src">
         <xsl:value-of select="concat(@name, '.png?_=')" />
         <xsl:variable name="category" select="@name" />
@@ -324,12 +300,6 @@
           select="$results/awards/category[@name = $category]/nominee">
           <xsl:value-of select="concat(@name, '|')" />
         </xsl:for-each>
-      </xsl:attribute>
-      <xsl:attribute name="alt">
-        <xsl:value-of select="@name" />
-      </xsl:attribute>
-      <xsl:attribute name="title">
-        <xsl:value-of select="@name" />
       </xsl:attribute>
     </img>
   </xsl:template>

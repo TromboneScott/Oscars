@@ -26,64 +26,58 @@
     </head>
     <header>
       <center>
-          <table id="header" onclick="window.location='{$rootDir}'"
-            style="cursor:pointer; border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
-            <tr>
-              <td rowspan="3" />
-              <td rowspan="3">
-                <img
-                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-                  id="trophy" />
-              </td>
-              <td>
-                <br />
-              </td>
-              <td rowspan="3">
-                <img
-                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-                  id="trophy" />
-              </td>
-              <td rowspan="3" />
-            </tr>
-            <tr>
-              <th style="background-color:transparent">
-                <xsl:value-of select="$definitions/@year" /> OSCARS</th>
-            </tr>
-            <tr>
-              <td>
-                <i>(Unofficial Results)</i>
-                <br />
-                <br />
-              </td>
-            </tr>
-            <tr>
-              <td colspan="5">
-                <xsl:apply-templates
-                  select="$definitions/column[@name = 'Best Picture']/nominee"
-                  mode="poster">
-                  <xsl:with-param name="category" select="'Best Picture'" />
-                  <xsl:with-param name="width" select="'50'" />
-                </xsl:apply-templates>
-              </td>
-            </tr>
-          </table>
+        <table id="header" onclick="window.location='{$rootDir}'"
+          style="cursor:pointer; border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
+          <tr>
+            <td rowspan="3" />
+            <td rowspan="3">
+              <img
+                src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
+                id="trophy" />
+            </td>
+            <td>
+              <br />
+            </td>
+            <td rowspan="3">
+              <img
+                src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
+                id="trophy" />
+            </td>
+            <td rowspan="3" />
+          </tr>
+          <tr>
+            <th style="background-color:transparent">
+              <xsl:value-of select="$definitions/@year" /> OSCARS</th>
+          </tr>
+          <tr>
+            <td>
+              <i>(Unofficial Results)</i>
+              <br />
+              <br />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5">
+              <xsl:apply-templates
+                select="$definitions/column[@name = 'Best Picture']/nominee"
+                mode="poster">
+                <xsl:with-param name="category" select="'Best Picture'" />
+                <xsl:with-param name="width" select="'50'" />
+              </xsl:apply-templates>
+            </td>
+          </tr>
+        </table>
         <br />
         <hr
           width="500" />
-        <a>
-          <xsl:attribute name="href">
-            <xsl:value-of select="concat($rootDir, 'player')" />
-          </xsl:attribute>
-        PLAYERS</a> &#160;&#160;-&#160;&#160; <a>
-          <xsl:attribute name="href">
-            <xsl:value-of select="concat($rootDir, 'category')" />
-          </xsl:attribute>
-        CATEGORIES</a> &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
-        <hr
-          width="500" />
+        <a href="{$rootDir}player">PLAYERS</a>
+        &#160;&#160;-&#160;&#160; <a href="{$rootDir}category">CATEGORIES</a>
+        &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
+        <hr width="500" />
         <br />
         <br />
-        <xsl:if test="not($results/awards/@START)">
+        <xsl:if
+          test="not($results/awards/@START)">
           <A id="countdown" style="display:none">
             <B style="font-size: 30px">Oscars Countdown</B>
             <br />
@@ -223,13 +217,10 @@
     <xsl:param name="category" />
     <xsl:param name="width" />
     <xsl:variable name="nominee" select="@name" />
-    <img>
+    <img alt="{$nominee}" width="{$width}">
       <xsl:attribute name="src">
         <xsl:value-of
           select="$definitions/column[@name = $category]/nominee[@name = $nominee]/@img" />
-      </xsl:attribute>
-      <xsl:attribute name="alt">
-        <xsl:value-of select="$nominee" />
       </xsl:attribute>
       <xsl:variable name="description"
         select="$mappings/column[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
@@ -238,9 +229,6 @@
         <xsl:if test="not($description)">
           <xsl:value-of select="$nominee" />
         </xsl:if>
-      </xsl:attribute>
-      <xsl:attribute name="width">
-        <xsl:value-of select="$width" />
       </xsl:attribute>
     </img>
   </xsl:template>

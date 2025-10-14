@@ -67,10 +67,11 @@
                     <table>
                       <thead>
                         <tr>
-                          <th id="received_header" onclick="sortBallots('received')"
+                          <th id="received_header"
+                            onclick="sortBallots('received')"
                             style="cursor:pointer" />
                           <th id="name_header" onclick="sortBallots('name')"
-                            style="cursor:pointer"/>
+                            style="cursor:pointer" />
                         </tr>
                       </thead>
                       <tbody id="ballots">
@@ -141,10 +142,7 @@
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:if test="count($results/awards/category/nominee) > 0">
-                    <a>
-                      <xsl:attribute name="href">
-                        <xsl:value-of select="concat($rootDir, 'category')" />
-                      </xsl:attribute>
+                    <a href="{$rootDir}category">
                       <h2>OSCAR WINNERS</h2>
                     </a>
                     <table style="table-layout:fixed; width:700px">
@@ -162,20 +160,19 @@
                   <div class="info">
                     <xsl:if test="not($ended)">
                       <u>BPR / WPR</u> - Best Possible Rank / Worst Possible
-                    Rank: If guesses for all remaining <a>
-                        <xsl:attribute name="href">
-                          <xsl:value-of select="concat($rootDir, 'category')" />
-                        </xsl:attribute>
-                    categories</a> turn out to be correct / incorrect. <br />
-                  <br />
+                    Rank: If guesses for all remaining <a
+                        href="{$rootDir}category">
+                        categories
+                      </a>
+                    turn out to be correct / incorrect. <br />
+                      <br />
                     </xsl:if>
-                <u>
-                    Score</u> - One point for each correct <a>
-                      <xsl:attribute name="href">
-                        <xsl:value-of select="concat($rootDir, 'category')" />
-                      </xsl:attribute>
-                    category</a> plus .1 for tie breaker #1, .01 for #2, .001
-                    for #3, etc. </div>
+                    <u>
+                    Score</u> - One point for each correct <a
+                      href="{$rootDir}category">
+                      category
+                    </a>
+                    plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc. </div>
                   <br />
                   <xsl:call-template name="player-table" />
                 </xsl:otherwise>
@@ -210,11 +207,9 @@
                 <thead>
                   <tr>
                     <th class="header">
-                      <a>
-                        <xsl:attribute name="href">
-                          <xsl:value-of select="concat($rootDir, 'category')" />
-                        </xsl:attribute>
-                        Category</a>
+                      <a href="{$rootDir}category">
+                        Category
+                      </a>
                     </th>
                     <th>Guess</th>
                     <th>Actual</th>
@@ -233,11 +228,7 @@
                         <xsl:with-param name="nominee" select="$playerGuess" />
                       </xsl:apply-templates>
                       <td class="header">
-                        <a>
-                          <xsl:attribute name="href">
-                            <xsl:value-of
-                              select="concat($rootDir, 'category/', @name, '.xml')" />
-                          </xsl:attribute>
+                        <a href="{$rootDir}category/{@name}.xml">
                           <xsl:value-of select="@name" />
                         </a>
                         <xsl:apply-templates select="$categoryDefinition"
@@ -349,29 +340,34 @@
     <table>
       <thead>
         <tr>
-          <th id="link_header" class="header" onclick="sortTable('link')" style="cursor:pointer">
+          <th id="link_header" class="header" onclick="sortTable('link')"
+            style="cursor:pointer">
             <u>
               Name
             </u>
           </th>
-          <th id="rank_header" onclick="sortTable('rank')" style="cursor:pointer">
+          <th id="rank_header" onclick="sortTable('rank')"
+            style="cursor:pointer">
             <u>
               Rank
             </u>
           </th>
           <xsl:if test="not($ended)">
-            <th id="bpr_header" onclick="sortTable('bpr')" style="cursor:pointer">
+            <th id="bpr_header" onclick="sortTable('bpr')"
+              style="cursor:pointer">
               <u>
                 BPR
               </u>
             </th>
-            <th id="wpr_header" onclick="sortTable('wpr')" style="cursor:pointer">
+            <th id="wpr_header" onclick="sortTable('wpr')"
+              style="cursor:pointer">
               <u>
                 WPR
               </u>
             </th>
           </xsl:if>
-          <th id="scoreText_header" onclick="sortTable('scoreText')" style="cursor:pointer">
+          <th id="scoreText_header" onclick="sortTable('scoreText')"
+            style="cursor:pointer">
             <u>
               Score
             </u>
@@ -579,14 +575,7 @@
         <xsl:for-each
           select="$results/awards/category[position() > $start and position() &lt;= $end]">
           <td style="text-align:center; vertical-align:top; white-space:normal">
-            <a>
-              <xsl:attribute name="id">
-                <xsl:value-of select="@name" />
-              </xsl:attribute>
-              <xsl:attribute name="href">
-                <xsl:value-of
-                  select="concat($rootDir, 'category/', @name, '.xml')" />
-              </xsl:attribute>
+            <a id="{@name}" href="{$rootDir}category/{@name}.xml">
               <xsl:apply-templates select="nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />
               </xsl:apply-templates>
