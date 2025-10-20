@@ -26,47 +26,50 @@
     </head>
     <header>
       <center>
-        <table id="header" onclick="window.location='{$rootDir}'"
-          style="cursor:pointer; border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
-          <tr>
-            <td rowspan="3" />
-            <td rowspan="3">
-              <img
-                src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-                id="trophy" />
-            </td>
-            <td>
-              <br />
-            </td>
-            <td rowspan="3">
-              <img
-                src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-                id="trophy" />
-            </td>
-            <td rowspan="3" />
-          </tr>
-          <tr>
-            <th style="background-color:transparent">
-              <xsl:value-of select="$definitions/@year" /> OSCARS</th>
-          </tr>
-          <tr>
-            <td>
-              <i>(Unofficial Results)</i>
-              <br />
-              <br />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="5">
-              <xsl:apply-templates
-                select="$definitions/column[@name = 'Best Picture']/nominee"
-                mode="poster">
-                <xsl:with-param name="category" select="'Best Picture'" />
-                <xsl:with-param name="width" select="'50'" />
-              </xsl:apply-templates>
-            </td>
-          </tr>
-        </table>
+        <a href="{$rootDir}"
+          style="display: table; text-decoration: none; color: inherit">
+          <table id="header"
+            style="border:2px solid black; color:PaleGoldenrod; background-image:url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat:no-repeat; background-size:100%">
+            <tr>
+              <td rowspan="3" />
+              <td rowspan="3">
+                <img
+                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
+                  id="trophy" />
+              </td>
+              <td>
+                <br />
+              </td>
+              <td rowspan="3">
+                <img
+                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
+                  id="trophy" />
+              </td>
+              <td rowspan="3" />
+            </tr>
+            <tr>
+              <th style="background-color:transparent">
+                <xsl:value-of select="$definitions/@year" /> OSCARS</th>
+            </tr>
+            <tr>
+              <td>
+                <i>(Unofficial Results)</i>
+                <br />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                <xsl:apply-templates
+                  select="$definitions/column[@name = 'Best Picture']/nominee"
+                  mode="poster">
+                  <xsl:with-param name="category" select="'Best Picture'" />
+                  <xsl:with-param name="width" select="'50'" />
+                </xsl:apply-templates>
+              </td>
+            </tr>
+          </table>
+        </a>
         <br />
         <hr
           width="500" />
