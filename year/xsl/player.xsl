@@ -169,10 +169,8 @@
                     </xsl:if>
                     <u>
                     Score</u> - One point for each correct <a
-                      href="{$rootDir}categories">
-                      categories
-                    </a>
-                    plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc. </div>
+                      href="{$rootDir}categories">category</a> plus .1 for tie
+                    breaker #1, .01 for #2, .001 for #3, etc. </div>
                   <br />
                   <xsl:call-template name="player-table" />
                 </xsl:otherwise>
