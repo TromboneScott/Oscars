@@ -17,17 +17,17 @@
                     ballots are received.</i>
                   <br />
                   <br />
-                  <table style="border-collapse:collapse">
+                  <table style="border-collapse: collapse">
                     <xsl:for-each
                       select="$definitions/column[count(nominee) > 0]">
                       <tr>
                         <xsl:attribute name="style">
                           <xsl:if test="count(nominee) &lt;= 5">
                             <xsl:value-of
-                              select="'border-bottom:3pt solid black'" />
+                              select="'border-bottom: 3pt solid black'" />
                           </xsl:if>
                         </xsl:attribute>
-                        <th style="border-right:3pt solid black">
+                        <th style="border-right: 3pt solid black">
                           <xsl:attribute name="rowspan">
                             <xsl:value-of select="(count(nominee) + 4) div 5" />
                           </xsl:attribute>
@@ -35,7 +35,7 @@
                           <xsl:variable name="tieBreaker" select="@tieBreaker" />
                           <xsl:if test="$tieBreaker">
                             <br />
-                            <span style="font-weight:normal">
+                            <span style="font-weight: normal">
                               <i>Tie Breaker: <xsl:value-of
                                   select="$tieBreaker" /></i>
                             </span>
@@ -46,7 +46,7 @@
                           <xsl:with-param name="category" select="@name" />
                         </xsl:apply-templates>
                       </tr>
-                      <tr style="border-bottom:3pt solid black">
+                      <tr style="border-bottom: 3pt solid black">
                         <xsl:apply-templates select="nominee[position() > 5]">
                           <xsl:with-param name="category" select="@name" />
                         </xsl:apply-templates>
@@ -141,7 +141,7 @@
                           <xsl:variable name="tieBreaker" select="@tieBreaker" />
                           <xsl:if test="$tieBreaker">
                             <br />
-                            <span style="font-weight:normal">
+                            <span style="font-weight: normal">
                               <i>Tie Breaker: <xsl:value-of select="$tieBreaker" /></i>
                             </span>
                           </xsl:if>
@@ -282,7 +282,7 @@
   </xsl:template>
   <xsl:template match="/definitions/column/nominee">
     <xsl:param name="category" />
-    <td style="background-color:silver; text-align:center">
+    <td style="background-color: silver; text-align: center">
       <xsl:apply-templates select="." mode="poster">
         <xsl:with-param name="category" select="$category" />
       </xsl:apply-templates>

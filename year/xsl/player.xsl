@@ -30,7 +30,7 @@
             <xsl:when test="@type = 'all'">
               <xsl:choose>
                 <xsl:when test="count($results/standings/player) = 0">
-                  <a href="javascript:history.go(0)" style="all:unset">
+                  <a href="javascript:history.go(0)" style="all: unset">
                     <table>
                       <tr>
                         <td id="rank">
@@ -71,15 +71,15 @@
                             onclick="sortBallots('received')"
                             style="cursor:pointer" />
                           <th id="name_header" onclick="sortBallots('name')"
-                            style="cursor:pointer" />
+                            style="cursor: pointer" />
                         </tr>
                       </thead>
                       <tbody id="ballots">
                         <xsl:for-each select="$results/ballots/player">
                           <tr class="unannounced">
                             <td id="scott"
-                              style="padding-left:10px; padding-right:10px" />
-                            <td style="padding-left:10px; padding-right:10px" />
+                              style="padding-left: 10px; padding-right: 10px" />
+                            <td style="padding-left: 10px; padding-right: 10px" />
                           </tr>
                         </xsl:for-each>
                       </tbody>
@@ -145,7 +145,7 @@
                     <a href="{$rootDir}category">
                       <h2>OSCAR WINNERS</h2>
                     </a>
-                    <table style="table-layout:fixed; width:700px">
+                    <table style="table-layout: fixed; width: 700px">
                       <xsl:call-template name="winners">
                         <xsl:with-param name="start" select="0" />
                       </xsl:call-template>
@@ -154,7 +154,7 @@
                     <br />
                     <br />
                   </xsl:if>
-                  <h3 style="display:inline">Rankings</h3>
+                  <h3 style="display: inline">Rankings</h3>
                   <br />
                   <br />
                   <div class="info">
@@ -309,17 +309,17 @@
               <br />
               <br />
               <br />
-              <h3 style="display:inline">Rankings</h3>
-              <a id="decided_L" style="display:none">
+              <h3 style="display: inline">Rankings</h3>
+              <a id="decided_L" style="display: none">
                 <br /> All players in <font color="red">red</font> will finish
                 above <xsl:value-of
                   select="$playerName" />
               </a>
-              <a id="decided_W" style="display:none">
+              <a id="decided_W" style="display: none">
                 <br /> All players in <font color="green">green</font> will
                 finish below <xsl:value-of select="$playerName" />
               </a>
-              <a id="decided_T" style="display:none">
+              <a id="decided_T" style="display: none">
                 <br /> All players in <font color="SaddleBrown">brown</font>
                 will finish tied with <xsl:value-of select="$playerName" />
               </a>
@@ -341,39 +341,39 @@
       <thead>
         <tr>
           <th id="link_header" class="header" onclick="sortTable('link')"
-            style="cursor:pointer">
+            style="cursor: pointer">
             <u>
               Name
             </u>
           </th>
           <th id="rank_header" onclick="sortTable('rank')"
-            style="cursor:pointer">
+            style="cursor: pointer">
             <u>
               Rank
             </u>
           </th>
           <xsl:if test="not($ended)">
             <th id="bpr_header" onclick="sortTable('bpr')"
-              style="cursor:pointer">
+              style="cursor: pointer">
               <u>
                 BPR
               </u>
             </th>
             <th id="wpr_header" onclick="sortTable('wpr')"
-              style="cursor:pointer">
+              style="cursor: pointer">
               <u>
                 WPR
               </u>
             </th>
           </xsl:if>
           <th id="scoreText_header" onclick="sortTable('scoreText')"
-            style="cursor:pointer">
+            style="cursor: pointer">
             <u>
               Score
             </u>
           </th>
           <th id="timeText_header" onclick="sortTable('timeText')"
-            style="cursor:pointer">
+            style="cursor: pointer">
             <u>
               Time
             </u>
@@ -574,7 +574,8 @@
       <tr class="unannounced">
         <xsl:for-each
           select="$results/awards/category[position() > $start and position() &lt;= $end]">
-          <td style="text-align:center; vertical-align:top; white-space:normal">
+          <td
+            style="text-align: center; vertical-align: top; white-space: normal">
             <a id="{@name}" href="{$rootDir}category/{@name}.xml">
               <xsl:apply-templates select="nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />

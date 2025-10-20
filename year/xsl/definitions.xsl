@@ -32,7 +32,7 @@
           <br />
           <br />
           <br />
-          <h2 style="display:inline">Columns</h2>
+          <h2 style="display: inline">Columns</h2>
           <br />
           <i>Values for this website are in <b>bold</b></i>
           <xsl:for-each select="column">
@@ -41,13 +41,13 @@
             <xsl:variable name="column" select="@name" />
             <table style="table-layout: fixed; width: 500px">
               <thead>
-                <tr style="visibility:collapse">
-                  <td style="width:100px" />
+                <tr style="visibility: collapse">
+                  <td style="width: 100px" />
                   <td />
                 </tr>
                 <tr>
                   <td colspan="2"
-                    style="background-color:white; text-align:center">
+                    style="background-color: white; text-align: center">
                     <b>
                       <xsl:value-of select="@name" />
                     </b>
@@ -56,7 +56,7 @@
                 <xsl:if test="$mappings/column[@name = $column]">
                   <tr>
                     <td colspan="2"
-                      style="background-color:white; text-align:center; font-weight:normal; white-space:normal">
+                      style="background-color: white; text-align: center; font-weight: normal; white-space: normal">
                       <xsl:value-of
                         select="$mappings/column[@name = $column]/@ballot" />
                     </td>
@@ -66,8 +66,8 @@
               <tbody>
                 <xsl:for-each select="nominee">
                   <xsl:variable name="name" select="@name" />
-                  <tr class="unannounced" style="border-top:2pt solid black">
-                    <td class="header" style="width:100px">
+                  <tr class="unannounced" style="border-top: 2pt solid black">
+                    <td class="header" style="width: 100px">
                       <xsl:attribute name="rowspan">
                         <xsl:value-of
                           select="count($mappings/column[@name = $column]/nominee[@name = $name]) + 1" />
@@ -87,7 +87,7 @@
                   <xsl:for-each
                     select="$mappings/column[@name = $column]/nominee[@name = $name]">
                     <tr class="unannounced">
-                      <td style="white-space:normal">
+                      <td style="white-space: normal">
                         <xsl:value-of select="@ballot" />
                       </td>
                     </tr>
