@@ -73,8 +73,8 @@
         <br />
         <hr
           width="500" />
-        <a href="{$rootDir}player">PLAYERS</a>
-        &#160;&#160;-&#160;&#160; <a href="{$rootDir}category">CATEGORIES</a>
+        <a href="{$rootDir}players">PLAYERS</a>
+        &#160;&#160;-&#160;&#160; <a href="{$rootDir}categories">CATEGORIES</a>
         &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
         <hr width="500" />
         <br />
@@ -237,7 +237,7 @@
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="playerLink">
     <xsl:value-of
-      select="concat($rootDir, 'player/', @firstName, '_', @lastName, '.xml')" />
+      select="concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')" />
   </xsl:template>
   <xsl:template match="player" mode="playerName">
     <xsl:value-of select="@lastName" />

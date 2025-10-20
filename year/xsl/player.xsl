@@ -142,7 +142,7 @@
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:if test="count($results/awards/category/nominee) > 0">
-                    <a href="{$rootDir}category">
+                    <a href="{$rootDir}categories">
                       <h2>OSCAR WINNERS</h2>
                     </a>
                     <table style="table-layout: fixed; width: 700px">
@@ -161,7 +161,7 @@
                     <xsl:if test="not($ended)">
                       <u>BPR / WPR</u> - Best Possible Rank / Worst Possible
                     Rank: If guesses for all remaining <a
-                        href="{$rootDir}category">
+                        href="{$rootDir}categories">
                         categories
                       </a>
                     turn out to be correct / incorrect. <br />
@@ -169,8 +169,8 @@
                     </xsl:if>
                     <u>
                     Score</u> - One point for each correct <a
-                      href="{$rootDir}category">
-                      category
+                      href="{$rootDir}categories">
+                      categories
                     </a>
                     plus .1 for tie breaker #1, .01 for #2, .001 for #3, etc. </div>
                   <br />
@@ -207,7 +207,7 @@
                 <thead>
                   <tr>
                     <th class="header">
-                      <a href="{$rootDir}category">
+                      <a href="{$rootDir}categories">
                         Category
                       </a>
                     </th>
@@ -228,7 +228,7 @@
                         <xsl:with-param name="nominee" select="$playerGuess" />
                       </xsl:apply-templates>
                       <td class="header">
-                        <a href="{$rootDir}category/{@name}.xml">
+                        <a href="{$rootDir}categories/{@name}.xml">
                           <xsl:value-of select="@name" />
                         </a>
                         <xsl:apply-templates select="$categoryDefinition"
@@ -576,7 +576,7 @@
           select="$results/awards/category[position() > $start and position() &lt;= $end]">
           <td
             style="text-align: center; vertical-align: top; white-space: normal">
-            <a id="{@name}" href="{$rootDir}category/{@name}.xml">
+            <a id="{@name}" href="{$rootDir}categories/{@name}.xml">
               <xsl:apply-templates select="nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />
               </xsl:apply-templates>

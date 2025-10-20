@@ -56,12 +56,12 @@ public class Oscars {
                 .reduce(new Element("ballots"), Element::addContent));
 
         for (Player player : PLAYERS)
-            new XMLFile(Directory.PLAYER, player.answer(DataColumn.FIRST_NAME) + "_"
+            new XMLFile(Directory.PLAYERS, player.answer(DataColumn.FIRST_NAME) + "_"
                     + player.answer(DataColumn.LAST_NAME) + ".xml").write(player.toDOM());
 
         for (Category category : Category.ALL) {
             category.writeChart();
-            new XMLFile(Directory.CATEGORY, category.name() + ".xml").write(category.toDOM());
+            new XMLFile(Directory.CATEGORIES, category.name() + ".xml").write(category.toDOM());
         }
     }
 }

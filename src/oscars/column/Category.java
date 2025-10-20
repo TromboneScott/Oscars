@@ -108,7 +108,7 @@ public final class Category extends Column {
         renderer.setDefaultItemLabelsVisible(true);
         plot.setRenderer(renderer);
 
-        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORY, name() + ".png"), chart, WIDTH,
+        ChartUtils.saveChartAsPNG(new File(Directory.CATEGORIES, name() + ".png"), chart, WIDTH,
                 HEIGHT);
     }
 }
