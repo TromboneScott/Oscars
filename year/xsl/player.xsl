@@ -408,14 +408,13 @@
       // Sorts the table based on the column clicked by the user
       let sort = 'rank';
       let descending = false;
-      document.getElementById('rank_header').style.backgroundColor = colors.get("?");
       function sortTable(column) {
         if (column !== undefined) {
           descending = column === sort ? !descending : false;
           sort = column;
-          columns.forEach(column => document.getElementById(column + '_header').style.backgroundColor =
-              colors.get(column === sort ? "?" : "-"));
         }
+        columns.forEach(column => document.getElementById(column + '_header').style.backgroundColor =
+            colors.get(column === sort ? "?" : "-"));
 
         // Sort the players
         sortArray(players, descending, sort === 'link' ? 'lastName,firstName' :
