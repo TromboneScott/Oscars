@@ -560,7 +560,7 @@
         }
         update();
         <xsl:if test="$results/awards/@START and not($ended)">
-          setInterval(update, 1000);
+          setInterval(update, 500);
         </xsl:if>
       });
     </script>

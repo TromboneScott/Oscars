@@ -142,7 +142,7 @@
                     td("Hour", 24), td("Day", countdown + 1)].reverse().join('');
               }
               update();
-              setInterval(update, 1000);
+              setInterval(update, 500);
             </xsl:if>
 
             // Repeatedly check for updates and reload the page when results are updated
