@@ -403,7 +403,7 @@
                 </xsl:if>
                 "scoreText", "timeText"
             ];
-      let elapsed = 0;
+      let elapsed = -1;
 
       // Sorts the table based on the column clicked by the user
       let sort = 'rank';
