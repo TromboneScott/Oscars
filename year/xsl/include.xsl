@@ -29,21 +29,17 @@
         <a href="{$rootDir}"
           style="display: table; text-decoration: none; color: inherit">
           <table id="header"
-            style="border: 2px solid black; color: PaleGoldenrod; background-image: url('https://lh7-us.googleusercontent.com/4FfYgO9yHPZmqBKDPhJL2Xw2v0-ZPAVOkW-3MRGsLOmSFmWv6gXi2Q5KLSNwSEaZtFYV6lmW5Cc7Sal-zNtOPNkHorAY8XSecbSf3V_sPlbbcsLLbwHBwjmZqQ3TlyRmHfWbAbUmVTrd63b3XOk6lHVLMbmYjw'); background-repeat: no-repeat; background-size: 100%">
+            style="border: 2px solid black; color: PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%">
             <tr>
               <td rowspan="3" />
               <td rowspan="3">
-                <img
-                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-                  id="trophy" />
+                <img src="http://oscars.site44.com/trophy.png" id="trophy" />
               </td>
               <td>
                 <br />
               </td>
               <td rowspan="3">
-                <img
-                  src="https://lh7-us.googleusercontent.com/AsEK7mCWIBy7kUCEa01rhbohDBT_k4Xi2cPJtKD6dswxWz_zzGDhbYkNW-M3H8xcgcsIfNi7fn4-v5Arkom1RNV7dxxku0Im464ohRXq7aHSj9ktCHK1tRNh2nkVUlTRDCMjZcaEcmsgVpyvTJdi4ahKLMOoAw"
-                  id="trophy" />
+                <img src="http://oscars.site44.com/trophy.png" id="trophy" />
               </td>
               <td rowspan="3" />
             </tr>
