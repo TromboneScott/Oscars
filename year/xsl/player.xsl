@@ -338,43 +338,19 @@
       <thead>
         <tr>
           <th id="link_header" class="header" onclick="sortTable('link')"
-            style="cursor: pointer">
-            <u>
-              Name
-            </u>
-          </th>
+            style="cursor: pointer"> _<u>Name</u>_ </th>
           <th id="rank_header" onclick="sortTable('rank')"
-            style="cursor: pointer">
-            <u>
-              Rank
-            </u>
-          </th>
+            style="cursor: pointer"> _<u>Rank</u>_ </th>
           <xsl:if test="not($ended)">
             <th id="bpr_header" onclick="sortTable('bpr')"
-              style="cursor: pointer">
-              <u>
-                BPR
-              </u>
-            </th>
+              style="cursor: pointer"> _<u>BPR</u>_ </th>
             <th id="wpr_header" onclick="sortTable('wpr')"
-              style="cursor: pointer">
-              <u>
-                WPR
-              </u>
-            </th>
+              style="cursor: pointer"> _<u>WPR</u>_ </th>
           </xsl:if>
           <th id="scoreText_header" onclick="sortTable('scoreText')"
-            style="cursor: pointer">
-            <u>
-              Score
-            </u>
-          </th>
+            style="cursor: pointer"> _<u>Score</u>_ </th>
           <th id="timeText_header" onclick="sortTable('timeText')"
-            style="cursor: pointer">
-            <u>
-              Time
-            </u>
-          </th>
+            style="cursor: pointer"> _<u>Time</u>_ </th>
         </tr>
       </thead>
       <tbody id="rankings">
@@ -407,13 +383,17 @@
       // Sorts the table based on the column clicked by the user
       let sort = 'rank';
       let descending = false;
-      document.getElementById('rank_header').style.backgroundColor = colors.get("?");
       function sortTable(column) {
         if (column !== undefined) {
           descending = column === sort ? !descending : false;
           sort = column;
-          columns.forEach(column => document.getElementById(column + '_header').style.backgroundColor =
-              colors.get(column === sort ? "?" : "-"));
+        }
+
+        for (const header of columns) {
+          const arrow = header === sort ? descending ? '↓' : '↑' : '';
+          const orig = document.getElementById(header + '_header').innerHTML;
+          document.getElementById(header + '_header').innerHTML =
+              arrow + orig.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
         }
 
         // Sort the players
@@ -497,12 +477,14 @@
 
             <xsl:if test="$results/awards/@START">
               // Update the running time
-              document.getElementById("timeText_header").innerHTML =
-                  '&lt;u>' + formatTime(elapsed) + '&lt;/u>';
-              document.getElementById("timeText_header").style.backgroundColor = colors.get(
-                  elapsed >= next &amp;&amp; next > 0 ? "W" : sort === "timeText" ? "?" : "-");
+              const timeString = formatTime(elapsed);
+              document.getElementById("timeText_header").innerHTML = document.getElementById("timeText_header")
+                  .innerHTML.replace(/(&lt;u>)(.*)(&lt;\/u>)/is, `$1${timeString}$3`);
+                  //'&lt;u>' + formatTime(elapsed) + '&lt;/u>';
+              document.getElementById("timeText_header").style.backgroundColor =
+                  colors.get(elapsed >= next &amp;&amp; next > 0 ? "W" : "-");
               <xsl:if test="$inPlayer">
-                document.getElementById("time_value").innerHTML = formatTime(elapsed);
+                document.getElementById("time_value").innerHTML = timeString;
                 document.getElementById("time_difference").innerHTML =
                     <xsl:if test="$ended">
                       inPlayer.time > elapsed ? 'OVER' :
