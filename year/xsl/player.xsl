@@ -121,8 +121,8 @@
                         for (const header of ["received", "name"]) {
                           const arrow = header === sort ? descending ? '↓' : '↑' : '';
                           document.getElementById(header + '_header').innerHTML =
-                              arrow + ' &lt;u>' + (header === 'received' ? 'Received' : 'Name') +
-                              '&lt;/u> ' + arrow;
+                              arrow + '&lt;u>' + (header === 'received' ? 'Received' : 'Name') +
+                              '&lt;/u>' + arrow;
                         }
 
                         // Sort the ballots
@@ -338,19 +338,19 @@
       <thead>
         <tr>
           <th id="link_header" class="header" onclick="sortTable('link')"
-            style="cursor: pointer"> _<u>Name</u>_ </th>
+            style="cursor: pointer"> ↑<u>Name</u>↑ </th>
           <th id="rank_header" onclick="sortTable('rank')"
-            style="cursor: pointer"> _<u>Rank</u>_ </th>
+            style="cursor: pointer"> ↑<u>Rank</u>↑ </th>
           <xsl:if test="not($ended)">
             <th id="bpr_header" onclick="sortTable('bpr')"
-              style="cursor: pointer"> _<u>BPR</u>_ </th>
+              style="cursor: pointer"> ↑<u>BPR</u>↑ </th>
             <th id="wpr_header" onclick="sortTable('wpr')"
-              style="cursor: pointer"> _<u>WPR</u>_ </th>
+              style="cursor: pointer"> ↑<u>WPR</u>↑ </th>
           </xsl:if>
           <th id="scoreText_header" onclick="sortTable('scoreText')"
-            style="cursor: pointer"> _<u>Score</u>_ </th>
+            style="cursor: pointer"> ↑<u>Score</u>↑ </th>
           <th id="timeText_header" onclick="sortTable('timeText')"
-            style="cursor: pointer"> _<u>Time</u>_ </th>
+            style="cursor: pointer"> ↑<u>Time</u>↑ </th>
         </tr>
       </thead>
       <tbody id="rankings">
