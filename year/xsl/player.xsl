@@ -8,22 +8,35 @@
       <body>
         <center>
           <script>
-            // Gets the table of cells for the given table id
-            function getTable(id) {
-              return Array.from(document.getElementById(id).getElementsByTagName("tr"))
-                  .map(row => row.getElementsByTagName("td"));
-            }
-
-            // Sorts the given array by the given comma-delimited field names, descending or not,
-            // then by lastName and firstName in ascending order
-            function sortArray(array, descending, fieldNames) {
-              const fields = fieldNames.split(',');
-              array.sort(function(a, b) {
-                return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-                    total !== 0 ? total : (descending &amp;&amp; index &lt; fields.length ? -1 : 1) *
-                        (typeof a[field] === 'number' ? a[field] - b[field] :
-                            a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
-              });
+            class SortableTable {
+              constructor(id, headers, data, fieldNameFunction) {
+                this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
+                    .map(row => row.getElementsByTagName("td"));
+                this.headers = headers;
+                this.data = data;
+                this.fieldNameFunction = fieldNameFunction;
+              }
+              
+              sort(column) {
+                for (const header of this.headers) {
+                  let arrow = '';
+                  const headerElem = document.getElementById(header + '_header');
+                  const orig = headerElem.innerHTML.trim();
+                  if (header === column ||
+                      column === undefined &amp;&amp; (orig[0] === '↓' || orig[0] === '↑')) {
+                    const descending = orig[0] === (column === undefined ? '↓' : '↑');
+                    const fields = this.fieldNameFunction(header).split(',');
+                    this.data.sort((a, b) => {
+                      return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
+                          total !== 0 ? total : (descending &amp;&amp; index &lt; fields.length ? -1 : 1) *
+                              (typeof a[field] === 'number' ? a[field] - b[field] :
+                                  a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
+                    });
+                    arrow = descending ? '↓' : '↑';
+                  }
+                  headerElem.innerHTML = arrow + orig.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
+                }
+              }
             }
           </script>
           <xsl:choose>
@@ -68,25 +81,24 @@
                         <tr>
                           <th id="received_header"
                             onclick="sortBallots('received')"
-                            style="cursor:pointer" />
+                            style="cursor:pointer">↑<u>Received</u>↑</th>
                           <th id="name_header" onclick="sortBallots('name')"
-                            style="cursor: pointer" />
+                            style="cursor: pointer">
+                            <u>Name</u>
+                          </th>
                         </tr>
                       </thead>
                       <tbody id="ballots">
                         <xsl:for-each select="$results/ballots/player">
                           <tr class="unannounced">
-                            <td id="scott"
-                              style="padding-left: 10px; padding-right: 10px" />
+                            <td style="padding-left: 10px; padding-right: 10px" />
                             <td style="padding-left: 10px; padding-right: 10px" />
                           </tr>
                         </xsl:for-each>
                       </tbody>
                     </table>
                     <script>
-                      const table = getTable("ballots");
-
-                      class Ballot {
+                   class Ballot {
                         constructor(received, firstName, lastName, nameText) {
                           this.received = received;
                           this.receivedText = received.substring(5, 10).replace('-', '/') + '/' +
@@ -111,31 +123,22 @@
                         ));
                       </xsl:for-each>
 
+                      const table = new SortableTable(
+                          "ballots",
+                          ["received", "name"],
+                          ballots,
+                          sort => sort === 'name' ? 'lastName,firstName' : sort
+                      );
+
                       // Sorts the ballots based on the column clicked by the user
-                      let sort;
-                      let descending;
                       function sortBallots(column) {
-                        descending = column === sort ? !descending : false;
-                        sort = column;
-
-                        for (const header of ["received", "name"]) {
-                          const arrow = header === sort ? descending ? '↓' : '↑' : '';
-                          document.getElementById(header + '_header').innerHTML =
-                              arrow + '&lt;u>' + (header === 'received' ? 'Received' : 'Name') +
-                              '&lt;/u>' + arrow;
-                        }
-
-                        // Sort the ballots
-                        sortArray(ballots, descending,
-                            sort === 'name' ? 'lastName,firstName' : 'received');
-
-                        // Update the ballots table
-                        ballots.forEach((ballot, row) => {
-                          table[row][0].innerHTML = ballot.receivedText;
-                          table[row][1].innerHTML = ballot.nameText;
+                        table.sort(column);
+                        table.data.forEach((ballot, row) => {
+                          table.elements[row][0].innerHTML = ballot.receivedText;
+                          table.elements[row][1].innerHTML = ballot.nameText;
                         });
                       }
-                      sortBallots('received');
+                      sortBallots();
                     </script>
                   </xsl:if>
                 </xsl:when>
@@ -338,19 +341,29 @@
       <thead>
         <tr>
           <th id="link_header" class="header" onclick="sortTable('link')"
-            style="cursor: pointer"> ↑<u>Name</u>↑ </th>
+            style="cursor: pointer">
+            <u>Name</u>
+          </th>
           <th id="rank_header" onclick="sortTable('rank')"
             style="cursor: pointer"> ↑<u>Rank</u>↑ </th>
           <xsl:if test="not($ended)">
             <th id="bpr_header" onclick="sortTable('bpr')"
-              style="cursor: pointer"> ↑<u>BPR</u>↑ </th>
+              style="cursor: pointer">
+              <u>BPR</u>
+            </th>
             <th id="wpr_header" onclick="sortTable('wpr')"
-              style="cursor: pointer"> ↑<u>WPR</u>↑ </th>
+              style="cursor: pointer">
+              <u>WPR</u>
+            </th>
           </xsl:if>
           <th id="scoreText_header" onclick="sortTable('scoreText')"
-            style="cursor: pointer"> ↑<u>Score</u>↑ </th>
+            style="cursor: pointer">
+            <u>Score</u>
+          </th>
           <th id="timeText_header" onclick="sortTable('timeText')"
-            style="cursor: pointer"> ↑<u>Time</u>↑ </th>
+            style="cursor: pointer">
+            <u>Time</u>
+          </th>
         </tr>
       </thead>
       <tbody id="rankings">
@@ -369,58 +382,9 @@
       </tbody>
     </table>
     <script>
-      const table = getTable("rankings");
       const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
           ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
-      const columns = ["link", "rank",
-                <xsl:if test="not($ended)">
-                  "bpr", "wpr",
-                </xsl:if>
-                "scoreText", "timeText"
-            ];
       let elapsed = -1;
-
-      // Sorts the table based on the column clicked by the user
-      let sort = 'rank';
-      let descending = false;
-      function sortTable(column) {
-        if (column !== undefined) {
-          descending = column === sort ? !descending : false;
-          sort = column;
-        }
-
-        for (const header of columns) {
-          const arrow = header === sort ? descending ? '↓' : '↑' : '';
-          const orig = document.getElementById(header + '_header').innerHTML;
-          document.getElementById(header + '_header').innerHTML =
-              arrow + orig.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
-        }
-
-        // Sort the players
-        sortArray(players, descending, sort === 'link' ? 'lastName,firstName' :
-            sort === 'bpr' ? 'bpr,rank,wpr' : sort === 'wpr' ? 'wpr,rank,bpr' :
-            sort === 'timeText' ? 'time' : 'rank,bpr,wpr');
-
-        // Update the rankings table
-        players.forEach((player, row) => columns.forEach((field, column) => {
-              table[row][column].innerHTML = player[field];
-              table[row][column].style.backgroundColor = colors.get(
-                  field === "link" ?
-                      <xsl:if test="$inPlayer">
-                        true ? inPlayer.decided[player.id] :
-                      </xsl:if>
-                      "-" :
-                  field === "timeText" ?
-                      <xsl:if test="$ended">
-                        player.time > elapsed ? "L" :
-                      </xsl:if>
-                      player.time > elapsed ? "?" : "W" :
-                  (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
-                      "?" : "none"
-              );
-            })
-        );
-      }
 
       // Formats the time value (in seconds) as: H:MM:SS
       function formatTime(time) {
@@ -465,6 +429,45 @@
             &amp;&amp; player.lastName === '<xsl:value-of select="$inPlayer/@lastName" />');
         document.getElementById("time_player").innerHTML = inPlayer.timeText;
       </xsl:if>
+
+      const table = new SortableTable(
+          "rankings",
+          ["link", "rank",
+              <xsl:if test="not($ended)">
+                "bpr", "wpr",
+              </xsl:if>
+              "scoreText", "timeText"
+          ],
+          players,
+          sort => 
+              sort === 'link' ? 'lastName,firstName' :
+              sort === 'bpr' ? 'bpr,rank,wpr' :
+              sort === 'wpr' ? 'wpr,rank,bpr' :
+              sort === 'timeText' ? 'time' :
+              'rank,bpr,wpr'
+      );
+
+      // Sorts the table based on the column clicked by the user
+      function sortTable(column) {
+        table.sort(column);
+        table.data.forEach((player, row) => table.headers.forEach((field, column) => {
+            table.elements[row][column].innerHTML = player[field];
+            table.elements[row][column].style.backgroundColor = colors.get(
+                field === "link" ?
+                    <xsl:if test="$inPlayer">
+                      true ? inPlayer.decided[player.id] :
+                    </xsl:if>
+                    "-" :
+                field === "timeText" ?
+                    <xsl:if test="$ended">
+                      player.time > elapsed ? "L" :
+                    </xsl:if>
+                    player.time > elapsed ? "?" : "W" :
+                (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
+                   "?" : "none"
+            );
+        }));
+      }
 
       // Calculate and popluate values for player grid
       readElapsed(function() {
