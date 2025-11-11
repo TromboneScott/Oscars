@@ -8,13 +8,17 @@
       <body>
         <center>
           <script>
+            const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
+                ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
+
             class SortableTable {
-              constructor(id, headers, data, fieldNameFunction) {
+              constructor(id, headers, data, fieldNameFunction, colorFunction) {
                 this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                     .map(row => row.getElementsByTagName("td"));
                 this.headers = headers;
                 this.data = data;
                 this.fieldNameFunction = fieldNameFunction;
+                this.colorFunction = colorFunction;
               }
               
               sort(column) {
@@ -36,8 +40,11 @@
                   }
                   headerElem.innerHTML = arrow + orig.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
                 }
-                this.data.forEach((instance, row) => this.headers.forEach((field, column) => 
-                    this.elements[row][column].innerHTML = instance[field]));
+                this.data.forEach((instance, row) => this.headers.forEach((field, column) => {
+                    this.elements[row][column].innerHTML = instance[field];
+                    table.elements[row][column].style.backgroundColor =
+                        colors.get(this.colorFunction(instance, field));
+                }));
               }
             }
           </script>
@@ -92,7 +99,7 @@
                       </thead>
                       <tbody id="ballots">
                         <xsl:for-each select="$results/ballots/player">
-                          <tr class="unannounced">
+                          <tr>
                             <td style="padding-left: 10px; padding-right: 10px" />
                             <td style="padding-left: 10px; padding-right: 10px" />
                           </tr>
@@ -129,7 +136,8 @@
                           "ballots",
                           ["received", "name"],
                           ballots,
-                          sort => sort === 'name' ? 'lastName,firstName' : sort
+                          sort => sort === 'name' ? 'lastName,firstName' : sort,
+                          (player, field) => '?'
                       );
 
                       table.sort();
@@ -334,27 +342,27 @@
     <table>
       <thead>
         <tr>
-          <th id="link_header" class="header" onclick="sortTable('link')"
+          <th id="link_header" class="header" onclick="table.sort('link')"
             style="cursor: pointer">
             <u>Name</u>
           </th>
-          <th id="rank_header" onclick="sortTable('rank')"
+          <th id="rank_header" onclick="table.sort('rank')"
             style="cursor: pointer"> ↑<u>Rank</u>↑ </th>
           <xsl:if test="not($ended)">
-            <th id="bpr_header" onclick="sortTable('bpr')"
+            <th id="bpr_header" onclick="table.sort('bpr')"
               style="cursor: pointer">
               <u>BPR</u>
             </th>
-            <th id="wpr_header" onclick="sortTable('wpr')"
+            <th id="wpr_header" onclick="table.sort('wpr')"
               style="cursor: pointer">
               <u>WPR</u>
             </th>
           </xsl:if>
-          <th id="scoreText_header" onclick="sortTable('scoreText')"
+          <th id="scoreText_header" onclick="table.sort('scoreText')"
             style="cursor: pointer">
             <u>Score</u>
           </th>
-          <th id="timeText_header" onclick="sortTable('timeText')"
+          <th id="timeText_header" onclick="table.sort('timeText')"
             style="cursor: pointer">
             <u>Time</u>
           </th>
@@ -376,8 +384,6 @@
       </tbody>
     </table>
     <script>
-      const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
-          ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
       let elapsed = -1;
 
       // Formats the time value (in seconds) as: H:MM:SS
@@ -438,15 +444,9 @@
               sort === 'bpr' ? 'bpr,rank,wpr' :
               sort === 'wpr' ? 'wpr,rank,bpr' :
               sort === 'timeText' ? 'time' :
-              'rank,bpr,wpr'
-      );
-
-      // Sorts the table based on the column clicked by the user
-      function sortTable(column) {
-        table.sort(column);
-        table.data.forEach((player, row) => table.headers.forEach((field, column) =>
-            table.elements[row][column].style.backgroundColor = colors.get(
-                field === "link" ?
+              'rank,bpr,wpr',
+          (player, field) =>
+              field === "link" ?
                     <xsl:if test="$inPlayer">
                       true ? inPlayer.decided[player.id] :
                     </xsl:if>
@@ -458,9 +458,7 @@
                     player.time > elapsed ? "?" : "W" :
                 (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
                    "?" : "none"
-            )
-        ));
-      }
+      );
 
       // Calculate and popluate values for player grid
       readElapsed(function() {
@@ -513,7 +511,7 @@
                              timeWillTell.filter(opponent => opponent.time > player.time).length);
               }
 
-              sortTable();
+              table.sort();
 
               // Update the player page
               <xsl:if test="$inPlayer">
