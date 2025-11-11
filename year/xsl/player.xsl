@@ -36,6 +36,8 @@
                   }
                   headerElem.innerHTML = arrow + orig.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
                 }
+                this.data.forEach((instance, row) => this.headers.forEach((field, column) => 
+                    this.elements[row][column].innerHTML = instance[field]));
               }
             }
           </script>
@@ -80,9 +82,9 @@
                       <thead>
                         <tr>
                           <th id="received_header"
-                            onclick="sortBallots('received')"
+                            onclick="table.sort('received')"
                             style="cursor:pointer">↑<u>Received</u>↑</th>
-                          <th id="name_header" onclick="sortBallots('name')"
+                          <th id="name_header" onclick="table.sort('name')"
                             style="cursor: pointer">
                             <u>Name</u>
                           </th>
@@ -98,17 +100,17 @@
                       </tbody>
                     </table>
                     <script>
-                   class Ballot {
-                        constructor(received, firstName, lastName, nameText) {
-                          this.received = received;
-                          this.receivedText = received.substring(5, 10).replace('-', '/') + '/' +
-                              received.substring(0, 4) + ' ' +
-                              String((parseInt(received.substring(11, 13)) + 11) % 12 + 1).padStart(2, '0') +
-                              (received + '00').substring(13, 19) +
-                              (parseInt(received.substring(11, 13)) > 11 ? ' pm' : ' am');
+                      class Ballot {
+                        constructor(timestamp, firstName, lastName, name) {
+                          this.timestamp = timestamp;
+                          this.received = timestamp.substring(5, 10).replace('-', '/') + '/' +
+                              timestamp.substring(0, 4) + ' ' +
+                              String((parseInt(timestamp.substring(11, 13)) + 11) % 12 + 1).padStart(2, '0') +
+                              (timestamp + '00').substring(13, 19) +
+                              (parseInt(timestamp.substring(11, 13)) > 11 ? ' pm' : ' am');
                           this.firstName = firstName;
                           this.lastName = lastName;
-                          this.nameText = nameText;
+                          this.name = name;
                         }
                       }
 
@@ -116,10 +118,10 @@
                       const ballots = [];
                       <xsl:for-each select="$results/ballots/player">
                         ballots.push(new Ballot(
-                          '<xsl:value-of select="@timestamp"/>',
-                          '<xsl:value-of select="@firstName"/>',
-                          '<xsl:value-of select="@lastName"/>',
-                          '<xsl:apply-templates select="." mode="playerName" />'
+                            '<xsl:value-of select="@timestamp"/>',
+                            '<xsl:value-of select="@firstName"/>',
+                            '<xsl:value-of select="@lastName"/>',
+                            '<xsl:apply-templates select="." mode="playerName" />'
                         ));
                       </xsl:for-each>
 
@@ -130,15 +132,7 @@
                           sort => sort === 'name' ? 'lastName,firstName' : sort
                       );
 
-                      // Sorts the ballots based on the column clicked by the user
-                      function sortBallots(column) {
-                        table.sort(column);
-                        table.data.forEach((ballot, row) => {
-                          table.elements[row][0].innerHTML = ballot.receivedText;
-                          table.elements[row][1].innerHTML = ballot.nameText;
-                        });
-                      }
-                      sortBallots();
+                      table.sort();
                     </script>
                   </xsl:if>
                 </xsl:when>
@@ -450,8 +444,7 @@
       // Sorts the table based on the column clicked by the user
       function sortTable(column) {
         table.sort(column);
-        table.data.forEach((player, row) => table.headers.forEach((field, column) => {
-            table.elements[row][column].innerHTML = player[field];
+        table.data.forEach((player, row) => table.headers.forEach((field, column) =>
             table.elements[row][column].style.backgroundColor = colors.get(
                 field === "link" ?
                     <xsl:if test="$inPlayer">
@@ -465,8 +458,8 @@
                     player.time > elapsed ? "?" : "W" :
                 (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
                    "?" : "none"
-            );
-        }));
+            )
+        ));
       }
 
       // Calculate and popluate values for player grid
