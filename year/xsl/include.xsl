@@ -91,6 +91,15 @@
       </center>
     </header>
     <script>
+      // Restore the scroll position when new data causes the page to be reloaded
+      window.addEventListener('load', () => {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition !== null) {
+          window.scrollTo(0, parseInt(scrollPosition, 10));
+          sessionStorage.removeItem('scrollPosition');
+        }
+      });
+
       // Sends the HTML request, avoiding cached responses, and performs the action
       function send(action, method, url) {
         const http = new XMLHttpRequest();
@@ -148,8 +157,10 @@
               if ((++skips >= 60 / interval || start - new Date().getTime() / 1000 &lt; 10 * 60)
                   &amp;&amp; document.visibilityState === "visible")
                 readModified(function() {
-                  if (this.getResponseHeader('Last-Modified') !== updated)
+                  if (this.getResponseHeader('Last-Modified') !== updated) {
+                    sessionStorage.setItem('scrollPosition', window.scrollY);
                     window.location.reload();
+                  }
                   skips = 0;
                 });
             }, interval * 1000);
