@@ -11,40 +11,54 @@
             const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
                 ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
 
+            // Table that can sort and update the underlying HTML table
             class SortableTable {
-              constructor(id, headers, data, fieldNameFunction, colorFunction) {
+              constructor(id, defaultSort, headers, data, fieldNameFunction, colorFunction) {
                 this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                     .map(row => row.getElementsByTagName("td"));
+                if (!headers.includes(sessionStorage.getItem('sortColumn')))
+                  sessionStorage.setItem('sortColumn', defaultSort);
                 this.headers = headers;
                 this.data = data;
                 this.fieldNameFunction = fieldNameFunction;
                 this.colorFunction = colorFunction;
               }
-              
+
+              // Sorts the data in the table, adds arrows to the header and updates the table
               sort(column) {
-                for (const header of this.headers) {
-                  let arrow = '';
-                  const headerElem = document.getElementById(header + '_header');
-                  const orig = headerElem.innerHTML.trim();
-                  if (header === column ||
-                      column === undefined &amp;&amp; (orig[0] === '↓' || orig[0] === '↑')) {
-                    const descending = orig[0] === (column === undefined ? '↓' : '↑');
-                    const fields = this.fieldNameFunction(header).split(',');
-                    this.data.sort((a, b) => {
-                      return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-                          total !== 0 ? total : (descending &amp;&amp; index &lt; fields.length ? -1 : 1) *
-                              (typeof a[field] === 'number' ? a[field] - b[field] :
-                                  a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
-                    });
-                    arrow = descending ? '↓' : '↑';
-                  }
-                  headerElem.innerHTML = arrow + orig.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
+                // Store the sort column and sort order
+                if (column !== undefined){
+                  sessionStorage.setItem('sortDescending',
+                      sessionStorage.getItem('sortColumn') === column &amp;&amp;
+                      sessionStorage.getItem('sortDescending') !== 'true');
+                  sessionStorage.setItem('sortColumn', column);
                 }
-                this.data.forEach((instance, row) => this.headers.forEach((field, column) => {
-                    this.elements[row][column].innerHTML = instance[field];
-                    table.elements[row][column].style.backgroundColor =
-                        colors.get(this.colorFunction(instance, field));
-                }));
+
+                // Sort the data
+                const fields = this.fieldNameFunction(
+                    sessionStorage.getItem('sortColumn')).split(',');
+                this.data.sort((a, b) => {
+                  return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
+                      total !== 0 ? total : (sessionStorage.getItem('sortDescending') === 'true'
+                          &amp;&amp; index &lt; fields.length ? -1 : 1) *
+                          (typeof a[field] === 'number' ? a[field] - b[field] :
+                              a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
+                });
+
+                // Update the table
+                this.headers.forEach((header, column) => {
+                  const arrow = sessionStorage.getItem('sortColumn') === header ?
+                     sessionStorage.getItem('sortDescending') === 'true' ? '↓' : '↑' : '';
+                  const headerElem = document.getElementById(header + '_header');
+                  const origHeader = headerElem.innerHTML.trim();
+                  headerElem.innerHTML = arrow + origHeader.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
+
+                  this.data.forEach((instance, row) => {
+                      this.elements[row][column].innerHTML = instance[header];
+                      this.elements[row][column].style.backgroundColor =
+                          colors.get(this.colorFunction(instance, header));
+                  });
+                });
               }
             }
           </script>
@@ -90,7 +104,9 @@
                         <tr>
                           <th id="received_header"
                             onclick="table.sort('received')"
-                            style="cursor:pointer">↑<u>Received</u>↑</th>
+                            style="cursor:pointer">
+                            <u>Received</u>
+                          </th>
                           <th id="name_header" onclick="table.sort('name')"
                             style="cursor: pointer">
                             <u>Name</u>
@@ -134,6 +150,7 @@
 
                       const table = new SortableTable(
                           "ballots",
+                          "received",
                           ["received", "name"],
                           ballots,
                           sort => sort === 'name' ? 'lastName,firstName' : sort,
@@ -347,7 +364,9 @@
             <u>Name</u>
           </th>
           <th id="rank_header" onclick="table.sort('rank')"
-            style="cursor: pointer"> ↑<u>Rank</u>↑ </th>
+            style="cursor: pointer">
+            <u>Rank</u>
+          </th>
           <xsl:if test="not($ended)">
             <th id="bpr_header" onclick="table.sort('bpr')"
               style="cursor: pointer">
@@ -432,6 +451,7 @@
 
       const table = new SortableTable(
           "rankings",
+          "rank",
           ["link", "rank",
               <xsl:if test="not($ended)">
                 "bpr", "wpr",
@@ -439,7 +459,7 @@
               "scoreText", "timeText"
           ],
           players,
-          sort => 
+          sort =>
               sort === 'link' ? 'lastName,firstName' :
               sort === 'bpr' ? 'bpr,rank,wpr' :
               sort === 'wpr' ? 'wpr,rank,bpr' :
