@@ -11,13 +11,21 @@
             const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
                 ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
 
+            window.addEventListener("load", () => {
+              if (sessionStorage.getItem('lastUrl') !== window.location.href) {
+                sessionStorage.removeItem('sortColumn');
+                sessionStorage.removeItem('sortDescending');
+                sessionStorage.setItem('lastUrl', window.location.href);
+              }
+              table.sort();
+            });
+
             // Table that can sort and update the underlying HTML table
             class SortableTable {
               constructor(id, defaultSort, headers, data, fieldNameFunction, colorFunction) {
                 this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                     .map(row => row.getElementsByTagName("td"));
-                if (!headers.includes(sessionStorage.getItem('sortColumn')))
-                  sessionStorage.setItem('sortColumn', defaultSort);
+                this.defaultSort = defaultSort;
                 this.headers = headers;
                 this.data = data;
                 this.fieldNameFunction = fieldNameFunction;
@@ -32,7 +40,8 @@
                       sessionStorage.getItem('sortColumn') === column &amp;&amp;
                       sessionStorage.getItem('sortDescending') !== 'true');
                   sessionStorage.setItem('sortColumn', column);
-                }
+                } else if (!this.headers.includes(sessionStorage.getItem('sortColumn')))
+                  sessionStorage.setItem('sortColumn', this.defaultSort);
 
                 // Sort the data
                 const fields = this.fieldNameFunction(
