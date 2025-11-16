@@ -4,21 +4,14 @@
   <xsl:include href="include.xsl" />
   <xsl:template match="/player">
     <html>
-      <xsl:call-template name="header" />
+      <xsl:call-template name="header">
+        <xsl:with-param name="sortCall" select="'table.sort();'" />
+      </xsl:call-template>
       <body>
         <center>
           <script>
             const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
                 ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
-
-            window.addEventListener("load", () => {
-              if (sessionStorage.getItem('lastUrl') !== window.location.href) {
-                sessionStorage.removeItem('sortColumn');
-                sessionStorage.removeItem('sortDescending');
-                sessionStorage.setItem('lastUrl', window.location.href);
-              }
-              table.sort();
-            });
 
             // Table that can sort and update the underlying HTML table
             class SortableTable {
