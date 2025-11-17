@@ -5,7 +5,10 @@
   <xsl:template match="/player">
     <html>
       <xsl:call-template name="header">
-        <xsl:with-param name="sortCall" select="'table.sort();'" />
+        <xsl:with-param name="storeSortOrder">
+          sessionStorage.setItem('sortColumn', table.sortColumn);
+          sessionStorage.setItem('sortDescending', table.sortDescending);
+        </xsl:with-param>
       </xsl:call-template>
       <body>
         <center>
@@ -18,39 +21,39 @@
               constructor(id, defaultSort, headers, data, fieldNameFunction, colorFunction) {
                 this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                     .map(row => row.getElementsByTagName("td"));
-                this.defaultSort = defaultSort;
+                this.sortColumn = (sortColumn => headers.includes(sortColumn) ? sortColumn :
+                    defaultSort)(sessionStorage.getItem('sortColumn'));
+                this.sortDescending = sessionStorage.getItem('sortDescending') === 'true';
                 this.headers = headers;
                 this.data = data;
                 this.fieldNameFunction = fieldNameFunction;
                 this.colorFunction = colorFunction;
+
+                sessionStorage.removeItem('sortColumn');
+                sessionStorage.removeItem('sortDescending');
               }
 
               // Sorts the data in the table, adds arrows to the header and updates the table
               sort(column) {
-                // Store the sort column and sort order
+                // Determine the sort column and sort order
                 if (column !== undefined){
-                  sessionStorage.setItem('sortDescending',
-                      sessionStorage.getItem('sortColumn') === column &amp;&amp;
-                      sessionStorage.getItem('sortDescending') !== 'true');
-                  sessionStorage.setItem('sortColumn', column);
-                } else if (!this.headers.includes(sessionStorage.getItem('sortColumn')))
-                  sessionStorage.setItem('sortColumn', this.defaultSort);
+                  this.sortDescending = this.sortColumn === column &amp;&amp; !this.sortDescending;
+                  this.sortColumn = column;
+                }
 
                 // Sort the data
-                const fields = this.fieldNameFunction(
-                    sessionStorage.getItem('sortColumn')).split(',');
+                const fields = this.fieldNameFunction(this.sortColumn).split(',');
                 this.data.sort((a, b) => {
                   return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-                      total !== 0 ? total : (sessionStorage.getItem('sortDescending') === 'true'
-                          &amp;&amp; index &lt; fields.length ? -1 : 1) *
+                      total !== 0 ? total :
+                          (this.sortDescending &amp;&amp; index &lt; fields.length ? -1 : 1) *
                           (typeof a[field] === 'number' ? a[field] - b[field] :
                               a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
                 });
 
                 // Update the table
                 this.headers.forEach((header, column) => {
-                  const arrow = sessionStorage.getItem('sortColumn') === header ?
-                     sessionStorage.getItem('sortDescending') === 'true' ? '↓' : '↑' : '';
+                  const arrow = this.sortColumn === header ? this.sortDescending ? '↓' : '↑' : '';
                   const headerElem = document.getElementById(header + '_header');
                   const origHeader = headerElem.innerHTML.trim();
                   headerElem.innerHTML = arrow + origHeader.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;

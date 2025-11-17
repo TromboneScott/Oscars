@@ -14,7 +14,7 @@
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="header">
-    <xsl:param name="sortCall" />
+    <xsl:param name="storeSortOrder" />
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="/oscars.css" />
@@ -92,16 +92,8 @@
       </center>
     </header>
     <script>
+      // Restore the scroll position when new data causes the page to be reloaded
       window.addEventListener("load", () => {
-        // Reset sort order when navigating to a new URL
-        if (sessionStorage.getItem('lastUrl') !== window.location.href) {
-          sessionStorage.removeItem('sortColumn');
-          sessionStorage.removeItem('sortDescending');
-          sessionStorage.setItem('lastUrl', window.location.href);
-        }
-        <xsl:value-of select="$sortCall"/>
-
-        // Restore the scroll position when new data causes the page to be reloaded
         const scrollPosition = sessionStorage.getItem('scrollPosition');
         if (scrollPosition !== null) {
           window.scrollTo(0, parseInt(scrollPosition, 10));
@@ -168,6 +160,7 @@
                 readModified(function() {
                   if (this.getResponseHeader('Last-Modified') !== updated) {
                     sessionStorage.setItem('scrollPosition', window.scrollY);
+                    <xsl:value-of select="$storeSortOrder"/>
                     window.location.reload();
                   }
                   skips = 0;
