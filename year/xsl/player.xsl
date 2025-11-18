@@ -18,13 +18,13 @@
 
             // Table that can sort and update the underlying HTML table
             class SortableTable {
-              constructor(id, defaultSort, headers, data, fieldNameFunction, colorFunction) {
+              constructor(id, headers, defaultSort, data, fieldNameFunction, colorFunction) {
                 this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                     .map(row => row.getElementsByTagName("td"));
+                this.headers = headers;
                 this.sortColumn = (sortColumn => headers.includes(sortColumn) ? sortColumn :
                     defaultSort)(sessionStorage.getItem('sortColumn'));
                 this.sortDescending = sessionStorage.getItem('sortDescending') === 'true';
-                this.headers = headers;
                 this.data = data;
                 this.fieldNameFunction = fieldNameFunction;
                 this.colorFunction = colorFunction;
@@ -43,12 +43,12 @@
 
                 // Sort the data
                 const fields = this.fieldNameFunction(this.sortColumn).split(',');
+                const allFields = fields.concat(['lastName', 'firstName']);
                 this.data.sort((a, b) => {
-                  return fields.concat(['lastName', 'firstName']).reduce((total, field, index) =>
-                      total !== 0 ? total :
-                          (this.sortDescending &amp;&amp; index &lt; fields.length ? -1 : 1) *
-                          (typeof a[field] === 'number' ? a[field] - b[field] :
-                              a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
+                  return allFields.reduce((total, field, index) => total !== 0 ? total :
+                      (this.sortDescending &amp;&amp; index &lt; fields.length ? -1 : 1) *
+                      (typeof a[field] === 'number' ? a[field] - b[field] :
+                          a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
                 });
 
                 // Update the table
@@ -155,8 +155,8 @@
 
                       const table = new SortableTable(
                           "ballots",
-                          "received",
                           ["received", "name"],
+                          "received",
                           ballots,
                           sort => sort === 'name' ? 'lastName,firstName' : sort,
                           (player, field) => '?'
@@ -456,13 +456,13 @@
 
       const table = new SortableTable(
           "rankings",
-          "rank",
           ["link", "rank",
               <xsl:if test="not($ended)">
                 "bpr", "wpr",
               </xsl:if>
               "scoreText", "timeText"
           ],
+          "rank",
           players,
           sort =>
               sort === 'link' ? 'lastName,firstName' :

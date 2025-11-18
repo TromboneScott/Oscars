@@ -92,15 +92,6 @@
       </center>
     </header>
     <script>
-      // Restore the scroll position when new data causes the page to be reloaded
-      window.addEventListener("load", () => {
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition !== null) {
-          window.scrollTo(0, parseInt(scrollPosition, 10));
-          sessionStorage.removeItem('scrollPosition');
-        }
-      });
-
       // Sends the HTML request, avoiding cached responses, and performs the action
       function send(action, method, url) {
         const http = new XMLHttpRequest();
@@ -167,6 +158,14 @@
                 });
             }, interval * 1000);
           });
+        });
+
+        // Restore the vertical scroll position when new data causes the page to be reloaded
+        window.addEventListener("load", () => {
+          const scrollPosition = sessionStorage.getItem('scrollPosition');
+          if (scrollPosition !== null)
+            window.scrollTo(0, parseInt(scrollPosition, 10));
+          sessionStorage.removeItem('scrollPosition');
         });
       </xsl:if>
     </script>
