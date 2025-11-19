@@ -13,9 +13,6 @@
       <body>
         <center>
           <script>
-            const colors = new Map([["-", "white"], ["W", "limegreen"], ["L", "red"], ["T", "tan"],
-                ["?", "silver"], ["X", "silver"], ["none", "transparent"]]);
-
             // Table that can sort and update the underlying HTML table
             class SortableTable {
               constructor(id, headers, defaultSort, data, fieldNameFunction, colorFunction) {
@@ -61,7 +58,7 @@
                   this.data.forEach((instance, row) => {
                       this.elements[row][column].innerHTML = instance[header];
                       this.elements[row][column].style.backgroundColor =
-                          colors.get(this.colorFunction(instance, header));
+                          this.colorFunction(instance, header);
                   });
                 });
               }
@@ -159,7 +156,7 @@
                           "received",
                           ballots,
                           sort => sort === 'name' ? 'lastName,firstName' : sort,
-                          (player, field) => '?'
+                          (player, field) => 'silver'
                       );
 
                       table.sort();
@@ -416,6 +413,15 @@
             String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
       }
 
+      const decidedColors = {
+          "-": "white",
+          "W": "limegreen",
+          "L": "red",
+          "T": "tan",
+          "?": "silver",
+          "X": "silver"
+      };
+
       class Player {
         static #nextId = 0;
 
@@ -473,16 +479,16 @@
           (player, field) =>
               field === "link" ?
                     <xsl:if test="$inPlayer">
-                      true ? inPlayer.decided[player.id] :
+                      true ? decidedColors[inPlayer.decided[player.id]] :
                     </xsl:if>
-                    "-" :
+                    "white" :
                 field === "timeText" ?
                     <xsl:if test="$ended">
-                      player.time > elapsed ? "L" :
+                      player.time > elapsed ? "red" :
                     </xsl:if>
-                    player.time > elapsed ? "?" : "W" :
+                    player.time > elapsed ? "silver" : "limegreen" :
                 (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
-                   "?" : "none"
+                   "silver" : "transparent"
       );
 
       // Calculate and popluate values for player grid
@@ -501,7 +507,7 @@
                   .innerHTML.replace(/(&lt;u>)(.*)(&lt;\/u>)/is, `$1${timeString}$3`);
                   //'&lt;u>' + formatTime(elapsed) + '&lt;/u>';
               document.getElementById("timeText_header").style.backgroundColor =
-                  colors.get(elapsed >= next &amp;&amp; next > 0 ? "W" : "-");
+                  elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
                 document.getElementById("time_value").innerHTML = timeString;
                 document.getElementById("time_difference").innerHTML =
@@ -547,11 +553,11 @@
                           'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
                 </xsl:if>
 
-                const timeColor =  colors.get(
+                const timeColor =
                     <xsl:if test="$ended">
-                      inPlayer.time > elapsed ? "L" :
+                      inPlayer.time > elapsed ? "red" :
                     </xsl:if>
-                    inPlayer.time > elapsed ? "?" : "W");
+                    inPlayer.time > elapsed ? "silver" : "limegreen";
                 for (let id of ["guess", "actual", "score"])
                   document.getElementById("time_" + id).style.backgroundColor = timeColor;
 
