@@ -75,7 +75,6 @@
         &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
         <hr width="500" />
         <br />
-        <br />
         <xsl:if
           test="not($results/awards/@START)">
           <A id="countdown" style="display: none">
@@ -88,7 +87,6 @@
             <br />
           </A>
         </xsl:if>
-        <br />
       </center>
     </header>
     <script>

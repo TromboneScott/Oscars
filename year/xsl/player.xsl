@@ -171,7 +171,7 @@
                     <a href="{$rootDir}categories">
                       <h2>OSCAR WINNERS</h2>
                     </a>
-                    <table style="table-layout: fixed; width: 700px">
+                    <table style="table-layout: fixed; width: 600px">
                       <xsl:call-template name="winners">
                         <xsl:with-param name="start" select="0" />
                       </xsl:call-template>
@@ -580,13 +580,21 @@
             <a id="{@name}" href="{$rootDir}categories/{@name}.xml">
               <xsl:apply-templates select="nominee" mode="poster">
                 <xsl:with-param name="category" select="@name" />
+                <xsl:with-param name="width" select="'50'" />
               </xsl:apply-templates>
               <xsl:if test="not(nominee)">
                 <img src="http://oscars.site44.com/trophy_poster.png" alt="?"
-                  title="Not Yet Announced" />
+                  title="Not Yet Announced" width="50" />
               </xsl:if>
               <br />
-              <xsl:value-of select="@name" />
+              <xsl:choose>
+                <xsl:when test="@name='Cinematography'">
+                  Cinema- tography
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="@name" />
+                </xsl:otherwise>
+              </xsl:choose>
             </a>
           </td>
         </xsl:for-each>

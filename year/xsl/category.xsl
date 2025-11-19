@@ -218,7 +218,7 @@
                         </xsl:apply-templates>
                         <xsl:apply-templates select="." mode="poster">
                           <xsl:with-param name="category" select="$categoryName" />
-                          <xsl:with-param name="width" select="70" />
+                          <xsl:with-param name="width" select="50" />
                         </xsl:apply-templates>
                         <br />
                         <xsl:value-of select="." />
