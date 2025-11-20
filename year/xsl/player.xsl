@@ -11,59 +11,59 @@
         </xsl:with-param>
       </xsl:call-template>
       <body>
-        <center>
-          <script>
-            // Table that can sort and update the underlying HTML table
-            class SortableTable {
-              constructor(id, headers, defaultSort, data, sortFieldsFunction, colorFunction) {
-                this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
-                    .map(row => row.getElementsByTagName("td"));
-                this.headers = headers;
-                this.sortColumn = (sortColumn => headers.includes(sortColumn) ? sortColumn :
-                    defaultSort)(sessionStorage.getItem('sortColumn'));
-                this.sortDescending = sessionStorage.getItem('sortDescending') === 'true';
-                this.data = data;
-                this.sortFieldsFunction = sortFieldsFunction;
-                this.colorFunction = colorFunction;
+        <script>
+          // Table that can sort and update the underlying HTML table
+          class SortableTable {
+            constructor(id, headers, defaultSort, data, sortFieldsFunction, colorFunction) {
+              this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
+                  .map(row => row.getElementsByTagName("td"));
+              this.headers = headers;
+              this.sortColumn = (sortColumn => headers.includes(sortColumn) ? sortColumn :
+                  defaultSort)(sessionStorage.getItem('sortColumn'));
+              this.sortDescending = sessionStorage.getItem('sortDescending') === 'true';
+              this.data = data;
+              this.sortFieldsFunction = sortFieldsFunction;
+              this.colorFunction = colorFunction;
 
-                sessionStorage.removeItem('sortColumn');
-                sessionStorage.removeItem('sortDescending');
-              }
-
-              // Sorts the data in the table, adds arrows to the header and updates the table
-              sort(column) {
-                // Determine the sort column and sort order
-                if (column !== undefined){
-                  this.sortDescending = this.sortColumn === column &amp;&amp; !this.sortDescending;
-                  this.sortColumn = column;
-                }
-
-                // Sort the data
-                const sortFields = this.sortFieldsFunction(this.sortColumn);
-                const allFields = sortFields.concat(['lastName', 'firstName']);
-                this.data.sort((a, b) => {
-                  return allFields.reduce((total, field, index) => total !== 0 ? total :
-                      (this.sortDescending &amp;&amp; index &lt; sortFields.length ? -1 : 1) *
-                      (typeof a[field] === 'number' ? a[field] - b[field] :
-                          a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
-                });
-
-                // Update the table
-                this.headers.forEach((header, column) => {
-                  const arrow = this.sortColumn === header ? this.sortDescending ? '↓' : '↑' : '';
-                  const headerElem = document.getElementById(header + '_header');
-                  const origHeader = headerElem.innerHTML.trim();
-                  headerElem.innerHTML = arrow + origHeader.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
-
-                  this.data.forEach((instance, row) => {
-                      this.elements[row][column].innerHTML = instance[header];
-                      this.elements[row][column].style.backgroundColor =
-                          this.colorFunction(instance, header);
-                  });
-                });
-              }
+              sessionStorage.removeItem('sortColumn');
+              sessionStorage.removeItem('sortDescending');
             }
-          </script>
+
+            // Sorts the data in the table, adds arrows to the header and updates the table
+            sort(column) {
+              // Determine the sort column and sort order
+              if (column !== undefined){
+                this.sortDescending = this.sortColumn === column &amp;&amp; !this.sortDescending;
+                this.sortColumn = column;
+              }
+
+              // Sort the data
+              const sortFields = this.sortFieldsFunction(this.sortColumn);
+              const allFields = sortFields.concat(['lastName', 'firstName']);
+              this.data.sort((a, b) => {
+                return allFields.reduce((total, field, index) => total !== 0 ? total :
+                    (this.sortDescending &amp;&amp; index &lt; sortFields.length ? -1 : 1) *
+                    (typeof a[field] === 'number' ? a[field] - b[field] :
+                        a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
+              });
+
+              // Update the table
+              this.headers.forEach((header, column) => {
+                const arrow = this.sortColumn === header ? this.sortDescending ? '↓' : '↑' : '';
+                const headerElem = document.getElementById(header + '_header');
+                const origHeader = headerElem.innerHTML.trim();
+                headerElem.innerHTML = arrow + origHeader.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
+
+                this.data.forEach((instance, row) => {
+                    this.elements[row][column].innerHTML = instance[header];
+                    this.elements[row][column].style.backgroundColor =
+                        this.colorFunction(instance, header);
+                });
+              });
+            }
+          }
+        </script>
+        <center>
           <xsl:choose>
             <xsl:when test="@type = 'all'">
               <xsl:choose>

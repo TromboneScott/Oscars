@@ -24,6 +24,87 @@
       <meta http-equiv="pragma" content="no-cache" />
       <title><xsl:value-of select="$definitions/@year" /> OSCARS</title>
       <style>body {background-color: PaleGoldenrod}</style>
+
+      <script>
+        // Sends the HTML request, avoiding cached responses, and performs the action
+        function send(action, method, url) {
+          const http = new XMLHttpRequest();
+          http.onload = action;
+          http.open(method, url + "?_=" + new Date().getTime());
+          http.send();
+        }
+
+        // Reads the elapsed time and performs the action
+        function readElapsed(action) {
+          send(action, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
+        }
+
+        <xsl:if test="not($ended)">
+          // Reads the HTML headers of the results files to provide the last-modified timestamp
+          function readModified(action) {
+            send(action, "HEAD", "<xsl:value-of select="$resultsFile"/>");
+          }
+
+          // Get the last modified timestamp
+          readModified(function() {
+            const updated = this.getResponseHeader('Last-Modified');
+
+            // Get the start time (actual or scheduled) of the broadcast
+            readElapsed(function() {
+              const start = new Date().getTime() / 1000 - parseInt(this.responseText);
+
+              <xsl:if test="not($results/awards/@START)">
+                let countdown;
+
+                // Creates the TD element for the time unit of the countdown timer
+                function td(unit, size) {
+                  const result = countdown &lt;= 0 ? '' :
+                      '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
+                      countdown % size + '&lt;/B>&lt;br/>' + unit +
+                      (countdown % size === 1 ? '' : 's') + '&lt;/td>';
+                  countdown = Math.trunc(countdown / size);
+                  return result;
+                }
+
+                // Update the countdown timer every second
+                function update() {
+                  countdown = Math.trunc(start - new Date().getTime() / 1000);
+                  document.getElementById("countdown").style.display =
+                      countdown > 0 ? 'inline' : 'none';
+                  document.getElementById("countdown_row").innerHTML = [td("Second", 60),
+                      td("Minute", 60), td("Hour", 24), td("Day", countdown + 1)].reverse().join('');
+                }
+                update();
+                setInterval(update, 500);
+              </xsl:if>
+
+              // Repeatedly check for updates and reload the page when results are updated
+              const interval = 3;
+              let skips = 0;
+              setInterval(function() {
+                if ((++skips >= 60 / interval || start - new Date().getTime() / 1000 &lt; 10 * 60)
+                    &amp;&amp; document.visibilityState === "visible")
+                  readModified(function() {
+                    if (this.getResponseHeader('Last-Modified') !== updated) {
+                      sessionStorage.setItem('scrollPosition', window.scrollY);
+                      <xsl:value-of select="$storeSortOrder"/>
+                      window.location.reload();
+                    }
+                    skips = 0;
+                  });
+              }, interval * 1000);
+            });
+          });
+
+          // Restore the vertical scroll position when new data causes the page to be reloaded
+          window.addEventListener("load", () => {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition !== null)
+              window.scrollTo(0, parseInt(scrollPosition, 10));
+            sessionStorage.removeItem('scrollPosition');
+          });
+        </xsl:if>
+      </script>
     </head>
     <header>
       <center>
@@ -89,84 +170,6 @@
         </xsl:if>
       </center>
     </header>
-    <script>
-      // Sends the HTML request, avoiding cached responses, and performs the action
-      function send(action, method, url) {
-        const http = new XMLHttpRequest();
-        http.onload = action;
-        http.open(method, url + "?_=" + new Date().getTime());
-        http.send();
-      }
-
-      // Reads the elapsed time and performs the action
-      function readElapsed(action) {
-        send(action, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
-      }
-
-      <xsl:if test="not($ended)">
-        // Reads the HTML headers of the results files to provide the last-modified timestamp
-        function readModified(action) {
-          send(action, "HEAD", "<xsl:value-of select="$resultsFile"/>");
-        }
-
-        // Get the last modified timestamp
-        readModified(function() {
-          const updated = this.getResponseHeader('Last-Modified');
-
-          // Get the start time (actual or scheduled) of the broadcast
-          readElapsed(function() {
-            const start = new Date().getTime() / 1000 - parseInt(this.responseText);
-
-            <xsl:if test="not($results/awards/@START)">
-              let countdown;
-
-              // Creates the TD element for the time unit of the countdown timer
-              function td(unit, size) {
-                const result = countdown &lt;= 0 ? '' :
-                    '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
-                    countdown % size + '&lt;/B>&lt;br/>' + unit + (countdown % size === 1 ? '' : 's') + '&lt;/td>';
-                countdown = Math.trunc(countdown / size);
-                return result;
-              }
-
-              // Update the countdown timer every second
-              function update() {
-                countdown = Math.trunc(start - new Date().getTime() / 1000);
-                document.getElementById("countdown").style.display = countdown > 0 ? 'inline' : 'none';
-                document.getElementById("countdown_row").innerHTML = [td("Second", 60), td("Minute", 60),
-                    td("Hour", 24), td("Day", countdown + 1)].reverse().join('');
-              }
-              update();
-              setInterval(update, 500);
-            </xsl:if>
-
-            // Repeatedly check for updates and reload the page when results are updated
-            const interval = 3;
-            let skips = 0;
-            setInterval(function() {
-              if ((++skips >= 60 / interval || start - new Date().getTime() / 1000 &lt; 10 * 60)
-                  &amp;&amp; document.visibilityState === "visible")
-                readModified(function() {
-                  if (this.getResponseHeader('Last-Modified') !== updated) {
-                    sessionStorage.setItem('scrollPosition', window.scrollY);
-                    <xsl:value-of select="$storeSortOrder"/>
-                    window.location.reload();
-                  }
-                  skips = 0;
-                });
-            }, interval * 1000);
-          });
-        });
-
-        // Restore the vertical scroll position when new data causes the page to be reloaded
-        window.addEventListener("load", () => {
-          const scrollPosition = sessionStorage.getItem('scrollPosition');
-          if (scrollPosition !== null)
-            window.scrollTo(0, parseInt(scrollPosition, 10));
-          sessionStorage.removeItem('scrollPosition');
-        });
-      </xsl:if>
-    </script>
   </xsl:template>
   <xsl:template name="footer">
     <footer>
