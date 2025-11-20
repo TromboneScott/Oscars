@@ -15,7 +15,7 @@
           <script>
             // Table that can sort and update the underlying HTML table
             class SortableTable {
-              constructor(id, headers, defaultSort, data, fieldNameFunction, colorFunction) {
+              constructor(id, headers, defaultSort, data, sortFieldsFunction, colorFunction) {
                 this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                     .map(row => row.getElementsByTagName("td"));
                 this.headers = headers;
@@ -23,7 +23,7 @@
                     defaultSort)(sessionStorage.getItem('sortColumn'));
                 this.sortDescending = sessionStorage.getItem('sortDescending') === 'true';
                 this.data = data;
-                this.fieldNameFunction = fieldNameFunction;
+                this.sortFieldsFunction = sortFieldsFunction;
                 this.colorFunction = colorFunction;
 
                 sessionStorage.removeItem('sortColumn');
@@ -39,11 +39,11 @@
                 }
 
                 // Sort the data
-                const fields = this.fieldNameFunction(this.sortColumn).split(',');
-                const allFields = fields.concat(['lastName', 'firstName']);
+                const sortFields = this.sortFieldsFunction(this.sortColumn);
+                const allFields = sortFields.concat(['lastName', 'firstName']);
                 this.data.sort((a, b) => {
                   return allFields.reduce((total, field, index) => total !== 0 ? total :
-                      (this.sortDescending &amp;&amp; index &lt; fields.length ? -1 : 1) *
+                      (this.sortDescending &amp;&amp; index &lt; sortFields.length ? -1 : 1) *
                       (typeof a[field] === 'number' ? a[field] - b[field] :
                           a[field].localeCompare(b[field], undefined, {sensitivity: 'base'})), 0);
                 });
@@ -155,8 +155,8 @@
                           ["received", "name"],
                           "received",
                           ballots,
-                          sort => sort === 'name' ? 'lastName,firstName' : sort,
-                          (player, field) => 'silver'
+                          sort => sort === 'name' ? ['lastName', 'firstName'] : [sort],
+                          (ballot, field) => 'silver'
                       );
 
                       table.sort();
@@ -417,9 +417,7 @@
           "-": "white",
           "W": "limegreen",
           "L": "red",
-          "T": "tan",
-          "?": "silver",
-          "X": "silver"
+          "T": "tan"
       };
 
       class Player {
@@ -471,15 +469,15 @@
           "rank",
           players,
           sort =>
-              sort === 'link' ? 'lastName,firstName' :
-              sort === 'bpr' ? 'bpr,rank,wpr' :
-              sort === 'wpr' ? 'wpr,rank,bpr' :
-              sort === 'timeText' ? 'time' :
-              'rank,bpr,wpr',
+              sort === 'link' ? ['lastName', 'firstName'] :
+              sort === 'bpr' ? ['bpr', 'rank', 'wpr'] :
+              sort === 'wpr' ? ['wpr', 'rank', 'bpr'] :
+              sort === 'timeText' ? ['time'] :
+              ['rank', 'bpr', 'wpr'],
           (player, field) =>
               field === "link" ?
                     <xsl:if test="$inPlayer">
-                      true ? decidedColors[inPlayer.decided[player.id]] :
+                      true ? decidedColors[inPlayer.decided[player.id]] || "silver" :
                     </xsl:if>
                     "white" :
                 field === "timeText" ?
