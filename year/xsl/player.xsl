@@ -128,11 +128,15 @@
                       class Ballot {
                         constructor(timestamp, firstName, lastName, name) {
                           this.timestamp = timestamp;
-                          this.received = timestamp.substring(5, 10).replace('-', '/') + '/' +
-                              timestamp.substring(0, 4) + ' ' +
-                              String((parseInt(timestamp.substring(11, 13)) + 11) % 12 + 1).padStart(2, '0') +
-                              (timestamp + '00').substring(13, 19) +
-                              (parseInt(timestamp.substring(11, 13)) > 11 ? ' pm' : ' am');
+                          this.received = new Intl.DateTimeFormat("en-US", {
+                            month: "2-digit",
+                            day: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: true
+                          }).format(new Date(timestamp)).replace(",", "");
                           this.firstName = firstName;
                           this.lastName = lastName;
                           this.name = name;
@@ -502,8 +506,7 @@
               // Update the running time
               const timeString = formatTime(elapsed);
               document.getElementById("timeText_header").innerHTML = document.getElementById("timeText_header")
-                  .innerHTML.replace(/(&lt;u>)(.*)(&lt;\/u>)/is, `$1${timeString}$3`);
-                  //'&lt;u>' + formatTime(elapsed) + '&lt;/u>';
+                  .innerHTML.replace(/&lt;u>.*&lt;\/u>/is, `<u>${timeString}</u>`);
               document.getElementById("timeText_header").style.backgroundColor =
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">

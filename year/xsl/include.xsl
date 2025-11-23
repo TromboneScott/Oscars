@@ -54,25 +54,30 @@
               const start = new Date().getTime() / 1000 - parseInt(this.responseText);
 
               <xsl:if test="not($results/awards/@START)">
-                let countdown;
+                const units = [
+                  { label: "Second", size: 60 },
+                  { label: "Minute", size: 60 },
+                  { label: "Hour",   size: 24 },
+                  { label: "Day",    size: Infinity }
+                ];
+                const countdownElement = document.getElementById("countdown");
+                const countdownRow = document.getElementById("countdown_row");
 
-                // Creates the TD element for the time unit of the countdown timer
-                function td(unit, size) {
-                  const result = countdown &lt;= 0 ? '' :
-                      '&lt;td style="width: 100px; text-align: center">&lt;B style="font-size: 60px">' +
-                      countdown % size + '&lt;/B>&lt;br/>' + unit +
-                      (countdown % size === 1 ? '' : 's') + '&lt;/td>';
-                  countdown = Math.trunc(countdown / size);
-                  return result;
-                }
-
-                // Update the countdown timer every second
+                // Repeatedly update the countdown timer
                 function update() {
-                  countdown = Math.trunc(start - new Date().getTime() / 1000);
-                  document.getElementById("countdown").style.display =
-                      countdown > 0 ? 'inline' : 'none';
-                  document.getElementById("countdown_row").innerHTML = [td("Second", 60),
-                      td("Minute", 60), td("Hour", 24), td("Day", countdown + 1)].reverse().join('');
+                  let remaining = Math.floor(start - new Date().getTime() / 1000);
+                  countdownElement.style.display = remaining > 0 ? 'inline' : 'none';
+                  countdownRow.innerHTML = units.map(unit => {
+                    const cell = remaining &lt;= 0 ? '' : `
+                      <td style="width:100px; text-align:center">
+                        <B style="font-size:60px">${remaining % unit.size}</B>
+                        <br />
+                        ${unit.label}${remaining % unit.size === 1 ? "" : "s"}
+                      </td>
+                    `;
+                    remaining = Math.floor(remaining / unit.size);
+                    return cell;
+                  }).reverse().join("");
                 }
                 update();
                 setInterval(update, 500);
