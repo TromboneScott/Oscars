@@ -410,8 +410,8 @@
     </table>
     <script>
       // Formats the time value (in seconds) as: H:MM:SS
-      function formatTime(time) {
-        return [time / 60 / 60, time / 60 % 60, time % 60].map((value, index) =>
+      function formatTime(seconds) {
+        return [seconds / 60 / 60, seconds / 60 % 60, seconds % 60].map((value, index) =>
             String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
       }
 
