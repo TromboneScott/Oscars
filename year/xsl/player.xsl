@@ -409,8 +409,6 @@
       </tbody>
     </table>
     <script>
-      let elapsed = -1;
-
       // Formats the time value (in seconds) as: H:MM:SS
       function formatTime(time) {
         return [time / 60 / 60, time / 60 % 60, time % 60].map((value, index) =>
@@ -447,8 +445,7 @@
         players.push(new Player(
           '<xsl:value-of select="@firstName"/>',
           '<xsl:value-of select="@lastName"/>',
-          '&lt;a href="<xsl:apply-templates select="." mode="playerLink" />">' +
-              '<xsl:apply-templates select="." mode="playerName" />&lt;/a>',
+          '<xsl:apply-templates select="." mode="playerLink" />',
           '<xsl:value-of select="@score"/>',
           <xsl:value-of select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />,
           '<xsl:value-of select="@decided"/>'
@@ -461,6 +458,8 @@
             &amp;&amp; player.lastName === '<xsl:value-of select="$inPlayer/@lastName" />');
         document.getElementById("time_player").innerHTML = inPlayer.timeText;
       </xsl:if>
+
+      let elapsed = -1;
 
       const table = new SortableTable(
           "rankings",
@@ -505,9 +504,10 @@
             <xsl:if test="$results/awards/@START">
               // Update the running time
               const timeString = formatTime(elapsed);
-              document.getElementById("timeText_header").innerHTML = document.getElementById("timeText_header")
-                  .innerHTML.replace(/&lt;u>.*&lt;\/u>/is, `<u>${timeString}</u>`);
-              document.getElementById("timeText_header").style.backgroundColor =
+              const timeTextHeader = document.getElementById("timeText_header");
+              timeTextHeader.innerHTML =
+                  timeTextHeader.innerHTML.replace(/&lt;u>.*&lt;\/u>/is, `<u>${timeString}</u>`);
+              timeTextHeader.style.backgroundColor =
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
                 document.getElementById("time_value").innerHTML = timeString;
@@ -525,24 +525,31 @@
 
               // Recalculate rank, bpr and wpr
               for (const player of players) {
-                for (const opponent of players.filter(opponent => player.decided[opponent.id] === 'X' &amp;&amp;
-                      elapsed >= player.time &amp;&amp; elapsed >= opponent.time &amp;&amp; player.time !== opponent.time))
+                for (const opponent of players.filter(opponent =>
+                    player.decided[opponent.id] === 'X' &amp;&amp;
+                    elapsed >= player.time &amp;&amp;
+                    elapsed >= opponent.time &amp;&amp;
+                    player.time !== opponent.time))
                   player.decided[opponent.id] =
                       player.time > opponent.time &amp;&amp; player.score >= opponent.score ? 'W' :
-                      opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' : '?';
+                      opponent.time > player.time &amp;&amp; opponent.score >= player.score ? 'L' :
+                      '?';
                 const undecided = players.filter(opponent => player.decided[opponent.id] === 'X');
                 const timeWillTell = undecided.filter(opponent => player.score >= opponent.score);
 
                 player.rank = players.filter(opponent => opponent.score > player.score ||
-                      opponent.score === player.score &amp;&amp; elapsed >= opponent.time  &amp;&amp;
-                          (player.time > elapsed || opponent.time > player.time)).length + 1;
+                    opponent.score === player.score &amp;&amp;
+                    elapsed >= opponent.time  &amp;&amp;
+                    (player.time > elapsed || opponent.time > player.time)).length + 1;
                 player.bpr = player.decided.filter(decision => decision === 'L').length + 1;
-                player.wpr = player.bpr + players.filter(opponent => player.decided[opponent.id] === '?').length +
+                player.wpr = player.bpr +
+                    players.filter(opponent => player.decided[opponent.id] === '?').length +
                     undecided.filter(opponent => opponent.score > player.score).length +
                     Math.max(timeWillTell.filter(opponent => player.time > opponent.time).length,
                              timeWillTell.filter(opponent => opponent.time > player.time).length);
               }
 
+              // Sort and update the table
               table.sort();
 
               // Update the player page
@@ -562,7 +569,8 @@
                 for (let id of ["guess", "actual", "score"])
                   document.getElementById("time_" + id).style.backgroundColor = timeColor;
 
-                for (let decision of ['W', 'L', 'T'].filter(decision => inPlayer.decided.includes(decision)))
+                for (let decision of
+                    ['W', 'L', 'T'].filter(decision => inPlayer.decided.includes(decision)))
                   document.getElementById("decided_" + decision).style.display = 'inline';
               </xsl:if>
             }

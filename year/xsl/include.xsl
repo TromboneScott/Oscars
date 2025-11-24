@@ -249,15 +249,20 @@
       </xsl:attribute>
     </img>
   </xsl:template>
-  <xsl:template match="/results/standings/player" mode="playerLink">
-    <xsl:value-of
-      select="concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')" />
-  </xsl:template>
   <xsl:template match="player" mode="playerName">
     <xsl:value-of select="@lastName" />
     <xsl:if test="@firstName != '' and @lastName != ''">
       <xsl:value-of select="', '" />
     </xsl:if>
     <xsl:value-of select="@firstName" />
+  </xsl:template>
+  <xsl:template match="/results/standings/player" mode="playerLink">
+    <a>
+      <xsl:attribute name="href">
+        <xsl:value-of
+          select="concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')" />
+      </xsl:attribute>
+      <xsl:apply-templates select="." mode="playerName" />
+    </a>
   </xsl:template>
 </xsl:stylesheet>

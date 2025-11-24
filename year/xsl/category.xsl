@@ -240,12 +240,7 @@
                         <xsl:with-param name="nominee" select="$guess" />
                       </xsl:apply-templates>
                       <td class="header">
-                        <a>
-                          <xsl:attribute name="href">
-                            <xsl:apply-templates select="." mode="playerLink" />
-                          </xsl:attribute>
-                          <xsl:apply-templates select="." mode="playerName" />
-                        </a>
+                        <xsl:apply-templates select="." mode="playerLink" />
                       </td>
                       <xsl:for-each select="$categoryDefinition/nominee">
                         <td id="selection">
