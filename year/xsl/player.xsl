@@ -263,13 +263,10 @@
                         <xsl:value-of select="$playerGuess" />
                       </td>
                       <td>
-                        <xsl:variable name="winners">
-                          <xsl:for-each select="nominee">
-                            <xsl:value-of select="', '" />
-                            <xsl:value-of select="@name" />
-                          </xsl:for-each>
-                        </xsl:variable>
-                        <xsl:value-of select="substring-after($winners, ', ')" />
+                        <xsl:for-each select="nominee">
+                          <xsl:if test="position() > 1">, </xsl:if>
+                          <xsl:value-of select="@name" />
+                        </xsl:for-each>
                       </td>
                       <td>
                         <xsl:if test="nominee">
@@ -403,7 +400,7 @@
               <td class="rank" />
             </xsl:if>
             <td class="rank" />
-            <td />
+            <td class="rank" />
           </tr>
         </xsl:for-each>
       </tbody>
