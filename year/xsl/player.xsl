@@ -601,7 +601,7 @@
               <br />
               <xsl:choose>
                 <xsl:when test="@name='Cinematography'">
-                  Cinema- tography
+                  Cinema&#xAD;tography
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:value-of select="@name" />
