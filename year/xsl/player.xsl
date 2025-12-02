@@ -438,13 +438,12 @@
       // Load the players from XML files
       const players = [];
       <xsl:for-each select="$results/standings/player">
-        <xsl:variable name="player" select="." />
         players.push(new Player(
           '<xsl:value-of select="@firstName"/>',
           '<xsl:value-of select="@lastName"/>',
           '<xsl:apply-templates select="." mode="playerLink" />',
           '<xsl:value-of select="@score"/>',
-          <xsl:value-of select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@time" />,
+          <xsl:value-of select="$ballots/player[@firstName = current()/@firstName and @lastName = current()/@lastName]/@time" />,
           '<xsl:value-of select="@decided"/>'
         ));
       </xsl:for-each>
@@ -599,9 +598,10 @@
                   title="Not Yet Announced" width="50" />
               </xsl:if>
               <br />
+              <xsl:variable name="wrappingName" select="$definitions/column[@name = current()/@name]/@wrappingName" />
               <xsl:choose>
-                <xsl:when test="@name='Cinematography'">
-                  Cinema&#xAD;tography
+                <xsl:when test="$wrappingName">
+                  <xsl:value-of select="$wrappingName" />
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:value-of select="@name" />

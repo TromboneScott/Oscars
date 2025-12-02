@@ -65,12 +65,11 @@
               </thead>
               <tbody>
                 <xsl:for-each select="nominee">
-                  <xsl:variable name="name" select="@name" />
                   <tr class="unannounced" style="border-top: 2pt solid black">
                     <td class="header" style="width: 100px">
                       <xsl:attribute name="rowspan">
                         <xsl:value-of
-                          select="count($mappings/column[@name = $column]/nominee[@name = $name]) + 1" />
+                          select="count($mappings/column[@name = $column]/nominee[@name = current()/@name]) + 1" />
                       </xsl:attribute>
                       <xsl:apply-templates select="." mode="poster">
                         <xsl:with-param name="category" select="$column" />
@@ -85,7 +84,7 @@
                     </td>
                   </tr>
                   <xsl:for-each
-                    select="$mappings/column[@name = $column]/nominee[@name = $name]">
+                    select="$mappings/column[@name = $column]/nominee[@name = current()/@name]">
                     <tr class="unannounced">
                       <td style="white-space: normal">
                         <xsl:value-of select="@ballot" />

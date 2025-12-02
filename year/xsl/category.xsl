@@ -32,12 +32,11 @@
                             <xsl:value-of select="(count(nominee) + 4) div 5" />
                           </xsl:attribute>
                           <xsl:value-of select="@name" />
-                          <xsl:variable name="tieBreaker" select="@tieBreaker" />
-                          <xsl:if test="$tieBreaker">
+                          <xsl:if test="@tieBreaker">
                             <br />
                             <span style="font-weight: normal">
                               <i>Tie Breaker: <xsl:value-of
-                                  select="$tieBreaker" /></i>
+                                  select="@tieBreaker" /></i>
                             </span>
                           </xsl:if>
                         </th>
@@ -138,11 +137,10 @@
                           <a id="{@name}" href="{@name}.xml">
                             <xsl:value-of select="@name" />
                           </a>
-                          <xsl:variable name="tieBreaker" select="@tieBreaker" />
-                          <xsl:if test="$tieBreaker">
+                          <xsl:if test="@tieBreaker">
                             <br />
                             <span style="font-weight: normal">
-                              <i>Tie Breaker: <xsl:value-of select="$tieBreaker" /></i>
+                              <i>Tie Breaker: <xsl:value-of select="@tieBreaker" /></i>
                             </span>
                           </xsl:if>
                           <br />
@@ -152,12 +150,11 @@
                       <tr>
                         <td id="rank">
                           <a id="{@name}" href="{@name}.xml">
-                            <xsl:variable name="categoryDefinition" select="." />
                             <xsl:apply-templates select="nominee" mode="poster">
                               <xsl:with-param name="category"
-                                select="$categoryDefinition/@name" />
+                                select="current()/@name" />
                               <xsl:with-param name="width"
-                                select="500 div count($categoryDefinition/nominee)" />
+                                select="500 div count(current()/nominee)" />
                             </xsl:apply-templates>
                             <br />
                             <xsl:apply-templates select="." mode="chart">
@@ -232,9 +229,8 @@
                       select="translate(@lastName, $lowercase, $uppercase)" />
                     <xsl:sort
                       select="translate(@firstName, $lowercase, $uppercase)" />
-                    <xsl:variable name="player" select="." />
                     <xsl:variable name="guess"
-                      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/category[@name = $categoryName]/@nominee" />
+                      select="$ballots/player[@firstName = current()/@firstName and @lastName = current()/@lastName]/category[@name = $categoryName]/@nominee" />
                     <tr>
                       <xsl:apply-templates select="$awards" mode="attribute">
                         <xsl:with-param name="nominee" select="$guess" />
@@ -260,9 +256,8 @@
                         <xsl:apply-templates select="$awards" mode="attribute">
                           <xsl:with-param name="nominee" select="@name" />
                         </xsl:apply-templates>
-                        <xsl:variable name="name" select="@name" />
                         <xsl:value-of
-                          select="count($ballots/player/category[@name = $categoryName and @nominee = $name])" />
+                          select="count($ballots/player/category[@name = $categoryName and @nominee = current()/@name])" />
                       </th>
                     </xsl:for-each>
                   </tr>
@@ -290,9 +285,8 @@
     <img border="{$border}" alt="{@name}" title="{@name}">
       <xsl:attribute name="src">
         <xsl:value-of select="concat(@name, '.png?_=')" />
-        <xsl:variable name="category" select="@name" />
         <xsl:for-each
-          select="$results/awards/category[@name = $category]/nominee">
+          select="$results/awards/category[@name = current()/@name]/nominee">
           <xsl:value-of select="concat(@name, '|')" />
         </xsl:for-each>
       </xsl:attribute>
