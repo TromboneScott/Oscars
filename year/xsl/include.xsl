@@ -239,13 +239,12 @@
         <xsl:value-of
           select="$definitions/column[@name = $category]/nominee[@name = $nominee]/@img" />
       </xsl:attribute>
-      <xsl:variable name="description"
-        select="$mappings/column[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
       <xsl:attribute name="title">
-        <xsl:value-of select="$description" />
-        <xsl:if test="not($description)">
-          <xsl:value-of select="$nominee" />
-        </xsl:if>
+        <xsl:call-template name="getOrDefault">
+          <xsl:with-param name="value"
+            select="$mappings/column[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
+          <xsl:with-param name="default" select="$nominee" />
+        </xsl:call-template>
       </xsl:attribute>
     </img>
   </xsl:template>
@@ -264,5 +263,17 @@
       </xsl:attribute>
       <xsl:apply-templates select="." mode="playerName" />
     </a>
+  </xsl:template>
+  <xsl:template name="getOrDefault">
+    <xsl:param name="value" />
+    <xsl:param name="default" />
+    <xsl:choose>
+      <xsl:when test="$value">
+        <xsl:value-of select="$value" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$default" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>

@@ -598,15 +598,11 @@
                   title="Not Yet Announced" width="50" />
               </xsl:if>
               <br />
-              <xsl:variable name="wrappingName" select="$definitions/column[@name = current()/@name]/@wrappingName" />
-              <xsl:choose>
-                <xsl:when test="$wrappingName">
-                  <xsl:value-of select="$wrappingName" />
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="@name" />
-                </xsl:otherwise>
-              </xsl:choose>
+              <xsl:call-template name="getOrDefault">
+                <xsl:with-param name="value"
+                  select="$definitions/column[@name = current()/@name]/@wrappingName" />
+                <xsl:with-param name="default" select="@name" />
+              </xsl:call-template>
             </a>
           </td>
         </xsl:for-each>
