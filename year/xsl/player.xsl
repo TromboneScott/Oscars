@@ -173,9 +173,38 @@
                       <h2>OSCAR WINNERS</h2>
                     </a>
                     <table style="table-layout: fixed; width: 600px">
-                      <xsl:call-template name="winners">
-                        <xsl:with-param name="start" select="0" />
-                      </xsl:call-template>
+                      <xsl:variable name="rowSize" select="6" />
+                      <xsl:for-each
+                        select="$results/awards/category[position() mod $rowSize = 1]">
+                        <tr class="unannounced">
+                          <xsl:for-each
+                            select=".|following-sibling::category[position() &lt; $rowSize]">
+                            <td
+                              style="text-align: center; vertical-align: top; white-space: normal">
+                              <a id="{@name}"
+                                href="{$rootDir}categories/{@name}.xml">
+                                <xsl:apply-templates select="nominee"
+                                  mode="poster">
+                                  <xsl:with-param name="category" select="@name" />
+                                  <xsl:with-param name="width" select="'50'" />
+                                </xsl:apply-templates>
+                                <xsl:if test="not(nominee)">
+                                  <img
+                                    src="http://oscars.site44.com/trophy_poster.png"
+                                    alt="?"
+                                    title="Not Yet Announced" width="50" />
+                                </xsl:if>
+                                <br />
+                                <xsl:call-template name="getOrDefault">
+                                  <xsl:with-param name="value"
+                                    select="$definitions/column[@name = current()/@name]/@wrappingName" />
+                                  <xsl:with-param name="default" select="@name" />
+                                </xsl:call-template>
+                              </a>
+                            </td>
+                          </xsl:for-each>
+                        </tr>
+                      </xsl:for-each>
                     </table>
                     <br />
                     <br />
@@ -578,38 +607,5 @@
         </xsl:if>
       });
     </script>
-  </xsl:template>
-  <xsl:template name="winners">
-    <xsl:param name="start" />
-    <xsl:if test="$start &lt; count($results/awards/category)">
-      <xsl:variable name="end" select="$start + 6" />
-      <tr class="unannounced">
-        <xsl:for-each
-          select="$results/awards/category[position() > $start and position() &lt;= $end]">
-          <td
-            style="text-align: center; vertical-align: top; white-space: normal">
-            <a id="{@name}" href="{$rootDir}categories/{@name}.xml">
-              <xsl:apply-templates select="nominee" mode="poster">
-                <xsl:with-param name="category" select="@name" />
-                <xsl:with-param name="width" select="'50'" />
-              </xsl:apply-templates>
-              <xsl:if test="not(nominee)">
-                <img src="http://oscars.site44.com/trophy_poster.png" alt="?"
-                  title="Not Yet Announced" width="50" />
-              </xsl:if>
-              <br />
-              <xsl:call-template name="getOrDefault">
-                <xsl:with-param name="value"
-                  select="$definitions/column[@name = current()/@name]/@wrappingName" />
-                <xsl:with-param name="default" select="@name" />
-              </xsl:call-template>
-            </a>
-          </td>
-        </xsl:for-each>
-      </tr>
-      <xsl:call-template name="winners">
-        <xsl:with-param name="start" select="$end" />
-      </xsl:call-template>
-    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>

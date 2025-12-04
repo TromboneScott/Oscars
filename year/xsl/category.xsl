@@ -21,22 +21,18 @@
                     <xsl:for-each
                       select="$definitions/column[count(nominee) > 0]">
                       <tr>
-                        <xsl:attribute name="style">
-                          <xsl:if test="count(nominee) &lt;= 5">
-                            <xsl:value-of
-                              select="'border-bottom: 3pt solid black'" />
-                          </xsl:if>
-                        </xsl:attribute>
-                        <th style="border-right: 3pt solid black">
-                          <xsl:attribute name="rowspan">
-                            <xsl:value-of select="(count(nominee) + 4) div 5" />
+                        <xsl:if test="count(nominee) &lt;= 5">
+                          <xsl:attribute name="style">
+                            border-bottom: 3pt solid black
                           </xsl:attribute>
+                        </xsl:if>
+                        <th style="border-right: 3pt solid black"
+                          rowspan="{(count(nominee) + 4) div 5}">
                           <xsl:value-of select="@name" />
                           <xsl:if test="@tieBreaker">
                             <br />
                             <span style="font-weight: normal">
-                              <i>Tie Breaker: <xsl:value-of
-                                  select="@tieBreaker" /></i>
+                              <i>Tie Breaker: <xsl:value-of select="@tieBreaker" /></i>
                             </span>
                           </xsl:if>
                         </th>
@@ -104,12 +100,8 @@
                                   select="$graphWidth * $correct div $playerCount" />
                                 <img src="/bar_green.bmp" height="15"
                                   width="{$greenWidth}" />
-                                <img src="/bar_red.bmp" height="15">
-                                  <xsl:attribute name="width">
-                                    <xsl:value-of
-                                      select="$graphWidth - $greenWidth" />
-                                  </xsl:attribute>
-                                </img>
+                                <img src="/bar_red.bmp" height="15"
+                                  width="{$graphWidth - $greenWidth}" />
                               </td>
                             </xsl:when>
                             <xsl:otherwise>

@@ -188,26 +188,16 @@
   </xsl:template>
   <xsl:template match="/definitions/column" mode="value">
     <xsl:if test="@tieBreaker">
-      <xsl:value-of select="'1.'" />
-      <xsl:call-template name="tieBreakerZeros">
-        <xsl:with-param name="decimals" select="@tieBreaker" />
-      </xsl:call-template>
+      <xsl:value-of
+        select="substring('1.00000000000000000000', 1, @tieBreaker + 1)" />
     </xsl:if>
     <xsl:value-of select="'1'" />
   </xsl:template>
-  <xsl:template name="tieBreakerZeros">
-    <xsl:param name="decimals" />
-    <xsl:if test="$decimals &gt; 1">
-      <xsl:value-of select="'0'" />
-      <xsl:call-template name="tieBreakerZeros">
-        <xsl:with-param name="decimals" select="$decimals - 1" />
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
   <xsl:template match="/definitions/column" mode="tieBreaker">
+    <xsl:variable name="tieSymbols" select="'➀➁➂➃➄➅➆➇➈➉'" />
     <xsl:choose>
-      <xsl:when test="@tieBreaker &gt;= 1 and @tieBreaker &lt;= 10">
-        <xsl:value-of select="substring('➀➁➂➃➄➅➆➇➈➉', @tieBreaker, 1)" />
+      <xsl:when test="string-length(substring($tieSymbols, @tieBreaker, 1))">
+        <xsl:value-of select="substring($tieSymbols, @tieBreaker, 1)" />
       </xsl:when>
       <xsl:when test="@tieBreaker">
         <xsl:value-of select="concat('(', @tieBreaker, ')')" />
@@ -233,34 +223,24 @@
   <xsl:template match="nominee" mode="poster">
     <xsl:param name="category" />
     <xsl:param name="width" />
-    <xsl:variable name="nominee" select="@name" />
-    <img alt="{$nominee}" width="{$width}">
-      <xsl:attribute name="src">
-        <xsl:value-of
-          select="$definitions/column[@name = $category]/nominee[@name = $nominee]/@img" />
-      </xsl:attribute>
+    <xsl:variable name="name" select="@name" />
+    <img alt="{$name}" width="{$width}"
+      src="{$definitions/column[@name = $category]/nominee[@name = $name]/@img}">
       <xsl:attribute name="title">
         <xsl:call-template name="getOrDefault">
           <xsl:with-param name="value"
-            select="$mappings/column[@name = $category]/nominee[@name = $nominee][last()]/@ballot" />
-          <xsl:with-param name="default" select="$nominee" />
+            select="$mappings/column[@name = $category]/nominee[@name = $name][last()]/@ballot" />
+          <xsl:with-param name="default" select="$name" />
         </xsl:call-template>
       </xsl:attribute>
     </img>
   </xsl:template>
   <xsl:template match="player" mode="playerName">
-    <xsl:value-of select="@lastName" />
-    <xsl:if test="@firstName != '' and @lastName != ''">
-      <xsl:value-of select="', '" />
-    </xsl:if>
-    <xsl:value-of select="@firstName" />
+    <xsl:value-of
+      select="concat(@lastName, substring(', ', 1, 2 * number(string-length(@firstName) and string-length(@lastName))), @firstName)" />
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="playerLink">
-    <a>
-      <xsl:attribute name="href">
-        <xsl:value-of
-          select="concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')" />
-      </xsl:attribute>
+    <a href="{concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')}">
       <xsl:apply-templates select="." mode="playerName" />
     </a>
   </xsl:template>
