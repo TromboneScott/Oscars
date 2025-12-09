@@ -24,7 +24,6 @@
       <meta http-equiv="pragma" content="no-cache" />
       <title><xsl:value-of select="$definitions/@year" /> OSCARS</title>
       <style>body {background-color: PaleGoldenrod}</style>
-
       <script>
         // Sends the HTML request, avoiding cached responses, and performs the action
         function send(action, method, url) {
@@ -239,10 +238,8 @@
     <xsl:value-of
       select="concat(@lastName, substring(', ', 1, 2 * number(string-length(@firstName) and string-length(@lastName))), @firstName)" />
   </xsl:template>
-  <xsl:template match="/results/standings/player" mode="playerLink">
-    <a href="{concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')}">
-      <xsl:apply-templates select="." mode="playerName" />
-    </a>
+  <xsl:template match="/results/standings/player" mode="playerURL">
+    <xsl:value-of select="concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')" />
   </xsl:template>
   <xsl:template name="getOrDefault">
     <xsl:param name="value" />

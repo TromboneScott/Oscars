@@ -467,13 +467,19 @@
       // Load the players from XML files
       const players = [];
       <xsl:for-each select="$results/standings/player">
+        <xsl:variable name="playerName">
+          <xsl:apply-templates select="." mode="playerName"/>
+        </xsl:variable>
+        <xsl:variable name="playerURL">
+          <xsl:apply-templates select="." mode="playerURL"/>
+        </xsl:variable>
         players.push(new Player(
-          '<xsl:value-of select="@firstName"/>',
-          '<xsl:value-of select="@lastName"/>',
-          '<xsl:apply-templates select="." mode="playerLink" />',
-          '<xsl:value-of select="@score"/>',
+          '<xsl:value-of select="@firstName" />',
+          '<xsl:value-of select="@lastName" />',
+          '<xsl:value-of select="concat('&lt;a href=&quot;', $playerURL, '&quot;>', $playerName, '&lt;/a>')" />',
+          '<xsl:value-of select="@score" />',
           <xsl:value-of select="$ballots/player[@firstName = current()/@firstName and @lastName = current()/@lastName]/@time" />,
-          '<xsl:value-of select="@decided"/>'
+          '<xsl:value-of select="@decided" />'
         ));
       </xsl:for-each>
 
