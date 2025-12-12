@@ -35,6 +35,10 @@ Download 100x148 pixel pictures for Google Form for all categories
   b. Click the "Add Image" icon that appears on the nominee
   c. Drag and drop the thumbnail image from the IMDB search
 
+Archive the images in case Google Forms ever goes away
+1. Create a folder for this year's images in the Oscars folder under Google Drive
+2. Right click on each image from the Google Form and save to that folder 
+
 Edit year/data/definitions.xml using Eclipse
 1. Update the year
 2. Update the curtain date and time for the start of the broadcast in local time
