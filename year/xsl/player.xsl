@@ -531,8 +531,8 @@
               // Update the running time
               const timeString = formatTime(elapsed);
               const timeTextHeader = document.getElementById("timeText_header");
-              timeTextHeader.innerHTML =
-                  timeTextHeader.innerHTML.replace(/&lt;u>.*&lt;\/u>/is, `<u>${timeString}</u>`);
+              timeTextHeader.innerHTML = timeTextHeader.innerHTML
+                  .replace(/&lt;u>.*&lt;\/u>/is, `&lt;u>${timeString}&lt;/u>`);
               timeTextHeader.style.backgroundColor =
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
@@ -541,7 +541,8 @@
                     <xsl:if test="$ended">
                       inPlayer.time > elapsed ? 'OVER' :
                     </xsl:if>
-                    (elapsed &lt; inPlayer.time ? '-' : '') + formatTime(Math.abs(elapsed - inPlayer.time));
+                    (elapsed &lt; inPlayer.time ? '-' : '') +
+                        formatTime(Math.abs(elapsed - inPlayer.time));
               </xsl:if>
             </xsl:if>
 
@@ -595,8 +596,8 @@
                 for (let id of ["guess", "actual", "score"])
                   document.getElementById("time_" + id).style.backgroundColor = timeColor;
 
-                for (let decision of
-                    ['W', 'L', 'T'].filter(decision => inPlayer.decided.includes(decision)))
+                for (let decision of Object.keys(decidedColors).filter(decision =>
+                    decision !== "-" &amp;&amp; inPlayer.decided.includes(decision)))
                   document.getElementById("decided_" + decision).style.display = 'inline';
               </xsl:if>
             }
