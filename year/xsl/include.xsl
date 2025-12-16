@@ -23,7 +23,31 @@
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="pragma" content="no-cache" />
       <title><xsl:value-of select="$definitions/@year" /> OSCARS</title>
-      <style>body {background-color: PaleGoldenrod}</style>
+      <style>
+        body {
+          background-color: PaleGoldenrod;
+        }
+
+        .sortable u {
+          text-decoration: underline;
+        }
+
+        .sortable u::before,
+        .sortable u::after {
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        .sortable[data-sort="asc"] u::before,
+        .sortable[data-sort="asc"] u::after {
+          content: "↑";
+        }
+
+        .sortable[data-sort="desc"] u::before,
+        .sortable[data-sort="desc"] u::after {
+          content: "↓";
+        }
+      </style>
       <script>
         // Sends the HTML request, avoiding cached responses, and performs the action
         function send(action, method, url) {

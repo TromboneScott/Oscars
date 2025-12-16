@@ -52,10 +52,8 @@
 
               // Update the table
               this.headers.forEach((header, column) => {
-                const arrow = this.sortColumn === header ? this.sortDescending ? '↓' : '↑' : '';
-                const headerElem = document.getElementById(header + '_header');
-                const origHeader = headerElem.innerHTML.trim();
-                headerElem.innerHTML = arrow + origHeader.match(/&lt;u>.*&lt;\/u>/i)[0] + arrow;
+                document.getElementById(header + '_header').dataset.sort =
+                    this.sortColumn === header ? this.sortDescending ? 'desc' : 'asc' : '';
 
                 this.data.forEach((instance, row) => {
                     this.elements[row][column].innerHTML = instance[header];
@@ -107,13 +105,13 @@
                     <table>
                       <thead>
                         <tr>
-                          <th id="received_header"
+                          <th id="received_header" class="sortable"
                             onclick="table.sort('received')"
                             style="cursor:pointer">
                             <u>Received</u>
                           </th>
-                          <th id="name_header" onclick="table.sort('name')"
-                            style="cursor: pointer">
+                          <th id="name_header" class="sortable"
+                            onclick="table.sort('name')" style="cursor: pointer">
                             <u>Name</u>
                           </th>
                         </tr>
@@ -394,29 +392,32 @@
     <table>
       <thead>
         <tr>
-          <th id="link_header" class="header" onclick="table.sort('link')"
+          <th id="link_header" class="sortable header"
+            onclick="table.sort('link')"
             style="cursor: pointer">
             <u>Name</u>
           </th>
-          <th id="rank_header" onclick="table.sort('rank')"
+          <th id="rank_header" class="sortable" onclick="table.sort('rank')"
             style="cursor: pointer">
             <u>Rank</u>
           </th>
           <xsl:if test="not($ended)">
-            <th id="bpr_header" onclick="table.sort('bpr')"
+            <th id="bpr_header" class="sortable" onclick="table.sort('bpr')"
               style="cursor: pointer">
               <u>BPR</u>
             </th>
-            <th id="wpr_header" onclick="table.sort('wpr')"
+            <th id="wpr_header" class="sortable" onclick="table.sort('wpr')"
               style="cursor: pointer">
               <u>WPR</u>
             </th>
           </xsl:if>
-          <th id="scoreText_header" onclick="table.sort('scoreText')"
+          <th id="scoreText_header" class="sortable"
+            onclick="table.sort('scoreText')"
             style="cursor: pointer">
             <u>Score</u>
           </th>
-          <th id="timeText_header" onclick="table.sort('timeText')"
+          <th id="timeText_header" class="sortable"
+            onclick="table.sort('timeText')"
             style="cursor: pointer">
             <u>Time</u>
           </th>
@@ -534,8 +535,7 @@
               // Update the running time
               const timeString = formatTime(elapsed);
               const timeTextHeader = document.getElementById("timeText_header");
-              timeTextHeader.innerHTML = timeTextHeader.innerHTML
-                  .replace(/&lt;u>.*&lt;\/u>/is, `&lt;u>${timeString}&lt;/u>`);
+              timeTextHeader.querySelector("u").textContent = timeString;
               timeTextHeader.style.backgroundColor =
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
