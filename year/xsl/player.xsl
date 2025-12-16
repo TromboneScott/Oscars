@@ -18,12 +18,15 @@
               this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
                   .map(row => row.getElementsByTagName("td"));
               this.headers = headers;
-              this.sortColumn = (sortColumn => headers.includes(sortColumn) ? sortColumn :
-                  defaultSort)(sessionStorage.getItem('sortColumn'));
-              this.sortDescending = sessionStorage.getItem('sortDescending') === 'true';
               this.data = data;
               this.sortFieldsFunction = sortFieldsFunction;
               this.colorFunction = colorFunction;
+
+              const storedSortColumn = sessionStorage.getItem('sortColumn');
+              const isValidSortColumn = headers.includes(storedSortColumn);
+              this.sortColumn = isValidSortColumn ? storedSortColumn : defaultSort;
+              this.sortDescending = isValidSortColumn &amp;&amp;
+                  sessionStorage.getItem('sortDescending') === 'true';
 
               sessionStorage.removeItem('sortColumn');
               sessionStorage.removeItem('sortDescending');

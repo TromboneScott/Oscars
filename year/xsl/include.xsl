@@ -68,11 +68,11 @@
                   countdownElement.style.display = remaining > 0 ? 'inline' : 'none';
                   countdownRow.innerHTML = units.map(unit => {
                     const cell = remaining &lt;= 0 ? '' : `
-                      <td style="width:100px; text-align:center">
-                        <B style="font-size:60px">${remaining % unit.size}</B>
-                        <br />
+                      &lt;td style="width:100px; text-align:center">
+                        &lt;B style="font-size:60px">${remaining % unit.size}&lt;/B>
+                        &lt;br />
                         ${unit.label}${remaining % unit.size === 1 ? "" : "s"}
-                      </td>
+                      &lt;/td>
                     `;
                     remaining = Math.floor(remaining / unit.size);
                     return cell;
