@@ -53,8 +53,8 @@
               // Update the table
               this.headers.forEach((header, column) => {
                 document.getElementById(header + '_header').dataset.sort =
-                    this.sortColumn === header ? this.sortDescending ? 'desc' : 'asc' : '';
-
+                    this.sortColumn !== header ? '' :
+                        this.sortDescending !== (header === 'scoreText') ? 'desc' : 'asc';
                 this.data.forEach((instance, row) => {
                     this.elements[row][column].innerHTML = instance[header];
                     this.elements[row][column].style.backgroundColor =
