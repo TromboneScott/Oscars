@@ -57,9 +57,11 @@
           http.send();
         }
 
-        // Reads the elapsed time and performs the action
-        function readElapsed(action) {
-          send(action, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
+        // Reads the start time relative to the system clock and performs the action
+        function readStart(action) {
+          send(function() {
+              action(Date.now() / 1000 - Number(this.responseText));
+            }, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
         }
 
         <xsl:if test="not($ended)">
@@ -73,9 +75,7 @@
             const updated = this.getResponseHeader('Last-Modified');
 
             // Get the start time (actual or scheduled) of the broadcast
-            readElapsed(function() {
-              const start = Date.now() / 1000 - parseInt(this.responseText);
-
+            readStart(function(start) {
               <xsl:if test="not($results/awards/@START)">
                 const units = [
                   { label: "Second", size: 60 },

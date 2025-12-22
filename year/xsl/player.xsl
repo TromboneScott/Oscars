@@ -511,11 +511,10 @@
       );
 
       // Calculate and popluate values for player grid
-      readElapsed(function() {
-        const start = Date.now() / 1000 - Math.max(parseInt(this.responseText), 0);
+      readStart(function(start) {
         let next = 0;
         function update() {
-          const tempElapsed = Math.trunc(Date.now() / 1000 - start);
+          const tempElapsed = Math.max(Math.trunc(Date.now() / 1000 - start), 0);
           if (tempElapsed > elapsed) {
             elapsed = tempElapsed;
 
