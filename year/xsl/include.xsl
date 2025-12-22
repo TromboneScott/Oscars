@@ -49,31 +49,29 @@
         }
       </style>
       <script>
-        // Sends the HTML request, avoiding cached responses, and performs the action
-        function send(action, method, url) {
+        // Sends the HTTP request, avoiding cached responses, and performs the action
+        function http(url, onLoad, method = "GET") {
           const http = new XMLHttpRequest();
-          http.onload = action;
+          http.onload = () => onLoad(http);
           http.open(method, `${url}?_=${Date.now()}`);
           http.send();
         }
 
         // Reads the start time relative to the system clock and performs the action
         function readStart(action) {
-          send(function() {
-              action(Date.now() / 1000 - Number(this.responseText));
-            }, "GET", "<xsl:value-of select="$rootDir"/>" + "data/elapsed.txt");
+          http("<xsl:value-of select="$rootDir"/>data/elapsed.txt",
+            http => action(Date.now() / 1000 - Number(http.responseText)));
         }
 
         <xsl:if test="not($ended)">
-          // Reads the HTML headers of the results files to provide the last-modified timestamp
+          // Reads the last-modified timestamp of the results file and performs the action
           function readModified(action) {
-            send(action, "HEAD", "<xsl:value-of select="$resultsFile"/>");
+            http("<xsl:value-of select="$resultsFile"/>",
+              http => action(http.getResponseHeader("Last-Modified")), "HEAD");
           }
 
           // Get the last modified timestamp
-          readModified(function() {
-            const updated = this.getResponseHeader('Last-Modified');
-
+          readModified(function(updated) {
             // Get the start time (actual or scheduled) of the broadcast
             readStart(function(start) {
               <xsl:if test="not($results/awards/@START)">
@@ -112,8 +110,8 @@
               setInterval(function() {
                 if ((++skips >= 60 / interval || start - Date.now() / 1000 &lt; 10 * 60)
                     &amp;&amp; document.visibilityState === "visible")
-                  readModified(function() {
-                    if (this.getResponseHeader('Last-Modified') !== updated) {
+                  readModified(function(latest) {
+                    if (latest !== updated) {
                       sessionStorage.setItem('scrollPosition', window.scrollY);
                       <xsl:value-of select="$storeSortOrder"/>
                       window.location.reload();
