@@ -53,7 +53,7 @@
         function send(action, method, url) {
           const http = new XMLHttpRequest();
           http.onload = action;
-          http.open(method, url + "?_=" + new Date().getTime());
+          http.open(method, `${url}?_=${Date.now()}`);
           http.send();
         }
 
@@ -74,7 +74,7 @@
 
             // Get the start time (actual or scheduled) of the broadcast
             readElapsed(function() {
-              const start = new Date().getTime() / 1000 - parseInt(this.responseText);
+              const start = Date.now() / 1000 - parseInt(this.responseText);
 
               <xsl:if test="not($results/awards/@START)">
                 const units = [
@@ -88,7 +88,7 @@
 
                 // Repeatedly update the countdown timer
                 function update() {
-                  let remaining = Math.floor(start - new Date().getTime() / 1000);
+                  let remaining = Math.floor(start - Date.now() / 1000);
                   countdownElement.style.display = remaining > 0 ? 'inline' : 'none';
                   countdownRow.innerHTML = units.map(unit => {
                     const cell = remaining &lt;= 0 ? '' : `
@@ -110,7 +110,7 @@
               const interval = 3;
               let skips = 0;
               setInterval(function() {
-                if ((++skips >= 60 / interval || start - new Date().getTime() / 1000 &lt; 10 * 60)
+                if ((++skips >= 60 / interval || start - Date.now() / 1000 &lt; 10 * 60)
                     &amp;&amp; document.visibilityState === "visible")
                   readModified(function() {
                     if (this.getResponseHeader('Last-Modified') !== updated) {

@@ -52,7 +52,7 @@
 
               // Update the table
               this.headers.forEach((header, column) => {
-                document.getElementById(header + '_header').dataset.sort =
+                document.getElementById(`${header}_header`).dataset.sort =
                     this.sortColumn !== header ? '' :
                         this.sortDescending !== (header === 'scoreText') ? 'desc' : 'asc';
                 this.data.forEach((instance, row) => {
@@ -340,21 +340,9 @@
                         select="$definitions/column[@name = 'Time']"
                         mode="tieBreaker" />
                     </td>
-                    <td id="time_guess">
-                      <center>
-                        <A id="time_player" />
-                      </center>
-                    </td>
-                    <td id="time_actual">
-                      <center>
-                        <A id="time_value" />
-                      </center>
-                    </td>
-                    <td id="time_score">
-                      <center>
-                        <A id="time_difference" />
-                      </center>
-                    </td>
+                    <td id="totalTime_guess" style="text-align: center" />
+                    <td id="totalTime_actual" style="text-align: center" />
+                    <td id="totalTime_score" style="text-align: center" />
                   </tr>
                 </tfoot>
               </table>
@@ -486,7 +474,7 @@
         // Find the instance for this player
         const inPlayer = players.find(player => player.firstName === '<xsl:value-of select="$inPlayer/@firstName" />'
             &amp;&amp; player.lastName === '<xsl:value-of select="$inPlayer/@lastName" />');
-        document.getElementById("time_player").innerHTML = inPlayer.timeText;
+        document.getElementById("totalTime_guess").textContent = inPlayer.timeText;
       </xsl:if>
 
       let elapsed = -1;
@@ -524,10 +512,10 @@
 
       // Calculate and popluate values for player grid
       readElapsed(function() {
-        const start = new Date().getTime() / 1000 - Math.max(parseInt(this.responseText), 0);
+        const start = Date.now() / 1000 - Math.max(parseInt(this.responseText), 0);
         let next = 0;
         function update() {
-          const tempElapsed = Math.trunc(new Date().getTime() / 1000 - start);
+          const tempElapsed = Math.trunc(Date.now() / 1000 - start);
           if (tempElapsed > elapsed) {
             elapsed = tempElapsed;
 
@@ -539,12 +527,12 @@
               timeTextHeader.style.backgroundColor =
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
-                document.getElementById("time_value").innerHTML = timeString;
-                document.getElementById("time_difference").innerHTML =
+                document.getElementById("totalTime_actual").textContent = timeString;
+                document.getElementById("totalTime_score").textContent =
                     <xsl:if test="$ended">
                       inPlayer.time > elapsed ? 'OVER' :
                     </xsl:if>
-                    (elapsed &lt; inPlayer.time ? '-' : '') +
+                    (inPlayer.time > elapsed ? '-' : '') +
                         formatTime(Math.abs(elapsed - inPlayer.time));
               </xsl:if>
             </xsl:if>
@@ -584,11 +572,11 @@
 
               // Update the player page
               <xsl:if test="$inPlayer">
-                document.getElementById('player_rank').innerHTML = inPlayer.rank;
+                document.getElementById('player_rank').textContent = inPlayer.rank;
                 <xsl:if test="not($ended)">
-                  document.getElementById('possible_rank').innerHTML =
+                  document.getElementById('possible_rank').textContent =
                       inPlayer.wpr === inPlayer.bpr ? 'Rank is Final' :
-                          'Possible Final Rank: ' + inPlayer.bpr + ' to ' + inPlayer.wpr;
+                          `Possible Final Rank: ${inPlayer.bpr} to ${inPlayer.wpr}`;
                 </xsl:if>
 
                 const timeColor =
@@ -596,12 +584,12 @@
                       inPlayer.time > elapsed ? "red" :
                     </xsl:if>
                     inPlayer.time > elapsed ? "silver" : "limegreen";
-                for (let id of ["guess", "actual", "score"])
-                  document.getElementById("time_" + id).style.backgroundColor = timeColor;
+                document.querySelectorAll('[id^="totalTime_"]')
+                    .forEach(element => element.style.backgroundColor = timeColor);
 
-                for (let decision of Object.keys(decidedColors).filter(decision =>
-                    decision !== "-" &amp;&amp; inPlayer.decided.includes(decision)))
-                  document.getElementById("decided_" + decision).style.display = 'inline';
+                Object.keys(decidedColors).filter(decision => decision !== "-" &amp;&amp;
+                    inPlayer.decided.includes(decision)).forEach(decision =>
+                       document.getElementById(`decided_${decision}`).style.display = 'inline');
               </xsl:if>
             }
           }
