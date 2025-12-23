@@ -49,18 +49,23 @@
         }
       </style>
       <script>
+        // Gets the current time in seconds
+        function now() {
+          return Date.now() / 1000;
+        }
+
         // Sends the HTTP request, avoiding cached responses, and performs the action
         function http(url, onLoad, method = "GET") {
           const http = new XMLHttpRequest();
           http.onload = () => onLoad(http);
-          http.open(method, `${url}?_=${Date.now()}`);
+          http.open(method, `${url}?_=${now()}`);
           http.send();
         }
 
         // Reads the start time relative to the system clock and performs the action
         function readStart(action) {
           http("<xsl:value-of select="$rootDir"/>data/elapsed.txt",
-            http => action(Date.now() / 1000 - Number(http.responseText)));
+            http => action(now() - Number(http.responseText)));
         }
 
         <xsl:if test="not($ended)">
@@ -86,7 +91,7 @@
 
                 // Repeatedly update the countdown timer
                 function update() {
-                  let remaining = Math.floor(start - Date.now() / 1000);
+                  let remaining = Math.floor(start - now());
                   countdownElement.style.display = remaining > 0 ? 'inline' : 'none';
                   countdownRow.innerHTML = units.map(unit => {
                     const cell = remaining &lt;= 0 ? '' : `
@@ -108,7 +113,7 @@
               const interval = 3;
               let skips = 0;
               setInterval(function() {
-                if ((++skips >= 60 / interval || start - Date.now() / 1000 &lt; 10 * 60)
+                if ((++skips >= 60 / interval || start - now() &lt; 10 * 60)
                     &amp;&amp; document.visibilityState === "visible")
                   readModified(function(latest) {
                     if (latest !== updated) {
