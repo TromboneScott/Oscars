@@ -440,6 +440,9 @@
           "T": "tan"
       };
 
+      const ended = <xsl:value-of select="$ended"/>;
+      let elapsed = -1;
+
       class Player {
         static #nextId = 0;
 
@@ -453,6 +456,10 @@
           this.time = time;
           this.timeText = formatTime(time);
           this.decided = decided.split('');
+        }
+
+        timeColor() {
+          return this.time > elapsed ? ended ? "red" : "silver" : "limegreen";
         }
       }
 
@@ -477,16 +484,9 @@
         document.getElementById("totalTime_guess").textContent = inPlayer.timeText;
       </xsl:if>
 
-      let elapsed = -1;
-
       const table = new SortableTable(
           "rankings",
-          ["link", "rank",
-              <xsl:if test="not($ended)">
-                "bpr", "wpr",
-              </xsl:if>
-              "scoreText", "timeText"
-          ],
+          ["link", "rank", ...(ended ? [] : ["bpr", "wpr"]), "scoreText", "timeText"],
           "rank",
           players,
           sort =>
@@ -497,17 +497,13 @@
               ['rank', 'bpr', 'wpr'],
           (player, field) =>
               field === "link" ?
-                    <xsl:if test="$inPlayer">
-                      true ? decidedColors[inPlayer.decided[player.id]] || "silver" :
-                    </xsl:if>
-                    "white" :
-                field === "timeText" ?
-                    <xsl:if test="$ended">
-                      player.time > elapsed ? "red" :
-                    </xsl:if>
-                    player.time > elapsed ? "silver" : "limegreen" :
-                (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
-                   "silver" : "transparent"
+                  <xsl:if test="$inPlayer">
+                    true ? decidedColors[inPlayer.decided[player.id]] || "silver" :
+                  </xsl:if>
+                  "white" :
+              field === "timeText" ? player.timeColor() :
+              (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
+                  "silver" : "transparent"
       );
 
       // Calculate and popluate values for player grid
@@ -528,11 +524,9 @@
               <xsl:if test="$inPlayer">
                 document.getElementById("totalTime_actual").textContent = timeString;
                 document.getElementById("totalTime_score").textContent =
-                    <xsl:if test="$ended">
-                      inPlayer.time > elapsed ? 'OVER' :
-                    </xsl:if>
-                    (inPlayer.time > elapsed ? '-' : '') +
-                        formatTime(Math.abs(elapsed - inPlayer.time));
+                    ended &amp;&amp; inPlayer.time > elapsed ? 'OVER' :
+                        (inPlayer.time > elapsed ? '-' : '') +
+                            formatTime(Math.abs(elapsed - inPlayer.time));
               </xsl:if>
             </xsl:if>
 
@@ -572,20 +566,12 @@
               // Update the player page
               <xsl:if test="$inPlayer">
                 document.getElementById('player_rank').textContent = inPlayer.rank;
-                <xsl:if test="not($ended)">
+                if (!ended)
                   document.getElementById('possible_rank').textContent =
                       inPlayer.wpr === inPlayer.bpr ? 'Rank is Final' :
                           `Possible Final Rank: ${inPlayer.bpr} to ${inPlayer.wpr}`;
-                </xsl:if>
-
-                const timeColor =
-                    <xsl:if test="$ended">
-                      inPlayer.time > elapsed ? "red" :
-                    </xsl:if>
-                    inPlayer.time > elapsed ? "silver" : "limegreen";
                 document.querySelectorAll('[id^="totalTime_"]')
-                    .forEach(element => element.style.backgroundColor = timeColor);
-
+                    .forEach(element => element.style.backgroundColor = inPlayer.timeColor());
                 Object.keys(decidedColors).filter(decision => decision !== "-" &amp;&amp;
                     inPlayer.decided.includes(decision)).forEach(decision =>
                        document.getElementById(`decided_${decision}`).style.display = 'inline');

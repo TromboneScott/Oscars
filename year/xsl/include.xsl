@@ -10,7 +10,7 @@
     select="document(concat($rootDir, 'data/mappings.xml'))/mappings" />
   <xsl:variable name="ballots"
     select="document(concat($rootDir, 'data/ballots.xml'))/ballots" />
-  <xsl:variable name="ended" select="$results/awards/@END" />
+  <xsl:variable name="ended" select="boolean($results/awards/@END)" />
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="header">
