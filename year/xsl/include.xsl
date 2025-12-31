@@ -27,25 +27,27 @@
         body {
           background-color: PaleGoldenrod;
         }
-
         .sortable u {
           text-decoration: underline;
         }
-
         .sortable u::before,
         .sortable u::after {
           text-decoration: none;
           display: inline-block;
         }
-
         .sortable[data-sort="asc"] u::before,
         .sortable[data-sort="asc"] u::after {
           content: "↑";
         }
-
         .sortable[data-sort="desc"] u::before,
         .sortable[data-sort="desc"] u::after {
           content: "↓";
+        }
+        .decision {
+          display: none;
+        }
+        .decision.visible {
+          display: inline;
         }
       </style>
       <script>

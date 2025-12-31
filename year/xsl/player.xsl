@@ -350,16 +350,15 @@
               <br />
               <br />
               <h3 style="display: inline">Rankings</h3>
-              <a id="decided_L" style="display: none">
+              <a class="decision" data-decision="L">
                 <br /> All players in <font color="red">red</font> will finish
-                above <xsl:value-of
-                  select="$playerName" />
+                above <xsl:value-of select="$playerName" />
               </a>
-              <a id="decided_W" style="display: none">
+              <a class="decision" data-decision="W">
                 <br /> All players in <font color="green">green</font> will
                 finish below <xsl:value-of select="$playerName" />
               </a>
-              <a id="decided_T" style="display: none">
+              <a class="decision" data-decision="T">
                 <br /> All players in <font color="SaddleBrown">brown</font>
                 will finish tied with <xsl:value-of select="$playerName" />
               </a>
@@ -433,6 +432,13 @@
             String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
       }
 
+      const sortColumns = {
+        link: ['lastName', 'firstName'],
+        bpr: ['bpr', 'rank', 'wpr'],
+        wpr: ['wpr', 'rank', 'bpr'],
+        timeText: ['time']
+      };
+
       const decidedColors = {
           "-": "white",
           "W": "limegreen",
@@ -489,18 +495,10 @@
           ["link", "rank", ...(ended ? [] : ["bpr", "wpr"]), "scoreText", "timeText"],
           "rank",
           players,
-          sort =>
-              sort === 'link' ? ['lastName', 'firstName'] :
-              sort === 'bpr' ? ['bpr', 'rank', 'wpr'] :
-              sort === 'wpr' ? ['wpr', 'rank', 'bpr'] :
-              sort === 'timeText' ? ['time'] :
-              ['rank', 'bpr', 'wpr'],
+          sort => sortColumns[sort] || ['rank', 'bpr', 'wpr'],
           (player, field) =>
-              field === "link" ?
-                  <xsl:if test="$inPlayer">
-                    true ? decidedColors[inPlayer.decided[player.id]] || "silver" :
-                  </xsl:if>
-                  "white" :
+              field === "link" ? typeof inPlayer === 'undefined' ? "white" :
+                  decidedColors[inPlayer.decided[player.id]] || "silver" :
               field === "timeText" ? player.timeColor() :
               (field === "bpr" || field === "wpr") &amp;&amp; player.bpr === player.wpr ?
                   "silver" : "transparent"
@@ -572,9 +570,8 @@
                           `Possible Final Rank: ${inPlayer.bpr} to ${inPlayer.wpr}`;
                 document.querySelectorAll('[id^="totalTime_"]')
                     .forEach(element => element.style.backgroundColor = inPlayer.timeColor());
-                Object.keys(decidedColors).filter(decision => decision !== "-" &amp;&amp;
-                    inPlayer.decided.includes(decision)).forEach(decision =>
-                       document.getElementById(`decided_${decision}`).style.display = 'inline');
+                document.querySelectorAll('.decision').forEach(element => element.classList
+                    .toggle('visible', inPlayer.decided.includes(element.dataset.decision)));
               </xsl:if>
             }
           }
