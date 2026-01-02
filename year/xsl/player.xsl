@@ -351,16 +351,16 @@
               <br />
               <h3 style="display: inline">Rankings</h3>
               <a class="decision" data-decision="L">
-                <br /> All players in <font color="red">red</font> will finish
-                above <xsl:value-of select="$playerName" />
+                <br />Players in <font color="red">red</font> will finish above <xsl:value-of
+                  select="$playerName" />
               </a>
               <a class="decision" data-decision="W">
-                <br /> All players in <font color="green">green</font> will
-                finish below <xsl:value-of select="$playerName" />
+                <br />Players in <font color="green">green</font> will finish
+                below <xsl:value-of select="$playerName" />
               </a>
               <a class="decision" data-decision="T">
-                <br /> All players in <font color="SaddleBrown">brown</font>
-                will finish tied with <xsl:value-of select="$playerName" />
+                <br />Players in <font color="SaddleBrown">brown</font> will
+                finish tied with <xsl:value-of select="$playerName" />
               </a>
               <br />
               <br />
