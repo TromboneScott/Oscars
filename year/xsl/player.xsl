@@ -12,19 +12,21 @@
       </xsl:call-template>
       <body>
         <script>
+          const players = [];
+          const nameSort = ['lastName', 'firstName'];
+          
           // Table that can sort and update the underlying HTML table
           class SortableTable {
-            constructor(id, headers, defaultSort, data, sortFieldsFunction, colorFunction) {
-              this.elements = Array.from(document.getElementById(id).getElementsByTagName("tr"))
-                  .map(row => row.getElementsByTagName("td"));
+            constructor(headers, defaultSort, sortFieldsFunction, colorFunction) {
+              this.elements = Array.from(document.getElementById("players")
+                  .getElementsByTagName("tr")).map(row => row.getElementsByTagName("td"));
               this.headers = headers;
-              this.data = data;
               this.sortFieldsFunction = sortFieldsFunction;
               this.colorFunction = colorFunction;
 
               const storedSortColumn = sessionStorage.getItem('sortColumn');
               const isValidSortColumn = headers.includes(storedSortColumn);
-              this.sortColumn = isValidSortColumn ? storedSortColumn : defaultSort;
+              this.sortColumn = isValidSortColumn ? storedSortColumn : headers[defaultSort];
               this.sortDescending = isValidSortColumn &amp;&amp;
                   sessionStorage.getItem('sortDescending') === 'true';
 
@@ -42,8 +44,8 @@
 
               // Sort the data
               const sortFields = this.sortFieldsFunction(this.sortColumn);
-              const allFields = sortFields.concat(['lastName', 'firstName']);
-              this.data.sort((a, b) => {
+              const allFields = sortFields.concat(nameSort);
+              players.sort((a, b) => {
                 return allFields.reduce((total, field, index) => total !== 0 ? total :
                     (this.sortDescending &amp;&amp; index &lt; sortFields.length ? -1 : 1) *
                     (typeof a[field] === 'number' ? a[field] - b[field] :
@@ -55,7 +57,7 @@
                 document.getElementById(`${header}_header`).dataset.sort =
                     this.sortColumn !== header ? '' :
                         this.sortDescending !== (header === 'scoreText') ? 'desc' : 'asc';
-                this.data.forEach((instance, row) => {
+                players.forEach((instance, row) => {
                     this.elements[row][column].innerHTML = instance[header];
                     this.elements[row][column].style.backgroundColor =
                         this.colorFunction(instance, header);
@@ -116,7 +118,7 @@
                           </th>
                         </tr>
                       </thead>
-                      <tbody id="ballots">
+                      <tbody id="players">
                         <xsl:for-each select="$results/ballots/player">
                           <tr>
                             <td style="padding-left: 10px; padding-right: 10px" />
@@ -145,9 +147,8 @@
                       }
 
                       // Load the ballots from XML files
-                      const ballots = [];
                       <xsl:for-each select="$results/ballots/player">
-                        ballots.push(new Ballot(
+                        players.push(new Ballot(
                             '<xsl:value-of select="@timestamp"/>',
                             '<xsl:value-of select="@firstName"/>',
                             '<xsl:value-of select="@lastName"/>',
@@ -156,11 +157,9 @@
                       </xsl:for-each>
 
                       const table = new SortableTable(
-                          "ballots",
                           ["received", "name"],
-                          "received",
-                          ballots,
-                          sort => sort === 'name' ? ['lastName', 'firstName'] : [sort],
+                          0,
+                          sort => sort === 'name' ? nameSort : [sort],
                           (ballot, field) => 'silver'
                       );
 
@@ -410,7 +409,7 @@
           </th>
         </tr>
       </thead>
-      <tbody id="rankings">
+      <tbody id="players">
         <xsl:for-each select="$results/standings/player">
           <tr>
             <td class="header" />
@@ -433,7 +432,7 @@
       }
 
       const sortColumns = {
-        link: ['lastName', 'firstName'],
+        link: nameSort,
         bpr: ['bpr', 'rank', 'wpr'],
         wpr: ['wpr', 'rank', 'bpr'],
         timeText: ['time']
@@ -470,7 +469,6 @@
       }
 
       // Load the players from XML files
-      const players = [];
       <xsl:for-each select="$results/standings/player">
         players.push(new Player(
           '<xsl:value-of select="@firstName" />',
@@ -491,10 +489,8 @@
       </xsl:if>
 
       const table = new SortableTable(
-          "rankings",
           ["link", "rank", ...(ended ? [] : ["bpr", "wpr"]), "scoreText", "timeText"],
-          "rank",
-          players,
+          1,
           sort => sortColumns[sort] || ['rank', 'bpr', 'wpr'],
           (player, field) =>
               field === "link" ? typeof inPlayer === 'undefined' ? "white" :
