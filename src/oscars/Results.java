@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -37,9 +38,8 @@ public class Results {
 
     public static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
 
-    public static final ZonedDateTime CURTAIN = LocalDateTime
-            .parse(XMLFile.readDefinitionsFile().getAttributeValue("curtain"))
-            .atZone(ZoneId.systemDefault());
+    private static final LocalDateTime CURTAIN = LocalDateTime
+            .parse(XMLFile.readDefinitionsFile().getAttributeValue("curtain"));
 
     private static final XMLFile RESULTS_FILE = new XMLFile(Directory.DATA, "results.xml");
 
@@ -179,12 +179,8 @@ public class Results {
 
     /** Get the elapsed time in seconds since the start of the broadcast */
     public long elapsedTimeSeconds() {
-        return Math.max(0, TimeUnit.MILLISECONDS.toSeconds(millisSinceStart()));
-    }
-
-    /** Get the number of milliseconds since the start of the broadcast (can be negative) */
-    public long millisSinceStart() {
-        return timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START);
+        return Math.max(0, TimeUnit.MILLISECONDS
+                .toSeconds(timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START)));
     }
 
     private Long timeInMillis(ShowTimeType inShowTimeType) {
@@ -216,13 +212,22 @@ public class Results {
 
     /** Write the elapsed time of the broadcast */
     private void writeElapsed() throws IOException {
-        writeElapsed(Duration.between(showTimes.getOrDefault(ShowTimeType.START, CURTAIN),
-                showTimes.getOrDefault(ShowTimeType.END, ZonedDateTime.now())));
+        if (showTimes.containsKey(ShowTimeType.START))
+            writeElapsed(Duration
+                    .between(showTimes.get(ShowTimeType.START),
+                            showTimes.getOrDefault(ShowTimeType.END, ZonedDateTime.now()))
+                    .getSeconds());
+        else
+            writeCountdown();
     }
 
-    /** Write the elapsed time of the broadcast */
-    public static void writeElapsed(Duration inElapsed) throws IOException {
-        Files.write(String.valueOf(inElapsed.getSeconds()).getBytes(),
-                new File(Directory.DATA, "elapsed.txt"));
+    /** Write the countdown until the broadcast */
+    public static void writeCountdown() throws IOException {
+        writeElapsed(ChronoUnit.SECONDS.between(CURTAIN, LocalDateTime.now()));
+    }
+
+    /** Write the time until (negative) or since (positive) the start of the broadcast */
+    private static void writeElapsed(long inElapsed) throws IOException {
+        Files.write(String.valueOf(inElapsed).getBytes(), new File(Directory.DATA, "elapsed.txt"));
     }
 }

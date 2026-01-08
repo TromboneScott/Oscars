@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
@@ -94,7 +93,7 @@ class Ballots {
     private static void writeNewBallots() throws Exception {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(Results.UPDATE_TIME))
             try {
-                Results.writeElapsed(Duration.between(Results.CURTAIN, ZonedDateTime.now()));
+                Results.writeCountdown();
                 ImmutableCollection<Ballot> answers = new Ballots().answers();
                 LocalDateTime maxTimestamp = answers.stream().map(Ballots::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
