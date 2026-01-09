@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -38,8 +38,8 @@ public class Results {
 
     public static final long UPDATE_TIME = TimeUnit.SECONDS.toMillis(10);
 
-    private static final LocalDateTime CURTAIN = LocalDateTime
-            .parse(XMLFile.readDefinitionsFile().getAttributeValue("curtain"));
+    private static final Instant CURTAIN = OffsetDateTime
+            .parse(XMLFile.readDefinitionsFile().getAttributeValue("curtain")).toInstant();
 
     private static final XMLFile RESULTS_FILE = new XMLFile(Directory.DATA, "results.xml");
 
@@ -213,21 +213,20 @@ public class Results {
     /** Write the elapsed time of the broadcast */
     private void writeElapsed() throws IOException {
         if (showTimes.containsKey(ShowTimeType.START))
-            writeElapsed(Duration
-                    .between(showTimes.get(ShowTimeType.START),
-                            showTimes.getOrDefault(ShowTimeType.END, ZonedDateTime.now()))
-                    .getSeconds());
+            writeElapsed(Duration.between(showTimes.get(ShowTimeType.START),
+                    showTimes.getOrDefault(ShowTimeType.END, ZonedDateTime.now())));
         else
             writeCountdown();
     }
 
     /** Write the countdown until the broadcast */
     public static void writeCountdown() throws IOException {
-        writeElapsed(ChronoUnit.SECONDS.between(CURTAIN, LocalDateTime.now()));
+        writeElapsed(Duration.between(CURTAIN, Instant.now()));
     }
 
     /** Write the time until (negative) or since (positive) the start of the broadcast */
-    private static void writeElapsed(long inElapsed) throws IOException {
-        Files.write(String.valueOf(inElapsed).getBytes(), new File(Directory.DATA, "elapsed.txt"));
+    private static void writeElapsed(Duration inElapsed) throws IOException {
+        Files.write(String.valueOf(inElapsed.getSeconds()).getBytes(),
+                new File(Directory.DATA, "elapsed.txt"));
     }
 }

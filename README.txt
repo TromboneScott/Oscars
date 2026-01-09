@@ -42,6 +42,8 @@ Archive the images in case Google Forms ever goes away
 Edit year/data/definitions.xml using Eclipse
 1. Update the year
 2. Update the curtain date and time for the start of the broadcast in local time
+  a. For MDT use the format: YYYY-MM-DDTHH:mm-06:00
+  b. For MST use the format: YYYY-MM-DDTHH:mm-07:00
 3. Update the categories as a few change each year
 4. Make sure the categories are in the same order as the Google Form
 5. Update the tieBreaker values as indicated in Google Form steps above

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="../xsl/definitions.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
-<definitions year="2026" curtain="2026-03-15T17:00">
+<definitions year="2026" curtain="2026-03-15T17:00-06:00">
   <column name="Timestamp" />
   <column name="First Name" />
   <column name="Last Name" />

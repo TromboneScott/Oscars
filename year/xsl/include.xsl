@@ -90,10 +90,14 @@
                 ];
                 const countdownElement = document.getElementById("countdown");
                 const countdownRow = document.getElementById("countdown_row");
+                const startTimezoneOffset =
+                    new Date('<xsl:value-of select="$definitions/@curtain" />')
+                        .getTimezoneOffset();
 
                 // Repeatedly update the countdown timer
                 function update() {
-                  let remaining = Math.floor(start - now());
+                  let remaining = Math.floor(start - now()) +
+                      (new Date().getTimezoneOffset() - startTimezoneOffset) * 60;
                   countdownElement.style.display = remaining > 0 ? 'inline' : 'none';
                   countdownRow.innerHTML = units.map(unit => {
                     const cell = remaining &lt;= 0 ? '' : `
