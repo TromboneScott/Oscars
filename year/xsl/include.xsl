@@ -96,8 +96,7 @@
 
                 // Repeatedly update the countdown timer
                 function update() {
-                  let remaining = Math.floor(start - now()) +
-                      (new Date().getTimezoneOffset() - startTimezoneOffset) * 60;
+                  let remaining = Math.floor(start - now());
                   countdownElement.style.display = remaining > 0 ? 'inline' : 'none';
                   countdownRow.innerHTML = units.map(unit => {
                     const cell = remaining &lt;= 0 ? '' : `
@@ -110,6 +109,8 @@
                     remaining = Math.floor(remaining / unit.size);
                     return cell;
                   }).reverse().join("");
+                  document.getElementById("dst").style.display = new Date().getTimezoneOffset() ===
+                      startTimezoneOffset ? 'none' : 'inline';
                 }
                 update();
                 setInterval(update, 500);
@@ -202,6 +203,10 @@
             <table style="table-layout: fixed; background-color: white">
               <tr id="countdown_row" />
             </table>
+            <i id="dst">
+              (Includes Daylight Saving Time)
+              <br />
+            </i>
             <br />
           </A>
         </xsl:if>
