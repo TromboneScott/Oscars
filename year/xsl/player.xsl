@@ -57,10 +57,10 @@
                 document.getElementById(`${header}_header`).dataset.sort =
                     this.sortColumn !== header ? '' :
                         this.sortDescending !== (header === 'scoreText') ? 'desc' : 'asc';
-                players.forEach((instance, row) => {
-                    this.elements[row][column].innerHTML = instance[header];
+                players.forEach((player, row) => {
+                    this.elements[row][column].innerHTML = player[header];
                     this.elements[row][column].style.backgroundColor =
-                        this.colorFunction(instance, header);
+                        this.colorFunction(player, header);
                 });
               });
             }
@@ -128,7 +128,7 @@
                       </tbody>
                     </table>
                     <script>
-                      class Ballot {
+                      class Player {
                         constructor(timestamp, firstName, lastName, name) {
                           this.timestamp = timestamp;
                           this.received = new Intl.DateTimeFormat("en-US", {
@@ -146,9 +146,9 @@
                         }
                       }
 
-                      // Load the ballots from XML files
+                      // Load the player ballots from XML files
                       <xsl:for-each select="$results/ballots/player">
-                        players.push(new Ballot(
+                        players.push(new Player(
                             '<xsl:value-of select="@timestamp"/>',
                             '<xsl:value-of select="@firstName"/>',
                             '<xsl:value-of select="@lastName"/>',
@@ -160,7 +160,7 @@
                           ["received", "name"],
                           0,
                           sort => sort === 'name' ? nameSort : [sort],
-                          (ballot, field) => 'silver'
+                          (player, field) => 'silver'
                       );
 
                       table.sort();
