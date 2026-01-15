@@ -199,14 +199,14 @@
           <A id="countdown" style="display: none">
             <B style="font-size: 30px">Oscars Countdown</B>
             <br />
+            <i id="dst">
+              Includes daylight saving time change
+              <br />
+            </i>
             <br />
             <table style="table-layout: fixed; background-color: white">
               <tr id="countdown_row" />
             </table>
-            <i id="dst">
-              (Includes Daylight Saving Time)
-              <br />
-            </i>
             <br />
           </A>
         </xsl:if>
