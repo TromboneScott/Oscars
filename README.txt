@@ -8,8 +8,9 @@ Create Google Form:
     - Even years: 3 = Actress, 4 = Supporting Actor
     - Odd years: 3 = Actor, 4 = Supporting Actress
     i. Update rule #4 in Contest Info
-    ii. Add/Delete descriptions of the acting categories
-  b. Update the broadcast date
+    ii. Click Options (3 buttons) on bottom-right of question to 
+        Add/Delete descriptions of the acting categories
+  b. Update the ballot deadline date
   c. Replace "Last Year's Winner"
     i. Use a picture from the Oscars awards ceremony
     ii. Use the nominee description from last year
