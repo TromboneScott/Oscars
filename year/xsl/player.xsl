@@ -427,8 +427,9 @@
     <script>
       // Formats the time value (in seconds) as: H:MM:SS
       function formatTime(seconds) {
-        return [seconds / 60 / 60, seconds / 60 % 60, seconds % 60].map((value, index) =>
-            String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
+        return seconds &lt; 0 ? '-' + formatTime(-seconds) :
+            [seconds / 60 / 60, seconds / 60 % 60, seconds % 60].map((value, index) =>
+                String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
       }
 
       const sortColumns = {
@@ -504,7 +505,7 @@
       readStart(function(start) {
         let next = 0;
         function update() {
-          const tempElapsed = Math.max(Math.trunc((Date.now() - start) / 1000), 0);
+          const tempElapsed = Math.max(Math.floor((Date.now() - start) / 1000), 0);
           if (tempElapsed > elapsed) {
             elapsed = tempElapsed;
 
@@ -517,10 +518,8 @@
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
                 document.getElementById("totalTime_actual").textContent = timeString;
-                document.getElementById("totalTime_score").textContent =
-                    ended &amp;&amp; inPlayer.time > elapsed ? 'OVER' :
-                        (inPlayer.time > elapsed ? '-' : '') +
-                            formatTime(Math.abs(elapsed - inPlayer.time));
+                document.getElementById("totalTime_score").textContent = ended &amp;&amp;
+                    inPlayer.time > elapsed ? 'OVER' : formatTime(elapsed - inPlayer.time);
               </xsl:if>
             </xsl:if>
 
