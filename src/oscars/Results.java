@@ -226,7 +226,7 @@ public class Results {
 
     /** Write the time until (negative) or since (positive) the start of the broadcast */
     private static void writeElapsed(Duration inElapsed) throws IOException {
-        Files.write(String.valueOf(inElapsed.getSeconds()).getBytes(),
+        Files.write(String.valueOf(inElapsed.toMillis()).getBytes(),
                 new File(Directory.DATA, "elapsed.txt"));
     }
 }

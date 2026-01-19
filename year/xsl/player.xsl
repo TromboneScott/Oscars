@@ -504,7 +504,7 @@
       readStart(function(start) {
         let next = 0;
         function update() {
-          const tempElapsed = Math.max(Math.trunc(now() - start), 0);
+          const tempElapsed = Math.max(Math.trunc(Date.now() - start), 0) / 1000;
           if (tempElapsed > elapsed) {
             elapsed = tempElapsed;
 
