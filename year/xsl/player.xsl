@@ -159,7 +159,7 @@
                       const table = new SortableTable(
                           ["received", "name"],
                           0,
-                          sort => sort === 'name' ? nameSort : [sort],
+                          sort => sort === 'name' ? nameSort : ['timestamp'],
                           (player, field) => 'silver'
                       );
 
@@ -504,7 +504,7 @@
       readStart(function(start) {
         let next = 0;
         function update() {
-          const tempElapsed = Math.max(Math.trunc(Date.now() - start), 0) / 1000;
+          const tempElapsed = Math.max(Math.trunc((Date.now() - start) / 1000), 0);
           if (tempElapsed > elapsed) {
             elapsed = tempElapsed;
 
