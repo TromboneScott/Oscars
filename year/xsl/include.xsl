@@ -52,24 +52,24 @@
       </style>
       <script>
         // Sends the HTTP request, avoiding cached responses, and performs the action
-        function http(url, onLoad, method = "GET") {
+        function http(method, url, onLoad) {
           const http = new XMLHttpRequest();
-          http.onload = () => onLoad(http);
           http.open(method, `${url}?_=${Date.now()}`);
+          http.onload = () => onLoad(http);
           http.send();
         }
 
         // Reads the start time relative to the system clock and performs the action
         function readStart(action) {
-          http("<xsl:value-of select="$rootDir"/>data/elapsed.txt",
-            http => action(Date.now() - Number(http.responseText)));
+          http("GET", "<xsl:value-of select="$rootDir"/>data/elapsed.txt",
+              http => action(Date.now() - Number(http.responseText)));
         }
 
         <xsl:if test="not($ended)">
           // Reads the last-modified timestamp of the results file and performs the action
           function readModified(action) {
-            http("<xsl:value-of select="$resultsFile"/>",
-              http => action(http.getResponseHeader("Last-Modified")), "HEAD");
+            http("HEAD", "<xsl:value-of select="$resultsFile"/>",
+                http => action(http.getResponseHeader("Last-Modified")));
           }
 
           // Get the last modified timestamp
