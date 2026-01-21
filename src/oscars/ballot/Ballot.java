@@ -1,5 +1,7 @@
 package oscars.ballot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.IntStream;
 
 import org.jdom2.Element;
@@ -22,6 +24,12 @@ class Ballot {
     /** Get the answer in the given Column */
     public final String answer(Column inColumn) {
         return answers.get(inColumn);
+    }
+
+    /** Get the timestamp of this Ballot */
+    LocalDateTime timestamp() {
+        return LocalDateTime.parse(answer(DataColumn.TIMESTAMP),
+                DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 
     /** Get the DOM Element for this Ballot */

@@ -40,7 +40,7 @@ public final class MappedBallots extends Ballots {
 
     /** The players with their answers mapped to the website values */
     public ImmutableList<Player> players() {
-        return answers().stream()
+        return latest().stream()
                 .map(ballot -> new Player(column -> columnMaps.get(column)
                         .getOrDefault(ballot.answer(column), ballot.answer(column))))
                 .collect(ImmutableList.toImmutableList());
@@ -70,7 +70,7 @@ public final class MappedBallots extends Ballots {
     private void updateMappings() {
         for (Category category : Category.ALL) {
             Map<String, String> columnMap = columnMaps.get(category);
-            answers().stream().map(ballot -> ballot.answer(category))
+            latest().stream().map(ballot -> ballot.answer(category))
                     .filter(guess -> !columnMap.containsKey(guess))
                     .forEach(guess -> columnMap.put(guess, mapping(category,
                             StringUtils.substringBeforeLast(guess, " - ").toUpperCase())));

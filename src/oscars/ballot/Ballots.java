@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
@@ -79,14 +78,14 @@ class Ballots {
         return headers;
     }
 
-    /** The answers from the survey using the latest ballot for each Player */
-    protected final ImmutableCollection<Ballot> answers() {
+    /** The latest ballot for each Player */
+    protected final ImmutableCollection<Ballot> latest() {
         return all.stream()
                 .collect(ImmutableMap.toImmutableMap(
                         answers -> answers.answer(DataColumn.FIRST_NAME) + "_"
                                 + answers.answer(DataColumn.LAST_NAME),
                         answers -> answers,
-                        BinaryOperator.maxBy(Comparator.comparing(Ballots::timestamp))))
+                        BinaryOperator.maxBy(Comparator.comparing(Ballot::timestamp))))
                 .values();
     }
 
@@ -94,15 +93,15 @@ class Ballots {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(Results.UPDATE_TIME))
             try {
                 Results.writeCountdown();
-                ImmutableCollection<Ballot> answers = new Ballots().answers();
-                LocalDateTime maxTimestamp = answers.stream().map(Ballots::timestamp)
+                ImmutableCollection<Ballot> ballots = new Ballots().latest();
+                LocalDateTime maxTimestamp = ballots.stream().map(Ballot::timestamp)
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
-                    Results.write(answers.stream()
-                            .map(player -> player.toDOM().setAttribute("timestamp",
-                                    timestamp(player).toString()))
+                    Results.write(ballots.stream()
+                            .map(ballot -> ballot.toDOM().setAttribute("timestamp",
+                                    ballot.timestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
-                    System.err.println(LocalDateTime.now() + " - Downloaded: " + answers.size()
+                    System.err.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));
@@ -111,10 +110,5 @@ class Ballots {
             } catch (IOException e) {
                 System.err.println(LocalDateTime.now() + " - Error downloading ballots: " + e);
             }
-    }
-
-    private static LocalDateTime timestamp(Ballot inAnswers) {
-        return LocalDateTime.parse(inAnswers.answer(DataColumn.TIMESTAMP),
-                DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 }
