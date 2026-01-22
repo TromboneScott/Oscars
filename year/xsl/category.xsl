@@ -222,7 +222,7 @@
                     <xsl:sort
                       select="translate(@firstName, $lowercase, $uppercase)" />
                     <xsl:variable name="guess"
-                      select="$ballots/player[@firstName = current()/@firstName and @lastName = current()/@lastName]/category[@name = $categoryName]/@nominee" />
+                      select="$ballots/player[@id = current()/@id]/category[@name = $categoryName]/@nominee" />
                     <tr>
                       <xsl:apply-templates select="$awards" mode="attribute">
                         <xsl:with-param name="nominee" select="$guess" />

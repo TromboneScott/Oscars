@@ -284,7 +284,7 @@
                     <xsl:variable name="categoryDefinition"
                       select="$definitions/column[@name = $categoryName]" />
                     <xsl:variable name="playerGuess"
-                      select="$ballots/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/category[@name = $categoryName]/@nominee" />
+                      select="$ballots/player[@id = $player/@id]/category[@name = $categoryName]/@nominee" />
                     <tr>
                       <xsl:apply-templates select="." mode="attribute">
                         <xsl:with-param name="nominee" select="$playerGuess" />
@@ -327,7 +327,7 @@
                 <tfoot>
                   <tr>
                     <xsl:variable name="playerScore"
-                      select="$results/standings/player[@firstName = $player/@firstName and @lastName = $player/@lastName]/@score" />
+                      select="$results/standings/player[@id = $player/@id]/@score" />
                     <th class="header">Total</th>
                     <th>
                       <xsl:value-of select="floor($playerScore)" />
@@ -493,15 +493,15 @@
                </xsl:call-template>"              
                + "&lt;/a>",
           "<xsl:value-of select="@score" />",
-          <xsl:value-of select="$ballots/player[@firstName = current()/@firstName and @lastName = current()/@lastName]/@time" />,
+          <xsl:value-of select="$ballots/player[@id = current()/@id]/@time" />,
           "<xsl:value-of select="@decided" />"
         ));
       </xsl:for-each>
 
       <xsl:if test="$inPlayer">
         // Find the instance for this player
-        const inPlayer = players.find(player => player.firstName === '<xsl:value-of select="$inPlayer/@firstName" />'
-            &amp;&amp; player.lastName === '<xsl:value-of select="$inPlayer/@lastName" />');
+        const inPlayer =
+            players.find(player => player.id === <xsl:value-of select="$inPlayer/@id" />);
         document.getElementById("totalTime_guess").textContent = inPlayer.timeText;
       </xsl:if>
 

@@ -19,6 +19,7 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Ordering;
 import com.opencsv.CSVReader;
 
 import oscars.Results;
@@ -62,6 +63,11 @@ class Ballots {
                     throw new Exception("Number of columns on ballots: " + headers.size()
                             + " does not match number of defined columns: " + Column.ALL.size());
                 all = reader.readAll().stream().map(Ballot::new)
+                        .sorted(Ordering.from(String.CASE_INSENSITIVE_ORDER)
+                                .onResultOf((Ballot ballot) -> ballot.answer(DataColumn.LAST_NAME))
+                                .compound(Ordering.from(String.CASE_INSENSITIVE_ORDER).onResultOf(
+                                        (Ballot ballot) -> ballot.answer(DataColumn.FIRST_NAME)))
+                                .compound(Ordering.natural().onResultOf(Ballot::timestamp)))
                         .collect(ImmutableList.toImmutableList());
             }
         }
