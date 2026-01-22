@@ -33,7 +33,7 @@ class Ballot {
     }
 
     /** Get the DOM Element for this Ballot */
-    public final Element toDOM() {
+    public Element toDOM() {
         return new Element("player").setAttribute("firstName", answer(DataColumn.FIRST_NAME))
                 .setAttribute("lastName", answer(DataColumn.LAST_NAME));
     }

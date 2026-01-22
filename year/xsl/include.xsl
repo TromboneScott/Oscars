@@ -272,7 +272,7 @@
       select="concat(@lastName, substring(', ', 1, 2 * number(string-length(@firstName) and string-length(@lastName))), @firstName)" />
   </xsl:template>
   <xsl:template match="/results/standings/player" mode="playerURL">
-    <xsl:value-of select="concat($rootDir, 'players/', @firstName, '_', @lastName, '.xml')" />
+    <xsl:value-of select="concat($rootDir, 'players/', @id, '.xml')" />
   </xsl:template>
   <xsl:template name="getOrDefault">
     <xsl:param name="value" />

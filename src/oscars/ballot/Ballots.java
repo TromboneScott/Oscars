@@ -39,10 +39,10 @@ class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream().filter(player -> !player.answer(DataColumn.EMAIL).isEmpty())
-                    .forEach(player -> System.out.println(player.answer(DataColumn.LAST_NAME) + ", "
-                            + player.answer(DataColumn.FIRST_NAME) + " = "
-                            + player.answer(DataColumn.EMAIL)));
+            new Ballots().all.stream().filter(ballot -> !ballot.answer(DataColumn.EMAIL).isEmpty())
+                    .forEach(ballot -> System.out.println(ballot.answer(DataColumn.LAST_NAME) + ", "
+                            + ballot.answer(DataColumn.FIRST_NAME) + " = "
+                            + ballot.answer(DataColumn.EMAIL)));
         else
             throw new IllegalArgumentException("Unknown action: " + inArgs[0]);
     }
@@ -63,12 +63,6 @@ class Ballots {
                             + " does not match number of defined columns: " + Column.ALL.size());
                 all = reader.readAll().stream().map(Ballot::new)
                         .collect(ImmutableList.toImmutableList());
-                all.stream()
-                        .map(answers -> answers.answer(DataColumn.FIRST_NAME) + " "
-                                + answers.answer(DataColumn.FIRST_NAME))
-                        .filter(name -> name.contains("_")).forEach(name -> System.out.println(
-                                "Warning: Separator character '_' found in player name: " + name));
-                ;
             }
         }
     }
@@ -82,9 +76,9 @@ class Ballots {
     protected final ImmutableCollection<Ballot> latest() {
         return all.stream()
                 .collect(ImmutableMap.toImmutableMap(
-                        answers -> answers.answer(DataColumn.FIRST_NAME) + "_"
-                                + answers.answer(DataColumn.LAST_NAME),
-                        answers -> answers,
+                        ballot -> ImmutableList.of(ballot.answer(DataColumn.FIRST_NAME),
+                                ballot.answer(DataColumn.LAST_NAME)),
+                        ballot -> ballot,
                         BinaryOperator.maxBy(Comparator.comparing(Ballot::timestamp))))
                 .values();
     }

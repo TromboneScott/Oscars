@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 import oscars.ballot.MappedBallots;
 import oscars.ballot.Player;
 import oscars.column.Category;
-import oscars.column.DataColumn;
 import oscars.file.Directory;
 import oscars.file.XMLFile;
 
@@ -56,8 +55,7 @@ public class Oscars {
                 .reduce(new Element("ballots"), Element::addContent));
 
         for (Player player : PLAYERS)
-            new XMLFile(Directory.PLAYERS, player.answer(DataColumn.FIRST_NAME) + "_"
-                    + player.answer(DataColumn.LAST_NAME) + ".xml").write(player.toDOM());
+            new XMLFile(Directory.PLAYERS, player.id() + ".xml").write(player.toDOM());
 
         for (Category category : Category.ALL) {
             category.writeChart();

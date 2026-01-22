@@ -149,10 +149,18 @@
                       // Load the player ballots from XML files
                       <xsl:for-each select="$results/ballots/player">
                         players.push(new Player(
-                            '<xsl:value-of select="@timestamp"/>',
-                            '<xsl:value-of select="@firstName"/>',
-                            '<xsl:value-of select="@lastName"/>',
-                            '<xsl:apply-templates select="." mode="playerName" />'
+                            "<xsl:value-of select="@timestamp"/>",
+                            "<xsl:call-template name='escape-js'>
+                               <xsl:with-param name='text' select='@firstName'/>
+                             </xsl:call-template>",
+                            "<xsl:call-template name='escape-js'>
+                               <xsl:with-param name='text' select='@lastName'/>
+                             </xsl:call-template>",
+                            "<xsl:call-template name='escape-js'>
+                               <xsl:with-param name='text'>
+                                 <xsl:apply-templates select='.' mode='playerName'/>
+                               </xsl:with-param>
+                             </xsl:call-template>"
                         ));
                       </xsl:for-each>
 
@@ -450,10 +458,8 @@
       let elapsed = -1;
 
       class Player {
-        static #nextId = 0;
-
-        constructor(firstName, lastName, link, score, time, decided) {
-          this.id = Player.#nextId++;
+        constructor(id, firstName, lastName, link, score, time, decided) {
+          this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
           this.link = link;
@@ -472,13 +478,23 @@
       // Load the players from XML files
       <xsl:for-each select="$results/standings/player">
         players.push(new Player(
-          '<xsl:value-of select="@firstName" />',
-          '<xsl:value-of select="@lastName" />',
-          "&lt;a href='" + '<xsl:apply-templates select="." mode="playerURL"/>' + "'>" +
-              '<xsl:apply-templates select="." mode="playerName"/>' + '&lt;/a>',
-          '<xsl:value-of select="@score" />',
+          <xsl:value-of select="@id" />,
+          "<xsl:call-template name='escape-js'>
+             <xsl:with-param name='text' select='@firstName'/>
+           </xsl:call-template>",
+          "<xsl:call-template name='escape-js'>
+             <xsl:with-param name='text' select='@lastName'/>
+           </xsl:call-template>",
+          "&lt;a href='" + "<xsl:apply-templates select="." mode="playerURL"/>" + "'>" +
+              "<xsl:call-template name='escape-js'>
+                 <xsl:with-param name='text'>
+                   <xsl:apply-templates select='.' mode='playerName'/>
+                 </xsl:with-param>
+               </xsl:call-template>"              
+               + "&lt;/a>",
+          "<xsl:value-of select="@score" />",
           <xsl:value-of select="$ballots/player[@firstName = current()/@firstName and @lastName = current()/@lastName]/@time" />,
-          '<xsl:value-of select="@decided" />'
+          "<xsl:value-of select="@decided" />"
         ));
       </xsl:for-each>
 
@@ -577,5 +593,20 @@
         </xsl:if>
       });
     </script>
+  </xsl:template>
+  <xsl:template name="escape-js">
+    <xsl:param name="text" />
+    <xsl:choose>
+      <xsl:when test="contains($text, '&quot;')">
+        <xsl:value-of select="substring-before($text, '&quot;')" />
+        <xsl:text>\&quot;</xsl:text>
+        <xsl:call-template name="escape-js">
+          <xsl:with-param name="text" select="substring-after($text, '&quot;')" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$text" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>
