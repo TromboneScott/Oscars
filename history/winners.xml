@@ -2,6 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="winners.xsl"?>
 <!--OSCARS website created by Scott McDonald-->
 <winners>
+  <year year="2026" />
   <year year="2025" correct="14/18" players="81">
     <winner name="Colbert Alembert" link="/2025/player/Colbert_Alembert.xml" />
   </year>
