@@ -242,8 +242,8 @@
             </xsl:when>
             <xsl:otherwise>
               <xsl:variable name="player" select="." />
-              <xsl:variable
-                name="playerName" select="concat(@firstName, ' ', @lastName)" />
+              <xsl:variable name="playerName"
+                select="concat($ballots/player[@id = current()/@id]/@firstName, ' ', $ballots/player[@id = current()/@id]/@lastName)" />
               <div
                 id="name">
                 <xsl:value-of select="$playerName" />
@@ -477,23 +477,24 @@
 
       // Load the players from XML files
       <xsl:for-each select="$results/standings/player">
+        <xsl:variable name="ballot" select="$ballots/player[@id = current()/@id]" />
         players.push(new Player(
           <xsl:value-of select="@id" />,
           "<xsl:call-template name='escape-js'>
-             <xsl:with-param name='text' select='@firstName'/>
+             <xsl:with-param name='text' select='$ballot/@firstName'/>
            </xsl:call-template>",
           "<xsl:call-template name='escape-js'>
-             <xsl:with-param name='text' select='@lastName'/>
+             <xsl:with-param name='text' select='$ballot/@lastName'/>
            </xsl:call-template>",
           "&lt;a href='" + "<xsl:apply-templates select="." mode="playerURL"/>" + "'>" +
               "<xsl:call-template name='escape-js'>
                  <xsl:with-param name='text'>
-                   <xsl:apply-templates select='.' mode='playerName'/>
+                   <xsl:apply-templates select='$ballot' mode='playerName' />
                  </xsl:with-param>
                </xsl:call-template>"              
                + "&lt;/a>",
           "<xsl:value-of select="@score" />",
-          <xsl:value-of select="$ballots/player[@id = current()/@id]/@time" />,
+          <xsl:value-of select="$ballot/@time" />,
           "<xsl:value-of select="@decided" />"
         ));
       </xsl:for-each>

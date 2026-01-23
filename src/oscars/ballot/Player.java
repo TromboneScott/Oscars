@@ -42,6 +42,6 @@ public final class Player extends Ballot {
 
     /** Get the DOM Element for this Player */
     public Element toDOM() {
-        return super.toDOM().setAttribute("id", id);
+        return new Element("player").setAttribute("id", id);
     }
 }

@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import oscars.ballot.MappedBallots;
 import oscars.ballot.Player;
 import oscars.column.Category;
+import oscars.column.DataColumn;
 import oscars.file.Directory;
 import oscars.file.XMLFile;
 
@@ -51,6 +52,8 @@ public class Oscars {
                 .stream()
                 .map(category -> category.toDOM().setAttribute("nominee", player.answer(category)))
                 .reduce(player.toDOM(), Element::addContent)
+                .setAttribute("firstName", player.answer(DataColumn.FIRST_NAME))
+                .setAttribute("lastName", player.answer(DataColumn.LAST_NAME))
                 .setAttribute("time", String.valueOf(player.time())))
                 .reduce(new Element("ballots"), Element::addContent));
 

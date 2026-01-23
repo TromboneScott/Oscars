@@ -217,10 +217,6 @@
                 </thead>
                 <tbody>
                   <xsl:for-each select="$results/standings/player">
-                    <xsl:sort
-                      select="translate(@lastName, $lowercase, $uppercase)" />
-                    <xsl:sort
-                      select="translate(@firstName, $lowercase, $uppercase)" />
                     <xsl:variable name="guess"
                       select="$ballots/player[@id = current()/@id]/category[@name = $categoryName]/@nominee" />
                     <tr>
@@ -232,7 +228,9 @@
                           <xsl:attribute name="href">
                             <xsl:apply-templates select="." mode="playerURL" />
                           </xsl:attribute>
-                          <xsl:apply-templates select="." mode="playerName" />
+                          <xsl:apply-templates
+                            select="$ballots/player[@id = current()/@id]"
+                            mode="playerName" />
                         </a>
                       </td>
                       <xsl:for-each select="$categoryDefinition/nominee">

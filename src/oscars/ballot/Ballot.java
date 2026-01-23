@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.IntStream;
 
-import org.jdom2.Element;
-
 import com.google.common.collect.ImmutableMap;
 
 import oscars.column.Column;
@@ -30,11 +28,5 @@ class Ballot {
     LocalDateTime timestamp() {
         return LocalDateTime.parse(answer(DataColumn.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
-    }
-
-    /** Get the DOM Element for this Ballot */
-    public Element toDOM() {
-        return new Element("player").setAttribute("firstName", answer(DataColumn.FIRST_NAME))
-                .setAttribute("lastName", answer(DataColumn.LAST_NAME));
     }
 }

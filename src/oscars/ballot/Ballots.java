@@ -98,8 +98,10 @@ class Ballots {
                         .max(LocalDateTime::compareTo).orElse(LocalDateTime.MIN);
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
                     Results.write(ballots.stream()
-                            .map(ballot -> ballot.toDOM().setAttribute("timestamp",
-                                    ballot.timestamp().toString()))
+                            .map(ballot -> new Element("player")
+                                    .setAttribute("firstName", ballot.answer(DataColumn.FIRST_NAME))
+                                    .setAttribute("lastName", ballot.answer(DataColumn.LAST_NAME))
+                                    .setAttribute("timestamp", ballot.timestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
                     System.err.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()
                             + " ballots - After: "
