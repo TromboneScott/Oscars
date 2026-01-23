@@ -68,7 +68,7 @@
         </script>
         <center>
           <xsl:choose>
-            <xsl:when test="@type = 'all'">
+            <xsl:when test="@id = 'all'">
               <xsl:choose>
                 <xsl:when test="count($results/standings/player) = 0">
                   <a href="javascript:history.go(0)" style="all: unset">
