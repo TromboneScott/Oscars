@@ -64,12 +64,12 @@ Start the year
   b. Copy to Oscars site
 
 Proofread the category definitions:
-1. Open the web page: oscars.site44.com/<year>/data
+1. Go to the Category page (oscars.site44.com/<year>/categories)
 2. Verify the year in the banner title (20xx OSCARS)
 3. Verify that the tie breakers are correct (including Time as the final tie breaker)
 4. Verify that images for the Best Picture nominees show up in the banner at the top
 5. Verify that all nominee images match their names
-6. Verify that all nominee names are short enough to be displayed
+6. Verify that all nominee names aren't too long to be displayed under their images
 7. Verify that any special characters in nominee names are displayed correctly
 
 Commit changes for the year
