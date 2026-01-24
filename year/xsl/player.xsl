@@ -84,14 +84,13 @@
                             alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
                             title="Counting Ballots" width="200" />
                           <br />
-                          <br />Ballot
-                          names will appear here a few minutes after being cast.<br />The
-                          actual guesses will be loaded after all ballots have
-                          been collected.<br />
+                          <br />Ballots
+                          will be listed here a few minutes after being cast. <br />Ballot
+                          contents will be loaded after all ballots have been
+                          collected. <br />
                           <br />
-                          <i>Check
-                            here for live results
-                            during the Oscars broadcast.</i>
+                          <i>Check here for live results
+                          during the Oscars broadcast.</i>
                           <br />
                           <br />
                         </td>
