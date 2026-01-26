@@ -96,7 +96,6 @@ public final class Category extends Column {
         plot.setBackgroundPaint(BACKGROUND);
 
         ImmutableSet<String> winners = Oscars.RESULTS.winners(this);
-        @SuppressWarnings("serial")
         BarRenderer renderer = new BarRenderer() {
             @Override
             public Paint getItemPaint(final int inRow, final int column) {
