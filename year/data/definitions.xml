@@ -75,89 +75,29 @@
     <nominee name="Skarsgård"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCEsk49tAtH3BuuxXTx21OwO1RJ-CnFeVrARkGiJc1R0j8vwUpYe--RNivzTR4-0sv-4CuZPOGfb0L-BCkWWDTy4FJdhUyc4WpRKoOqqlvhDhjPwrf5-NeeKxGq0aPXyHA0Y_VFSnoh3Or6MzWLnHa5ZeCfPK6I5Vinrw?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
-  <column name="Directing">
+  <column name="Animated Feature" tieBreaker="2">
+    <nominee name="Arco"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCvFFXTVqAJqtlSINwakD9IpcWwbuvAIVLCV-81vJ6VejthBLzZgmix-F_KFBgxEQiCYukp3wGoChY_PniDB6RYJbJ-2keBsWCGOUPT53U37UXTY2ZnDzDnmmQ_8XiSwtxE1jLqoZspHV7oU3sGl3zo-L6XmOoO0kiSBw?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Elio"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCdDjWYsE65eGL9nrvY35jYnxwW2e7b_4GQk9u6mx6IqRlSVvbyBy0MjtCNEhSj1DBm6OugR1sHZh2iuh2g1x4Fcs61uj9bwHiSFryH97Ns47Aran-B5VMUmyR79dUWFHe5hqzfC-z9SonVuqXHDXyk9cM7NUyvnsF_ew?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="KPop Demon Hunters"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDWrOzzmvBZf0Lk7KK7falq7P-qXILosZZNIeVNBAAnHps8T6dacSBkhOFHZ3DKOJnn3H4IOdaZUsTR09n8OVMnsrDhS1XDO8lr3oM3aCMIQsRJ_ECwvb2a6tha3EP26gyunvAxyk6O8qgrf0OKSZ4v2s0xbbI6PwgN?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Little Amélie"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDYGd7rr74bTaJIILU3lRm3sPPuocC2WjDeKMJmU-SJHx8aXS0NNxRDHhjMHFfrxwp6_q5KDRG4lLgfY_HqLJkp7K95uy4j97n1L54NBNO_wBrejU08emKjesTUw5fcM7K0KKZ-gZm5VpgFtOoqkFlq_64taixoxIZrjg?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Zootopia 2"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA4zvQvi5gc9jSnHB1TvObqKTD3hA3AEI6vkY4wXYO3VzwpJsK38mES86eHdUHLYcc8t5mjQL11XmwUQ9Zurq9xhzEfRqvXlPx26MuzbSNbJo-Uq60IZOP6D5W0mLrzIf42r-N88tva6KZLr53A1VekoaDydpKse84Bvg?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
+  <column name="Casting">
     <nominee name="Hamnet"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAPKf2O0vtfP_gYvHKToXjvK3gA1wh-uDzAL1LOuXbSu23e4pLnStVfrYlLOF_XAFjkn_8jwzTnzuiR9EdYaJKNkHDquI8gjVU6V3nYfULtmwBwgrioeO5PYtF9iyU5MZrOejzDG33RCZFKdJ8F-XCZw1bgtXBwGxo0YA?key=2iCuZET_s8HgDpnzDO9enA" />
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBUXBxeQDnd8HWhi5GlZQBoExI3YceKkBVDt4hUyagK4UqDo9MNEAlgYxwAy1YTuiDWEQyd3c6RrtQ8Pc6ZoX3RI5KJ439fO0zwmD3mpJvIs7Hxa6Oi-v2h7lK4-qpSGU8LSTwsZ-_TRR8Y8TZdUu6WkLaBtzgfHQXy5Q?key=2iCuZET_s8HgDpnzDO9enA" />
     <nominee name="Marty Supreme"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDerNwnnYKxFGhrT60fIAIBgyarWs2TOco1dpJBvsIHEtA5-kCGBwdPn45iFpRfs_qa53eVxB4hiELgMNq2gMwKKaSAPtRBxlJz3Cq08sT8jcoFp_OQWPF_DrYnztBK___32cA22G07m9HXlG-flYYmP_Thb7HcKlAG4g?key=2iCuZET_s8HgDpnzDO9enA" />
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA-CABEkvGtAwhYFI3SDJcDCjbvngA3DAS_kFMhXC8So9xdHlNqb7YtnV4fCaS-rL83R1DZIIcPjRZVE92haDBvKztq4ZxGsSBgEVWaahUMhqEQtR3C-0K5kypIbNjjJILmpt4uWrWFHIdS9wumTwDeV8mKWMhTOy5WEg?key=2iCuZET_s8HgDpnzDO9enA" />
     <nominee name="One Battle/Another"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBfEms-A-x5_jiredrdF2mlkiKIPneINIV4FHTrvjpPa1iOelFiBEY3vpTASqw_9ssYB6oTmbQIdi9HZeGIFA3UWVowZ6qu_mH5gBxmzDUFqRWa2oRB6oUk5LDBUIwLHJWDqcHUXcLZGmDrC3TU4G2l6rN5Lc8NrnViCw?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sentimental Value"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBIcqFYmAenSRTEDDqnm4UkBBUnBxuIDp32h_J7Wfuy-f84SBdg4ly7kuzSQbxrM_qP6cVD4asx7Iz0elIuDy2Ib13ke307y1bEKGUeUEczeFg3_7rMA8qNk8G9DJAeHWP7isg2jMWdm_hMrtyrvRop2aT0APrmKE-w7g?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sinners"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBEJkDkNmEOTJjGVlWAXhW6Yyqb_U-nae12PHyPrbpoK0oR-slCzXKoBzbtuus-d6s4nav22tcYc8MuvU8dBAOzVpByg6qgqWCK5OOaglYR6TONEjcSewvbzBI9J5PJ2u34iqVJOPXo16AixBKoG2dNJXSu3lFoX2ko?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
-  <column name="Production Design">
-    <nominee name="Frankenstein"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAzvjYD5QIT9FAe-D_RnekkMu1ChsMjno43gOYwpyXynUiqsh2Txxg-OOtWE3aHl6X9t4k2PyCyJrmk8-vk3X9FrrTTy2n_mBCgvJm-tCMc8_Cl4dS0PiBW4a1Pay9Fn5MqHi6NwqLzynJRwbCp1NJ-j8kQcI76lzHhdA?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Hamnet"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBtW8dgSU9KHx0JtABFCGMwsffMwvPq0eOKbhgPuGKTjkRXChovz6a7NFI-AoU-J1dGt5lH28S-QDp-kfc4S5XKO_5jgUpmlahHwQmG7GTGL1Da6o6Tu6nrXyN6dcYrWRyKwuWA_IyPwXO8fB3hWYWROzQU77t58FYKAw?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Marty Supreme"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDaYiWIcthe-RKJcciBERXF3zCSLl5PlFxSe0Fzo8RMSEWp3CNGvQBmO--7VXTNRYfhKV_osDcuFi0BibVGRQi755gHewCya57ezXdED02e3RyDiLKfkmcrFlXA0TUBmJT2G61LpG3v3SFKcAJ0VoT4od6Ba82eE25s?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="One Battle/Another"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDN5aWgLdj3uJN485HkYfhbgvROgyw3ulbH5qZPEYajIQhLVDUAOTr3zK8UHWNxJMX6vK7j0bbjIb-NuZUQKfQ6Dk3B23yxxTC3-oC-k32f-aBZVl_hfnJX0Pyl62VOd9A8NXytJ9aT2BBjlfqB0AIGr_TKU7LS8-Uiog?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sinners"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBRYzom3CJvANomzvYzMqZpmwt3Qb-MOcdCDQsDz3BJ9Mzfd2zQ-VLIR5aWdKss_Rsb4rGA_KklHVsyxsTJbLqCYqouoRsr61DQpN_GP6U0lNt5GtgA6M-_GXpFX2uxs5JWpDvi9liWV_6EOt2rDU1SbB6N82TB7HtE?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
-  <column name="Film Editing">
-    <nominee name="F1"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDRgFy_o2ZUt5vvchWzKU8D90BVWDCb7JEcIGrVro5Rcyo4TPn0p2z2_6qwRDNdxL0Tt5nwGnxtXlfr4rR5FQB4xaRLs9ECxncQ0egfvhIkSRcNxb15p21LrowtO6fyO4s9bC3lThkPQ2iCY1mOURWJ43gpacp2qPbA1Q?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Marty Supreme"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA5Vq5fj7DiZSVajGleUPrAbquNuOY84-h5tUZ9nHISnGSBQHD3bu3HwXqlbgEZBXH8175ihe6dsmYl-W_oqJuZAkDyBqg8Tlffi2wfZ9F-OhLvOGe9W62Ps10x71VLKBec4nguB-kV9tI0CzIyY7qQ7lrLBpiQTxwcPg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="One Battle/Another"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC8cgZ9rG8b2p5zN7K7jGg5bxpzTqdadi4nQGegZImLsPlokz0mpdAAZQZBIv7ni9YvZs3JljmGqijxRm4Cfq0NKYKLgPzhxlpivIvXqSMB7sf1vhEVfbfa4P1s7LNs4DRujLz6EYVu24AGRGcQjNKIiBuZ-_2dLgiC3A?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sentimental Value"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBu9pgxmZ4iIYdhaEuYbKzxuhRuNjXxWMXW8wolO8wfizr0UsUQxjKxk2AnjU4QnZj3FLyAgxpuzOVtHqbSusMWZahbifh3cUyKl2u5HbTH7BcYJQ6ugDAIAcd5S6aHRaI9CEtzsdASHvxSV1k0rS7609NsZe8lFOUSvA?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sinners"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA364QPfWsjAwFVc8lK3i7FHUYmFOzyKL5Gj2nSaZKLJugrcrO9eyl9SyanofJDeDaN1vdVepqYHt_X-lMrI9Cl-7sNmI_wiB3bewtLEyaYrQsYiKagZ2OMDa6EvyG3Ou5Ts-MCod2D3tEnu9OdEwx0WFxvt-U9CYUZHA?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
-  <column name="Sound">
-    <nominee name="F1"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCdZ035dDcAixanEpzw75ydJKDNmikGXHw7DsozivTXVj7ri1ObSHVzMgmTB2IpAnCWeIq-rZ1m0BoV92dlpl_2LPgHtUvyDBLWGHpawxyXzkJaTjnfkVlQEnOJ7GwaNIMc4laDunyOJrdVRE3nkNJM9WucsBG-gMg3?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Frankenstein"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDCOUYxeXo2YTW6v_TXDV0PpnFv7m7KKQUl5pY1GaRFWZiflS3xqGn7R133DBkx0a8wiXoI_BrDpjT9krFh2sH1z3oqOi1YnF5kSc6VKGE5XJciU0LfOeM08x0vc7uHkjkB6FlAU7oc0he2X1Bz6ZikBhdxl-SrKoSd?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="One Battle/Another"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCx2kMJfg01SzXqji1Mmlu9-UVdIVOnG5YH6Hofkpscf0RcwKx16bjRy8JR-IhWAa6WRK5ocRCjPvMaECQEzVBn_oEBTVa8vEX7Ueu3C-r-aRi0UUQMWn9_rx8Tb_0lSA1AcCrCkjRiGKzst2KCpO9yFxOzv4_O1X28IA?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sinners"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC4Cz4paolYoeZhCf2alI9r2zadzbVqGPXKz2cNYQTdEMtoSSTkHnjBnwoVP_bWZb3q0l5A7XVxfO7CrmKDugDNeOLWN5_8ewytQBvZ6pqwI1IAmvFV_Tj6cO6e1p3mrbX8eqUG23SyK2wHXbww_XM741CVFULjMjE5Sg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sirāt"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBWleiOZXlkYeahtVJzzw_i4NKmdAdvB4WZz7W2x17TnLyizbgEujZbi1h_x--gIiac-AbZnW6Gz4ZnNoc62bUVk3i8kgQwEBrpg0dhwdJwCOpql1jdQL8FROCAp3cc5Y6E88B8P0SawgXaeYrjk7_S_j250sxfjXCwCg?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
-  <column name="Original Score">
-    <nominee name="Bugonia"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBqRmxbAML9izzpVtqEZj5rvdN-8ibTb7g11hXMl-QSB42Wor8AU5CUP3cdXs60mAdmKisMkA09gYQhtdHGpZoaXG3hmd-zCKAoxK7GipDrY_vyEeY6_DkyOz_0HP0wLuSTksuumxxbiICLoigoYB9bSL5s_9rr9lr4EQ?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Frankenstein"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAdGkfQdzQvi9b7oGKP9lxCDAZNjwAzFoEkgC0nBt5twCxGYMq4N_IVItXRigwWKpeSROC6fj6AaPSmVM9WEQNWk-MWarLSZU-81iARP0VYgup_cCjiflcbQKvB-xT6aug1LjpfbeHCZ9jbu7yCP4rvH8jAZMb3u5BS?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Hamnet"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDq4Wx4cJinhmltYms1SkLF7g-cvN86RaJJT_Bs0Isb8eHX-CM23QUqPjKAP5xRiseEECIZHOjmkqbPMOuLT2R_JgagAVKWUh6DmE7aXc9vQq0GxP-nkW6uO0xquk-wATcAaTqQMK1x97aKxh1JeIFtZHbmYfMI18QM?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="One Battle/Another"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAK2X4ODQsm4fR3k1aWUmMlmNrS0GnV9XE1gxAd8Or4ISx9vW5osRDw7yHfNwNnQSQWL9nUEhN9lKqoBirsHsmOs0TYNooLnJmeL7vgLnFYzboIb_KHv2MBQtZuvQXNv-o3Iul1FWJEPcYO0elyrMseXYdaiDpC9prM?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sinners"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC4gCzcehI_eYP_SO6mrxuHxoFXkQhRyXRaUOa7WaagTQWU0HLlADahXAqhheBSc7HBcDBodcPzIIjBfwkgHUCGTqCoMPQExNv66zHXpCvXQ9kgNOJBH2VOFkuk0xNerwtM2fDzHxbuWewzqFo41ksEbKYrw7LLc6wE4g?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
-  <column name="International Feature">
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCZ_wSJoQQRL_7aiIlwUAhqVfGoiknBOj8w4vAiLVrATgskrIeSVvUIe24dkfgd3M0gl7e_6LGsrbuL0QUlsViMogkhasJmijNABLyFW45qxn4uAdDtLU-zp6tDZ0auHrPMHBiy73RCLahVHXrpH2aKvzk5T4SOfQI3?key=2iCuZET_s8HgDpnzDO9enA" />
     <nominee name="Secret Agent"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDMldhDxXOFTgeoSkPrF8oz8qwa5XdXP_VfhVwoJL2I17H0uvkzT9Q4_0y6ibrRfJ9xf2kqQ5WCk4ACugnmJy7RPpE7T__3D6PublD_GskYGwHiTqwIzA4UMq-idwMgohOPPXV0jjr4gVvhLdXVh2LQ1KC0gfpb4Vdc?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="It Was Just/Accident"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVB-GZeZ3ueA0hJeVlNsSpP5u-eMB0ver8-kNbVU285hcGlOlPp0datKm5L0oB-Zwk5ASzvi7ehfeHodHe_dk_VFTN1uO-w_yyGzt-8aEDRo_UQjCXXrFGAEcTf5d2VGga_eSZLtDKEnHPnBcEgdATrwzKCzuNeXdqR4xg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sentimental Value"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA-JhVaYWG8ZkYBD-4KLr-nXUlzZMzWnPxKiOx4JuBQboj7hbR1_NdVEQaoTIfXIgaqTEGKLv-pGDVf6Ziw6L72MILiYGj4nMBxPGfOH6SbLP5J3khYhHGOD8cGgRJ1i3PO0-GVbv6hBPwJPvR5scXf8LNmxQ2rZK44Dw?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Sirāt"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBPnAV3ulCHWUoypfQnp6kY2CKNUAvdjGnxjHESCjPTZG4SBLx5TYmexxV8fMIcTkunQhlxrDyka7Q5_PqFFbSwDesrm1jNEME5q-Ui0EMu0q3y-Efo8ceSgFM4JIfSKDMmIj8V7WMh9fKY-V0GM21qhZj14BELqwtogA?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Voice of Hind Rajab"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAEihMTAgUHE_Wo6ohNVTOyPyfIn4uDfcsv0voHKwUzIfCbQ-0ve9ORQNz2zOTcFRH8TrFgWZqpJv8kPuPYYpUqXSc7VjZsKxJczFZz_6PRnKJ0SIL3uHOQA5BF3mSMtFcbOWdi8QJeLbjERZ5bx1jBPg1e6KPpQwE5IA?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
-  <column name="Adapted Screenplay">
-    <nominee name="Bugonia"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBuPea4YnIFsi9C5WGPuVoeYr_ZIYiskIkE_cUy5dkB0kmYkS6eK_ZZV5IH-HnOjpHINPJ03H3RZs-jL9XA_cQVDXygkfFN6VmKiZdOBN-nkCyA-ukqyb7EExlQ8sp2K0RKzzNh7W2Awo4vyKcnYFHA-LEauykOI76Jwg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Frankenstein"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDT49C_cl3o-cL2GwmnvEns9ygrls1G7dAgTAc2uCMOXRYEXUF6lzkaDUy0tqi8uWuS1aAJQvAWK4iwFKnWpqSXfTqIiDBw3CBwA51Tae828vG8FqMbUHTh3ZY_bRoIMfTYwcUz7nDaIDPA8OH6fkkCSAE-2tkPDgKXsg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Hamnet"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVByD1vYf2EFQt0-qQXcVIpm_tXm2ISMleogWone39-GS1nDYcHsFGDz5S4M3IZRr0LGiNFXX3o5GkJUR4DuXkvii2pL45aZsdftOvj3nImfX_LFvvIL4OQJ11VBZYnyta6dMvRokEXDZs1zhRlJIO8uEvvEsy1MwUmnMw?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="One Battle/Another"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC2Rnp62Omid_H39SaabAApWrI0KDdk8TP-Z57fM-ItW8_gchLAOpUkfoek4iwFG-lmxsdpUmrLwZqKe0CGeM4t0uiMOPaoTuGw-MLxyYeeYQu8IERJPYrbubvDbqw1GptXpKSavFszfTOvrlreaoaa798HXtlaAmzv?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Train Dreams"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVD6ITsmtm9yEM3BkZr_l5cCj5MfOe9S9tKj1OhyqiLRiH0GB2lbYViLPgR8a8ZOEqUqp6HZVP4ez5pM7z63nwKAgQN3dE4CV1UU6ytxS-EEwjxr0EPTIXeuluw303JRU870aAVtTJVmgOuKxFWVEEGziRWl_nH2UMF8?key=2iCuZET_s8HgDpnzDO9enA" />
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAEdC_g7mfBzXhHDtsByZQS5WJ7wUDgd8Zfv-kWVAXTZxnMpdZf_mcLFPXlAbLufMub3Hm1TOiA7YrNBcLeQ2cwHL679ENMcLmBa4lkWwZnai6Uj63Qrs3muNYuNOmb6FjFGk8GNcsUgasC7vGsg8AZ4rMnDFDBqyHN?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sinners"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDYKsONLuKEXRrVcQNJEg-jvYuQWZbtsDPQLwtBouTIqAGBsT8hVScflCZ389hTAeVkbUK_rwYNqK_YwnCqcHXvJk6uQO-4weCDRmToAku_nAh8NGdRx47m-B4DGqn11-2IaapiBZUueiC0yyERuznXJGcM-DNlNpMCFg?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
   <column name="Cinematography" wrappingName="Cinema&#xAD;tography">
     <nominee name="Frankenstein"
@@ -171,18 +111,6 @@
     <nominee name="Train Dreams"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCHy0CvChdwf5Jx5CdFWvvKL2VFtPfVVQ-7N4CAIHxvIPGsfWGs2h-yBK2BTTR-4CI9Fp4WsUyng9EtIWgleiPCddG2gYNVo8ascpbuoo562FBp_0UDXqRiIV48W-q5SLW7sk5QTzLgqNSI9KIax_dKvi_q2W59Vztu?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
-  <column name="Animated Short">
-    <nominee name="Butterfly"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDNnz2tGuLgQwsLHqrApwGQM10H0EKIa8C_KTg2yfUtEmJtgE9WDfcbZnIkRXoaFy5a_duu9oGbQrp6-NSDrb8k6Gp3cwBGRnczWmVirnYot3i0W6lsjH1GXc0afx2ENvYTDKjIUlI1MS-ZQXw89gadLTUT8FaOQbjwJQ?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Forevergreen"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDhpiZPxk7L-5E8s_JexMBkMNWqq8bZNMr5CCqA_6un1GzQwcVbC0cY1VBcmpCMNZAXADJP-0_67HSrj3etGnE65rW5Tr0chmtxRjGwwx9XwVYQ4oxKe150iu5jsnY6ZHa8XHZK5lIfkuKAkAv_rsgM-ehXqLvKxEsC-A?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Girl Who Cried Pearls"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC2v5t7XMpe67O_pNurf3cWaqc9vX84_Zh6nJazzwCmmHmzGG_ShdOygf2EyHM_oRn-zsF9cwCrTI2VedV8lSw1DXA9DAJfZZhmlnjyJh673YElT2PN1TBqByph8LTqS8QZODvvyjiBPoQVy_wnJFEtuZt_3OpHuHakOw?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Retirement Plan"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCwftcpY_Ly-w8GCVHnQTT8XrExHZLlDnJ9SCn9aLxiRJ3QmL5rB124nj9-ab_aeK6ffLFPj69bIkIwr5Xa8S6qsukM5EqtT4VVu0YM02kVvQ2wYv9QpzzTSHGCPaB-WDCYWsV56PokcBj1iUB8hK5ofkD7hPf9Wm1esg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Three Sisters"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCbSikdtlxA28twkt6TlkR3Mb7LbzyUs2J507hnhsVtHHXkAWNgLtIq2tho9yGYqnAaXpPyqB1OdbqdQrj3fS20x_ieiIGMTrTQtOIYqin3_cUiNgW1ayOSl4Xpnkf97yBKHSeK1d-T92NE32JmvJir2rYvkAx496bt?key=2iCuZET_s8HgDpnzDO9enA" />
-  </column>
   <column name="Costume Design" tieBreaker="6">
     <nominee name="Avatar: Fire &amp; Ash"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVANe6v0_bVBeOlhNqNGKtZnDOXR0OBg9K-V09J2bti5R-wXsuyLeJuj57QlZ8rEDcBVswZJKXPtXgCm2zLvyaEY-DEslk12FL5lqfOzkBKqmi3fMLLhDNsitFTYf_7CDdNc7aIelx9ruXepR782vHBzy2TMk1tLeHBVug?key=2iCuZET_s8HgDpnzDO9enA" />
@@ -194,6 +122,18 @@
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVB81s2aDyXtKQMYa4AKSs8eETgfaCrQz9nrqq1bkHBOnLgPjgNgVNhsvckDHVb08WbmDOW4_Ju03PAzG0Q7uwfZCFJzRgLGybzxMcTdyvSWb5AgwQL_-Ije3ZfTasTvTMZ3ptBPxMWWvZjGKGK6rIJHszzdSjo5zBa-6Q?key=2iCuZET_s8HgDpnzDO9enA" />
     <nominee name="Sinners"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBNBYs5PTTNk-eaT1tThhQ08_0vm0EnF19gXVjIie8BJYH-1UKwzbzYBlbg9Pd8VCA_a3sMpz-WPvgpGXPUqe2LiW9uOVs0DcUDgSQQdf2Dx_RPx7MLf9ZQjR01gHbZlUPQ80v9nuMNq84dqEoRA8shV0IZOlcvvROxuw?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
+  <column name="Directing">
+    <nominee name="Hamnet"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAPKf2O0vtfP_gYvHKToXjvK3gA1wh-uDzAL1LOuXbSu23e4pLnStVfrYlLOF_XAFjkn_8jwzTnzuiR9EdYaJKNkHDquI8gjVU6V3nYfULtmwBwgrioeO5PYtF9iyU5MZrOejzDG33RCZFKdJ8F-XCZw1bgtXBwGxo0YA?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Marty Supreme"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDerNwnnYKxFGhrT60fIAIBgyarWs2TOco1dpJBvsIHEtA5-kCGBwdPn45iFpRfs_qa53eVxB4hiELgMNq2gMwKKaSAPtRBxlJz3Cq08sT8jcoFp_OQWPF_DrYnztBK___32cA22G07m9HXlG-flYYmP_Thb7HcKlAG4g?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="One Battle/Another"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBfEms-A-x5_jiredrdF2mlkiKIPneINIV4FHTrvjpPa1iOelFiBEY3vpTASqw_9ssYB6oTmbQIdi9HZeGIFA3UWVowZ6qu_mH5gBxmzDUFqRWa2oRB6oUk5LDBUIwLHJWDqcHUXcLZGmDrC3TU4G2l6rN5Lc8NrnViCw?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sentimental Value"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBIcqFYmAenSRTEDDqnm4UkBBUnBxuIDp32h_J7Wfuy-f84SBdg4ly7kuzSQbxrM_qP6cVD4asx7Iz0elIuDy2Ib13ke307y1bEKGUeUEczeFg3_7rMA8qNk8G9DJAeHWP7isg2jMWdm_hMrtyrvRop2aT0APrmKE-w7g?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sinners"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBEJkDkNmEOTJjGVlWAXhW6Yyqb_U-nae12PHyPrbpoK0oR-slCzXKoBzbtuus-d6s4nav22tcYc8MuvU8dBAOzVpByg6qgqWCK5OOaglYR6TONEjcSewvbzBI9J5PJ2u34iqVJOPXo16AixBKoG2dNJXSu3lFoX2ko?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
   <column name="Documentary Feature" tieBreaker="5">
     <nominee name="Alabama Solution"
@@ -207,6 +147,66 @@
     <nominee name="Perfect Neighbor"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCAAq1Oaq3D5XL577Ks-8C8--en5dZvcRnzl20CU0BVXauLe3GBRx_mxy6IqH7jrgBv2cSeWYW9DuGvOISkydrEpteDVxpsEoYPzPOcLNHgLWg3YRwbLA_2y0a4yRW-cfoQd9oA_I9za1YcZPTm82huRjhaF2nn5bWw?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
+i  <column name="Film Editing">
+    <nominee name="F1"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDRgFy_o2ZUt5vvchWzKU8D90BVWDCb7JEcIGrVro5Rcyo4TPn0p2z2_6qwRDNdxL0Tt5nwGnxtXlfr4rR5FQB4xaRLs9ECxncQ0egfvhIkSRcNxb15p21LrowtO6fyO4s9bC3lThkPQ2iCY1mOURWJ43gpacp2qPbA1Q?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Marty Supreme"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA5Vq5fj7DiZSVajGleUPrAbquNuOY84-h5tUZ9nHISnGSBQHD3bu3HwXqlbgEZBXH8175ihe6dsmYl-W_oqJuZAkDyBqg8Tlffi2wfZ9F-OhLvOGe9W62Ps10x71VLKBec4nguB-kV9tI0CzIyY7qQ7lrLBpiQTxwcPg?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="One Battle/Another"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC8cgZ9rG8b2p5zN7K7jGg5bxpzTqdadi4nQGegZImLsPlokz0mpdAAZQZBIv7ni9YvZs3JljmGqijxRm4Cfq0NKYKLgPzhxlpivIvXqSMB7sf1vhEVfbfa4P1s7LNs4DRujLz6EYVu24AGRGcQjNKIiBuZ-_2dLgiC3A?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sentimental Value"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBu9pgxmZ4iIYdhaEuYbKzxuhRuNjXxWMXW8wolO8wfizr0UsUQxjKxk2AnjU4QnZj3FLyAgxpuzOVtHqbSusMWZahbifh3cUyKl2u5HbTH7BcYJQ6ugDAIAcd5S6aHRaI9CEtzsdASHvxSV1k0rS7609NsZe8lFOUSvA?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sinners"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA364QPfWsjAwFVc8lK3i7FHUYmFOzyKL5Gj2nSaZKLJugrcrO9eyl9SyanofJDeDaN1vdVepqYHt_X-lMrI9Cl-7sNmI_wiB3bewtLEyaYrQsYiKagZ2OMDa6EvyG3Ou5Ts-MCod2D3tEnu9OdEwx0WFxvt-U9CYUZHA?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
+  <column name="International Feature">
+    <nominee name="Secret Agent"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDMldhDxXOFTgeoSkPrF8oz8qwa5XdXP_VfhVwoJL2I17H0uvkzT9Q4_0y6ibrRfJ9xf2kqQ5WCk4ACugnmJy7RPpE7T__3D6PublD_GskYGwHiTqwIzA4UMq-idwMgohOPPXV0jjr4gVvhLdXVh2LQ1KC0gfpb4Vdc?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="It Was Just/Accident"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVB-GZeZ3ueA0hJeVlNsSpP5u-eMB0ver8-kNbVU285hcGlOlPp0datKm5L0oB-Zwk5ASzvi7ehfeHodHe_dk_VFTN1uO-w_yyGzt-8aEDRo_UQjCXXrFGAEcTf5d2VGga_eSZLtDKEnHPnBcEgdATrwzKCzuNeXdqR4xg?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sentimental Value"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA-JhVaYWG8ZkYBD-4KLr-nXUlzZMzWnPxKiOx4JuBQboj7hbR1_NdVEQaoTIfXIgaqTEGKLv-pGDVf6Ziw6L72MILiYGj4nMBxPGfOH6SbLP5J3khYhHGOD8cGgRJ1i3PO0-GVbv6hBPwJPvR5scXf8LNmxQ2rZK44Dw?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sirāt"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBPnAV3ulCHWUoypfQnp6kY2CKNUAvdjGnxjHESCjPTZG4SBLx5TYmexxV8fMIcTkunQhlxrDyka7Q5_PqFFbSwDesrm1jNEME5q-Ui0EMu0q3y-Efo8ceSgFM4JIfSKDMmIj8V7WMh9fKY-V0GM21qhZj14BELqwtogA?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Voice of Hind Rajab"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAEihMTAgUHE_Wo6ohNVTOyPyfIn4uDfcsv0voHKwUzIfCbQ-0ve9ORQNz2zOTcFRH8TrFgWZqpJv8kPuPYYpUqXSc7VjZsKxJczFZz_6PRnKJ0SIL3uHOQA5BF3mSMtFcbOWdi8QJeLbjERZ5bx1jBPg1e6KPpQwE5IA?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
+  <column name="Music (Score)">
+    <nominee name="Bugonia"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBqRmxbAML9izzpVtqEZj5rvdN-8ibTb7g11hXMl-QSB42Wor8AU5CUP3cdXs60mAdmKisMkA09gYQhtdHGpZoaXG3hmd-zCKAoxK7GipDrY_vyEeY6_DkyOz_0HP0wLuSTksuumxxbiICLoigoYB9bSL5s_9rr9lr4EQ?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Frankenstein"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAdGkfQdzQvi9b7oGKP9lxCDAZNjwAzFoEkgC0nBt5twCxGYMq4N_IVItXRigwWKpeSROC6fj6AaPSmVM9WEQNWk-MWarLSZU-81iARP0VYgup_cCjiflcbQKvB-xT6aug1LjpfbeHCZ9jbu7yCP4rvH8jAZMb3u5BS?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Hamnet"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDq4Wx4cJinhmltYms1SkLF7g-cvN86RaJJT_Bs0Isb8eHX-CM23QUqPjKAP5xRiseEECIZHOjmkqbPMOuLT2R_JgagAVKWUh6DmE7aXc9vQq0GxP-nkW6uO0xquk-wATcAaTqQMK1x97aKxh1JeIFtZHbmYfMI18QM?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="One Battle/Another"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAK2X4ODQsm4fR3k1aWUmMlmNrS0GnV9XE1gxAd8Or4ISx9vW5osRDw7yHfNwNnQSQWL9nUEhN9lKqoBirsHsmOs0TYNooLnJmeL7vgLnFYzboIb_KHv2MBQtZuvQXNv-o3Iul1FWJEPcYO0elyrMseXYdaiDpC9prM?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sinners"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC4gCzcehI_eYP_SO6mrxuHxoFXkQhRyXRaUOa7WaagTQWU0HLlADahXAqhheBSc7HBcDBodcPzIIjBfwkgHUCGTqCoMPQExNv66zHXpCvXQ9kgNOJBH2VOFkuk0xNerwtM2fDzHxbuWewzqFo41ksEbKYrw7LLc6wE4g?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
+  <column name="Production Design">
+    <nominee name="Frankenstein"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAzvjYD5QIT9FAe-D_RnekkMu1ChsMjno43gOYwpyXynUiqsh2Txxg-OOtWE3aHl6X9t4k2PyCyJrmk8-vk3X9FrrTTy2n_mBCgvJm-tCMc8_Cl4dS0PiBW4a1Pay9Fn5MqHi6NwqLzynJRwbCp1NJ-j8kQcI76lzHhdA?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Hamnet"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBtW8dgSU9KHx0JtABFCGMwsffMwvPq0eOKbhgPuGKTjkRXChovz6a7NFI-AoU-J1dGt5lH28S-QDp-kfc4S5XKO_5jgUpmlahHwQmG7GTGL1Da6o6Tu6nrXyN6dcYrWRyKwuWA_IyPwXO8fB3hWYWROzQU77t58FYKAw?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Marty Supreme"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDaYiWIcthe-RKJcciBERXF3zCSLl5PlFxSe0Fzo8RMSEWp3CNGvQBmO--7VXTNRYfhKV_osDcuFi0BibVGRQi755gHewCya57ezXdED02e3RyDiLKfkmcrFlXA0TUBmJT2G61LpG3v3SFKcAJ0VoT4od6Ba82eE25s?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="One Battle/Another"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDN5aWgLdj3uJN485HkYfhbgvROgyw3ulbH5qZPEYajIQhLVDUAOTr3zK8UHWNxJMX6vK7j0bbjIb-NuZUQKfQ6Dk3B23yxxTC3-oC-k32f-aBZVl_hfnJX0Pyl62VOd9A8NXytJ9aT2BBjlfqB0AIGr_TKU7LS8-Uiog?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sinners"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBRYzom3CJvANomzvYzMqZpmwt3Qb-MOcdCDQsDz3BJ9Mzfd2zQ-VLIR5aWdKss_Rsb4rGA_KklHVsyxsTJbLqCYqouoRsr61DQpN_GP6U0lNt5GtgA6M-_GXpFX2uxs5JWpDvi9liWV_6EOt2rDU1SbB6N82TB7HtE?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
+  <column name="Sound">
+    <nominee name="F1"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCdZ035dDcAixanEpzw75ydJKDNmikGXHw7DsozivTXVj7ri1ObSHVzMgmTB2IpAnCWeIq-rZ1m0BoV92dlpl_2LPgHtUvyDBLWGHpawxyXzkJaTjnfkVlQEnOJ7GwaNIMc4laDunyOJrdVRE3nkNJM9WucsBG-gMg3?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Frankenstein"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDCOUYxeXo2YTW6v_TXDV0PpnFv7m7KKQUl5pY1GaRFWZiflS3xqGn7R133DBkx0a8wiXoI_BrDpjT9krFh2sH1z3oqOi1YnF5kSc6VKGE5XJciU0LfOeM08x0vc7uHkjkB6FlAU7oc0he2X1Bz6ZikBhdxl-SrKoSd?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="One Battle/Another"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCx2kMJfg01SzXqji1Mmlu9-UVdIVOnG5YH6Hofkpscf0RcwKx16bjRy8JR-IhWAa6WRK5ocRCjPvMaECQEzVBn_oEBTVa8vEX7Ueu3C-r-aRi0UUQMWn9_rx8Tb_0lSA1AcCrCkjRiGKzst2KCpO9yFxOzv4_O1X28IA?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sinners"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC4Cz4paolYoeZhCf2alI9r2zadzbVqGPXKz2cNYQTdEMtoSSTkHnjBnwoVP_bWZb3q0l5A7XVxfO7CrmKDugDNeOLWN5_8ewytQBvZ6pqwI1IAmvFV_Tj6cO6e1p3mrbX8eqUG23SyK2wHXbww_XM741CVFULjMjE5Sg?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Sirāt"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBWleiOZXlkYeahtVJzzw_i4NKmdAdvB4WZz7W2x17TnLyizbgEujZbi1h_x--gIiac-AbZnW6Gz4ZnNoc62bUVk3i8kgQwEBrpg0dhwdJwCOpql1jdQL8FROCAp3cc5Y6E88B8P0SawgXaeYrjk7_S_j250sxfjXCwCg?key=2iCuZET_s8HgDpnzDO9enA" />
+  </column>
   <column name="Visual Effects">
     <nominee name="Avatar: Fire &amp; Ash"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAVj_go5wqDYHW_m4cKMtVkPykklUThj8F7-sthYfLm9OG5l7YK9rRCqW3Qz_yWt2-YRp-X6Lrigg3Unds9mYjxSLVb7bwz80IVguHLC9RdgqOKUm8tRkiP4ZMNWnnypo3Foi_LoVoEJwH3CLc1ST0OIEIS6lMMU1S_iw?key=2iCuZET_s8HgDpnzDO9enA" />
@@ -219,17 +219,17 @@
     <nominee name="Sinners"
       img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAdwgsLfi0qTNlOhN7QvOIHweoDZUaEunAXG8P_EtQ4w_s8gcjGaa6GNw5KZk3CbhX4gLtfxtflmYzLe0B1n1sbjjs9-Nnz0zW0VDkH4xdcU4xhWVD_KHkLHUcksqMF6IOmS6lhvNe18ZozWDK0sDQ7kFDtknT7NYibOQ?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
-  <column name="Animated Feature" tieBreaker="2">
-    <nominee name="Arco"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCvFFXTVqAJqtlSINwakD9IpcWwbuvAIVLCV-81vJ6VejthBLzZgmix-F_KFBgxEQiCYukp3wGoChY_PniDB6RYJbJ-2keBsWCGOUPT53U37UXTY2ZnDzDnmmQ_8XiSwtxE1jLqoZspHV7oU3sGl3zo-L6XmOoO0kiSBw?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Elio"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVCdDjWYsE65eGL9nrvY35jYnxwW2e7b_4GQk9u6mx6IqRlSVvbyBy0MjtCNEhSj1DBm6OugR1sHZh2iuh2g1x4Fcs61uj9bwHiSFryH97Ns47Aran-B5VMUmyR79dUWFHe5hqzfC-z9SonVuqXHDXyk9cM7NUyvnsF_ew?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="KPop Demon Hunters"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDWrOzzmvBZf0Lk7KK7falq7P-qXILosZZNIeVNBAAnHps8T6dacSBkhOFHZ3DKOJnn3H4IOdaZUsTR09n8OVMnsrDhS1XDO8lr3oM3aCMIQsRJ_ECwvb2a6tha3EP26gyunvAxyk6O8qgrf0OKSZ4v2s0xbbI6PwgN?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Little Amélie"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDYGd7rr74bTaJIILU3lRm3sPPuocC2WjDeKMJmU-SJHx8aXS0NNxRDHhjMHFfrxwp6_q5KDRG4lLgfY_HqLJkp7K95uy4j97n1L54NBNO_wBrejU08emKjesTUw5fcM7K0KKZ-gZm5VpgFtOoqkFlq_64taixoxIZrjg?key=2iCuZET_s8HgDpnzDO9enA" />
-    <nominee name="Zootopia 2"
-      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVA4zvQvi5gc9jSnHB1TvObqKTD3hA3AEI6vkY4wXYO3VzwpJsK38mES86eHdUHLYcc8t5mjQL11XmwUQ9Zurq9xhzEfRqvXlPx26MuzbSNbJo-Uq60IZOP6D5W0mLrzIf42r-N88tva6KZLr53A1VekoaDydpKse84Bvg?key=2iCuZET_s8HgDpnzDO9enA" />
+  <column name="Writing (Adapted)">
+    <nominee name="Bugonia"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBuPea4YnIFsi9C5WGPuVoeYr_ZIYiskIkE_cUy5dkB0kmYkS6eK_ZZV5IH-HnOjpHINPJ03H3RZs-jL9XA_cQVDXygkfFN6VmKiZdOBN-nkCyA-ukqyb7EExlQ8sp2K0RKzzNh7W2Awo4vyKcnYFHA-LEauykOI76Jwg?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Frankenstein"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVDT49C_cl3o-cL2GwmnvEns9ygrls1G7dAgTAc2uCMOXRYEXUF6lzkaDUy0tqi8uWuS1aAJQvAWK4iwFKnWpqSXfTqIiDBw3CBwA51Tae828vG8FqMbUHTh3ZY_bRoIMfTYwcUz7nDaIDPA8OH6fkkCSAE-2tkPDgKXsg?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Hamnet"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVByD1vYf2EFQt0-qQXcVIpm_tXm2ISMleogWone39-GS1nDYcHsFGDz5S4M3IZRr0LGiNFXX3o5GkJUR4DuXkvii2pL45aZsdftOvj3nImfX_LFvvIL4OQJ11VBZYnyta6dMvRokEXDZs1zhRlJIO8uEvvEsy1MwUmnMw?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="One Battle/Another"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVC2Rnp62Omid_H39SaabAApWrI0KDdk8TP-Z57fM-ItW8_gchLAOpUkfoek4iwFG-lmxsdpUmrLwZqKe0CGeM4t0uiMOPaoTuGw-MLxyYeeYQu8IERJPYrbubvDbqw1GptXpKSavFszfTOvrlreaoaa798HXtlaAmzv?key=2iCuZET_s8HgDpnzDO9enA" />
+    <nominee name="Train Dreams"
+      img="https://lh7-rt.googleusercontent.com/formsz/AN7BsVD6ITsmtm9yEM3BkZr_l5cCj5MfOe9S9tKj1OhyqiLRiH0GB2lbYViLPgR8a8ZOEqUqp6HZVP4ez5pM7z63nwKAgQN3dE4CV1UU6ytxS-EEwjxr0EPTIXeuluw303JRU870aAVtTJVmgOuKxFWVEEGziRWl_nH2UMF8?key=2iCuZET_s8HgDpnzDO9enA" />
   </column>
   <column name="Time" tieBreaker="7" />
   <column name="EMail" />
