@@ -432,7 +432,7 @@
       </tbody>
     </table>
     <script>
-      // Formats the time value (in seconds) as: H:MM:SS
+      // Formats the time in seconds as: (-)H:MM:SS
       function formatTime(seconds) {
         return seconds &lt; 0 ? '-' + formatTime(-seconds) :
             [seconds / 60 / 60, seconds / 60 % 60, seconds % 60].map((value, index) =>
@@ -457,13 +457,13 @@
       let elapsed = -1;
 
       class Player {
-        constructor(id, firstName, lastName, link, score, time, decided) {
+        constructor(id, firstName, lastName, link, scoreText, time, decided) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
           this.link = link;
-          this.scoreText = score;
-          this.score = parseFloat(score);
+          this.scoreText = scoreText;
+          this.score = parseFloat(scoreText);
           this.time = time;
           this.timeText = formatTime(time);
           this.decided = decided.split('');
