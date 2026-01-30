@@ -242,7 +242,7 @@
             <xsl:when
               test="$ballots/player[@id = current()/@id]/@firstName = 'Rick' and $ballots/player[@id = current()/@id]/@lastName = 'Astley'">
               <iframe width="560" height="315"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;mute=1"
                 frameborder="0" allow="autoplay; encrypted-media" />
             </xsl:when>
             <xsl:otherwise>
