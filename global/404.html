@@ -50,8 +50,9 @@
           background: linear-gradient(135deg, #cfa434, #f6e27f);
           border: 3px solid #b08d2a;
           position: relative;
-          margin: 250px auto 0 auto; /* pushes everything below the header */
+          margin: 250px auto 0 auto;
           box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+          z-index: 2;
           overflow: visible;
         }
 
@@ -79,6 +80,35 @@
           background: rgba(0,0,0,0.15);
         }
 
+        .envelope-front {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #cfa434, #f6e27f);
+          border: 3px solid #b08d2a;
+          box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+          clip-path: polygon(
+            0 0,
+            50% 50%,
+            50% 50%,
+            50% 50%,
+            100% 0,
+            100% 100%,
+            0 100%
+          );
+          z-index: 3;
+          pointer-events: none;
+        }
+
+        /* Top back flap */
+        .envelope-front:before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-left: 230px solid transparent;
+          border-right: 230px solid transparent;
+          border-top: 150px solid rgba(0,0,0,0.18);
+        }
+
         .card {
           width: 390px;
           background: #ffffff;
@@ -86,19 +116,20 @@
           position: absolute;
           left: 50%;
           top: 50%;
-          transform: translate(-50%, -50%);
+          transform: translate(-50%, -40%);
           padding: 60px 28px;
           box-shadow: 0 10px 18px rgba(0,0,0,0.45);
           font-family: "Trajan Pro", "Cinzel", "Times New Roman", serif;
           text-align: center;
-          z-index: 2;
+          z-index: 1;
+          overflow: hidden;
 
-          animation: reveal 2.6s ease-out forwards;
+          animation: reveal 3.5s ease-out forwards;
         }
 
         @keyframes reveal {
           from {
-            transform: translate(-50%, -120%);
+            transform: translate(-50%, -45%);
           }
           to {
             transform: translate(-50%, -160%);
@@ -148,7 +179,9 @@
             The requested page was not found
           </div>
         </div>
+        <div class="envelope-front" />
       </div>
+      <div style="height: 300px;" /></div>
       <br/>
       <br/>
       <br/>
