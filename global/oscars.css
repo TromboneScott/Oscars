@@ -97,7 +97,7 @@ a.header-link {
 }
 
 /* Oscars header banner */
-table.oscars-header {
+table#header.oscars-header {
   border: 2px solid black;
   border-collapse: collapse;
   color: PaleGoldenrod;
