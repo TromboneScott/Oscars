@@ -51,6 +51,7 @@ Edit year/data/definitions.xml using Eclipse
 6. These categories have to have these exact names: Timestamp, First Name, Last Name, Time, EMail
 7. Add all the nominees under each category in the order you want them (usually alphabetical)
   a. Using Eclipse will put all special characters such as á and é in UTF-8 format
+  b. International Feature may be sorted by country and we want it sorted by title
 8. Set the img value for each nominee
   a. Right-click on image in Google Form and select: Copy image address
   b. Paste into img attribute
