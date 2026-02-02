@@ -11,9 +11,8 @@
       </head>
       <body>
         <center>
-          <a href="/" style="display: table; text-decoration: none; color: inherit">
-            <table id="header"
-              style="border: 2px solid black; color: PaleGoldenrod; background-image: url('http://oscars.site44.com/RedCurtain.jpg'); background-repeat: no-repeat; background-size: 100%">
+          <a href="/" class="header-link">
+            <table id="header" class="oscars-header">
               <tr>
                 <td rowspan="3" />
                 <td rowspan="3">
@@ -28,9 +27,7 @@
                 <td rowspan="3" />
               </tr>
               <tr>
-                <th style="background-color: transparent">
-                  Oscars History
-                </th>
+                <th>Oscars History</th>
               </tr>
               <tr>
                 <td>

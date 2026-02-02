@@ -87,3 +87,41 @@ div#rank {
 td#selection {
   text-align: center;
 }
+
+/* Clickable banner wrapper */
+a.header-link {
+  display: table;
+  text-decoration: none;
+  color: inherit;
+  margin: 0 auto;
+}
+
+/* Oscars header banner */
+table.oscars-header {
+  border: 2px solid black;
+  border-collapse: collapse;
+  color: PaleGoldenrod;
+  background-image: url("http://oscars.site44.com/RedCurtain.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  text-align: center;
+}
+
+/* Remove borders inside header */
+table.oscars-header td,
+table.oscars-header th {
+  border: 0;
+  padding: 0 5px;
+}
+
+/* Main title */
+table.oscars-header th {
+  font-size: 50px;
+  background-color: transparent;
+  white-space: nowrap;
+}
+
+/* Subtitle text */
+table.oscars-header i {
+  font-size: 18px;
+}
