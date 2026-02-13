@@ -270,6 +270,17 @@
               </xsl:if>
               <br />
               <h3>Guesses</h3>
+              Compare to Opponent:
+              <select id="opponentSelect" >
+                <option value="-1">-- Select Opponent --</option>
+                <xsl:for-each select="$ballots/player[@id != $player/@id]">
+                  <option value="{@id}">
+                    <xsl:apply-templates select='.' mode='playerName' />
+                  </option>
+                </xsl:for-each>
+              </select>
+              <br />
+              <br />
               <table>
                 <thead>
                   <tr>
@@ -279,6 +290,7 @@
                       </a>
                     </th>
                     <th>Guess</th>
+                    <th class="opponentColumn hidden">Opponent</th>
                     <th>Actual</th>
                     <th>Score</th>
                   </tr>
@@ -304,6 +316,7 @@
                       <td>
                         <xsl:value-of select="$playerGuess" />
                       </td>
+                      <td class="opponentColumn hidden" />
                       <td>
                         <xsl:for-each select="nominee">
                           <xsl:if test="position() > 1">, </xsl:if>
@@ -337,6 +350,7 @@
                     <th>
                       <xsl:value-of select="floor($playerScore)" />
                     </th>
+                    <th class="opponentColumn hidden" />
                     <th>
                       <xsl:value-of
                         select="count($results/awards/category[nominee])" />
@@ -353,11 +367,30 @@
                         mode="tieBreaker" />
                     </td>
                     <td id="totalTime_guess" style="text-align: center" />
+                    <td id="totalTime_opponent" style="text-align: center"
+                      class="opponentColumn hidden" />
                     <td id="totalTime_actual" style="text-align: center" />
                     <td id="totalTime_score" style="text-align: center" />
                   </tr>
                 </tfoot>
               </table>
+              <script>
+                const opponentSelect = document.getElementById("opponentSelect");
+                const opponentCells = document.querySelectorAll(".opponentColumn");
+                opponentSelect.addEventListener("change", function() {
+                  const opponentId = parseInt(opponentSelect.value);
+                  opponentCells.forEach(cell =>
+                     cell.classList.toggle("hidden", opponentId &lt; 0));
+                  const opponent = players.find(player => player.id === opponentId);
+                  if (opponent) {
+                    opponent.guesses.forEach((guess, category) =>
+                        opponentCells[category + 1].textContent = guess);
+                    opponentCells[opponent.guesses.length + 1].textContent =
+                        Math.trunc(opponent.score);
+                  }
+                  document.getElementById("totalTime_opponent").textContent = opponent.timeText;
+                });
+              </script>
               <br />
               <br />
               <br />
@@ -463,11 +496,12 @@
       let elapsed = -1;
 
       class Player {
-        constructor(id, firstName, lastName, link, scoreText, time, decided) {
+        constructor(id, firstName, lastName, link, guesses, scoreText, time, decided) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
           this.link = link;
+          this.guesses = guesses;
           this.scoreText = scoreText;
           this.score = parseFloat(scoreText);
           this.time = time;
@@ -481,8 +515,14 @@
       }
 
       // Load the players from XML files
+      let guesses;
       <xsl:for-each select="$results/standings/player">
         <xsl:variable name="ballot" select="$ballots/player[@id = current()/@id]" />
+        guesses = [];
+        <xsl:for-each select="$results/awards/category">
+          guesses.push('<xsl:value-of
+              select="$ballot/category[@name = current()/@name]/@nominee" />');
+        </xsl:for-each>
         players.push(new Player(
           <xsl:value-of select="@id" />,
           "<xsl:call-template name='escape-js'>
@@ -498,6 +538,7 @@
                  </xsl:with-param>
                </xsl:call-template>"              
                + "&lt;/a>",
+          guesses,
           "<xsl:value-of select="@score" />",
           <xsl:value-of select="$ballot/@time" />,
           "<xsl:value-of select="@decided" />"

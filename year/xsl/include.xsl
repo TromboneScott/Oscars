@@ -49,6 +49,9 @@
         .decision.visible {
           display: inline;
         }
+        .hidden {
+          display: none;
+        }
       </style>
       <script>
         // Sends the HTTP request, avoiding cached responses, and performs the action
@@ -121,6 +124,9 @@
                     if (latest !== updated) {
                       sessionStorage.setItem('scrollPosition', window.scrollY);
                       <xsl:value-of select="$storeSortOrder"/>
+                      const opponentSelect = document.getElementById('opponentSelect');
+                      if (opponentSelect)
+                        sessionStorage.setItem('selectedOpponent', opponentSelect.value);
                       window.location.reload();
                     }
                     skips = 0;
@@ -135,6 +141,14 @@
             if (scrollPosition !== null)
               window.scrollTo(0, parseInt(scrollPosition, 10));
             sessionStorage.removeItem('scrollPosition');
+
+            const opponentSelect = document.getElementById('opponentSelect');
+            if (opponentSelect) {
+              const selectedOpponent = sessionStorage.getItem('selectedOpponent');
+              sessionStorage.removeItem('selectedOpponent');
+              opponentSelect.value = selectedOpponent === null ? opponentSelect.options[0].value : selectedOpponent;
+              opponentSelect.dispatchEvent(new Event('change'));
+            }
           });
         </xsl:if>
       </script>
