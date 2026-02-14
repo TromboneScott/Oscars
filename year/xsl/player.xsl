@@ -290,7 +290,7 @@
                       </a>
                     </th>
                     <th>Guess</th>
-                    <th class="opponentColumn hidden">Opponent</th>
+                    <th class="opponentColumn hidden" />
                     <th>Actual</th>
                     <th>Score</th>
                   </tr>
@@ -350,7 +350,7 @@
                     <th>
                       <xsl:value-of select="floor($playerScore)" />
                     </th>
-                    <th class="opponentColumn hidden" />
+                    <th id="opponentScore" class="opponentColumn hidden" />
                     <th>
                       <xsl:value-of
                         select="count($results/awards/category[nominee])" />
@@ -367,7 +367,7 @@
                         mode="tieBreaker" />
                     </td>
                     <td id="totalTime_guess" style="text-align: center" />
-                    <td id="totalTime_opponent" style="text-align: center"
+                    <td id="opponentTime" style="text-align: center"
                       class="opponentColumn hidden" />
                     <td id="totalTime_actual" style="text-align: center" />
                     <td id="totalTime_score" style="text-align: center" />
@@ -375,6 +375,16 @@
                 </tfoot>
               </table>
               <script>
+                const winners = [];
+                let nominees;
+                <xsl:for-each select="$results/awards/category">
+                  nominees = [];
+                  <xsl:for-each select="nominee">
+                    nominees.push('<xsl:value-of select="@name" />');
+                  </xsl:for-each>
+                  winners.push(nominees);
+                </xsl:for-each>
+
                 const opponentSelect = document.getElementById("opponentSelect");
                 const opponentCells = document.querySelectorAll(".opponentColumn");
                 opponentSelect.addEventListener("change", function() {
@@ -383,12 +393,19 @@
                      cell.classList.toggle("hidden", opponentId &lt; 0));
                   const opponent = players.find(player => player.id === opponentId);
                   if (opponent) {
-                    opponent.guesses.forEach((guess, category) =>
-                        opponentCells[category + 1].textContent = guess);
-                    opponentCells[opponent.guesses.length + 1].textContent =
+                    opponentCells[0].innerHTML = opponent.link;
+                    opponent.guesses.forEach((guess, category) => {
+                        opponentCells[category + 1].textContent = guess;
+                        opponentCells[category + 1].style.backgroundColor =
+                            winners[category].length ? winners[category].includes(guess) ?
+                                'limegreen' : 'red' : 'silver';
+                    });
+                    document.getElementById('opponentScore').textContent =
                         Math.trunc(opponent.score);
+                    document.getElementById("opponentTime").textContent = opponent.timeText;
+                    document.getElementById('opponentTime').style.backgroundColor =
+                        opponent.timeColor();
                   }
-                  document.getElementById("totalTime_opponent").textContent = opponent.timeText;
                 });
               </script>
               <br />
@@ -626,10 +643,16 @@
                   document.getElementById('possible_rank').textContent =
                       inPlayer.wpr === inPlayer.bpr ? 'Rank is Final' :
                           `Possible Final Rank: ${inPlayer.bpr} to ${inPlayer.wpr}`;
-                document.querySelectorAll('[id^="totalTime_"]')
-                    .forEach(element => element.style.backgroundColor = inPlayer.timeColor());
                 document.querySelectorAll('.decision').forEach(element => element.classList
                     .toggle('visible', inPlayer.decided.includes(element.dataset.decision)));
+                document.querySelectorAll('[id^="totalTime_"]')
+                    .forEach(element => element.style.backgroundColor = inPlayer.timeColor());
+
+                const opponent = players.find(player =>
+                    player.id === parseInt(document.getElementById("opponentSelect").value));
+                if (opponent)
+                  document.getElementById('opponentTime').style.backgroundColor =
+                      opponent.timeColor();
               </xsl:if>
             }
           }
