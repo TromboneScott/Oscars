@@ -12,6 +12,26 @@
       </xsl:call-template>
       <body>
         <script>
+          const winners = [];
+          const values = [];
+          let nominees;
+          <xsl:for-each select="$results/awards/category">
+            nominees = [];
+            <xsl:for-each select="nominee">
+              nominees.push('<xsl:value-of select="@name" />');
+            </xsl:for-each>
+            winners.push(nominees);
+
+            <xsl:variable name="tieBreaker"
+              select="$definitions/column[@name = current()/@name]/@tieBreaker" />
+            values.push(1
+              <xsl:if test="$tieBreaker">
+                + 1 / Math.pow(10, <xsl:value-of select="$tieBreaker"/>)
+              </xsl:if>
+            );
+          </xsl:for-each>
+          const tieBreakerCount = values.filter(value => value > 1).length;
+
           const players = [];
           const nameSort = ['lastName', 'firstName'];
           
@@ -355,26 +375,6 @@
                 </tfoot>
               </table>
               <script>
-                const winners = [];
-                const values = [];
-                let nominees;
-                <xsl:for-each select="$results/awards/category">
-                  nominees = [];
-                  <xsl:for-each select="nominee">
-                    nominees.push('<xsl:value-of select="@name" />');
-                  </xsl:for-each>
-                  winners.push(nominees);
-
-                  <xsl:variable name="tieBreaker"
-                    select="$definitions/column[@name = current()/@name]/@tieBreaker" />
-                  values.push(1
-                    <xsl:if test="$tieBreaker">
-                      + 1 / Math.pow(10, <xsl:value-of select="$tieBreaker"/>)
-                    </xsl:if>
-                  );
-                </xsl:for-each>
-                const tieBreakerCount = values.filter(value => value > 1).length;
-
                 const opponentSelect = document.getElementById("opponentSelect");
                 opponentSelect.addEventListener("change", updateGuesses);
 
@@ -392,8 +392,7 @@
                 function updateGuesses() {
                   const opponentId = parseInt(opponentSelect.value);
                   const opponent = players.find(player => player.id === opponentId);
-                  let playerPossibleScore = <xsl:value-of
-                      select="$results/standings/player[@id = $player/@id]/@score" />;
+                  let playerPossibleScore = inPlayer.score;
                   let opponentPossibleScore = opponent ? opponent.score : 0;
 
                   [opponentHeader, ...opponentCells, opponentScore, opponentTime].forEach(cell =>
@@ -444,10 +443,9 @@
                   opponentScore.textContent = opponentPossibleScore.toFixed(tieBreakerCount);
                 }
 
-                updateGuesses();
-                document.getElementById('actualScore').textContent = values
-                    .filter((value, category) => winners[category].length > 0)
-                    .reduce((total, value) => total + value, 0).toFixed(tieBreakerCount);
+                document.getElementById('actualScore').textContent =
+                    values.reduce((total, value, category) => total +
+                        (winners[category].length > 0 ? value : 0), 0).toFixed(tieBreakerCount);
               </script>
               <br />
               <br />
@@ -554,14 +552,15 @@
       let elapsed = -1;
 
       class Player {
-        constructor(id, firstName, lastName, link, guesses, scoreText, time, decided) {
+        constructor(id, firstName, lastName, link, guesses, time, decided) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
           this.link = link;
           this.guesses = guesses;
-          this.scoreText = scoreText;
-          this.score = parseFloat(scoreText);
+          this.score = values.reduce((total, value, category) =>
+              total + (winners[category].includes(guesses[category]) ? value : 0), 0);
+          this.scoreText = this.score.toFixed(tieBreakerCount);
           this.time = time;
           this.timeText = formatTime(time);
           this.decided = decided.split('');
@@ -597,7 +596,6 @@
                </xsl:call-template>"              
                + "&lt;/a>",
           guesses,
-          "<xsl:value-of select="@score" />",
           <xsl:value-of select="$ballot/@time" />,
           "<xsl:value-of select="@decided" />"
         ));
@@ -608,6 +606,7 @@
         const inPlayer =
             players.find(player => player.id === <xsl:value-of select="$inPlayer/@id" />);
         document.getElementById("totalTime_guess").textContent = inPlayer.timeText;
+        updateGuesses();
       </xsl:if>
 
       const table = new SortableTable(

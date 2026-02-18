@@ -41,14 +41,10 @@ final class Standings {
 
     /** Get the DOM Element for these Standings */
     public Element toDOM() {
-        int scale = Category.ALL.stream().map(Category::value).mapToInt(BigDecimal::scale).max()
-                .orElse(0);
         ImmutableMap<Player, ImmutableSet<Player>> lostToMap = scoreMap.keySet().stream()
                 .collect(ImmutableMap.toImmutableMap(player -> player, this::lostTo));
         return scoreMap.keySet().stream()
-                .map(player -> player.toDOM()
-                        .setAttribute("score", scoreMap.get(player).setScale(scale).toString())
-                        .setAttribute("decided", decided(player, lostToMap)))
+                .map(player -> player.toDOM().setAttribute("decided", decided(player, lostToMap)))
                 .reduce(new Element("standings"), Element::addContent);
     }
 
