@@ -279,6 +279,15 @@
                   </option>
                 </xsl:for-each>
               </select>
+              <xsl:if test="$results/awards/category[not(nominee)]">
+                <br />
+                Using Results:
+                <select id="resultsSelect" >
+                  <option value="current">Current</option>
+                  <option value="best">Best Possible</option>
+                  <option value="worst">Worst Possible</option>
+                </select>
+              </xsl:if>
               <br />
               <br />
               <table>
@@ -290,9 +299,8 @@
                       </a>
                     </th>
                     <th>Guess</th>
-                    <th class="opponentColumn hidden" />
+                    <th id="opponentHeader" class="hidden" />
                     <th>Actual</th>
-                    <th>Score</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -313,51 +321,25 @@
                         <xsl:apply-templates select="$categoryDefinition"
                           mode="tieBreaker" />
                       </td>
-                      <td>
+                      <td class="guessColumn">
                         <xsl:value-of select="$playerGuess" />
                       </td>
                       <td class="opponentColumn hidden" />
-                      <td>
+                      <td class="actualColumn">
                         <xsl:for-each select="nominee">
                           <xsl:if test="position() > 1">, </xsl:if>
                           <xsl:value-of select="@name" />
                         </xsl:for-each>
-                      </td>
-                      <td>
-                        <xsl:if test="nominee">
-                          <xsl:variable name="value">
-                            <xsl:apply-templates select="$categoryDefinition"
-                              mode="value" />
-                          </xsl:variable>
-                          <xsl:choose>
-                            <xsl:when test="nominee[@name = $playerGuess]">
-                              <xsl:value-of select="$value" />
-                            </xsl:when>
-                            <xsl:otherwise>
-                              <xsl:value-of select="translate($value, '1', '0')" />
-                            </xsl:otherwise>
-                          </xsl:choose>
-                        </xsl:if>
                       </td>
                     </tr>
                   </xsl:for-each>
                 </tbody>
                 <tfoot>
                   <tr>
-                    <xsl:variable name="playerScore"
-                      select="$results/standings/player[@id = $player/@id]/@score" />
                     <th class="header">Total</th>
-                    <th>
-                      <xsl:value-of select="floor($playerScore)" />
-                    </th>
-                    <th id="opponentScore" class="opponentColumn hidden" />
-                    <th>
-                      <xsl:value-of
-                        select="count($results/awards/category[nominee])" />
-                    </th>
-                    <th>
-                      <xsl:value-of select="$playerScore" />
-                    </th>
+                    <th id="playerScore" />
+                    <th id="opponentScore" class="hidden" />
+                    <th id="actualScore" />
                   </tr>
                   <tr class="time">
                     <td class="header">
@@ -367,15 +349,14 @@
                         mode="tieBreaker" />
                     </td>
                     <td id="totalTime_guess" style="text-align: center" />
-                    <td id="opponentTime" style="text-align: center"
-                      class="opponentColumn hidden" />
+                    <td id="opponentTime" style="text-align: center" class="hidden" />
                     <td id="totalTime_actual" style="text-align: center" />
-                    <td id="totalTime_score" style="text-align: center" />
                   </tr>
                 </tfoot>
               </table>
               <script>
                 const winners = [];
+                const values = [];
                 let nominees;
                 <xsl:for-each select="$results/awards/category">
                   nominees = [];
@@ -383,30 +364,90 @@
                     nominees.push('<xsl:value-of select="@name" />');
                   </xsl:for-each>
                   winners.push(nominees);
+
+                  <xsl:variable name="tieBreaker"
+                    select="$definitions/column[@name = current()/@name]/@tieBreaker" />
+                  values.push(1
+                    <xsl:if test="$tieBreaker">
+                      + 1 / Math.pow(10, <xsl:value-of select="$tieBreaker"/>)
+                    </xsl:if>
+                  );
                 </xsl:for-each>
+                const tieBreakerCount = values.filter(value => value > 1).length;
 
                 const opponentSelect = document.getElementById("opponentSelect");
+                opponentSelect.addEventListener("change", updateGuesses);
+
+                const resultsSelect = document.getElementById("resultsSelect");
+                if (resultsSelect)
+                  resultsSelect.addEventListener("change", updateGuesses);
+
+                const guessCells = document.querySelectorAll(".guessColumn");
+                const playerScore = document.getElementById('playerScore');
+                const opponentHeader = document.getElementById('opponentHeader');
                 const opponentCells = document.querySelectorAll(".opponentColumn");
-                opponentSelect.addEventListener("change", function() {
+                const opponentScore = document.getElementById('opponentScore');
+                const opponentTime = document.getElementById('opponentTime');
+                const actualCells = document.querySelectorAll(".actualColumn");
+                function updateGuesses() {
                   const opponentId = parseInt(opponentSelect.value);
-                  opponentCells.forEach(cell =>
-                     cell.classList.toggle("hidden", opponentId &lt; 0));
                   const opponent = players.find(player => player.id === opponentId);
+                  let playerPossibleScore = <xsl:value-of
+                      select="$results/standings/player[@id = $player/@id]/@score" />;
+                  let opponentPossibleScore = opponent ? opponent.score : 0;
+
+                  [opponentHeader, ...opponentCells, opponentScore, opponentTime].forEach(cell =>
+                      cell.classList.toggle("hidden", !opponent));
                   if (opponent) {
-                    opponentCells[0].innerHTML = opponent.link;
+                    opponentHeader.innerHTML = opponent.link;
                     opponent.guesses.forEach((guess, category) => {
-                        opponentCells[category + 1].textContent = guess;
-                        opponentCells[category + 1].style.backgroundColor =
+                        opponentCells[category].textContent = guess;
+                        opponentCells[category].style.backgroundColor =
                             winners[category].length ? winners[category].includes(guess) ?
                                 'limegreen' : 'red' : 'silver';
                     });
-                    document.getElementById('opponentScore').textContent =
-                        Math.trunc(opponent.score);
-                    document.getElementById("opponentTime").textContent = opponent.timeText;
-                    document.getElementById('opponentTime').style.backgroundColor =
-                        opponent.timeColor();
+                    opponentTime.textContent = opponent.timeText;
+                    opponentTime.style.backgroundColor = opponent.timeColor();
                   }
-                });
+
+                  if (resultsSelect) {
+                    for (let category = 0; category &lt; winners.length; category++)
+                      if (winners[category].length === 0) {
+                        guessCells[category].style.backgroundColor =
+                            resultsSelect.value === "current" ? 'silver' :
+                            resultsSelect.value === "best" || opponent &amp;&amp;
+                                opponent.guesses[category] === guessCells[category].textContent ?
+                            'limegreen' : 'red';
+                        opponentCells[category].style.backgroundColor =
+                            resultsSelect.value === "current" ? 'silver' :
+                            resultsSelect.value === "worst" || opponent &amp;&amp;
+                                opponent.guesses[category] === guessCells[category].textContent ?
+                            'limegreen' : 'red';
+                        actualCells[category].innerHTML = "&lt;i>" + (
+                            resultsSelect.value === "best" ? guessCells[category].textContent :
+                            resultsSelect.value === "worst" &amp;&amp; opponent ?
+                                opponent.guesses[category] : ""
+                          ) + "&lt;/i>";
+
+                        if (resultsSelect.value !== "current") {
+                          if (resultsSelect.value === "best" || opponent &amp;&amp;
+                              opponent.guesses[category] === guessCells[category].textContent)
+                            playerPossibleScore += values[category];
+                          if (resultsSelect.value === "worst" || opponent &amp;&amp;
+                              opponent.guesses[category] === guessCells[category].textContent)
+                            opponentPossibleScore += values[category];
+                        }
+                      }
+                  }
+
+                  playerScore.textContent = playerPossibleScore.toFixed(tieBreakerCount);
+                  opponentScore.textContent = opponentPossibleScore.toFixed(tieBreakerCount);
+                }
+
+                updateGuesses();
+                document.getElementById('actualScore').textContent = values
+                    .filter((value, category) => winners[category].length > 0)
+                    .reduce((total, value) => total + value, 0).toFixed(tieBreakerCount);
               </script>
               <br />
               <br />
@@ -598,8 +639,6 @@
                   elapsed >= next &amp;&amp; next > 0 ? "limegreen" : "white";
               <xsl:if test="$inPlayer">
                 document.getElementById("totalTime_actual").textContent = timeString;
-                document.getElementById("totalTime_score").textContent = ended &amp;&amp;
-                    inPlayer.time > elapsed ? 'OVER' : formatTime(elapsed - inPlayer.time);
               </xsl:if>
             </xsl:if>
 

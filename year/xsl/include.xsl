@@ -127,6 +127,9 @@
                       const opponentSelect = document.getElementById('opponentSelect');
                       if (opponentSelect)
                         sessionStorage.setItem('selectedOpponent', opponentSelect.value);
+                      const resultsSelect = document.getElementById('resultsSelect');
+                      if (resultsSelect)
+                        sessionStorage.setItem('selectedResults', resultsSelect.value);
                       window.location.reload();
                     }
                     skips = 0;
@@ -134,23 +137,31 @@
               }, interval * 1000);
             });
           });
-
-          // Restore the vertical scroll position when new data causes the page to be reloaded
-          window.addEventListener("load", () => {
-            const scrollPosition = sessionStorage.getItem('scrollPosition');
-            if (scrollPosition !== null)
-              window.scrollTo(0, parseInt(scrollPosition, 10));
-            sessionStorage.removeItem('scrollPosition');
-
-            const opponentSelect = document.getElementById('opponentSelect');
-            if (opponentSelect) {
-              const selectedOpponent = sessionStorage.getItem('selectedOpponent');
-              sessionStorage.removeItem('selectedOpponent');
-              opponentSelect.value = selectedOpponent === null ? opponentSelect.options[0].value : selectedOpponent;
-              opponentSelect.dispatchEvent(new Event('change'));
-            }
-          });
         </xsl:if>
+
+        // Restore the vertical scroll position when new data causes the page to be reloaded
+        window.addEventListener("load", () => {
+          const scrollPosition = sessionStorage.getItem('scrollPosition');
+          if (scrollPosition !== null)
+            window.scrollTo(0, parseInt(scrollPosition, 10));
+          sessionStorage.removeItem('scrollPosition');
+
+          const opponentSelect = document.getElementById('opponentSelect');
+          if (opponentSelect) {
+            const selectedOpponent = sessionStorage.getItem('selectedOpponent');
+            sessionStorage.removeItem('selectedOpponent');
+            opponentSelect.value = selectedOpponent === null ? opponentSelect.options[0].value : selectedOpponent;
+            opponentSelect.dispatchEvent(new Event('change'));
+          }
+
+          const resultsSelect = document.getElementById('resultsSelect');
+          if (resultsSelect) {
+            const selectedResults = sessionStorage.getItem('selectedResults');
+            sessionStorage.removeItem('selectedResults');
+            resultsSelect.value = selectedResults === null ? resultsSelect.options[0].value : selectedResults;
+            resultsSelect.dispatchEvent(new Event('change'));
+          }
+        });
       </script>
     </head>
     <header>
