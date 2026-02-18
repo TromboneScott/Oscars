@@ -15,6 +15,7 @@
           const winners = [];
           const values = [];
           let nominees;
+          let tieBreaker;
           <xsl:for-each select="$results/awards/category">
             nominees = [];
             <xsl:for-each select="nominee">
@@ -22,13 +23,9 @@
             </xsl:for-each>
             winners.push(nominees);
 
-            <xsl:variable name="tieBreaker"
-              select="$definitions/column[@name = current()/@name]/@tieBreaker" />
-            values.push(1
-              <xsl:if test="$tieBreaker">
-                + 1 / Math.pow(10, <xsl:value-of select="$tieBreaker"/>)
-              </xsl:if>
-            );
+            tieBreaker = <xsl:value-of
+                select="number($definitions/column[@name = current()/@name]/@tieBreaker)"/>;
+            values.push(tieBreaker ? 1 + Math.pow(10, -tieBreaker) : 1);
           </xsl:for-each>
           const tieBreakerCount = values.filter(value => value > 1).length;
 
