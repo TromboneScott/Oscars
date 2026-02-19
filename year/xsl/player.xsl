@@ -368,19 +368,7 @@
               </table>
               <script>
                 const opponentSelect = document.getElementById("opponentSelect");
-                const selectedOpponent = sessionStorage.getItem('selectedOpponent');
-                opponentSelect.value = selectedOpponent === null ? opponentSelect.options[0].value : selectedOpponent;
-                sessionStorage.removeItem('selectedOpponent');
-                opponentSelect.addEventListener("change", updateGuesses);
-
                 const resultsSelect = document.getElementById("resultsSelect");
-                if (resultsSelect) {
-                  const selectedResults = sessionStorage.getItem('selectedResults');
-                  resultsSelect.value = selectedResults === null ? resultsSelect.options[0].value : selectedResults;
-                  sessionStorage.removeItem('selectedResults');
-                  resultsSelect.addEventListener("change", updateGuesses);
-                }
-
                 const guessCells = document.querySelectorAll(".guessColumn");
                 const playerScore = document.getElementById('playerScore');
                 const opponentHeader = document.getElementById('opponentHeader');
@@ -408,7 +396,7 @@
                     opponentTime.style.backgroundColor = opponent.timeColor();
                   }
 
-                  if (resultsSelect) {
+                  if (resultsSelect)
                     for (let category = 0; category &lt; winners.length; category++)
                       if (winners[category].length === 0) {
                         guessCells[category].style.backgroundColor =
@@ -436,7 +424,6 @@
                             opponentPossibleScore += values[category];
                         }
                       }
-                  }
 
                   playerScore.textContent = playerPossibleScore.toFixed(tieBreakerCount);
                   opponentScore.textContent = opponentPossibleScore.toFixed(tieBreakerCount);
@@ -445,6 +432,17 @@
                 document.getElementById('actualScore').textContent =
                     values.reduce((total, value, category) => total +
                         (winners[category].length > 0 ? value : 0), 0).toFixed(tieBreakerCount);
+
+                function restoreSelect(selectElement, storedName) {
+                  const storedValue = sessionStorage.getItem(storedName);
+                  selectElement.value =
+                      storedValue === null ? selectElement.options[0].value : storedValue;
+                  sessionStorage.removeItem(storedName);
+                  selectElement.addEventListener("change", updateGuesses);
+                }
+                restoreSelect(opponentSelect, "selectedOpponent");
+                if (resultsSelect)
+                  restoreSelect(resultsSelect, "selectedResults");
               </script>
               <br />
               <br />
