@@ -402,27 +402,27 @@
                         guessCells[category].style.backgroundColor =
                             resultsSelect.value === "current" ? 'silver' :
                             resultsSelect.value === "best" || opponent &amp;&amp;
-                                opponent.guesses[category] === guessCells[category].textContent ?
-                            'limegreen' : 'red';
+                                opponent.guesses[category] === inPlayer.guesses[category] ?
+                                    'limegreen' : 'red';
                         opponentCells[category].style.backgroundColor =
                             resultsSelect.value === "current" ? 'silver' :
                             resultsSelect.value === "worst" || opponent &amp;&amp;
-                                opponent.guesses[category] === guessCells[category].textContent ?
-                            'limegreen' : 'red';
+                                opponent.guesses[category] === inPlayer.guesses[category] ?
+                                    'limegreen' : 'red';
                         actualCells[category].innerHTML = "&lt;i>" + (
-                            resultsSelect.value === "best" ? guessCells[category].textContent :
+                            resultsSelect.value === "best" ? inPlayer.guesses[category] :
                             resultsSelect.value === "worst" &amp;&amp; opponent ?
                                 opponent.guesses[category] : ""
                           ) + "&lt;/i>";
 
-                        if (resultsSelect.value !== "current") {
-                          if (resultsSelect.value === "best" || opponent &amp;&amp;
-                              opponent.guesses[category] === guessCells[category].textContent)
-                            playerPossibleScore += values[category];
-                          if (resultsSelect.value === "worst" || opponent &amp;&amp;
-                              opponent.guesses[category] === guessCells[category].textContent)
-                            opponentPossibleScore += values[category];
-                        }
+                        if (resultsSelect.value === "best" || opponent &amp;&amp;
+                            resultsSelect.value === "worst" &amp;&amp;
+                            opponent.guesses[category] === inPlayer.guesses[category])
+                          playerPossibleScore += values[category];
+                        if (resultsSelect.value === "worst" || opponent &amp;&amp;
+                            resultsSelect.value === "best" &amp;&amp;
+                            opponent.guesses[category] === inPlayer.guesses[category])
+                          opponentPossibleScore += values[category];
                       }
 
                   playerScore.textContent = playerPossibleScore.toFixed(tieBreakerCount);
