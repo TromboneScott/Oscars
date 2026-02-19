@@ -4,12 +4,7 @@
   <xsl:include href="include.xsl" />
   <xsl:template match="/player">
     <html>
-      <xsl:call-template name="header">
-        <xsl:with-param name="storeSortOrder">
-          sessionStorage.setItem('sortColumn', table.sortColumn);
-          sessionStorage.setItem('sortDescending', table.sortDescending);
-        </xsl:with-param>
-      </xsl:call-template>
+      <xsl:call-template name="header" />
       <body>
         <script>
           const winners = [];
@@ -373,11 +368,18 @@
               </table>
               <script>
                 const opponentSelect = document.getElementById("opponentSelect");
+                const selectedOpponent = sessionStorage.getItem('selectedOpponent');
+                opponentSelect.value = selectedOpponent === null ? opponentSelect.options[0].value : selectedOpponent;
+                sessionStorage.removeItem('selectedOpponent');
                 opponentSelect.addEventListener("change", updateGuesses);
 
                 const resultsSelect = document.getElementById("resultsSelect");
-                if (resultsSelect)
+                if (resultsSelect) {
+                  const selectedResults = sessionStorage.getItem('selectedResults');
+                  resultsSelect.value = selectedResults === null ? resultsSelect.options[0].value : selectedResults;
+                  sessionStorage.removeItem('selectedResults');
                   resultsSelect.addEventListener("change", updateGuesses);
+                }
 
                 const guessCells = document.querySelectorAll(".guessColumn");
                 const playerScore = document.getElementById('playerScore');

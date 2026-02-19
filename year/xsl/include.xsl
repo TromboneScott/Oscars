@@ -14,7 +14,6 @@
   <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
   <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="header">
-    <xsl:param name="storeSortOrder" />
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
       <link rel="stylesheet" type="text/css" href="/oscars.css" />
@@ -123,13 +122,16 @@
                   readModified(function(latest) {
                     if (latest !== updated) {
                       sessionStorage.setItem('scrollPosition', window.scrollY);
-                      <xsl:value-of select="$storeSortOrder"/>
-                      const opponentSelect = document.getElementById('opponentSelect');
-                      if (opponentSelect)
-                        sessionStorage.setItem('selectedOpponent', opponentSelect.value);
-                      const resultsSelect = document.getElementById('resultsSelect');
-                      if (resultsSelect)
-                        sessionStorage.setItem('selectedResults', resultsSelect.value);
+                      sessionStorage.setItem('selectedOpponent',
+                          document.getElementById('opponentSelect')?.value);
+                      sessionStorage.setItem('selectedResults',
+                          document.getElementById('resultsSelect')?.value);
+
+                      if (typeof table !== "undefined") {
+                        sessionStorage.setItem('sortColumn', table.sortColumn);
+                        sessionStorage.setItem('sortDescending', table.sortDescending);
+                      }
+
                       window.location.reload();
                     }
                     skips = 0;
@@ -145,22 +147,6 @@
           if (scrollPosition !== null)
             window.scrollTo(0, parseInt(scrollPosition, 10));
           sessionStorage.removeItem('scrollPosition');
-
-          const opponentSelect = document.getElementById('opponentSelect');
-          if (opponentSelect) {
-            const selectedOpponent = sessionStorage.getItem('selectedOpponent');
-            sessionStorage.removeItem('selectedOpponent');
-            opponentSelect.value = selectedOpponent === null ? opponentSelect.options[0].value : selectedOpponent;
-            opponentSelect.dispatchEvent(new Event('change'));
-          }
-
-          const resultsSelect = document.getElementById('resultsSelect');
-          if (resultsSelect) {
-            const selectedResults = sessionStorage.getItem('selectedResults');
-            sessionStorage.removeItem('selectedResults');
-            resultsSelect.value = selectedResults === null ? resultsSelect.options[0].value : selectedResults;
-            resultsSelect.dispatchEvent(new Event('change'));
-          }
         });
       </script>
     </head>
