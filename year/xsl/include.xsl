@@ -122,14 +122,12 @@
                   readModified(function(latest) {
                     if (latest !== updated) {
                       sessionStorage.setItem('scrollPosition', window.scrollY);
-                      sessionStorage.setItem('selectedOpponent',
-                          document.getElementById('opponentSelect')?.value);
-                      sessionStorage.setItem('selectedResults',
-                          document.getElementById('resultsSelect')?.value);
+                      document.querySelectorAll('select[data-storage-key]').forEach(select =>
+                          sessionStorage.setItem(select.dataset.storageKey, select.value));
 
                       if (typeof table !== "undefined") {
-                        sessionStorage.setItem('sortColumn', table.sortColumn);
-                        sessionStorage.setItem('sortDescending', table.sortDescending);
+                        sessionStorage.setItem(table.sortColumnKey, table.sortColumn);
+                        sessionStorage.setItem(table.sortDescendingKey, table.sortDescending);
                       }
 
                       window.location.reload();

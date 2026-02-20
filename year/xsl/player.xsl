@@ -36,14 +36,15 @@
               this.sortFieldsFunction = sortFieldsFunction;
               this.colorFunction = colorFunction;
 
-              const storedSortColumn = sessionStorage.getItem('sortColumn');
+              this.sortColumnKey = 'sortColumn';
+              this.sortDescendingKey = 'sortDescending';
+              const storedSortColumn = sessionStorage.getItem(this.sortColumnKey);
               const isValidSortColumn = headers.includes(storedSortColumn);
               this.sortColumn = isValidSortColumn ? storedSortColumn : headers[defaultSort];
               this.sortDescending = isValidSortColumn &amp;&amp;
-                  sessionStorage.getItem('sortDescending') === 'true';
-
-              sessionStorage.removeItem('sortColumn');
-              sessionStorage.removeItem('sortDescending');
+                  sessionStorage.getItem(this.sortDescendingKey) === 'true';
+              sessionStorage.removeItem(this.sortColumnKey);
+              sessionStorage.removeItem(this.sortDescendingKey);
             }
 
             // Sorts the data in the table, adds arrows to the header and updates the table
@@ -283,7 +284,7 @@
               <br />
               <h3>Guesses</h3>
               Compare to Opponent:
-              <select id="opponentSelect" >
+              <select data-storage-key="selectedOpponent">
                 <option value="-1">-- Select Opponent --</option>
                 <xsl:for-each select="$ballots/player[@id != $player/@id]">
                   <option value="{@id}">
@@ -294,7 +295,7 @@
               <xsl:if test="$results/awards/category[not(nominee)]">
                 <br />
                 Using Results:
-                <select id="resultsSelect" >
+                <select data-storage-key="selectedResults">
                   <option value="current">Current</option>
                   <option value="best">Best Possible</option>
                   <option value="worst">Worst Possible</option>
@@ -367,8 +368,10 @@
                 </tfoot>
               </table>
               <script>
-                const opponentSelect = document.getElementById("opponentSelect");
-                const resultsSelect = document.getElementById("resultsSelect");
+                const opponentSelect =
+                    document.querySelector('[data-storage-key="selectedOpponent"]');
+                const resultsSelect =
+                    document.querySelector('[data-storage-key="selectedResults"]');
                 const guessCells = document.querySelectorAll(".guessColumn");
                 const playerScore = document.getElementById('playerScore');
                 const opponentHeader = document.getElementById('opponentHeader');
@@ -433,16 +436,12 @@
                     values.reduce((total, value, category) => total +
                         (winners[category].length > 0 ? value : 0), 0).toFixed(tieBreakerCount);
 
-                function restoreSelect(selectElement, storedName) {
-                  const storedValue = sessionStorage.getItem(storedName);
-                  selectElement.value =
-                      storedValue === null ? selectElement.options[0].value : storedValue;
-                  sessionStorage.removeItem(storedName);
-                  selectElement.addEventListener("change", updateGuesses);
-                }
-                restoreSelect(opponentSelect, "selectedOpponent");
-                if (resultsSelect)
-                  restoreSelect(resultsSelect, "selectedResults");
+                document.querySelectorAll('select[data-storage-key]').forEach(select => {
+                  select.value = sessionStorage.getItem(select.dataset.storageKey) ??
+                      select.options[0].value;
+                  sessionStorage.removeItem(select.dataset.storageKey);
+                  select.addEventListener("change", updateGuesses);
+                });
               </script>
               <br />
               <br />
@@ -683,8 +682,8 @@
                 document.querySelectorAll('[id^="totalTime_"]')
                     .forEach(element => element.style.backgroundColor = inPlayer.timeColor());
 
-                const opponent = players.find(player =>
-                    player.id === parseInt(document.getElementById("opponentSelect").value));
+                const opponent = players.find(player => player.id === parseInt(
+                    document.querySelector('[data-storage-key="selectedOpponent"]').value));
                 if (opponent)
                   document.getElementById('opponentTime').style.backgroundColor =
                       opponent.timeColor();
