@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -172,22 +171,6 @@ public class Results {
         writeElapsed();
     }
 
-    /** Get whether or not the Oscars broadcast has ended */
-    public boolean showEnded() {
-        return showTimes.containsKey(ShowTimeType.END);
-    }
-
-    /** Get the elapsed time in seconds since the start of the broadcast */
-    public long elapsedTimeSeconds() {
-        return Math.max(0, TimeUnit.MILLISECONDS
-                .toSeconds(timeInMillis(ShowTimeType.END) - timeInMillis(ShowTimeType.START)));
-    }
-
-    private Long timeInMillis(ShowTimeType inShowTimeType) {
-        return Optional.ofNullable(showTimes.get(inShowTimeType)).map(ZonedDateTime::toInstant)
-                .orElseGet(Instant::now).toEpochMilli();
-    }
-
     /** Get the winner(s) of the given category in display order, may be empty but won't be null */
     public ImmutableSet<String> winners(Category inCategory) {
         return winners.computeIfAbsent(inCategory, k -> ImmutableSet.of());
@@ -206,8 +189,8 @@ public class Results {
     }
 
     /** Write the given content to the results XML file */
-    public static void write(Content... inContent) throws IOException {
-        RESULTS_FILE.write(new Element("results").addContent(ImmutableList.copyOf(inContent)));
+    public static void write(Content inContent) throws IOException {
+        RESULTS_FILE.write(new Element("results").addContent(inContent));
     }
 
     /** Write the elapsed time of the broadcast */

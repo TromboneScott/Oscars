@@ -7,6 +7,14 @@
       <xsl:call-template name="header" />
       <body>
         <script>
+          const tieBreakerCount = <xsl:value-of select="count($definitions/column[@tieBreaker and
+              @name = $results/awards/category/@name])"/>;
+          function formatScore(score) {
+            const padded = score.toString().padStart(tieBreakerCount + 1, '0');
+            return tieBreakerCount === 0 ? padded :
+                padded.slice(0, -tieBreakerCount) + '.' + padded.slice(-tieBreakerCount);
+          }
+
           const winners = [];
           const values = [];
           let nominees;
@@ -14,15 +22,17 @@
           <xsl:for-each select="$results/awards/category">
             nominees = [];
             <xsl:for-each select="nominee">
-              nominees.push('<xsl:value-of select="@name" />');
+              nominees.push("<xsl:call-template name='escape-js'>
+                <xsl:with-param name='text' select='@name'/>
+              </xsl:call-template>");
             </xsl:for-each>
             winners.push(nominees);
 
             tieBreaker = <xsl:value-of
                 select="number($definitions/column[@name = current()/@name]/@tieBreaker)"/>;
-            values.push(tieBreaker ? 1 + Math.pow(10, -tieBreaker) : 1);
+            values.push(Math.pow(10, tieBreakerCount) +
+                (tieBreaker ? 1 * Math.pow(10, tieBreakerCount - tieBreaker) : 0));
           </xsl:for-each>
-          const tieBreakerCount = values.filter(value => value > 1).length;
 
           const players = [];
           const nameSort = ['lastName', 'firstName'];
@@ -83,7 +93,7 @@
           <xsl:choose>
             <xsl:when test="@id = 'all'">
               <xsl:choose>
-                <xsl:when test="count($results/standings/player) = 0">
+                <xsl:when test="count($results/awards) = 0">
                   <a href="javascript:history.go(0)" style="all: unset">
                     <table>
                       <tr>
@@ -272,7 +282,7 @@
                   <td id="rank">Rank <div id="rank">
                       <a id="player_rank" />
                     </div> Out of <xsl:value-of
-                      select="count($results/standings/player)" />
+                      select="count($ballots/player)" />
                   </td>
                 </tr>
               </table>
@@ -428,13 +438,13 @@
                           opponentPossibleScore += values[category];
                       }
 
-                  playerScore.textContent = playerPossibleScore.toFixed(tieBreakerCount);
-                  opponentScore.textContent = opponentPossibleScore.toFixed(tieBreakerCount);
+                  playerScore.textContent = formatScore(playerPossibleScore);
+                  opponentScore.textContent = formatScore(opponentPossibleScore);
                 }
 
                 document.getElementById('actualScore').textContent =
-                    values.reduce((total, value, category) => total +
-                        (winners[category].length > 0 ? value : 0), 0).toFixed(tieBreakerCount);
+                    formatScore(values.reduce((total, value, category) => total +
+                        (winners[category].length > 0 ? value : 0), 0));
 
                 document.querySelectorAll('select[data-storage-key]').forEach(select => {
                   select.value = sessionStorage.getItem(select.dataset.storageKey) ??
@@ -508,7 +518,7 @@
         </tr>
       </thead>
       <tbody id="players">
-        <xsl:for-each select="$results/standings/player">
+        <xsl:for-each select="$ballots/player">
           <tr>
             <td class="header" />
             <td class="rank" />
@@ -548,7 +558,7 @@
       let elapsed = -1;
 
       class Player {
-        constructor(id, firstName, lastName, link, guesses, time, decided) {
+        constructor(id, firstName, lastName, link, guesses, time) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
@@ -556,44 +566,65 @@
           this.guesses = guesses;
           this.score = values.reduce((total, value, category) =>
               total + (winners[category].includes(guesses[category]) ? value : 0), 0);
-          this.scoreText = this.score.toFixed(tieBreakerCount);
+          this.scoreText = formatScore(this.score);
           this.time = time;
           this.timeText = formatTime(time);
-          this.decided = decided.split('');
         }
 
         timeColor() {
           return this.time > elapsed ? ended ? "red" : "silver" : "limegreen";
         }
+
+        lostTo(opponent) {
+          const possibleScore = this.score + this.possiblePoints(opponent);
+          return possibleScore &lt; opponent.score || possibleScore === opponent.score &amp;&amp;
+              opponent.time &lt;= elapsed &amp;&amp;
+                  (this.time &lt; opponent.time || ended &amp;&amp; this.time > elapsed);
+        }
+        
+        possiblePoints(opponent) {
+          return this.disagreementCategories(opponent).reduce((total, category) =>
+              total + values[category], 0);
+        }
+
+        disagreementCategories(opponent) {
+          const categories = [];
+          for (let category = 0; category &lt; winners.length; category++)
+            if (winners[category].length === 0 &amp;&amp;
+                 this.guesses[category] !== opponent.guesses[category])
+              categories.push(category);
+          return categories;
+        }
       }
 
       // Load the players from XML files
       let guesses;
-      <xsl:for-each select="$results/standings/player">
-        <xsl:variable name="ballot" select="$ballots/player[@id = current()/@id]" />
+      <xsl:for-each select="$ballots/player">
+        <xsl:variable name="player" select="." />
         guesses = [];
         <xsl:for-each select="$results/awards/category">
-          guesses.push('<xsl:value-of
-              select="$ballot/category[@name = current()/@name]/@nominee" />');
+          guesses.push("<xsl:call-template name='escape-js'>
+            <xsl:with-param name='text'
+                select='$player/category[@name = current()/@name]/@nominee'/>
+          </xsl:call-template>");
         </xsl:for-each>
         players.push(new Player(
           <xsl:value-of select="@id" />,
           "<xsl:call-template name='escape-js'>
-             <xsl:with-param name='text' select='$ballot/@firstName'/>
+             <xsl:with-param name='text' select='@firstName'/>
            </xsl:call-template>",
           "<xsl:call-template name='escape-js'>
-             <xsl:with-param name='text' select='$ballot/@lastName'/>
+             <xsl:with-param name='text' select='@lastName'/>
            </xsl:call-template>",
           "&lt;a href='" + "<xsl:apply-templates select="." mode="playerURL"/>" + "'>" +
               "<xsl:call-template name='escape-js'>
                  <xsl:with-param name='text'>
-                   <xsl:apply-templates select='$ballot' mode='playerName' />
+                   <xsl:apply-templates select='.' mode='playerName' />
                  </xsl:with-param>
                </xsl:call-template>"              
                + "&lt;/a>",
           guesses,
-          <xsl:value-of select="$ballot/@time" />,
-          "<xsl:value-of select="@decided" />"
+          <xsl:value-of select="@time" />
         ));
       </xsl:for-each>
 
@@ -619,6 +650,19 @@
 
       // Calculate and popluate values for player grid
       readStart(function(start) {
+        // Calculated the decided matrix
+        elapsed = Math.max(Math.floor((Date.now() - start) / 1000), 0);
+        for (const player of players)
+          player.decided = players.map(opponent =>
+              player === opponent ? "-" :
+              opponent.lostTo(player) ? "W" :
+              player.lostTo(opponent) ? "L" :
+              player.disagreementCategories(opponent).length === 0 &amp;&amp;
+                  (ended || opponent.time === player.time) ? "T" :
+              Math.abs(player.score - opponent.score) === player.possiblePoints(opponent) ? "X" :
+              "?");
+        elapsed = -1;
+        
         let next = 0;
         function update() {
           const tempElapsed = Math.max(Math.floor((Date.now() - start) / 1000), 0);

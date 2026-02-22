@@ -42,7 +42,7 @@ public class Oscars {
     /** Prompt for Oscars results, store them and create output files */
     public static void main(String[] inArgs) throws Exception {
         do {
-            Results.write(RESULTS.toDOM(), new Standings().toDOM());
+            Results.write(RESULTS.toDOM());
             System.out.println();
         } while (RESULTS.prompt());
     }

@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
@@ -45,30 +43,16 @@ public final class Category extends Column {
 
     private final ImmutableList<String> nominees;
 
-    private final BigDecimal value;
-
     private Category(Element inColumn) {
         super(inColumn);
         nominees = inColumn.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name"))
                 .collect(ImmutableList.toImmutableList());
-        try {
-            value = BigDecimal.ONE.add(Optional.ofNullable(inColumn.getAttributeValue("tieBreaker"))
-                    .map(tieBreaker -> BigDecimal.ONE.movePointLeft(Integer.parseInt(tieBreaker)))
-                    .orElse(BigDecimal.ZERO));
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("Invalid tieBreaker value in column: " + name(), e);
-        }
     }
 
     /** The nominees of this Column in display order */
     public ImmutableList<String> nominees() {
         return nominees;
-    }
-
-    /** The scoring value of this Column */
-    public BigDecimal value() {
-        return value;
     }
 
     public Element toDOM() {

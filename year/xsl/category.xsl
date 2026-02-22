@@ -10,7 +10,7 @@
           <xsl:choose>
             <xsl:when test="@name = 'all'">
               <xsl:choose>
-                <xsl:when test="count($results/standings/player) = 0">
+                <xsl:when test="count($ballots/player) = 0">
                   <div id="name">Categories</div>
                   <br />
                   <i>Players' picks in each category will be loaded after all
@@ -53,7 +53,7 @@
                   <div id="name">Category Results</div>
                   <br />
                   <xsl:variable name="playerCount"
-                    select="count($results/standings/player)" />
+                    select="count($ballots/player)" />
                   <xsl:variable name="graphWidth" select="250" />
                   <table>
                     <thead>
@@ -216,9 +216,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <xsl:for-each select="$results/standings/player">
+                  <xsl:for-each select="$ballots/player">
                     <xsl:variable name="guess"
-                      select="$ballots/player[@id = current()/@id]/category[@name = $categoryName]/@nominee" />
+                      select="category[@name = $categoryName]/@nominee" />
                     <tr>
                       <xsl:apply-templates select="$awards" mode="attribute">
                         <xsl:with-param name="nominee" select="$guess" />
@@ -228,9 +228,7 @@
                           <xsl:attribute name="href">
                             <xsl:apply-templates select="." mode="playerURL" />
                           </xsl:attribute>
-                          <xsl:apply-templates
-                            select="$ballots/player[@id = current()/@id]"
-                            mode="playerName" />
+                          <xsl:apply-templates select="." mode="playerName" />
                         </a>
                       </td>
                       <xsl:for-each select="$categoryDefinition/nominee">
