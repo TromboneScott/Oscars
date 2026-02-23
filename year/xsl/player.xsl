@@ -15,23 +15,33 @@
                 padded.slice(0, -tieBreakerCount) + '.' + padded.slice(-tieBreakerCount);
           }
 
-          const winners = [];
-          const values = [];
-          let nominees;
+          class Category {
+            constructor(value, winners) {
+              this.value = value;
+              this.winners = winners;
+              this.isAnnounced = winners.length > 0;
+            }
+            
+            correct(guess) {
+              return this.winners.includes(guess);
+            }
+          }
+
+          const categories = [];
+          let winners = [];
           let tieBreaker;
           <xsl:for-each select="$results/awards/category">
-            nominees = [];
+            winners = [];
             <xsl:for-each select="nominee">
-              nominees.push("<xsl:call-template name='escape-js'>
+              winners.push("<xsl:call-template name='escape-js'>
                 <xsl:with-param name='text' select='@name'/>
               </xsl:call-template>");
             </xsl:for-each>
-            winners.push(nominees);
 
             tieBreaker = <xsl:value-of
                 select="number($definitions/column[@name = current()/@name]/@tieBreaker)"/>;
-            values.push(Math.pow(10, tieBreakerCount) +
-                (tieBreaker ? 1 * Math.pow(10, tieBreakerCount - tieBreaker) : 0));
+            categories.push(new Category(Math.pow(10, tieBreakerCount) +
+                (tieBreaker ? 1 * Math.pow(10, tieBreakerCount - tieBreaker) : 0), winners));
           </xsl:for-each>
 
           const players = [];
@@ -402,50 +412,50 @@
                     opponent.guesses.forEach((guess, category) => {
                         opponentCells[category].textContent = guess;
                         opponentCells[category].style.backgroundColor =
-                            winners[category].length ? winners[category].includes(guess) ?
-                                'limegreen' : 'red' : 'silver';
+                            categories[category].isAnnounced ?
+                            categories[category].correct(guess) ? 'limegreen' : 'red' : 'silver';
                     });
                     opponentTime.textContent = opponent.timeText;
                     opponentTime.style.backgroundColor = opponent.timeColor();
                   }
 
                   if (resultsSelect)
-                    for (let category = 0; category &lt; winners.length; category++)
-                      if (winners[category].length === 0) {
-                        guessCells[category].style.backgroundColor =
+                    categories.forEach((category, index) => {
+                      if (!category.isAnnounced) {
+                        guessCells[index].style.backgroundColor =
                             resultsSelect.value === "current" ? 'silver' :
                             resultsSelect.value === "best" || opponent &amp;&amp;
-                                opponent.guesses[category] === inPlayer.guesses[category] ?
+                                opponent.guesses[index] === inPlayer.guesses[index] ?
                                     'limegreen' : 'red';
-                        opponentCells[category].style.backgroundColor =
+                        opponentCells[index].style.backgroundColor =
                             resultsSelect.value === "current" ? 'silver' :
                             resultsSelect.value === "worst" || opponent &amp;&amp;
-                                opponent.guesses[category] === inPlayer.guesses[category] ?
+                                opponent.guesses[index] === inPlayer.guesses[index] ?
                                     'limegreen' : 'red';
-                        actualCells[category].innerHTML = "&lt;i>" + (
-                            resultsSelect.value === "best" ? inPlayer.guesses[category] :
+                        actualCells[index].innerHTML = "&lt;i>" + (
+                            resultsSelect.value === "best" ? inPlayer.guesses[index] :
                             resultsSelect.value === "worst" &amp;&amp; opponent ?
-                                opponent.guesses[category] : ""
+                                opponent.guesses[index] : ""
                           ) + "&lt;/i>";
 
                         if (resultsSelect.value === "best" || opponent &amp;&amp;
                             resultsSelect.value === "worst" &amp;&amp;
-                            opponent.guesses[category] === inPlayer.guesses[category])
-                          playerPossibleScore += values[category];
+                            opponent.guesses[index] === inPlayer.guesses[index])
+                          playerPossibleScore += category.value;
                         if (resultsSelect.value === "worst" || opponent &amp;&amp;
                             resultsSelect.value === "best" &amp;&amp;
-                            opponent.guesses[category] === inPlayer.guesses[category])
-                          opponentPossibleScore += values[category];
+                            opponent.guesses[index] === inPlayer.guesses[index])
+                          opponentPossibleScore += category.value;
                       }
+                    });
 
                   playerScore.textContent = formatScore(playerPossibleScore);
                   opponentScore.textContent = formatScore(opponentPossibleScore);
                 }
 
-                document.getElementById('actualScore').textContent =
-                    formatScore(values.reduce((total, value, category) => total +
-                        (winners[category].length > 0 ? value : 0), 0));
-
+                document.getElementById('actualScore').textContent = formatScore(categories
+                    .filter(category => category.isAnnounced)
+                    .reduce((total, category) => total + category.value, 0));
                 document.querySelectorAll('select[data-storage-key]').forEach(select => {
                   select.value = sessionStorage.getItem(select.dataset.storageKey) ??
                       select.options[0].value;
@@ -564,8 +574,8 @@
           this.lastName = lastName;
           this.link = link;
           this.guesses = guesses;
-          this.score = values.reduce((total, value, category) =>
-              total + (winners[category].includes(guesses[category]) ? value : 0), 0);
+          this.score = categories.filter((category, index) => category.correct(guesses[index]))
+              .reduce((total, category) => total + category.value, 0);
           this.scoreText = formatScore(this.score);
           this.time = time;
           this.timeText = formatTime(time);
@@ -584,16 +594,12 @@
         
         possiblePoints(opponent) {
           return this.disagreementCategories(opponent).reduce((total, category) =>
-              total + values[category], 0);
+              total + category.value, 0);
         }
 
         disagreementCategories(opponent) {
-          const categories = [];
-          for (let category = 0; category &lt; winners.length; category++)
-            if (winners[category].length === 0 &amp;&amp;
-                 this.guesses[category] !== opponent.guesses[category])
-              categories.push(category);
-          return categories;
+          return categories.filter((category, index) => !category.isAnnounced &amp;&amp;
+              this.guesses[index] !== opponent.guesses[index]);
         }
       }
 
