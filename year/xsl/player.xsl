@@ -41,7 +41,7 @@
             tieBreaker = <xsl:value-of
                 select="number($definitions/column[@name = current()/@name]/@tieBreaker)"/>;
             categories.push(new Category(Math.pow(10, tieBreakerCount) +
-                (tieBreaker ? 1 * Math.pow(10, tieBreakerCount - tieBreaker) : 0), winners));
+                (tieBreaker ? Math.pow(10, tieBreakerCount - tieBreaker) : 0), winners));
           </xsl:for-each>
 
           const players = [];
