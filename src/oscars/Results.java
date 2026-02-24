@@ -51,8 +51,6 @@ public class Results {
 
     private final ImmutableMap<Category, ImmutableMap<String, String>> nomineeMap;
 
-    private final Map<Category, ImmutableSet<String>> winners;
-
     private final Map<ShowTimeType, ZonedDateTime> showTimes;
 
     private final Thread elapsedUpdater = new Thread(() -> {
@@ -75,10 +73,9 @@ public class Results {
         try {
             Element awardsDOM = RESULTS_FILE.read().map(element -> element.getChild("awards"))
                     .orElseGet(() -> new Element("EMPTY"));
-            winners = awardsDOM.getChildren("category").stream()
-                    .collect(Collectors.toMap(
-                            categoryDOM -> Category.of(categoryDOM.getAttributeValue("name")),
-                            categoryDOM -> categoryDOM.getChildren("nominee").stream()
+            awardsDOM.getChildren("category")
+                    .forEach(categoryDOM -> Category.of(categoryDOM.getAttributeValue("name"))
+                            .setWinners(categoryDOM.getChildren("nominee").stream()
                                     .map(nomineeDOM -> nomineeDOM.getAttributeValue("name"))
                                     .collect(ImmutableSet.toImmutableSet())));
             showTimes = Stream.of(ShowTimeType.values())
@@ -123,7 +120,7 @@ public class Results {
 
     private String toHeader(Category inCategory, boolean inTitle) {
         return toHeader(inCategory.name(), inTitle,
-                String.join(Font.WHITE.apply(" AND "), winners(inCategory)));
+                String.join(Font.WHITE.apply(" AND "), inCategory.winners()));
     }
 
     private String toHeader(ShowTimeType inShowTimeType, boolean inTitle) {
@@ -145,7 +142,7 @@ public class Results {
         System.out.print(Font.BROWN.apply("Enter number(s) (leave blank to remove): "));
         String input = STDIN.nextLine();
         try {
-            winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
+            inCategory.setWinners(Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
             inCategory.writeChart();
@@ -171,15 +168,10 @@ public class Results {
         writeElapsed();
     }
 
-    /** Get the winner(s) of the given category in display order, may be empty but won't be null */
-    public ImmutableSet<String> winners(Category inCategory) {
-        return winners.computeIfAbsent(inCategory, k -> ImmutableSet.of());
-    }
-
     /** Get the DOM Element for these Results */
     public Element toDOM() {
         return Category.ALL.stream()
-                .map(category -> winners(category).stream()
+                .map(category -> category.winners().stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
                         .reduce(category.toDOM(), Element::addContent))
                 .reduce(new Element("awards"), Element::addContent)

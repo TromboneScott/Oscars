@@ -43,6 +43,8 @@ public final class Category extends Column {
 
     private final ImmutableList<String> nominees;
 
+    private ImmutableSet<String> winners = ImmutableSet.of();
+
     private Category(Element inColumn) {
         super(inColumn);
         nominees = inColumn.getChildren("nominee").stream()
@@ -53,6 +55,14 @@ public final class Category extends Column {
     /** The nominees of this Column in display order */
     public ImmutableList<String> nominees() {
         return nominees;
+    }
+
+    public ImmutableSet<String> winners() {
+        return winners;
+    }
+
+    public void setWinners(ImmutableSet<String> inWinners) {
+        winners = inWinners;
     }
 
     public Element toDOM() {
@@ -79,7 +89,6 @@ public final class Category extends Column {
         plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
         plot.setBackgroundPaint(BACKGROUND);
 
-        ImmutableSet<String> winners = Oscars.RESULTS.winners(this);
         BarRenderer renderer = new BarRenderer() {
             @Override
             public Paint getItemPaint(final int inRow, final int column) {
