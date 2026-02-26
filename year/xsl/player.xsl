@@ -33,7 +33,7 @@
           <xsl:for-each select="$results/awards/category">
             winners = [];
             <xsl:for-each select="nominee">
-              winners.push("<xsl:call-template name='escape-js'>
+              winners.push("<xsl:call-template name='escapeQuotes'>
                 <xsl:with-param name='text' select='@name'/>
               </xsl:call-template>");
             </xsl:for-each>
@@ -182,13 +182,13 @@
                       <xsl:for-each select="$results/ballots/player">
                         players.push(new Player(
                             "<xsl:value-of select="@timestamp"/>",
-                            "<xsl:call-template name='escape-js'>
+                            "<xsl:call-template name='escapeQuotes'>
                                <xsl:with-param name='text' select='@firstName'/>
                              </xsl:call-template>",
-                            "<xsl:call-template name='escape-js'>
+                            "<xsl:call-template name='escapeQuotes'>
                                <xsl:with-param name='text' select='@lastName'/>
                              </xsl:call-template>",
-                            "<xsl:call-template name='escape-js'>
+                            "<xsl:call-template name='escapeQuotes'>
                                <xsl:with-param name='text'>
                                  <xsl:apply-templates select='.' mode='playerName'/>
                                </xsl:with-param>
@@ -609,21 +609,21 @@
         <xsl:variable name="player" select="." />
         guesses = [];
         <xsl:for-each select="$results/awards/category">
-          guesses.push("<xsl:call-template name='escape-js'>
+          guesses.push("<xsl:call-template name='escapeQuotes'>
             <xsl:with-param name='text'
                 select='$player/category[@name = current()/@name]/@nominee'/>
           </xsl:call-template>");
         </xsl:for-each>
         players.push(new Player(
           <xsl:value-of select="@id" />,
-          "<xsl:call-template name='escape-js'>
+          "<xsl:call-template name='escapeQuotes'>
              <xsl:with-param name='text' select='@firstName'/>
            </xsl:call-template>",
-          "<xsl:call-template name='escape-js'>
+          "<xsl:call-template name='escapeQuotes'>
              <xsl:with-param name='text' select='@lastName'/>
            </xsl:call-template>",
           "&lt;a href='" + "<xsl:apply-templates select="." mode="playerURL"/>" + "'>" +
-              "<xsl:call-template name='escape-js'>
+              "<xsl:call-template name='escapeQuotes'>
                  <xsl:with-param name='text'>
                    <xsl:apply-templates select='.' mode='playerName' />
                  </xsl:with-param>
@@ -748,19 +748,14 @@
       });
     </script>
   </xsl:template>
-  <xsl:template name="escape-js">
+  <xsl:template name="escapeQuotes">
     <xsl:param name="text" />
-    <xsl:choose>
-      <xsl:when test="contains($text, '&quot;')">
-        <xsl:value-of select="substring-before($text, '&quot;')" />
-        <xsl:text>\&quot;</xsl:text>
-        <xsl:call-template name="escape-js">
-          <xsl:with-param name="text" select="substring-after($text, '&quot;')" />
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$text" />
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="substring-before(concat($text, '&quot;'), '&quot;')" />
+    <xsl:if test="contains($text, '&quot;')">
+      <xsl:text>\&quot;</xsl:text>
+      <xsl:call-template name="escapeQuotes">
+        <xsl:with-param name="text" select="substring-after($text, '&quot;')" />
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
