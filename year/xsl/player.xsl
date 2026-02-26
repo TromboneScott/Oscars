@@ -21,7 +21,7 @@
               this.winners = winners;
               this.isAnnounced = winners.length > 0;
             }
-            
+
             correct(guess) {
               return this.winners.includes(guess);
             }
@@ -46,7 +46,7 @@
 
           const players = [];
           const nameSort = ['lastName', 'firstName'];
-          
+
           // Table that can sort and update the underlying HTML table
           class SortableTable {
             constructor(headers, defaultSort, sortFieldsFunction, colorFunction) {
@@ -70,7 +70,7 @@
             // Sorts the data in the table, adds arrows to the header and updates the table
             sort(column) {
               // Determine the sort column and sort order
-              if (column !== undefined){
+              if (column !== undefined) {
                 this.sortDescending = this.sortColumn === column &amp;&amp; !this.sortDescending;
                 this.sortColumn = column;
               }
@@ -591,7 +591,7 @@
               opponent.time &lt;= elapsed &amp;&amp;
                   (this.time &lt; opponent.time || ended &amp;&amp; this.time > elapsed);
         }
-        
+
         possiblePoints(opponent) {
           return this.disagreementCategories(opponent).reduce((total, category) =>
               total + category.value, 0);
@@ -627,7 +627,7 @@
                  <xsl:with-param name='text'>
                    <xsl:apply-templates select='.' mode='playerName' />
                  </xsl:with-param>
-               </xsl:call-template>"              
+               </xsl:call-template>"
                + "&lt;/a>",
           guesses,
           <xsl:value-of select="@time" />
@@ -668,7 +668,7 @@
               Math.abs(player.score - opponent.score) === player.possiblePoints(opponent) ? "X" :
               "?");
         elapsed = -1;
-        
+
         let next = 0;
         function update() {
           const tempElapsed = Math.max(Math.floor((Date.now() - start) / 1000), 0);
