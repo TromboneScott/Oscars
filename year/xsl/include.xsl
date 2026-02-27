@@ -11,8 +11,6 @@
   <xsl:variable name="ballots"
     select="document(concat($rootDir, 'data/ballots.xml'))/ballots" />
   <xsl:variable name="ended" select="boolean($results/awards/@END)" />
-  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-  <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
   <xsl:template name="header">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
