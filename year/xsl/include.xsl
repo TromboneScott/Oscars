@@ -193,22 +193,16 @@
         &#160;&#160;-&#160;&#160; <a href="/history">HISTORY</a>
         <hr width="500" />
         <br />
-        <xsl:if
-          test="not($results/awards/@START)">
-          <A id="countdown" style="display: none">
-            <B style="font-size: 30px">Oscars Countdown</B>
-            <br />
-            <i id="dst">
-              Includes daylight saving time change
-              <br />
-            </i>
-            <br />
-            <table style="table-layout: fixed; background-color: white">
-              <tr id="countdown_row" />
-            </table>
-            <br />
-          </A>
-        </xsl:if>
+        <A id="countdown" style="display: none">
+          <B style="font-size: 30px">Oscars Countdown</B>
+          <br />
+          <i id="dst">Includes daylight saving time change<br /></i>
+          <br />
+          <table style="table-layout: fixed; background-color: white">
+            <tr id="countdown_row" />
+          </table>
+          <br />
+        </A>
       </center>
     </header>
   </xsl:template>
