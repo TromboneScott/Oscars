@@ -177,8 +177,12 @@
                 test="not(normalize-space($categoryDefinition/@tieBreaker))">
                 NO
               </xsl:if>
-              <br /> Point Value: <xsl:apply-templates
-                select="$categoryDefinition" mode="value" />
+              <br /> Point Value: <xsl:if test="$categoryDefinition/@tieBreaker">
+                <xsl:value-of
+                  select="substring('1.00000000000000000000', 1,
+                      $categoryDefinition/@tieBreaker + 1)" />
+              </xsl:if>
+              <xsl:text>1</xsl:text>
               <xsl:if
                 test="count($awards/nominee) > 1">
                 <br />

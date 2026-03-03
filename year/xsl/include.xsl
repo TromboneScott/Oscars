@@ -222,13 +222,6 @@
       </center>
     </footer>
   </xsl:template>
-  <xsl:template match="/definitions/column" mode="value">
-    <xsl:if test="@tieBreaker">
-      <xsl:value-of
-        select="substring('1.00000000000000000000', 1, @tieBreaker + 1)" />
-    </xsl:if>
-    <xsl:value-of select="'1'" />
-  </xsl:template>
   <xsl:template match="/definitions/column" mode="tieBreaker">
     <xsl:variable name="tieSymbols" select="'➀➁➂➃➄➅➆➇➈➉'" />
     <xsl:choose>
@@ -281,13 +274,9 @@
   <xsl:template name="getOrDefault">
     <xsl:param name="value" />
     <xsl:param name="default" />
-    <xsl:choose>
-      <xsl:when test="$value">
-        <xsl:value-of select="$value" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$default" />
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="$value" />
+    <xsl:if test="not($value)">
+      <xsl:value-of select="$default" />
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
