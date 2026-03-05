@@ -111,10 +111,10 @@
                 setInterval(update, 500);
               </xsl:if>
 
-              // Repeatedly check for updates and reload the page when results are updated
+              // Checks for updates and reloads the page if results changed
               const interval = 3;
               let skips = 0;
-              setInterval(function() {
+              function checkForUpdate() {
                 if ((++skips >= 60 / interval || start - Date.now() &lt; 10 * 60 * 1000)
                     &amp;&amp; document.visibilityState === "visible")
                   readModified(function(latest) {
@@ -132,7 +132,23 @@
                     }
                     skips = 0;
                   });
-              }, interval * 1000);
+              }
+              setInterval(checkForUpdate, interval * 1000);
+
+              // Check for updates when the page becomes visible
+              document.addEventListener("visibilitychange", function() {
+                if (document.visibilityState === "visible")
+                  checkForUpdate();
+              });
+
+              // Handle Safari restoring the page from cache
+              window.addEventListener("pageshow", function(event) {
+                if (event.persisted)
+                  checkForUpdate();
+              });
+
+              // Extra safety for iOS Safari resume edge cases
+              window.addEventListener("focus", checkForUpdate);
             });
           });
         </xsl:if>
