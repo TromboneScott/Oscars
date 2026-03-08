@@ -112,11 +112,8 @@
               </xsl:if>
 
               // Checks for updates and reloads the page if results changed
-              const interval = 3;
-              let skips = 0;
               function checkForUpdate() {
-                if ((++skips >= 60 / interval || start - Date.now() &lt; 10 * 60 * 1000)
-                    &amp;&amp; document.visibilityState === "visible")
+                if (document.visibilityState === "visible")
                   readModified(function(latest) {
                     if (latest !== updated) {
                       sessionStorage.setItem('scrollPosition', window.scrollY);
@@ -130,15 +127,13 @@
 
                       window.location.reload();
                     }
-                    skips = 0;
                   });
               }
-              setInterval(checkForUpdate, interval * 1000);
+              setInterval(checkForUpdate, 3 * 1000);
 
               // Check for updates when the page becomes visible
               document.addEventListener("visibilitychange", function() {
-                if (document.visibilityState === "visible")
-                  checkForUpdate();
+                checkForUpdate();
               });
 
               // Handle Safari restoring the page from cache
