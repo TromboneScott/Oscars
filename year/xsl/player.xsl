@@ -104,32 +104,30 @@
             <xsl:when test="@id = 'all'">
               <xsl:choose>
                 <xsl:when test="count($results/awards) = 0">
-                  <a href="javascript:history.go(0)" style="all: unset">
-                    <table>
-                      <tr>
-                        <td id="rank">
-                          <br />
-                          <b>BALLOTS ARE BEING COLLECTED</b>
-                          <br />
-                          <br />
-                          <img
-                            src="http://oscars.site44.com/Ballots.jpg"
-                            alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
-                            title="Counting Ballots" width="200" />
-                          <br />
-                          <br />Ballots
-                          will be listed here a few minutes after being cast. <br />Ballot
-                          contents will be loaded after all ballots have been
-                          collected. <br />
-                          <br />
-                          <i>Check here for live results
-                          during the Oscars broadcast.</i>
-                          <br />
-                          <br />
-                        </td>
-                      </tr>
-                    </table>
-                  </a>
+                  <table>
+                    <tr>
+                      <td id="rank">
+                        <br />
+                        <b>BALLOTS ARE BEING COLLECTED</b>
+                        <br />
+                        <br />
+                        <img
+                          src="http://oscars.site44.com/Ballots.jpg"
+                          alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
+                          title="Counting Ballots" width="200" />
+                        <br />
+                        <br />
+                        Ballots will be listed here a few minutes after being
+                        cast. <br /> Ballot contents will be loaded after all
+                        ballots have been collected. <br />
+                        <br />
+                        <i>Check here
+                        for live results during the Oscars broadcast.</i>
+                        <br />
+                        <br />
+                      </td>
+                    </tr>
+                  </table>
                   <xsl:if test="count($results/ballots/player) > 0">
                     <br />
                     <br />
