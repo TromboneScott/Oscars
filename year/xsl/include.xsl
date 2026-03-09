@@ -132,9 +132,7 @@
               setInterval(checkForUpdate, 3 * 1000);
 
               // Check for updates when the page becomes visible
-              document.addEventListener("visibilitychange", function() {
-                checkForUpdate();
-              });
+              document.addEventListener("visibilitychange", checkForUpdate);
 
               // Handle Safari restoring the page from cache
               window.addEventListener("pageshow", function(event) {
