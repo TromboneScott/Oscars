@@ -14,20 +14,11 @@ import oscars.column.DataColumn;
 public final class Player extends Ballot {
     private static int nextId = 0;
 
-    private final String id;
-
-    private final int time;
+    private final String id = String.valueOf(nextId++);
 
     /** Create a Player with their answers mapped to website values */
     Player(Function<Column, String> inAnswerMapper) {
         super(Column.ALL.stream().map(inAnswerMapper).toArray(String[]::new));
-        id = String.valueOf(nextId++);
-        try {
-            time = LocalTime.parse(answer(DataColumn.TIME), DateTimeFormatter.ofPattern("H:mm:ss"))
-                    .toSecondOfDay();
-        } catch (DateTimeParseException e) {
-            throw new RuntimeException("Invalid time: " + answer(DataColumn.TIME), e);
-        }
     }
 
     /** Get the id of this Player */
@@ -37,7 +28,12 @@ public final class Player extends Ballot {
 
     /** Get the Player's guessed time in seconds */
     public int time() {
-        return time;
+        String time = answer(DataColumn.TIME);
+        try {
+            return LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm:ss")).toSecondOfDay();
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Invalid time: " + time, e);
+        }
     }
 
     /** Get the DOM Element for this Player */
