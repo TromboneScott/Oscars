@@ -566,7 +566,7 @@
       let elapsed = -1;
 
       class Player {
-        constructor(id, firstName, lastName, link, guesses, time) {
+        constructor(id, firstName, lastName, link, guesses, timeText) {
           this.id = id;
           this.firstName = firstName;
           this.lastName = lastName;
@@ -575,8 +575,8 @@
           this.score = categories.filter((category, index) => category.correct(guesses[index]))
               .reduce((total, category) => total + category.value, 0);
           this.scoreText = formatScore(this.score);
-          this.time = time;
-          this.timeText = formatTime(time);
+          this.time = timeText.split(':').reduce((total, value) => total * 60 + +value, 0);
+          this.timeText = timeText;
         }
 
         timeColor() {
@@ -628,7 +628,7 @@
                </xsl:call-template>"
                + "&lt;/a>",
           guesses,
-          <xsl:value-of select="@time" />
+          "<xsl:value-of select="@time" />"
         ));
       </xsl:for-each>
 

@@ -54,7 +54,7 @@ public class Oscars {
                 .reduce(player.toDOM(), Element::addContent)
                 .setAttribute("firstName", player.answer(DataColumn.FIRST_NAME))
                 .setAttribute("lastName", player.answer(DataColumn.LAST_NAME))
-                .setAttribute("time", String.valueOf(player.time())))
+                .setAttribute("time", player.answer(DataColumn.TIME)))
                 .reduce(new Element("ballots"), Element::addContent));
 
         for (Player player : PLAYERS)

@@ -1,14 +1,10 @@
 package oscars.ballot;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.function.Function;
 
 import org.jdom2.Element;
 
 import oscars.column.Column;
-import oscars.column.DataColumn;
 
 /** Player answers converted from ballot values to website values - Immutable */
 public final class Player extends Ballot {
@@ -24,16 +20,6 @@ public final class Player extends Ballot {
     /** Get the id of this Player */
     public String id() {
         return id;
-    }
-
-    /** Get the Player's guessed time in seconds */
-    public int time() {
-        String time = answer(DataColumn.TIME);
-        try {
-            return LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm:ss")).toSecondOfDay();
-        } catch (DateTimeParseException e) {
-            throw new RuntimeException("Invalid time: " + time, e);
-        }
     }
 
     /** Get the DOM Element for this Player */
