@@ -541,13 +541,6 @@
       </tbody>
     </table>
     <script>
-      // Formats the time in seconds as: (-)H:MM:SS
-      function formatTime(seconds) {
-        return seconds &lt; 0 ? '-' + formatTime(-seconds) :
-            [seconds / 60 / 60, seconds / 60 % 60, seconds % 60].map((value, index) =>
-                String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0')).join(':');
-      }
-
       const sortColumns = {
         link: nameSort,
         bpr: ['bpr', 'rank', 'wpr'],
@@ -675,7 +668,9 @@
 
             <xsl:if test="$results/awards/@START">
               // Update the running time
-              const timeString = formatTime(elapsed);
+              const timeString = [elapsed / 60 / 60, elapsed / 60 % 60, elapsed % 60].map(
+                  (value, index) => String(Math.trunc(value)).padStart(index > 0 ? 2 : 1, '0'))
+                  .join(':');
               const timeTextHeader = document.getElementById("timeText_header");
               timeTextHeader.querySelector("u").textContent = timeString;
               timeTextHeader.style.backgroundColor =
