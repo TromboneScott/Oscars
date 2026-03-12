@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import oscars.Oscars;
 import oscars.file.Directory;
 
-/** An award category column from the survey - Immutable */
+/** An award category column from the survey - Guarantees only one instance per Category name */
 public final class Category extends Column {
     private static final int WIDTH = 500;
 

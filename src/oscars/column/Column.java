@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableList;
 
 import oscars.file.XMLFile;
 
-/** A column from the survey - Immutable */
+/** A column from the survey - Guarantees only one actual Column instance per Column name */
 public class Column {
     /** All the columns in survey order */
     public static final ImmutableList<Column> ALL = readFile().map(Column::new)
