@@ -22,7 +22,7 @@ class Ballot {
     }
 
     /** Get the timestamp of this Ballot */
-    LocalDateTime timestamp() {
+    final LocalDateTime timestamp() {
         return LocalDateTime.parse(answer(Column.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
