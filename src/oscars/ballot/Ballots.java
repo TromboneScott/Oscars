@@ -23,8 +23,6 @@ import com.google.common.collect.Ordering;
 import com.opencsv.CSVReader;
 
 import oscars.Results;
-import oscars.column.Column;
-import oscars.column.DataColumn;
 
 /** The data from the ballot survey - Immutable */
 class Ballots {
@@ -39,10 +37,10 @@ class Ballots {
         if (inArgs.length == 0)
             writeNewBallots();
         else if ("emails".equalsIgnoreCase(inArgs[0]))
-            new Ballots().all.stream().filter(ballot -> !ballot.answer(DataColumn.EMAIL).isEmpty())
-                    .forEach(ballot -> System.out.println(ballot.answer(DataColumn.LAST_NAME) + ", "
-                            + ballot.answer(DataColumn.FIRST_NAME) + " = "
-                            + ballot.answer(DataColumn.EMAIL)));
+            new Ballots().all.stream().filter(ballot -> !ballot.answer(Column.EMAIL).isEmpty())
+                    .forEach(ballot -> System.out.println(ballot.answer(Column.LAST_NAME) + ", "
+                            + ballot.answer(Column.FIRST_NAME) + " = "
+                            + ballot.answer(Column.EMAIL)));
         else
             throw new IllegalArgumentException("Unknown action: " + inArgs[0]);
     }
@@ -72,9 +70,9 @@ class Ballots {
                         + " does not match number of defined columns: " + Column.ALL.size());
             all = reader.readAll().stream().map(Ballot::new)
                     .sorted(Ordering.from(String.CASE_INSENSITIVE_ORDER)
-                            .onResultOf((Ballot ballot) -> ballot.answer(DataColumn.LAST_NAME))
+                            .onResultOf((Ballot ballot) -> ballot.answer(Column.LAST_NAME))
                             .compound(Ordering.from(String.CASE_INSENSITIVE_ORDER).onResultOf(
-                                    (Ballot ballot) -> ballot.answer(DataColumn.FIRST_NAME)))
+                                    (Ballot ballot) -> ballot.answer(Column.FIRST_NAME)))
                             .compound(Ordering.natural().onResultOf(Ballot::timestamp)))
                     .collect(ImmutableList.toImmutableList());
         }
@@ -89,8 +87,8 @@ class Ballots {
     protected final ImmutableCollection<Ballot> latest() {
         return all.stream()
                 .collect(ImmutableMap.toImmutableMap(
-                        ballot -> ImmutableList.of(ballot.answer(DataColumn.FIRST_NAME),
-                                ballot.answer(DataColumn.LAST_NAME)),
+                        ballot -> ImmutableList.of(ballot.answer(Column.FIRST_NAME),
+                                ballot.answer(Column.LAST_NAME)),
                         ballot -> ballot,
                         BinaryOperator.maxBy(Comparator.comparing(Ballot::timestamp))))
                 .values();
@@ -106,8 +104,8 @@ class Ballots {
                 if (lastTimestamp == null || lastTimestamp.isBefore(maxTimestamp)) {
                     Results.write(ballots.stream()
                             .map(ballot -> new Element("player")
-                                    .setAttribute("firstName", ballot.answer(DataColumn.FIRST_NAME))
-                                    .setAttribute("lastName", ballot.answer(DataColumn.LAST_NAME))
+                                    .setAttribute("firstName", ballot.answer(Column.FIRST_NAME))
+                                    .setAttribute("lastName", ballot.answer(Column.LAST_NAME))
                                     .setAttribute("timestamp", ballot.timestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
                     System.err.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()

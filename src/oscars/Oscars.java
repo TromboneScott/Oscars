@@ -6,10 +6,9 @@ import org.jdom2.Element;
 
 import com.google.common.collect.ImmutableList;
 
+import oscars.ballot.Column;
 import oscars.ballot.MappedBallots;
 import oscars.ballot.Player;
-import oscars.column.Category;
-import oscars.column.DataColumn;
 import oscars.file.Directory;
 import oscars.file.XMLFile;
 
@@ -48,20 +47,21 @@ public class Oscars {
     }
 
     private static void writeStaticFiles() throws IOException {
-        new XMLFile(Directory.DATA, "ballots.xml").write(PLAYERS.stream().map(player -> Category.ALL
-                .stream()
-                .map(category -> category.toDOM().setAttribute("nominee", player.answer(category)))
-                .reduce(player.toDOM(), Element::addContent)
-                .setAttribute("firstName", player.answer(DataColumn.FIRST_NAME))
-                .setAttribute("lastName", player.answer(DataColumn.LAST_NAME))
-                .setAttribute("time", player.answer(DataColumn.TIME)))
+        new XMLFile(Directory.DATA, "ballots.xml").write(PLAYERS.stream()
+                .map(player -> Column.CATEGORIES.stream()
+                        .map(category -> category.toDOM().setAttribute("nominee",
+                                player.answer(category)))
+                        .reduce(player.toDOM(), Element::addContent)
+                        .setAttribute("firstName", player.answer(Column.FIRST_NAME))
+                        .setAttribute("lastName", player.answer(Column.LAST_NAME))
+                        .setAttribute("time", player.answer(Column.TIME)))
                 .reduce(new Element("ballots"), Element::addContent));
 
         for (Player player : PLAYERS)
             new XMLFile(Directory.PLAYERS, player.id() + ".xml").write(player.toDOM());
 
-        for (Category category : Category.ALL) {
-            category.writeChart();
+        for (Column category : Column.CATEGORIES) {
+            category.writeChart(RESULTS.winners(category));
             new XMLFile(Directory.CATEGORIES, category.name() + ".xml").write(category.toDOM());
         }
     }

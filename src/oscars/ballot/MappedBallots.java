@@ -16,8 +16,6 @@ import com.google.common.collect.ImmutableMap;
 
 import oscars.Font;
 import oscars.Results;
-import oscars.column.Category;
-import oscars.column.Column;
 import oscars.file.Directory;
 import oscars.file.XMLFile;
 
@@ -47,8 +45,8 @@ public final class MappedBallots extends Ballots {
     }
 
     /** The survey descriptions of the nominees in the each category */
-    public ImmutableMap<Category, ImmutableMap<String, String>> nomineeMap() {
-        return Category.ALL.stream().collect(ImmutableMap.toImmutableMap(category -> category,
+    public ImmutableMap<Column, ImmutableMap<String, String>> nomineeMap() {
+        return Column.CATEGORIES.stream().collect(ImmutableMap.toImmutableMap(category -> category,
                 category -> columnMaps.get(category).entrySet().stream().collect(
                         ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey, (a, b) -> b))));
     }
@@ -59,7 +57,7 @@ public final class MappedBallots extends Ballots {
                     .ifPresent(mappingsDOM -> mappingsDOM.getChildren("column")
                             .forEach(columnDOM -> columnDOM.getChildren("nominee")
                                     .forEach(nomineeDOM -> columnMaps
-                                            .get(Category.of(columnDOM.getAttributeValue("name")))
+                                            .get(Column.of(columnDOM.getAttributeValue("name")))
                                             .put(nomineeDOM.getAttributeValue("ballot"),
                                                     nomineeDOM.getAttributeValue("name")))));
         } catch (Exception e) {
@@ -68,7 +66,7 @@ public final class MappedBallots extends Ballots {
     }
 
     private void updateMappings() {
-        for (Category category : Category.ALL) {
+        for (Column category : Column.CATEGORIES) {
             Map<String, String> columnMap = columnMaps.get(category);
             latest().stream().map(ballot -> ballot.answer(category))
                     .filter(guess -> !columnMap.containsKey(guess))
@@ -85,7 +83,7 @@ public final class MappedBallots extends Ballots {
         }
     }
 
-    private String mapping(Category inCategory, String inGuess) {
+    private String mapping(Column inCategory, String inGuess) {
         String match = matches.get(inGuess);
         if (inCategory.nominees().contains(match))
             return match;
@@ -105,7 +103,7 @@ public final class MappedBallots extends Ballots {
         return mapping;
     }
 
-    private static String prompt(Category inCategory, String inGuess,
+    private static String prompt(Column inCategory, String inGuess,
             ImmutableList<String> inNominees) {
         System.out.println("\n" + Font.title(inCategory.name()));
         for (int nomineeNum = 0; nomineeNum < inNominees.size(); nomineeNum++)

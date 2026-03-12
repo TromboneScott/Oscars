@@ -4,8 +4,6 @@ import java.util.function.Function;
 
 import org.jdom2.Element;
 
-import oscars.column.Column;
-
 /** Player answers converted from ballot values to website values - Immutable */
 public final class Player extends Ballot {
     private static int nextId = 0;

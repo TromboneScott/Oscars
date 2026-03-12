@@ -1,9 +1,10 @@
-package oscars.column;
+package oscars.ballot;
 
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.jdom2.Element;
 import org.jfree.chart.ChartFactory;
@@ -21,9 +22,29 @@ import com.google.common.collect.ImmutableSet;
 
 import oscars.Oscars;
 import oscars.file.Directory;
+import oscars.file.XMLFile;
 
-/** An award category column from the survey - Guarantees only one instance per Category name */
-public final class Category extends Column {
+/** A column from the ballot - Immutable */
+public final class Column {
+    /** All the columns in ballot order */
+    static final ImmutableList<Column> ALL = XMLFile.readDefinitionsFile().getChildren("column")
+            .stream().map(Column::new).collect(ImmutableList.toImmutableList());
+
+    /** All the categories (columns with nominees) in ballot order */
+    public static final ImmutableList<Column> CATEGORIES = ALL.stream()
+            .filter(column -> !column.nominees().isEmpty())
+            .collect(ImmutableList.toImmutableList());
+
+    public static final Column TIMESTAMP = of("Timestamp");
+
+    public static final Column FIRST_NAME = of("First Name");
+
+    public static final Column LAST_NAME = of("Last Name");
+
+    public static final Column TIME = of("Time");
+
+    public static final Column EMAIL = of("EMail");
+
     private static final int WIDTH = 500;
 
     private static final int HEIGHT = 300;
@@ -36,46 +57,39 @@ public final class Category extends Column {
 
     private static final Paint RED = new Color(0xCC0000);
 
-    /** All the award categories in order */
-    public static final ImmutableList<Category> ALL = readFile()
-            .filter(column -> !column.getChildren("nominee").isEmpty()).map(Category::new)
-            .collect(ImmutableList.toImmutableList());
+    private final String name;
 
     private final ImmutableList<String> nominees;
 
-    private ImmutableSet<String> winners = ImmutableSet.of();
-
-    private Category(Element inColumn) {
-        super(inColumn);
+    private Column(Element inColumn) {
+        name = Objects.requireNonNull(inColumn.getAttributeValue("name"),
+                "Definitions file missing column attribute: name");
         nominees = inColumn.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name"))
                 .collect(ImmutableList.toImmutableList());
     }
 
-    /** The nominees of this Column in display order */
+    /** The name of this Column */
+    public final String name() {
+        return name;
+    }
+
     public ImmutableList<String> nominees() {
         return nominees;
     }
 
-    public ImmutableSet<String> winners() {
-        return winners;
-    }
-
-    public void setWinners(ImmutableSet<String> inWinners) {
-        winners = inWinners;
+    /** Get the Column instance that has the given header from the Column list */
+    public static Column of(String inHeader) {
+        return ALL.stream().filter(column -> column.name().equals(inHeader)).findAny()
+                .orElseThrow(() -> new NullPointerException("Column not defined: " + inHeader));
     }
 
     public Element toDOM() {
         return new Element("category").setAttribute("name", name());
     }
 
-    /** Get the Column instance that has the given header */
-    public static Category of(String inHeader) {
-        return of(inHeader, ALL);
-    }
-
     /** Write the chart with the current winners for this Category */
-    public void writeChart() throws IOException {
+    public void writeChart(ImmutableSet<String> inWinners) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         nominees().forEach(nominee -> dataset.setValue(0, "nominee", nominee));
         Oscars.PLAYERS.forEach(player -> dataset.incrementValue(1, "nominee", player.answer(this)));
@@ -92,8 +106,8 @@ public final class Category extends Column {
         BarRenderer renderer = new BarRenderer() {
             @Override
             public Paint getItemPaint(final int inRow, final int column) {
-                return winners.isEmpty() ? GRAY
-                        : winners.contains(nominees().get(column)) ? GREEN : RED;
+                return inWinners.isEmpty() ? GRAY
+                        : inWinners.contains(nominees().get(column)) ? GREEN : RED;
             }
         };
         renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());

@@ -6,9 +6,6 @@ import java.util.stream.IntStream;
 
 import com.google.common.collect.ImmutableMap;
 
-import oscars.column.Column;
-import oscars.column.DataColumn;
-
 /** Answers from a ballot - Immutable */
 class Ballot {
     private final ImmutableMap<Column, String> answers;
@@ -26,7 +23,7 @@ class Ballot {
 
     /** Get the timestamp of this Ballot */
     LocalDateTime timestamp() {
-        return LocalDateTime.parse(answer(DataColumn.TIMESTAMP),
+        return LocalDateTime.parse(answer(Column.TIMESTAMP),
                 DateTimeFormatter.ofPattern("M/d/yyyy H:mm:ss"));
     }
 }
