@@ -12,7 +12,7 @@ final class Ballot {
     private final ImmutableMap<Column, String> answers;
 
     /** Create a Ballot with the answers for each Column */
-    protected Ballot(String[] inAnswers) {
+    Ballot(String[] inAnswers) {
         if (inAnswers.length != Column.ALL.size())
             throw new InvalidParameterException("Number of columns on ballot: " + inAnswers.length
                     + " does not match number of defined columns: " + Column.ALL.size());
@@ -21,7 +21,7 @@ final class Ballot {
     }
 
     /** Get the answer in the given Column */
-    public final String answer(Column inColumn) {
+    final String answer(Column inColumn) {
         return answers.get(inColumn);
     }
 

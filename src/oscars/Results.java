@@ -70,8 +70,7 @@ public class Results {
     });
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    public Results(ImmutableMap<Column, ImmutableMap<String, String>> inNomineeMap)
-            throws IOException {
+    Results(ImmutableMap<Column, ImmutableMap<String, String>> inNomineeMap) throws IOException {
         nomineeMap = inNomineeMap;
         try {
             Element awardsDOM = RESULTS_FILE.read().map(element -> element.getChild("awards"))
@@ -93,7 +92,7 @@ public class Results {
     }
 
     /** Prompt for results and return whether or not the user wants to continue entering results */
-    public boolean prompt() throws IOException {
+    boolean prompt() throws IOException {
         System.out.println(Font.title("RESULTS"));
         for (int line = 0; line < Column.CATEGORIES.size() + ShowTimeType.values().length; line++)
             System.out.println(Font.menuNumber(line) + (line < Column.CATEGORIES.size()
@@ -173,7 +172,7 @@ public class Results {
     }
 
     /** Get the DOM Element for these Results */
-    public Element toDOM() {
+    Element toDOM() {
         return Column.CATEGORIES.stream()
                 .map(category -> winners(category).stream()
                         .map(winner -> new Element("nominee").setAttribute("name", winner))
@@ -209,7 +208,7 @@ public class Results {
                 new File(Directory.DATA, "elapsed.txt"));
     }
 
-    public ImmutableSet<String> winners(Column category) {
+    ImmutableSet<String> winners(Column category) {
         return winners.get(category);
     }
 }

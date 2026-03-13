@@ -35,15 +35,15 @@ public final class Column {
             .filter(column -> !column.nominees().isEmpty())
             .collect(ImmutableList.toImmutableList());
 
-    public static final Column TIMESTAMP = of("Timestamp");
-
     public static final Column FIRST_NAME = of("First Name");
 
     public static final Column LAST_NAME = of("Last Name");
 
     public static final Column TIME = of("Time");
 
-    public static final Column EMAIL = of("EMail");
+    static final Column TIMESTAMP = of("Timestamp");
+
+    static final Column EMAIL = of("EMail");
 
     private static final int WIDTH = 500;
 

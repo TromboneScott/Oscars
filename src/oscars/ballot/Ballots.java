@@ -59,7 +59,7 @@ class Ballots {
     }
 
     /** Download the ballots */
-    public Ballots() throws Exception {
+    Ballots() throws Exception {
         URLConnection connection = RESPONSES_URL.openConnection();
         connection.setUseCaches(false);
         try (CSVReader reader = new CSVReader(
@@ -79,12 +79,12 @@ class Ballots {
     }
 
     /** The column headers of the survey */
-    protected final ImmutableList<String> headers() {
+    final ImmutableList<String> headers() {
         return headers;
     }
 
     /** The latest ballot for each Player */
-    protected final ImmutableCollection<Ballot> latest() {
+    final ImmutableCollection<Ballot> latest() {
         return all.stream()
                 .collect(ImmutableMap.toImmutableMap(
                         ballot -> ImmutableList.of(ballot.answer(Column.FIRST_NAME),
