@@ -1,5 +1,6 @@
 package oscars.ballot;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.IntStream;
@@ -7,11 +8,14 @@ import java.util.stream.IntStream;
 import com.google.common.collect.ImmutableMap;
 
 /** Answers from a ballot - Immutable */
-class Ballot {
+final class Ballot {
     private final ImmutableMap<Column, String> answers;
 
     /** Create a Ballot with the answers for each Column */
     protected Ballot(String[] inAnswers) {
+        if (inAnswers.length != Column.ALL.size())
+            throw new InvalidParameterException("Number of columns on ballot: " + inAnswers.length
+                    + " does not match number of defined columns: " + Column.ALL.size());
         answers = IntStream.range(0, inAnswers.length).boxed().collect(
                 ImmutableMap.toImmutableMap(Column.ALL::get, column -> inAnswers[column].trim()));
     }
