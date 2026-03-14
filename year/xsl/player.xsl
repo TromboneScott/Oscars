@@ -636,7 +636,7 @@
       const table = new SortableTable(
           ["link", "rank", ...(ended ? [] : ["bpr", "wpr"]), "scoreText", "timeText"],
           1,
-          sort => sortColumns[sort] || ['rank', 'bpr', 'wpr'],
+          sort => sortColumns[sort] || ['rank'],
           (player, field) =>
               field === "link" ? typeof inPlayer === 'undefined' ? "white" :
                   decidedColors[inPlayer.decided[player.id]] || "silver" :
