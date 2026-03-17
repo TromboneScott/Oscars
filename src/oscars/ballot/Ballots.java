@@ -19,7 +19,6 @@ import org.jdom2.Element;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Ordering;
 import com.opencsv.CSVReader;
 
 import oscars.Results;
@@ -68,12 +67,15 @@ class Ballots {
             if (headers.size() != Column.ALL.size())
                 throw new Exception("Number of columns on ballots: " + headers.size()
                         + " does not match number of defined columns: " + Column.ALL.size());
-            all = reader.readAll().stream().map(Ballot::new)
-                    .sorted(Ordering.from(String.CASE_INSENSITIVE_ORDER)
-                            .onResultOf((Ballot ballot) -> ballot.answer(Column.LAST_NAME))
-                            .compound(Ordering.from(String.CASE_INSENSITIVE_ORDER).onResultOf(
-                                    (Ballot ballot) -> ballot.answer(Column.FIRST_NAME)))
-                            .compound(Ordering.natural().onResultOf(Ballot::timestamp)))
+            all = reader
+                    .readAll().stream().map(
+                            Ballot::new)
+                    .sorted(Comparator
+                            .comparing((Ballot ballot) -> ballot.answer(Column.LAST_NAME),
+                                    String.CASE_INSENSITIVE_ORDER)
+                            .thenComparing(ballot -> ballot.answer(Column.FIRST_NAME),
+                                    String.CASE_INSENSITIVE_ORDER)
+                            .thenComparing(Ballot::timestamp))
                     .collect(ImmutableList.toImmutableList());
         }
     }
