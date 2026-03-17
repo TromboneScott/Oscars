@@ -18,6 +18,7 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import oscars.Oscars;
@@ -26,9 +27,12 @@ import oscars.file.XMLFile;
 
 /** A column from the ballot - Immutable */
 public final class Column {
+    private static final ImmutableMap<String, Column> MAP = XMLFile.readDefinitionsFile()
+            .getChildren("column").stream().map(Column::new)
+            .collect(ImmutableMap.toImmutableMap(Column::name, column -> column));
+
     /** All the columns in ballot order */
-    static final ImmutableList<Column> ALL = XMLFile.readDefinitionsFile().getChildren("column")
-            .stream().map(Column::new).collect(ImmutableList.toImmutableList());
+    static final ImmutableList<Column> ALL = ImmutableList.copyOf(MAP.values());
 
     /** All the categories (columns with nominees) in ballot order */
     public static final ImmutableList<Column> CATEGORIES = ALL.stream()
@@ -78,10 +82,9 @@ public final class Column {
         return nominees;
     }
 
-    /** Get the Column instance that has the given header from the Column list */
+    /** Get the Column instance for the given header */
     public static Column of(String inHeader) {
-        return ALL.stream().filter(column -> column.name().equals(inHeader)).findAny()
-                .orElseThrow(() -> new NullPointerException("Column not defined: " + inHeader));
+        return Objects.requireNonNull(MAP.get(inHeader), "Column not defined: " + inHeader);
     }
 
     public Element toDOM() {
