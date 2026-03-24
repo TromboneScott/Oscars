@@ -19,7 +19,7 @@ import oscars.file.XMLFile;
  * will be the same as the order on the ballot.
  * 
  * @author Scott McDonald
- * @version 7.0
+ * @version 7.1
  */
 public class Oscars {
     public static final ImmutableList<Player> PLAYERS;
@@ -61,7 +61,7 @@ public class Oscars {
             new XMLFile(Directory.PLAYERS, player.id() + ".xml").write(player.toDOM());
 
         for (Column category : Column.CATEGORIES) {
-            category.writeChart(RESULTS.winners(category));
+            CategoryChart.write(category);
             new XMLFile(Directory.CATEGORIES, category.name() + ".xml").write(category.toDOM());
         }
     }

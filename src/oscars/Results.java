@@ -148,7 +148,7 @@ public class Results {
             winners.put(inCategory, Stream.of((input + WINNER_DELIMITER).split(WINNER_DELIMITER))
                     .mapToInt(entry -> Integer.parseInt(entry) - 1).sorted()
                     .mapToObj(inCategory.nominees()::get).collect(ImmutableSet.toImmutableSet()));
-            inCategory.writeChart(winners(inCategory));
+            CategoryChart.write(inCategory);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             outputInvalidInput(input);
         }
