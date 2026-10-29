@@ -2,6 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="winners.xsl"?>
 <!--OSCARS website created by Scott McDonald-->
 <winners>
+  <script xmlns="http://www.w3.org/1999/xhtml" src="/js/xslt-polyfill.min.js" />
   <year year="2026" correct="16/18" players="84">
     <winner name="Rick Phelps" link="/2026/players/56.xml" />
   </year>

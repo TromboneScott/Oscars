@@ -110,7 +110,7 @@ class Ballots {
                                     .setAttribute("lastName", ballot.answer(Column.LAST_NAME))
                                     .setAttribute("timestamp", ballot.timestamp().toString()))
                             .reduce(new Element("ballots"), Element::addContent));
-                    System.err.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()
+                    System.out.println(LocalDateTime.now() + " - Downloaded: " + ballots.size()
                             + " ballots - After: "
                             + Duration.between(maxTimestamp, LocalDateTime.now()).toString()
                                     .substring(2));

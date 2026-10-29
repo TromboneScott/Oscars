@@ -14,6 +14,7 @@ Guava 33.3.0
 JDOM 2.0.5
 JFreeChart 1.5.4 requires JCommon 1.0.23
 OpenCSV 5.6 requires commons-lang3 3.12.0
+Polyfill: https://github.com/mfreed7/xslt_polyfill
 
 PLATFORMS
 ---------

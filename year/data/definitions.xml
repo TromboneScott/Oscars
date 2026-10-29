@@ -2,6 +2,7 @@
 <?xml-stylesheet href="../xsl/definitions.xsl" type="text/xsl"?>
 <!--OSCARS website created by Scott McDonald-->
 <definitions year="2026" curtain="2026-03-15T17:00-06:00">
+  <script xmlns="http://www.w3.org/1999/xhtml" src="/js/xslt-polyfill.min.js" />
   <column name="Timestamp" />
   <column name="First Name" />
   <column name="Last Name" />

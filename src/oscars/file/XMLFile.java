@@ -35,13 +35,16 @@ public final class XMLFile extends File {
 
     /** Write the given root element to this XML file */
     public void write(Element inRootElement) throws IOException {
+        Element root = inRootElement.clone().addContent(0,
+                new Element("script", "http://www.w3.org/1999/xhtml").setAttribute("src",
+                        "/js/xslt-polyfill.min.js"));
         try (PrintWriter writer = new PrintWriter(this, StandardCharsets.UTF_8.name())) {
             new XMLOutputter(Format.getPrettyFormat()).output(new Document()
                     .addContent(new ProcessingInstruction("xml-stylesheet",
                             ImmutableMap.of("type", "text/xsl", "href",
                                     "../xsl/" + inRootElement.getName() + ".xsl")))
                     .addContent(new Comment("OSCARS website created by Scott McDonald"))
-                    .addContent(inRootElement), writer);
+                    .addContent(root), writer);
         }
     }
 
