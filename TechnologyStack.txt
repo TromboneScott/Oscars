@@ -1,9 +1,11 @@
 LANGUAGES
 ---------
+Bash
 CSS
 HTML
 Java 8
 JavaScript
+MS-DOS Batch
 XML 1.0
 XSLT 1.0
 

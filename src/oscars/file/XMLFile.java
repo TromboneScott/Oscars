@@ -23,6 +23,7 @@ import com.google.common.io.Files;
 public final class XMLFile extends File {
     private static final XMLFile DEFINITIONS_FILE = new XMLFile(Directory.DATA, "definitions.xml");
 
+    /** Create an XMLFile in the (required) directory for the given filename */
     public XMLFile(Directory inDirectory, String inFilename) {
         super(Objects.requireNonNull(inDirectory), inFilename);
     }

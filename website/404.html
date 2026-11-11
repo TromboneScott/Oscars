@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--OSCARS website created by Scott McDonald-->
+  <head>
+    <link rel="stylesheet" type="text/css" href="/css/oscars.css" />
+    <title>
+      Oscars Error
+    </title>
+    <style>body {background-color: PaleGoldenrod}</style>
+  </head>
+  <body>
+    <center>
+      <a href="/" class="header-link">
+        <table id="header" class="oscars-header">
+          <tr>
+            <td rowspan="3" />
+            <td rowspan="3">
+              <img src="/images/trophy.png" id="trophy" />
+            </td>
+            <td>
+              <br />
+            </td>
+            <td rowspan="3">
+              <img src="/images/trophy.png" id="trophy" />
+            </td>
+            <td rowspan="3" />
+          </tr>
+          <tr>
+            <th>Oscars Error</th>
+          </tr>
+          <tr>
+            <td>
+              <i>404: Not Found</i>
+              <br />
+              <br />
+            </td>
+          </tr>
+        </table>
+      </a>
+      <br/>
+      <br/>
+      <br/>
+      <style>
+        .envelope {
+          width: 460px;
+          height: 300px;
+          background: linear-gradient(135deg, #cfa434, #f6e27f);
+          border: 3px solid #b08d2a;
+          position: relative;
+          margin: 250px auto 0 auto;
+          box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+          z-index: 2;
+          overflow: visible;
+        }
+
+        /* Top back flap */
+        .envelope:before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0;
+          height: 0;
+          border-left: 230px solid transparent;
+          border-right: 230px solid transparent;
+          border-top: 150px solid rgba(0,0,0,0.18);
+        }
+
+        /* Bottom seam */
+        .envelope:after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 10px;
+          background: rgba(0,0,0,0.15);
+        }
+
+        .envelope-front {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #cfa434, #f6e27f);
+          border: 3px solid #b08d2a;
+          box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+          clip-path: polygon(
+            0 0,
+            50% 50%,
+            50% 50%,
+            50% 50%,
+            100% 0,
+            100% 100%,
+            0 100%
+          );
+          z-index: 3;
+          pointer-events: none;
+        }
+
+        /* Top back flap */
+        .envelope-front:before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-left: 230px solid transparent;
+          border-right: 230px solid transparent;
+          border-top: 150px solid rgba(0,0,0,0.18);
+        }
+
+        .card {
+          width: 390px;
+          background: #ffffff;
+          border: 2px solid #000;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -40%);
+          padding: 60px 28px;
+          box-shadow: 0 10px 18px rgba(0,0,0,0.45);
+          font-family: "Trajan Pro", "Cinzel", "Times New Roman", serif;
+          text-align: center;
+          z-index: 1;
+          overflow: hidden;
+
+          animation: reveal 3.5s ease-out forwards;
+        }
+
+        @keyframes reveal {
+          from {
+            transform: translate(-50%, -45%);
+          }
+          to {
+            transform: translate(-50%, -160%);
+          }
+        }
+
+        .category {
+          font-size: 18px;
+          letter-spacing: 3px;
+          margin-bottom: 6px;
+        }
+
+        .winner {
+          font-size: 34px;
+          letter-spacing: 4px;
+          font-weight: bold;
+          margin-bottom: 14px;
+        }
+
+        .divider {
+          width: 70%;
+          height: 2px;
+          background: #000;
+          margin: 14px auto 16px auto;
+        }
+
+        .error-title {
+          font-size: 20px;
+          letter-spacing: 2px;
+          margin-bottom: 6px;
+        }
+
+        .error-text {
+          font-size: 14px;
+          letter-spacing: 1px;
+        }
+      </style>
+      <div class="envelope">
+        <div class="card">
+          <div class="category">BEST PICTURE</div>
+          <div class="winner">LA&nbsp;LA&nbsp;LAND</div>
+
+          <div class="divider"></div>
+
+          <div class="error-title">ERROR&nbsp;404</div>
+          <div class="error-text">
+            The requested page was not found
+          </div>
+        </div>
+        <div class="envelope-front" />
+      </div>
+      <div style="height: 300px;" /></div>
+      <br/>
+      <br/>
+      <br/>
+      <A href="/">Return to Oscars Main Page</A>
+      <br />
+      <br />
+      <br/>
+      <font color="gray">
+        <i>Contest by Scott Takeda | Website by Scott McDonald</i>
+      </font>
+    </center>
+  </body>
+</html>

@@ -40,7 +40,7 @@ Archive the images in case Google Forms ever goes away
 1. Create a folder for this year's images in the Oscars folder under Google Drive
 2. Right click on each image from the Google Form and save to that folder 
 
-Edit year/data/definitions.xml using Eclipse
+Edit website/year/data/definitions.xml using Eclipse
 1. Update the year
 2. Update the curtain date and time for the start of the broadcast in local time
   a. For MDT use the format: YYYY-MM-DDTHH:mm-06:00
@@ -58,14 +58,14 @@ Edit year/data/definitions.xml using Eclipse
 
 Start the year
 1. Copy year folder to Oscars site and rename to current year
-2. Update the year in global/index.html
-3. Copy global/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
-4. Add current year to history/winners.xml
+2. Update the year in website/index.html
+3. Copy website/index.html to [DropBox]/Apps/site44/oscars.site44.com/index.html
+4. Add current year to website/history/winners.xml
   a. Insert an element for the current year but no winners: <year year="20XX" />
   b. Copy to Oscars site
 
 Proofread the category definitions:
-1. Go to the Category page (oscars.site44.com/<year>/categories)
+1. Go to the Category page (oscars.site44.com/<year>/data)
 2. Verify the year in the banner title (20xx OSCARS)
 3. Verify that the tie breakers are correct (including Time as the final tie breaker)
 4. Verify that images for the Best Picture nominees show up in the banner at the top
@@ -121,7 +121,7 @@ On the Responses tab of the Google Form turn off the Accepting Responses option.
 
 -- After contest is over
 
-Add the winner to history/winners.xml
+Add the winner to website/history/winners.xml
 1. Update the element for this year for correct and players and add the winner element
 2. Copy the file to the Oscars site
 3. Commit and push changes to Git 
