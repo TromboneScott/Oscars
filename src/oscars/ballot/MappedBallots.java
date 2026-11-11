@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -51,18 +52,13 @@ public final class MappedBallots extends Ballots {
                         ImmutableMap.toImmutableMap(Entry::getValue, Entry::getKey, (a, b) -> b))));
     }
 
-    private void readMappings() throws IOException {
-        try {
-            MAPPINGS_FILE.read()
-                    .ifPresent(mappingsDOM -> mappingsDOM.getChildren("column")
-                            .forEach(columnDOM -> columnDOM.getChildren("nominee")
-                                    .forEach(nomineeDOM -> columnMaps
-                                            .get(Column.of(columnDOM.getAttributeValue("name")))
-                                            .put(nomineeDOM.getAttributeValue("ballot"),
-                                                    nomineeDOM.getAttributeValue("name")))));
-        } catch (Exception e) {
-            throw new IOException("Error reading mappings file: " + MAPPINGS_FILE, e);
-        }
+    private void readMappings() throws JDOMException, IOException {
+        if (MAPPINGS_FILE.exists())
+            for (Element columnDOM : MAPPINGS_FILE.read().getChildren("column"))
+                for (Element nomineeDOM : columnDOM.getChildren("nominee"))
+                    columnMaps.get(Column.of(columnDOM.getAttributeValue("name"))).put(
+                            nomineeDOM.getAttributeValue("ballot"),
+                            nomineeDOM.getAttributeValue("name"));
     }
 
     private void updateMappings() {

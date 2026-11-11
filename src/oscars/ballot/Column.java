@@ -39,7 +39,7 @@ public final class Column {
 
     private Column(Element inColumn) {
         name = Objects.requireNonNull(inColumn.getAttributeValue("name"),
-                "Definitions file missing column attribute: name");
+                "Column in definitions file is missing attribute: name");
         nominees = inColumn.getChildren("nominee").stream()
                 .map(nominee -> nominee.getAttributeValue("name"))
                 .collect(ImmutableList.toImmutableList());

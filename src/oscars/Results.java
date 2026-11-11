@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -70,24 +71,20 @@ public class Results {
     });
 
     /** Read existing Results or create new Results including the given nominee descriptions */
-    Results(ImmutableMap<Column, ImmutableMap<String, String>> inNomineeMap) throws IOException {
+    Results(ImmutableMap<Column, ImmutableMap<String, String>> inNomineeMap)
+            throws JDOMException, IOException {
         nomineeMap = inNomineeMap;
-        try {
-            Element awardsDOM = RESULTS_FILE.read().map(element -> element.getChild("awards"))
-                    .orElseGet(() -> new Element("EMPTY"));
-            awardsDOM.getChildren("category")
-                    .forEach(categoryDOM -> winners.put(
-                            Column.of(categoryDOM.getAttributeValue("name")),
-                            categoryDOM.getChildren("nominee").stream()
-                                    .map(nomineeDOM -> nomineeDOM.getAttributeValue("name"))
-                                    .collect(ImmutableSet.toImmutableSet())));
-            showTimes = Stream.of(ShowTimeType.values())
-                    .filter(type -> awardsDOM.getAttribute(type.name()) != null)
-                    .collect(Collectors.toMap(type -> type,
-                            type -> ZonedDateTime.parse(awardsDOM.getAttributeValue(type.name()))));
-        } catch (Exception e) {
-            throw new IOException("Error reading results file: " + RESULTS_FILE, e);
-        }
+        Element awardsDOM = RESULTS_FILE.exists() ? RESULTS_FILE.read().getChild("awards")
+                : new Element("EMPTY");
+        awardsDOM.getChildren("category").forEach(
+                categoryDOM -> winners.put(Column.of(categoryDOM.getAttributeValue("name")),
+                        categoryDOM.getChildren("nominee").stream()
+                                .map(nomineeDOM -> nomineeDOM.getAttributeValue("name"))
+                                .collect(ImmutableSet.toImmutableSet())));
+        showTimes = Stream.of(ShowTimeType.values())
+                .filter(type -> awardsDOM.getAttribute(type.name()) != null)
+                .collect(Collectors.toMap(type -> type,
+                        type -> ZonedDateTime.parse(awardsDOM.getAttributeValue(type.name()))));
         elapsedUpdater.start();
     }
 

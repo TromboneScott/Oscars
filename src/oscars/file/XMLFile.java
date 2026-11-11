@@ -1,12 +1,10 @@
 package oscars.file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jdom2.Comment;
 import org.jdom2.Document;
@@ -29,9 +27,9 @@ public final class XMLFile extends File {
         super(Objects.requireNonNull(inDirectory), inFilename);
     }
 
-    /** Get the root element of this XML file or empty if file doesn't exist */
-    public Optional<Element> read() throws JDOMException, IOException {
-        return Optional.ofNullable(exists() ? new SAXBuilder().build(this).getRootElement() : null);
+    /** Get the root element of this XML file */
+    public Element read() throws JDOMException, IOException {
+        return new SAXBuilder().build(this).getRootElement();
     }
 
     /** Write the given root element to this XML file */
@@ -49,12 +47,12 @@ public final class XMLFile extends File {
         }
     }
 
-    /** Read the root element of the definitions file which is required to exist */
+    /** Read the root element of the definitions file without any checked exceptions */
     public static Element readDefinitionsFile() {
         try {
-            return DEFINITIONS_FILE.read().orElseThrow(FileNotFoundException::new);
+            return DEFINITIONS_FILE.read();
         } catch (Exception e) {
-            throw new RuntimeException("Error reading definitions file: " + DEFINITIONS_FILE, e);
+            throw new RuntimeException(e);
         }
     }
 }
