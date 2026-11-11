@@ -14,7 +14,7 @@
   <xsl:template name="header">
     <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
     <head>
-      <link rel="stylesheet" type="text/css" href="/oscars.css" />
+      <link rel="stylesheet" type="text/css" href="/css/oscars.css" />
       <meta http-equiv="cache-control"
         content="no-cache, no-store, must-revalidate" />
       <meta http-equiv="expires" content="0" />
@@ -162,13 +162,13 @@
             <tr>
               <td rowspan="3" />
               <td rowspan="3">
-                <img src="http://oscars.site44.com/trophy.png" id="trophy" />
+                <img src="/images/trophy.png" id="trophy" />
               </td>
               <td>
                 <br />
               </td>
               <td rowspan="3">
-                <img src="http://oscars.site44.com/trophy.png" id="trophy" />
+                <img src="/images/trophy.png" id="trophy" />
               </td>
               <td rowspan="3" />
             </tr>

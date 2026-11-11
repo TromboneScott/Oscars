@@ -5,7 +5,7 @@
     <html>
       <xsl:comment>OSCARS website created by Scott McDonald</xsl:comment>
       <head>
-        <link rel="stylesheet" type="text/css" href="/oscars.css" />
+        <link rel="stylesheet" type="text/css" href="/css/oscars.css" />
         <title>Oscars History</title>
         <style>body {background-color: PaleGoldenrod}</style>
       </head>
@@ -16,13 +16,13 @@
               <tr>
                 <td rowspan="3" />
                 <td rowspan="3">
-                  <img src="http://oscars.site44.com/trophy.png" id="trophy" />
+                  <img src="/images/trophy.png" id="trophy" />
                 </td>
                 <td>
                   <br />
                 </td>
                 <td rowspan="3">
-                  <img src="http://oscars.site44.com/trophy.png" id="trophy" />
+                  <img src="/images/trophy.png" id="trophy" />
                 </td>
                 <td rowspan="3" />
               </tr>

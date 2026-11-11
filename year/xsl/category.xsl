@@ -98,9 +98,9 @@
                               <td>
                                 <xsl:variable name="greenWidth"
                                   select="$graphWidth * $correct div $playerCount" />
-                                <img src="/bar_green.bmp" height="15"
+                                <img src="/images/bar_green.bmp" height="15"
                                   width="{$greenWidth}" />
-                                <img src="/bar_red.bmp" height="15"
+                                <img src="/images/bar_red.bmp" height="15"
                                   width="{$graphWidth - $greenWidth}" />
                               </td>
                             </xsl:when>
@@ -108,7 +108,7 @@
                               <td class="unannounced" />
                               <td class="unannounced" />
                               <td>
-                                <img src="/bar_grey.bmp" height="15"
+                                <img src="/images/bar_grey.bmp" height="15"
                                   width="{$graphWidth}" />
                               </td>
                             </xsl:otherwise>

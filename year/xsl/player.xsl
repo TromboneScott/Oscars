@@ -112,7 +112,7 @@
                         <br />
                         <br />
                         <img
-                          src="http://oscars.site44.com/Ballots.jpg"
+                          src="/images/Ballots.jpg"
                           alt="&#9993; - &#9993; - &#9993; - &#9993; - &#9993;"
                           title="Counting Ballots" width="200" />
                         <br />
@@ -228,7 +228,7 @@
                                 </xsl:apply-templates>
                                 <xsl:if test="not(nominee)">
                                   <img
-                                    src="http://oscars.site44.com/trophy_poster.png"
+                                    src="/images/trophy_poster.png"
                                     alt="?"
                                     title="Not Yet Announced" width="50" />
                                 </xsl:if>

@@ -101,7 +101,7 @@ table#header.oscars-header {
   border: 2px solid black;
   border-collapse: collapse;
   color: PaleGoldenrod;
-  background-image: url("http://oscars.site44.com/RedCurtain.jpg");
+  background-image: url("/images/RedCurtain.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   text-align: center;
