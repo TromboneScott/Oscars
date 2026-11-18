@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 
 import oscars.Results;
 
@@ -51,21 +52,21 @@ class Ballots {
                 .get(Objects.requireNonNull(Ballots.class.getClassLoader().getResource(urlFile),
                         "File not found: " + urlFile).toURI()))) {
             return new URL(lines.findFirst()
-                    .orElseThrow(() -> new Exception("File is empty: " + urlFile)));
+                    .orElseThrow(() -> new IOException("File is empty: " + urlFile)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     /** Download the ballots */
-    Ballots() throws Exception {
+    Ballots() throws IOException, CsvException {
         URLConnection connection = RESPONSES_URL.openConnection();
         connection.setUseCaches(false);
         try (CSVReader reader = new CSVReader(
                 new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             headers = ImmutableList.copyOf(reader.readNext());
             if (headers.size() != Column.ALL.size())
-                throw new Exception("Number of columns on ballots: " + headers.size()
+                throw new CsvException("Number of columns on ballots: " + headers.size()
                         + " does not match number of defined columns: " + Column.ALL.size());
             all = reader
                     .readAll().stream().map(
@@ -96,7 +97,7 @@ class Ballots {
                 .values();
     }
 
-    private static void writeNewBallots() throws Exception {
+    private static void writeNewBallots() throws CsvException, InterruptedException {
         for (LocalDateTime lastTimestamp = null;; Thread.sleep(Results.UPDATE_TIME))
             try {
                 Results.writeCountdown();

@@ -14,6 +14,7 @@ import org.jdom2.JDOMException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.opencsv.exceptions.CsvException;
 
 import oscars.Font;
 import oscars.Results;
@@ -30,7 +31,7 @@ public final class MappedBallots extends Ballots {
     private final Map<String, String> matches = new HashMap<>();
 
     /** Download ballots, read any existing mappings, update them and write the new mappings */
-    public MappedBallots() throws Exception {
+    public MappedBallots() throws IOException, JDOMException, CsvException {
         super();
         readMappings();
         updateMappings();
